@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "pr-server": "node scripts/community-pr-server.mjs",
+    "start": "node scripts/server.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

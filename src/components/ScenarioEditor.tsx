@@ -155,6 +155,33 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     setMessage(`JSON exportiert. Ziel für PR: ${pkg.suggestedPath}`);
   };
 
+  const publishToApi = async (pkg: ReturnType<typeof createSharePackage>) => {
+    const endpoints = ['/api/community-pr'];
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      endpoints.push('http://localhost:5174/api/community-pr');
+    }
+
+    let lastError = 'API nicht erreichbar.';
+    for (const endpoint of endpoints) {
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(pkg),
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || 'Pull Request konnte nicht erstellt werden.');
+        }
+        return result;
+      } catch (error) {
+        lastError = error instanceof Error ? error.message : String(error);
+      }
+    }
+
+    throw new Error(lastError);
+  };
+
   const publishPullRequest = async () => {
     const scenario = buildScenario();
     if (!scenario) return;
@@ -164,15 +191,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
 
     try {
       setMessage('Veröffentliche Szenario als Pull Request...');
-      const response = await fetch('http://localhost:5174/api/community-pr', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(pkg),
-      });
-      const result = await response.json();
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || 'Pull Request konnte nicht erstellt werden.');
-      }
+      const result = await publishToApi(pkg);
       setMessage(`Pull Request erstellt: ${result.url}`);
       window.open(result.url, '_blank', 'noopener,noreferrer');
     } catch (error) {
