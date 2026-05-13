@@ -104,8 +104,8 @@ export class StoryEngine {
   }
 
   static async loadScenarios(): Promise<Scenario[]> {
+    // Try remote scenarios (user-provided)
     try {
-      // Try loading from public/scenarios/remote.json first (GitHub hosted)
       const remoteResp = await fetch('/scenarios/remote.json');
       if (remoteResp.ok) {
         const remote = await remoteResp.json();
@@ -118,11 +118,25 @@ export class StoryEngine {
       console.warn('Could not load remote scenarios, falling back to default', e);
     }
 
-    // Fallback: local story scenarios bundled with app
+    // Fallback: bundled default scenarios (served from public/)
     try {
-      const data = await import('../data/story_scenarios.json', { assert: { type: 'json' } });
-      const rawList = data.default || data;
-      // Cast each object's playerRole string to the PlayerRole union, and ensure nodes exist
+      const resp = await fetch('/scenarios/default.json');
+      if (resp.ok) {
+        const data = await resp.json();
+        const rawList = Array.isArray(data) ? data : [];
+        return rawList.map((item: any) => ({
+          ...item,
+          playerRole: item.playerRole as any,
+        })) as Scenario[];
+      }
+    } catch (e) {
+      console.warn('Could not load default scenarios via fetch', e);
+    }
+
+    // Last resort: direct import (works in Vite dev but not always)
+    try {
+      const module = await import('../data/story_scenarios.json', { assert: { type: 'json' } });
+      const rawList = module.default || module;
       return (Array.isArray(rawList) ? rawList : []).map((item: any) => ({
         ...item,
         playerRole: item.playerRole as any,

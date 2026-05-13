@@ -2046,5 +2046,1374 @@
         ]
       }
     }
+  },
+  {
+    "id": "brandobjekt_einfach",
+    "title": "Brandobjekt: Einfache Meldung",
+    "description": "Klassischer Brandeinsatz mit Inventory-Meldung und Rückmeldung.",
+    "startingNodeId": "start",
+    "playerRole": "gruppenführer_a",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Florian A, Kielkrug, Brandobjekt, 2. Obergeschoss, Personen可能 im Gebäude, Melden Sie Einsatzbereitschaft.",
+        "actions": [
+          {
+            "id": "ack",
+            "label": "Einsatzbereitschaft melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A nach Kiel, einsatzbereit",
+                "Florian A an Kiel, einsatzbereit"
+              ],
+              "hint": "Florian A nach Kiel, einsatzbereit",
+              "onSuccess": "arrived",
+              "onFailure": "retry_ack"
+            }
+          }
+        ]
+      },
+      "retry_ack": {
+        "id": "retry_ack",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie Einsatzbereitschaft.",
+        "actions": [
+          {
+            "id": "ack2",
+            "label": "Einsatzbereitschaft melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A nach Kiel, einsatzbereit"
+              ],
+              "hint": "Florian A nach Kiel, einsatzbereit",
+              "onSuccess": "arrived",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "arrived": {
+        "id": "arrived",
+        "role": "gruppenführer_a",
+        "narrativeMarkdown": "**Sie (Gruppenführer A):** **Funkrufname:** Florian A\n\nSie sind am Einsatzort. Was ist die nächste Meldung?",
+        "actions": [
+          {
+            "id": "inventory",
+            "label": "Inventory melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Inventory: 1 Verletzter, 2 Geräte",
+                "Inventory: ein Verletzter, zwei Geräte"
+              ],
+              "hint": "Inventory: 1 Verletzter, 2 Geräte",
+              "onSuccess": "done",
+              "onFailure": "retry_inventory"
+            }
+          }
+        ]
+      },
+      "retry_inventory": {
+        "id": "retry_inventory",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, wiederholen Sie Ihre Inventory-Meldung.",
+        "actions": [
+          {
+            "id": "inv2",
+            "label": "Inventory melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Inventory: 1 Verletzter, 2 Geräte"
+              ],
+              "hint": "Inventory: 1 Verletzter, 2 Geräte",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "done": {
+        "id": "done",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Gute Arbeit, Florian A. Ende.",
+        "actions": [
+          {
+            "id": "exit",
+            "label": "Zurück zur Übersicht",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      },
+      "failed": {
+        "id": "failed",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bleiben Sie am Kanal. Ende.",
+        "actions": [
+          {
+            "id": "exit_fail",
+            "label": "Szenario beenden",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "tiefgarage_vollalarm",
+    "title": "Tiefgarage: Vollalarm und Menschenrettung",
+    "description": "Einsatz in Tiefgarage mit Menschenrettung und erhöhtem Alarmstufe.",
+    "startingNodeId": "start",
+    "playerRole": "einsatzleit",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** **Vollalarm für Florian A, Florian C, Florian D!** Tiefgarage Musterstraße, PKW in Feuer, Personen可能 eingeschlossen. Florian A übernimmt Einsatzleitung. **Bestätigen Sie Vollalarm!**",
+        "actions": [
+          {
+            "id": "confirm",
+            "label": "Vollalarm bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Alle Kräfte Vollalarm, Einsatzleitung Florian A",
+                "Vollalarm bestätigt, Einsatzleitung A"
+              ],
+              "hint": "Alle Kräfte Vollalarm, Einsatzleitung Florian A",
+              "onSuccess": "assign_units",
+              "onFailure": "retry_confirm"
+            }
+          }
+        ]
+      },
+      "retry_confirm": {
+        "id": "retry_confirm",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Vollalarm bestätigen.",
+        "actions": [
+          {
+            "id": "confirm2",
+            "label": "Vollalarm bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Alle Kräfte Vollalarm, Einsatzleitung Florian A"
+              ],
+              "hint": "Alle Kräfte Vollalarm, Einsatzleitung Florian A",
+              "onSuccess": "assign_units",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "assign_units": {
+        "id": "assign_units",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie (Einsatzleitung):** Weisen Sie die Kräfte zu: **Florian C** – Angriffstrupp Innenangriff, **Florian D** – Rettungstrupp mit Rettungssatz. **Melden Sie sich!**",
+        "actions": [
+          {
+            "id": "assign_c",
+            "label": "Florian C zuweisen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C an Einsatzleitung, übernehmen Angriffstrupp Innenangriff"
+              ],
+              "hint": "Florian C an Einsatzleitung, übernehmen Angriffstrupp Innenangriff",
+              "onSuccess": "assign_d",
+              "onFailure": "retry_c"
+            }
+          }
+        ]
+      },
+      "retry_c": {
+        "id": "retry_c",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, wiederholen Sie die Zuweisung für Florian C.",
+        "actions": [
+          {
+            "id": "assign_c2",
+            "label": "Florian C zuweisen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C an Einsatzleitung, übernehmen Angriffstrupp Innenangriff"
+              ],
+              "hint": "Florian C an Einsatzleitung, übernehmen Angriffstrupp Innenangriff",
+              "onSuccess": "assign_d",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "assign_d": {
+        "id": "assign_d",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** Nennen Sie nun Florian D den Rettungstrupp mit Rettungssatz.",
+        "actions": [
+          {
+            "id": "assign_d_action",
+            "label": "Florian D zuweisen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian D an Einsatzleitung, übernehmen Rettungstrupp mit Rettungssatz"
+              ],
+              "hint": "Florian D an Einsatzleitung, übernehmen Rettungstrupp mit Rettungssatz",
+              "onSuccess": "status_report",
+              "onFailure": "retry_d"
+            }
+          }
+        ]
+      },
+      "retry_d": {
+        "id": "retry_d",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Zuweisung für Florian D wiederholen.",
+        "actions": [
+          {
+            "id": "assign_d2",
+            "label": "Florian D zuweisen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian D an Einsatzleitung, übernehmen Rettungstrupp mit Rettungssatz"
+              ],
+              "hint": "Florian D an Einsatzleitung, übernehmen Rettungstrupp mit Rettungssatz",
+              "onSuccess": "status_report",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "status_report": {
+        "id": "status_report",
+        "role": "gruppenführer_a",
+        "narrativeMarkdown": "**Sie (Gruppenführer A):** Sie sind vor Ort. Geben Sie eine erste Lagemeldung.",
+        "actions": [
+          {
+            "id": "status",
+            "label": "Lagemeldung geben",
+            "radioCall": {
+              "expectedPhrases": [
+                "Lagemeldung: Brand in Tiefgarage, PKW brennt, Personen可能 in Gefahr"
+              ],
+              "hint": "Lagemeldung: Brand in Tiefgarage, PKW brennt, Personen可能 in Gefahr",
+              "onSuccess": "done",
+              "onFailure": "retry_status"
+            }
+          }
+        ]
+      },
+      "retry_status": {
+        "id": "retry_status",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Lagemeldung wiederholen.",
+        "actions": [
+          {
+            "id": "status2",
+            "label": "Lagemeldung geben",
+            "radioCall": {
+              "expectedPhrases": [
+                "Lagemeldung: Brand in Tiefgarage, PKW brennt, Personen可能 in Gefahr"
+              ],
+              "hint": "Lagemeldung: Brand in Tiefgarage, PKW brennt, Personen可能 in Gefahr",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "done": {
+        "id": "done",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden, Florian A. Halten Sie mich auf dem Laufenden. Ende.",
+        "actions": [
+          {
+            "id": "exit",
+            "label": "Zurück zur Übersicht",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      },
+      "failed": {
+        "id": "failed",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Verbindung unsauber. Wiederholen Sie den letzten Sprechwunsch.",
+        "actions": [
+          {
+            "id": "exit_fail",
+            "label": "Szenario beenden",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "verkehrsunfall_oben",
+    "title": "Verkehrsunfall: Mehrfachverletzte",
+    "description": "Komplexer Verkehrsunfall mit mehreren Verletzten, Koordination mehrrer Fahrzeuge.",
+    "startingNodeId": "start",
+    "playerRole": "gruppenführer_a",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** **Alarm für Florian A, Florian C, Florian D!** Verkehrsunfall B12, Höhe km 45, mehrere PKW, mindestens 3 Verletzte. Florian A übernimmt Einsatzleitung. **Melden Sie Einsatzbereitschaft!**",
+        "actions": [
+          {
+            "id": "ack",
+            "label": "Einsatzbereitschaft",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A nach Kiel, einsatzbereit",
+                "Florian A an Kiel, einsatzbereit"
+              ],
+              "hint": "Florian A nach Kiel, einsatzbereit",
+              "onSuccess": "route",
+              "onFailure": "retry_ack"
+            }
+          }
+        ]
+      },
+      "retry_ack": {
+        "id": "retry_ack",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie.",
+        "actions": [
+          {
+            "id": "ack2",
+            "label": "Einsatzbereitschaft",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A nach Kiel, einsatzbereit"
+              ],
+              "hint": "Florian A nach Kiel, einsatzbereit",
+              "onSuccess": "route",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "route": {
+        "id": "route",
+        "role": "gruppenführer_a",
+        "narrativeMarkdown": "**Sie (Gruppenführer A):** Sie sind unterwegs. Was melden Sie der Einsatzleitstelle?",
+        "actions": [
+          {
+            "id": "en_route",
+            "label": "Anfahrt melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A ist auf der Anfahrt",
+                "Florian A auf Anfahrt"
+              ],
+              "hint": "Florian A ist auf der Anfahrt",
+              "onSuccess": "arrival",
+              "onFailure": "retry_route"
+            }
+          }
+        ]
+      },
+      "retry_route": {
+        "id": "retry_route",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte melden Sie Ihre Position.",
+        "actions": [
+          {
+            "id": "route2",
+            "label": "Anfahrt melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A ist auf der Anfahrt"
+              ],
+              "hint": "Florian A ist auf der Anfahrt",
+              "onSuccess": "arrival",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "arrival": {
+        "id": "arrival",
+        "role": "gruppenführer_a",
+        "narrativeMarkdown": "**Sie:** Sie sind am Einsatzort. Erste Beobachtungen?",
+        "actions": [
+          {
+            "id": "scene",
+            "label": "Lagemeldung",
+            "radioCall": {
+              "expectedPhrases": [
+                "Lagemeldung: Verkehrsunfall mit 3 Verletzten, Fahrzeuge blockiert"
+              ],
+              "hint": "Lagemeldung: Verkehrsunfall mit 3 Verletzten, Fahrzeuge blockiert",
+              "onSuccess": "triage",
+              "onFailure": "retry_scene"
+            }
+          }
+        ]
+      },
+      "retry_scene": {
+        "id": "retry_scene",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Lagemeldung wiederholen.",
+        "actions": [
+          {
+            "id": "scene2",
+            "label": "Lagemeldung",
+            "radioCall": {
+              "expectedPhrases": [
+                "Lagemeldung: Verkehrsunfall mit 3 Verletzten, Fahrzeuge blockiert"
+              ],
+              "hint": "Lagemeldung: Verkehrsunfall mit 3 Verletzten, Fahrzeuge blockiert",
+              "onSuccess": "triage",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "triage": {
+        "id": "triage",
+        "role": "gruppenführer_a",
+        "narrativeMarkdown": "**Sie:** Koordinieren Sie die Ersteinsatzkräfte. **Weisen Sie Florian C zu:** \"übernehmen Verletztenversorgung\". **Weisen Sie Florian D zu:** \"übernehmen Verkehrssicherung\".",
+        "actions": [
+          {
+            "id": "assign_c",
+            "label": "Florian C zuweisen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C an Einsatzleitung, übernehmen Verletztenversorgung"
+              ],
+              "hint": "Florian C an Einsatzleitung, übernehmen Verletztenversorgung",
+              "onSuccess": "assign_d2",
+              "onFailure": "retry_c"
+            }
+          },
+          {
+            "id": "assign_d",
+            "label": "Florian D zuweisen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian D an Einsatzleitung, übernehmen Verkehrssicherung"
+              ],
+              "hint": "Florian D an Einsatzleitung, übernehmen Verkehrssicherung",
+              "onSuccess": "assign_c2",
+              "onFailure": "retry_d"
+            }
+          }
+        ]
+      },
+      "retry_c": {
+        "id": "retry_c",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, wiederholen Sie Zuweisung für Florian C.",
+        "actions": [
+          {
+            "id": "assign_c2",
+            "label": "Florian C zuweisen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C an Einsatzleitung, übernehmen Verletztenversorgung"
+              ],
+              "hint": "Florian C an Einsatzleitung, übernehmen Verletztenversorgung",
+              "onSuccess": "assign_d",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "retry_d": {
+        "id": "retry_d",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, wiederholen Sie Zuweisung für Florian D.",
+        "actions": [
+          {
+            "id": "assign_d2",
+            "label": "Florian D zuweisen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian D an Einsatzleitung, übernehmen Verkehrssicherung"
+              ],
+              "hint": "Florian D an Einsatzleitung, übernehmen Verkehrssicherung",
+              "onSuccess": "assign_c",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "assign_c2": {
+        "id": "assign_c2",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian D hat Zugwiesen. Was ist der Status von Florian C?",
+        "actions": [
+          {
+            "id": "c_ok",
+            "label": "Florian C bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C hat Auftrag angenommen"
+              ],
+              "hint": "Florian C hat Auftrag angenommen",
+              "onSuccess": "done",
+              "onFailure": "retry_c_ok"
+            }
+          }
+        ]
+      },
+      "retry_c_ok": {
+        "id": "retry_c_ok",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie Florian C.",
+        "actions": [
+          {
+            "id": "c_ok2",
+            "label": "Bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C hat Auftrag angenommen"
+              ],
+              "hint": "Florian C hat Auftrag angenommen",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "done": {
+        "id": "done",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Gute Arbeit. Ende.",
+        "actions": [
+          {
+            "id": "exit",
+            "label": "Zurück",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      },
+      "failed": {
+        "id": "failed",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Verbindung gestört. Bitte wiederholen.",
+        "actions": [
+          {
+            "id": "exit_fail",
+            "label": "Beenden",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "kleinbrand_schnell",
+    "title": "Kleinbrand: Schnelle Löschung",
+    "description": "Kurzer Einsatz – Brand schnell unter Kontrolle, Rückmeldung an Leitstelle.",
+    "startingNodeId": "start",
+    "playerRole": "gruppenführer_a",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Meldung über Brand an Musterweg, Kleinbrand, keine Personen可能. **Status?**",
+        "actions": [
+          {
+            "id": "status",
+            "label": "Status melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A ist in 5 Minuten am Einsatzort",
+                "Ankunft in 5 Minuten"
+              ],
+              "hint": "Florian A ist in 5 Minuten am Einsatzort",
+              "onSuccess": "on_scene",
+              "onFailure": "retry_status"
+            }
+          }
+        ]
+      },
+      "retry_status": {
+        "id": "retry_status",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte melden Sie Ihren Status.",
+        "actions": [
+          {
+            "id": "status2",
+            "label": "Status",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A ist in 5 Minuten am Einsatzort"
+              ],
+              "hint": "Florian A ist in 5 Minuten am Einsatzort",
+              "onSuccess": "on_scene",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "on_scene": {
+        "id": "on_scene",
+        "role": "gruppenführer_a",
+        "narrativeMarkdown": "**Sie:** Sie sind vor Ort. Brand bestätigt. Was melden Sie?",
+        "actions": [
+          {
+            "id": "fire_confirmed",
+            "label": "Brand bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Brand bestätigt, beginnen mit Löschangriff"
+              ],
+              "hint": "Brand bestätigt, beginnen mit Löschangriff",
+              "onSuccess": "extinguished",
+              "onFailure": "retry_fire"
+            }
+          }
+        ]
+      },
+      "retry_fire": {
+        "id": "retry_fire",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte wiederholen Sie.",
+        "actions": [
+          {
+            "id": "fire2",
+            "label": "Brand bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Brand bestätigt, beginnen mit Löschangriff"
+              ],
+              "hint": "Brand bestätigt, beginnen mit Löschangriff",
+              "onSuccess": "extinguished",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "extinguished": {
+        "id": "extinguished",
+        "role": "gruppenführer_a",
+        "narrativeMarkdown": "**Sie:** Der Brand ist gelöscht. Keine Verletzten. Was ist das abschließende?",
+        "actions": [
+          {
+            "id": "final",
+            "label": "Abschlussmeldung",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A: Brand gelöscht, keine Verletzten, Einsatz beendet"
+              ],
+              "hint": "Florian A: Brand gelöscht, keine Verletzten, Einsatz beendet",
+              "onSuccess": "done",
+              "onFailure": "retry_final"
+            }
+          }
+        ]
+      },
+      "retry_final": {
+        "id": "retry_final",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Abschlussmeldung.",
+        "actions": [
+          {
+            "id": "final2",
+            "label": "Abschluss",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A: Brand gelöscht, keine Verletzten, Einsatz beendet"
+              ],
+              "hint": "Florian A: Brand gelöscht, keine Verletzten, Einsatz beendet",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "done": {
+        "id": "done",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Danke, Florian A. Ende.",
+        "actions": [
+          {
+            "id": "exit",
+            "label": "Zurück",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      },
+      "failed": {
+        "id": "failed",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte wiederholen Sie die letzte Meldung.",
+        "actions": [
+          {
+            "id": "exit_fail",
+            "label": "Beenden",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "wasserversorgung_laengs",
+    "title": "Wasserversorgung: Schlauchleitung legen",
+    "description": "Aufbau einer Schlauchleitung über längere Distanz, Koordination zwischen Fahrzeugen.",
+    "startingNodeId": "start",
+    "playerRole": "gruppenführer_b",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, übernehmen Sie die Wasserversorgung vom Hydranten bis zum Brandobjekt. Entfernung ca. 200 m. **Bestätigen Sie!**",
+        "actions": [
+          {
+            "id": "ack",
+            "label": "Auftrag bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian B an Kiel, übernehme Wasserversorgung",
+                "Wasserversorgung bestätigt"
+              ],
+              "hint": "Florian B an Kiel, übernehme Wasserversorgung",
+              "onSuccess": "setup",
+              "onFailure": "retry_ack"
+            }
+          }
+        ]
+      },
+      "retry_ack": {
+        "id": "retry_ack",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, bitte Auftrag bestätigen.",
+        "actions": [
+          {
+            "id": "ack2",
+            "label": "Bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian B an Kiel, übernehme Wasserversorgung"
+              ],
+              "hint": "Florian B an Kiel, übernehme Wasserversorgung",
+              "onSuccess": "setup",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "setup": {
+        "id": "setup",
+        "role": "gruppenführer_b",
+        "narrativeMarkdown": "**Sie (Gruppenführer B):** Sie legen die Schlauchleitung. Nach 150 m melden Sie: \"Schlauchleitung liegt, Wasser fließt\".",
+        "actions": [
+          {
+            "id": "progress",
+            "label": "Fortschritt melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Schlauchleitung liegt, Wasser fließt"
+              ],
+              "hint": "Schlauchleitung liegt, Wasser fließt",
+              "onSuccess": "pressure",
+              "onFailure": "retry_progress"
+            }
+          }
+        ]
+      },
+      "retry_progress": {
+        "id": "retry_progress",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, bitte melden Sie den Status der Wasserversorgung.",
+        "actions": [
+          {
+            "id": "prog2",
+            "label": "Status",
+            "radioCall": {
+              "expectedPhrases": [
+                "Schlauchleitung liegt, Wasser fließt"
+              ],
+              "hint": "Schlauchleitung liegt, Wasser fließt",
+              "onSuccess": "pressure",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "pressure": {
+        "id": "pressure",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, geben Sie **Druck an der Entnahmestelle** bekannt.",
+        "actions": [
+          {
+            "id": "press",
+            "label": "Druck melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Druck am Hydranten 8 bar",
+                "Hydrantendruck 8 bar"
+              ],
+              "hint": "Druck am Hydranten 8 bar",
+              "onSuccess": "done",
+              "onFailure": "retry_press"
+            }
+          }
+        ]
+      },
+      "retry_press": {
+        "id": "retry_press",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, bitte Druck wiederholen.",
+        "actions": [
+          {
+            "id": "press2",
+            "label": "Druck",
+            "radioCall": {
+              "expectedPhrases": [
+                "Druck am Hydranten 8 bar"
+              ],
+              "hint": "Druck am Hydranten 8 bar",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "done": {
+        "id": "done",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Danke, Florian B. Ende.",
+        "actions": [
+          {
+            "id": "exit",
+            "label": "Zurück",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      },
+      "failed": {
+        "id": "failed",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, Funk unsauber. Wiederholen.",
+        "actions": [
+          {
+            "id": "exit_fail",
+            "label": "Beenden",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "verletztenversorgung",
+    "title": "Verletztenversorgung: Rettungstrupp",
+    "description": "Priorisierung und Transport von Verletzten, Kommunikation mit Rettungsdienst.",
+    "startingNodeId": "start",
+    "playerRole": "gruppenführer_c",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, übernehmen Sie die Verletztenversorgung. Es sind mindestens 3 Verletzte, davon 1 dringend. **Status?**",
+        "actions": [
+          {
+            "id": "ack",
+            "label": "Auftrag bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C übernimmt Verletztenversorgung",
+                "Verletztenversorgung bestätigt"
+              ],
+              "hint": "Florian C übernimmt Verletztenversorgung",
+              "onSuccess": "triage",
+              "onFailure": "retry_ack"
+            }
+          }
+        ]
+      },
+      "retry_ack": {
+        "id": "retry_ack",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, bitte bestätigen.",
+        "actions": [
+          {
+            "id": "ack2",
+            "label": "Bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C übernimmt Verletztenversorgung"
+              ],
+              "hint": "Florian C übernimmt Verletztenversorgung",
+              "onSuccess": "triage",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "triage": {
+        "id": "triage",
+        "role": "gruppenführer_c",
+        "narrativeMarkdown": "**Sie (Gruppenführer C):** Sie triagieren die Verletzten. Was melden Sie?",
+        "actions": [
+          {
+            "id": "triage_report",
+            "label": "Triage melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Triage: 1 dringend, 2 leicht verletzt",
+                "ein dringend, zwei leicht"
+              ],
+              "hint": "Triage: 1 dringend, 2 leicht verletzt",
+              "onSuccess": "transport",
+              "onFailure": "retry_triage"
+            }
+          }
+        ]
+      },
+      "retry_triage": {
+        "id": "retry_triage",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, bitte Triage-Ergebnis wiederholen.",
+        "actions": [
+          {
+            "id": "tri2",
+            "label": "Triage",
+            "radioCall": {
+              "expectedPhrases": [
+                "Triage: 1 dringend, 2 leicht verletzt"
+              ],
+              "hint": "Triage: 1 dringend, 2 leicht verletzt",
+              "onSuccess": "transport",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "transport": {
+        "id": "transport",
+        "role": "gruppenführer_c",
+        "narrativeMarkdown": "**Sie:** Der dringende Patient wird transportiert. Wohin?",
+        "actions": [
+          {
+            "id": "dest",
+            "label": "Ziel nennen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Transport zum Krankenhaus Musterstadt",
+                "Patienten transportiert nach Musterstadt"
+              ],
+              "hint": "Transport zum Krankenhaus Musterstadt",
+              "onSuccess": "done",
+              "onFailure": "retry_dest"
+            }
+          }
+        ]
+      },
+      "retry_dest": {
+        "id": "retry_dest",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, bitte Ziel des Transports nennen.",
+        "actions": [
+          {
+            "id": "dest2",
+            "label": "Ziel",
+            "radioCall": {
+              "expectedPhrases": [
+                "Transport zum Krankenhaus Musterstadt"
+              ],
+              "hint": "Transport zum Krankenhaus Musterstadt",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "done": {
+        "id": "done",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Danke, Florian C. Ende.",
+        "actions": [
+          {
+            "id": "exit",
+            "label": "Zurück",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      },
+      "failed": {
+        "id": "failed",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, Funk unsauber. Wiederholen.",
+        "actions": [
+          {
+            "id": "exit_fail",
+            "label": "Beenden",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "einsatzabbruch",
+    "title": "Einsatzabbruch: Frühes Ende",
+    "description": "Einsatz wird vorzeitig abgebrochen (Wetter, Fehlalarm). Korrekte Meldungen.",
+    "startingNodeId": "start",
+    "playerRole": "einsatzleit",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie (Einsatzleitstelle):** **Alarmabbruch für alle Kräfte!** Florian A, Florian C, Florian D – Einsatz wird abgebrochen, kein Brand, Fehlalarm. **Bestätigen Sie Abbruch!**",
+        "actions": [
+          {
+            "id": "ack_a",
+            "label": "Florian A bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A bestätigt Alarmabbruch",
+                "Florian A: Alarmabbruch"
+              ],
+              "hint": "Florian A bestätigt Alarmabbruch",
+              "onSuccess": "ack_c",
+              "onFailure": "retry_a"
+            }
+          }
+        ]
+      },
+      "retry_a": {
+        "id": "retry_a",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** Florian A, bitte bestätigen Sie Alarmabbruch.",
+        "actions": [
+          {
+            "id": "ack_a2",
+            "label": "Bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian A bestätigt Alarmabbruch"
+              ],
+              "hint": "Florian A bestätigt Alarmabbruch",
+              "onSuccess": "ack_c",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "ack_c": {
+        "id": "ack_c",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** Florian C, bestätigen Sie ebenfalls.",
+        "actions": [
+          {
+            "id": "ack_c_action",
+            "label": "Florian C",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C bestätigt Alarmabbruch"
+              ],
+              "hint": "Florian C bestätigt Alarmabbruch",
+              "onSuccess": "ack_d",
+              "onFailure": "retry_c"
+            }
+          }
+        ]
+      },
+      "retry_c": {
+        "id": "retry_c",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** Florian C, bitte bestätigen.",
+        "actions": [
+          {
+            "id": "ack_c2",
+            "label": "Bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian C bestätigt Alarmabbruch"
+              ],
+              "hint": "Florian C bestätigt Alarmabbruch",
+              "onSuccess": "ack_d",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "ack_d": {
+        "id": "ack_d",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** Florian D, letzte Bestätigung.",
+        "actions": [
+          {
+            "id": "ack_d_action",
+            "label": "Florian D",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian D bestätigt Alarmabbruch"
+              ],
+              "hint": "Florian D bestätigt Alarmabbruch",
+              "onSuccess": "standdown",
+              "onFailure": "retry_d"
+            }
+          }
+        ]
+      },
+      "retry_d": {
+        "id": "retry_d",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** Florian D, bitte bestätigen.",
+        "actions": [
+          {
+            "id": "ack_d2",
+            "label": "Bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian D bestätigt Alarmabbruch"
+              ],
+              "hint": "Florian D bestätigt Alarmabbruch",
+              "onSuccess": "standown",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "standdown": {
+        "id": "standdown",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** **Alle Kräfte: Einsatzziel erreicht, Einsatz beendet. Fahrzeuge wieder einsatzbereit melden.**",
+        "actions": [
+          {
+            "id": "final_ack",
+            "label": "Abschluss",
+            "radioCall": {
+              "expectedPhrases": [
+                "Alle Kräfte einsatzbereit",
+                "Fahrzeuge wieder einsatzbereit"
+              ],
+              "hint": "Alle Kräfte einsatzbereit",
+              "onSuccess": "done",
+              "onFailure": "retry_final"
+            }
+          }
+        ]
+      },
+      "retry_final": {
+        "id": "retry_final",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** Bitte wiederholen Sie die Stand-down-Meldung.",
+        "actions": [
+          {
+            "id": "final2",
+            "label": "Stand-down",
+            "radioCall": {
+              "expectedPhrases": [
+                "Alle Kräfte einsatzbereit"
+              ],
+              "hint": "Alle Kräfte einsatzbereit",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "done": {
+        "id": "done",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Sie:** Einsatz beendet. Danke an alle. Ende.",
+        "actions": [
+          {
+            "id": "exit",
+            "label": "Zurück",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      },
+      "failed": {
+        "id": "failed",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Unklarheiten, Wiederholung erforderlich.",
+        "actions": [
+          {
+            "id": "exit_fail",
+            "label": "Beenden",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "nachschub_anfordern",
+    "title": "Nachschub: Geräte anfordern",
+    "description": "Zusätzliche Geräte (z.B. Motorsäge, Beleuchtung) bei Bedarf anfordern.",
+    "startingNodeId": "start",
+    "playerRole": "gruppenführer_a",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Sie sind vor Ort. **Benötigen Sie weitere Geräte?**",
+        "actions": [
+          {
+            "id": "yes",
+            "label": "Ja, Nachschub",
+            "radioCall": {
+              "expectedPhrases": [
+                "Anforderung: 1 Motorsäge, 1 Beleuchtungssatz",
+                "Wir benötigen Motorsäge und Beleuchtung"
+              ],
+              "hint": "Anforderung: 1 Motorsäge, 1 Beleuchtungssatz",
+              "onSuccess": "confirm",
+              "onFailure": "retry_request"
+            }
+          },
+          {
+            "id": "no",
+            "label": "Nein, danke",
+            "radioCall": {
+              "expectedPhrases": [
+                "Kein Nachschub benötigt",
+                "Danke, wir kommen zurecht"
+              ],
+              "hint": "Kein Nachschub benötigt",
+              "onSuccess": "done",
+              "onFailure": "retry_no"
+            }
+          }
+        ]
+      },
+      "retry_request": {
+        "id": "retry_request",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte wiederholen Sie Ihre Anforderung.",
+        "actions": [
+          {
+            "id": "req2",
+            "label": "Anforderung",
+            "radioCall": {
+              "expectedPhrases": [
+                "Anforderung: 1 Motorsäge, 1 Beleuchtungssatz"
+              ],
+              "hint": "Anforderung: 1 Motorsäge, 1 Beleuchtungssatz",
+              "onSuccess": "confirm",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "retry_no": {
+        "id": "retry_no",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie, dass Sie keinen Nachschub benötigen.",
+        "actions": [
+          {
+            "id": "no2",
+            "label": "Bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Kein Nachschub benötigt"
+              ],
+              "hint": "Kein Nachschub benötigt",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "confirm": {
+        "id": "confirm",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. **Florian D** bringt die angeforderten Geräte. **Melden Sie sich, wenn eingetroffen!**",
+        "actions": [
+          {
+            "id": "wait",
+            "label": "Warten auf Florian D",
+            "radioCall": {
+              "expectedPhrases": [
+                "Warten auf Florian D",
+                "Florian D wird erwartet"
+              ],
+              "hint": "Warten auf Florian D",
+              "onSuccess": "arrived",
+              "onFailure": "retry_wait"
+            }
+          }
+        ]
+      },
+      "retry_wait": {
+        "id": "retry_wait",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bestätigen Sie, dass Sie auf Florian D warten.",
+        "actions": [
+          {
+            "id": "wait2",
+            "label": "Warten",
+            "radioCall": {
+              "expectedPhrases": [
+                "Warten auf Florian D"
+              ],
+              "hint": "Warten auf Florian D",
+              "onSuccess": "arrived",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "arrived": {
+        "id": "arrived",
+        "role": "gruppenführer_a",
+        "narrativeMarkdown": "**Sie:** Florian D ist eingetroffen. Was melden Sie?",
+        "actions": [
+          {
+            "id": "received",
+            "label": "Empfang bestätigen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian D ist eingetroffen, Geräte übernommen",
+                "Geräte erhalten"
+              ],
+              "hint": "Florian D ist eingetroffen, Geräte übernommen",
+              "onSuccess": "done",
+              "onFailure": "retry_received"
+            }
+          }
+        ]
+      },
+      "retry_received": {
+        "id": "retry_received",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie Empfang.",
+        "actions": [
+          {
+            "id": "rec2",
+            "label": "Empfang",
+            "radioCall": {
+              "expectedPhrases": [
+                "Florian D ist eingetroffen, Geräte übernommen"
+              ],
+              "hint": "Florian D ist eingetroffen, Geräte übernommen",
+              "onSuccess": "done",
+              "onFailure": "failed"
+            }
+          }
+        ]
+      },
+      "done": {
+        "id": "done",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Danke, Florian A. Ende.",
+        "actions": [
+          {
+            "id": "exit",
+            "label": "Zurück",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      },
+      "failed": {
+        "id": "failed",
+        "role": "einsatzleit",
+        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte wiederholen.",
+        "actions": [
+          {
+            "id": "exit_fail",
+            "label": "Beenden",
+            "nextNodeId": "__exit__"
+          }
+        ]
+      }
+    }
   }
 ]
