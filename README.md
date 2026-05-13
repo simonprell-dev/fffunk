@@ -1,72 +1,159 @@
-# FFFunk – Feuerwehr Funk Trainer
+# FFFunk – Feuerwehr-Funk-Trainer
 
-Interaktives Training für BOS-Funk (TMO/DMO) basierend auf den offiziellen Bayerischen Feuerwehrschulen-Unterlagen (Basis 14.5).
+Interaktives Trainingsprogramm für BOS-Funk, basierend auf den **Sprechfunkübungen im TMO-Betrieb** der Staatlichen Feuerwehrschule Würzburg (Basis 14.5).
 
-## Features
+Trainieren Sie digitale Sprechfunk-Prozeduren, Alarmierungen und Einsatzabläufe – direkt im Browser, mit Spracherkennung und typischem Funk-Sound.
 
-- 📻 **Radio-TTS**: Dispatch-Nachrichten klingen wie echtes Funkgerät (Bandpass + Verzerrung)
-- 🎤 **Spracherkennung**: Whisper ASR (offline möglich) bewertet deine Funkrufe
-- 📖 **Story-basierte Szenarien**: Interaktive Geschichten mit Entscheidungen und Feedback
-- 🎯 **Konstruktives Feedback**: Sofortige Korrektur und Hinweise bei Fehlern
-- 📱 **Multiplattform**: PWA (Web) + optional Android/iOS via Capacitor
-- 🆓 **Kostenlos**: Keine monatlichen Gebühren, keine Cloud nötig
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+[![Deploy to GitHub Pages](https://github.com/simonprell-dev/fffunk/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/simonprell-dev/fffunk/actions/workflows/gh-pages.yml)
 
-## Tech Stack
+## ✨ Features
+
+- 📻 **Radio-TTS mit PTT-Klick** – Authentischer Funk-Sound beim Sprechen
+- 🎤 **Spracherkennung (ASR)** – Web Speech API (Deutsch), bewertet Ihre Funk-Gespräche
+- 📖 **Story-basierte Szenarien** – Verzweigte Dialoge mit direktem Feedback
+- 🌐 **Client-seitig only** – Kein Backend, keine Datenerfassung, DSGVO-konform
+- 📱 **Multiplattform** – Web-first, funktioniert auf Desktop & Mobile (PWA-fähig)
+- 🚀 **Kostenlos gehostet** – GitHub Pages, minimaler Wartungsaufwand
+- 🔄 **Remotely updatable** – Neue Szenarien per Push zu `public/scenarios/remote.json` hinzufügbar
+
+## 🛠️ Technologie
 
 - React 18 + TypeScript + Vite
-- Tailwind CSS + shadcn/ui Styling
-- Zustand State Management
-- Web Audio API (Radio-Effekte)
-- Web Speech API (TTS + ASR)
-- PWA (offline-fähig)
+- Tailwind CSS (Dark Theme)
+- Web Speech API (Spracherkennung & Sprachsynthese)
+- Web Audio API (PTT-Klick)
+- GitHub Pages (Hosting)
 
-## Development
+## 🚀 Schnellstart (Lokales Testing)
 
 ```bash
+# 1. Repository klonen
+git clone https://github.com/simonprell-dev/fffunk.git
+cd fffunk
+
+# 2. Dependencies installieren
 npm install
+
+# 3. Development Server starten
 npm run dev
 ```
 
-## Build
+Öffne http://localhost:5173 in deinem Browser.
+
+**Hinweis:** Die Spracherkennung benötigt Mikrofon-Zugriff und einen Browser, der Web Speech API unterstützt (Chrome/Edge). Verwende **deutsche Spracheinstellung** für beste Ergebnisse.
+
+## 📦 Bauen für Produktion
 
 ```bash
-npm run build
-# Output: dist/
+npm run build   # erstellt ./dist
+npm run preview # lokaler Preview-Server für dist/
 ```
 
-## Deployment
+## 🌍 GitHub Pages Deployment
 
-Das `dist/`-Verzeichnis kann auf GitHub Pages veröffentlicht werden.
+1. Aktiviere GitHub Pages in den Repository-Einstellungen:
+   - **Source**: `Deploy from a branch`
+   - **Branch**: `gh-pages` (main Branch + `/root` folder)
 
-### GitHub Pages
+2. Der Workflow `.github/workflows/gh-pages.yml` wird automatisch bei jedem Push zu `main` ausgeführt und deployt die App.
 
-```bash
-git checkout -b gh-pages
-npm run build
-cp -r dist/* .
-git add .
-git commit -m "Deploy FFFunk"
-git push origin gh-pages
+3. Deine FFFunk-App ist dann erreichbar unter:
+   ```
+   https://simonprell-dev.github.io/fffunk/
+   ```
+
+## 🎮 Wie man spielt
+
+1. **Szenario wählen** – Wählen Sie eine der 7 Trainings-Einheiten aus (z.B. "Grundlagen: Alarmierung", "Brandobjekt", "Tiefgarage", etc.)
+
+2. **Narratives lesen / hören** – Jede Szene beginnt mit einer Funk-Durchsage. Der Text wird als Funk-TTS vorgelesen.
+
+3. **Aktion wählen** – Klicken Sie einen der angebotenen Buttons:
+   - Normale Buttons: Nächster Schritt ohne Funk-Gespräch
+   - **Funk-Buttons** (mit 🎤): Starten Sie ein Funk-Gespräch mit Spracherkennung
+
+4. **Funk-Gespräch**:
+   - Das System spricht die erwartete Funk-Phrase vor (z.B. "Florian A nach Kiel, kommen")
+   - Nach Countdown (3…2…1…) beginnt die Aufnahme (5 Sekunden)
+   - Sprechen Sie deutlich und warten Sie die Bewertung ab
+   - Erfolg: grüne Bestätigung, nächster Schritt
+   - Fehlschlag: rote Rückmeldung mit Hinweis, Sie dürfen es erneut versuchen
+
+5. **Punkte** – Pro erfolgreichem Funk-Gespräch: +10 Punkte
+
+## 🔧 Remote Szenarien hinzufügen
+
+Sie können neue Szenarien **ohne Code-Änderung** hinzufügen, indem Sie `public/scenarios/remote.json` auf GitHub aktualisieren.
+
+### Szenario-Format
+
+```json
+[
+  {
+    "id": "mein_szenario_1",
+    "title": "Mein Szenario",
+    "description": "Kurze Beschreibung",
+    "startingNodeId": "start",
+    "playerRole": "gruppenführer_a",
+    "nodes": {
+      "start": {
+        "id": "start",
+        "role": "einsatzleit",
+        "narrative": "**Einsatzleitstelle:** Alarm für Florian A...",
+        "actions": [
+          {
+            "id": "a1",
+            "label": "Funk-Antwort geben",
+            "radioCall": {
+              "expectedPhrases": ["Florian A an Kiel, kommen"],
+              "hint": "Florian A nach Kiel, kommen",
+              "onSuccess": "node_002",
+              "onFailure": "node_999"
+            }
+          }
+        ]
+      }
+    }
+  }
+]
 ```
 
-## Content
+- `expectedPhrases`: Liste zulässiger Phrasen (Teilstring-Match, case-insensitive)
+- `hint`: Was gesagt werden soll (wird vorgelesen)
+- `onSuccess` / `onFailure`: ID des nächsten Nodes
 
-Die Szenarien basieren auf dem offiziellen Lehrplan **Basis 14.5** der Staatlichen Feuerwehrschule Würzburg:
-- 6 Arbeitsblätter mit 78 Funkmeldungen
-- Vollständige Einsatzübung (Alarm → Einsatz → Rückzug)
-- TMO-Betrieb mit FMS-Alternativen
+Committen & pushen Sie die Änderung – GitHub Pages lädt die neue URL automatisch.
 
-## Security
+## 🔐 Datenschutz & Sicherheit
 
-- Keine personenbezogenen Daten gesammelt
-- Lokale Speicherung nur im Browser (localStorage)
-- Keine externe Kommunikation außer Erst-Laden der statischen Assets
-- GDPR-konform
+- **Keine Datensammlung** – Alle Daten bleiben im Browser (localStorage)
+- **Keine Server** – Nur statische Dateien auf GitHub Pages
+- **Mikrofon-Aufnahmen** – Werden lokal verarbeitet, nicht hochgeladen
+- **Open Source** – Code transparent einsehbar
 
-## License
+Siehe [SECURITY.md](SECURITY.md) für Details.
 
-MIT – für Feuerwehren und Ausbilder frei nutzbar.
+## 📚 Datenherkunft
+
+Die Basisszenarien stammen aus der PDF *"Sprechfunkübungen im TMO-Betrieb"* (Staatliche Feuerwehrschule Würzburg, Basis 14.5). Die Übungen wurden in ein interaktives Story-Format überführt und um Feedback-Mechanismen erweitert.
+
+## 🎯 Geplante Features (Phase 2)
+
+- [ ] Vollständige **Radio-Filtereffekte** (Bandpass, Distortion) für TTS
+- [ ] **Whisper WASM** für hochgenaue Offline-Spracherkennung
+- [ ] **Progress-Tracking** mit Bestenliste (lokal)
+- [ ] **PWA-Installation** für Offline-Nutzung
+- [ ] Mehr Szenarien (THW, Rettungsdienst, Polizei)
+
+## 🤝 Beitragen
+
+Pull Requests sind willkommen! Forken, ändern, PR öffnen.
+
+## 📄 Lizenz
+
+MIT – siehe [LICENSE](LICENSE).
 
 ---
 
-**FFFunk** – *Train Smarter. Communicate Better.*
+**Entwickelt von Simon Prell** – Inspiriert von der Bayerischen Feuerwehrschule.

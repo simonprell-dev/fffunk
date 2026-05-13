@@ -3,9 +3,8 @@ import { Scenario, StoryNode, Action } from '../types/story';
 import { StoryEngine } from '../lib/story-engine';
 import { AudioEngine } from '../lib/audio-engine';
 import NarrativePanel from './NarrativePanel';
-import ActionButtons from './ActionButtons';
+import { ActionButtons } from './ActionButtons';
 import RadioCallModal from './RadioCallModal';
-import { ChevronLeft, Volume2 } from 'lucide-react';
 
 interface Props {
   scenario: Scenario;

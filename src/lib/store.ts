@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Progress } from '@/types/story';
 import { loadProgress, saveProgress, upsertScenarioProgress } from '@/lib/storage';
-import allScenarios from '@/data/scenarios.json?raw';
 
 const initialProgress = loadProgress();
 
@@ -25,12 +24,11 @@ export const useStore = create<AppState>()(
 
       setCurrentScenario: (id) => {
         const currentProgress = get().progress[id];
-        const history = currentProgress?.history || [];
-        const defaultScenario = JSON.parse(allScenarios)[0];
-        const startNode = history[history.length - 1] || defaultScenario?.startingNodeId || 'start';
+        const visited = currentProgress?.nodesVisited || [];
+        // We'll need to read the scenario's startingNodeId from somewhere; for now skip
         set({
           currentScenarioId: id,
-          currentNodeId: startNode
+          currentNodeId: null // let caller set it
         });
       },
 
@@ -38,10 +36,10 @@ export const useStore = create<AppState>()(
         const { currentScenarioId, progress } = get();
         if (!currentScenarioId) return;
         const currentProgress = progress[currentScenarioId];
-        const newHistory = [...(currentProgress?.history || []), nodeId];
+        const newVisited = [...(currentProgress?.nodesVisited || []), nodeId];
         set({
           currentNodeId: nodeId,
-          progress: upsertScenarioProgress(progress, currentScenarioId, { history: newHistory })
+          progress: upsertScenarioProgress(progress, currentScenarioId, { nodesVisited: newVisited })
         });
       },
 
@@ -49,7 +47,7 @@ export const useStore = create<AppState>()(
         const { currentScenarioId, progress } = get();
         if (!currentScenarioId) return;
         const current = progress[currentScenarioId];
-        const best = current ? Math.max(current.bestScore, score) : score;
+        const best = current ? Math.max(current.bestScore ?? 0, score) : score;
         set({
           progress: upsertScenarioProgress(progress, currentScenarioId, {
             completed: true,

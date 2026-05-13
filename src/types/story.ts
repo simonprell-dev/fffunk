@@ -52,7 +52,10 @@ export interface Transcription {
 export interface Progress {
   scenarioId: string;
   completed: boolean;
-  bestScore: number;
-  history: string[];
+  score: number;
+  bestScore?: number;
+  bestTimeMs?: number;
+  nodesVisited: string[];
+  history?: any[];
   timestamp: number;
 }
