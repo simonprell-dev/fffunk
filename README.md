@@ -152,7 +152,9 @@ Pull Requests sind willkommen! Forken, ändern, PR öffnen.
 
 ## 📄 Lizenz
 
-MIT – siehe [LICENSE](LICENSE).
+Dieses Projekt steht unter der **MIT-Lizenz** – siehe [LICENSE](LICENSE).
+
+Kurz gesagt: Du darfst den Code frei nutzen, modifizieren, verteilen und auch kommerziell einsetzen – solange der Copyright-Vermerk erhalten bleibt. Keine Garantie.
 
 ---
 
