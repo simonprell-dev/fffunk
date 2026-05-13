@@ -11,11 +11,28 @@ function App() {
   const [engine, setEngine] = useState<StoryEngine | null>(null);
   const [audio] = useState(() => new AudioEngine());
 
-  // Load scenarios on mount
+  // Load scenarios on mount – use fetch only (no dynamic import)
   useEffect(() => {
-    StoryEngine.loadScenarios().then((scenarios) => {
-      setScenarios(scenarios);
-    });
+    console.log('[App] Mount: Loading scenarios...');
+    fetch('/scenarios/default.json')
+      .then(res => {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then((data: any[]) => {
+        console.log('[App] Fetched scenarios:', data.length);
+        // Cast playerRole safely
+        const casted = data.map((s: any) => ({
+          ...s,
+          playerRole: s.playerRole as any,
+        }));
+        setScenarios(casted);
+      })
+      .catch(err => {
+        console.error('[App] Fetch failed:', err);
+        // Fallback: empty array
+        setScenarios([]);
+      });
   }, []);
 
   const startScenario = (scenario: Scenario) => {
@@ -50,10 +67,16 @@ function App() {
       {/* Main content */}
       <main className="flex-1 max-w-3xl mx-auto w-full p-4">
         {!engine ? (
-          <ScenarioList
-            scenarios={scenarios}
-            onSelect={startScenario}
-          />
+          scenarios.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="animate-pulse text-[#a3a3a3]">Szenarien werden geladen…</div>
+            </div>
+          ) : (
+            <ScenarioList
+              scenarios={scenarios}
+              onSelect={startScenario}
+            />
+          )
         ) : (
           <PracticeScreen
             scenario={selectedScenario!}

@@ -1,5 +1,10 @@
 import { Scenario, StoryNode, Progress } from '../types/story';
 
+/**
+ * StoryEngine – instance per scenario. Manages current node, progress tracking,
+ * and navigation through the story graph. Does NOT handle loading scenarios
+ * from storage/network – that's done in App.tsx.
+ */
 export class StoryEngine {
   private scenario: Scenario;
   private currentNodeId: string;
@@ -101,49 +106,5 @@ export class StoryEngine {
       console.warn('Failed to load progress', e);
     }
     return null;
-  }
-
-  static async loadScenarios(): Promise<Scenario[]> {
-    // Try remote scenarios (user-provided)
-    try {
-      const remoteResp = await fetch('/scenarios/remote.json');
-      if (remoteResp.ok) {
-        const remote = await remoteResp.json();
-        console.log('Loaded remote scenarios from /scenarios/remote.json');
-        if (Array.isArray(remote)) return remote as Scenario[];
-        if (remote.scenarios) return remote.scenarios as Scenario[];
-        return [];
-      }
-    } catch (e) {
-      console.warn('Could not load remote scenarios, falling back to default', e);
-    }
-
-    // Fallback: bundled default scenarios (served from public/)
-    try {
-      const resp = await fetch('/scenarios/default.json');
-      if (resp.ok) {
-        const data = await resp.json();
-        const rawList = Array.isArray(data) ? data : [];
-        return rawList.map((item: any) => ({
-          ...item,
-          playerRole: item.playerRole as any,
-        })) as Scenario[];
-      }
-    } catch (e) {
-      console.warn('Could not load default scenarios via fetch', e);
-    }
-
-    // Last resort: direct import (works in Vite dev but not always)
-    try {
-      const module = await import('../data/story_scenarios.json', { assert: { type: 'json' } });
-      const rawList = module.default || module;
-      return (Array.isArray(rawList) ? rawList : []).map((item: any) => ({
-        ...item,
-        playerRole: item.playerRole as any,
-      })) as Scenario[];
-    } catch (e) {
-      console.error('Could not load any scenarios', e);
-      return [];
-    }
   }
 }
