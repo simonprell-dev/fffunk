@@ -5,43 +5,56 @@ import { AudioEngine } from './lib/audio-engine';
 import ScenarioList from './components/ScenarioList';
 import PracticeScreen from './components/PracticeScreen';
 
+// Global error handler to catch render errors
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error('[Global] Error:', message, 'at', source, ':', lineno, error);
+};
+
 function App() {
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [engine, setEngine] = useState<StoryEngine | null>(null);
   const [audio] = useState(() => new AudioEngine());
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Load scenarios on mount – use fetch only (no dynamic import)
+  // Load scenarios on mount
   useEffect(() => {
     console.log('[App] Mount: Loading scenarios...');
+    setLoadError(null);
+
     fetch('/scenarios/default.json')
       .then(res => {
+        console.log('[App] Fetch response status:', res.status);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
       })
-      .then((data: any[]) => {
-        console.log('[App] Fetched scenarios:', data.length);
-        // Cast playerRole safely
-        const casted = data.map((s: any) => ({
+      .then((data: any) => {
+        console.log('[App] Raw data type:', typeof data, 'isArray:', Array.isArray(data), 'length:', data?.length);
+        const rawList = Array.isArray(data) ? data : [];
+        console.log('[App] Casting', rawList.length, 'scenarios');
+        const casted = rawList.map((s: any) => ({
           ...s,
           playerRole: s.playerRole as any,
         }));
+        console.log('[App] Set scenarios:', casted.length);
         setScenarios(casted);
       })
       .catch(err => {
-        console.error('[App] Fetch failed:', err);
-        // Fallback: empty array
+        console.error('[App] Fetch error:', err);
+        setLoadError('Fehler beim Laden: ' + err.message);
         setScenarios([]);
       });
   }, []);
 
   const startScenario = (scenario: Scenario) => {
+    console.log('[App] Starting scenario:', scenario.id);
     const eng = new StoryEngine(scenario);
     setEngine(eng);
     setSelectedScenario(scenario);
   };
 
   const exitScenario = () => {
+    console.log('[App] Exiting scenario');
     setEngine(null);
     setSelectedScenario(null);
   };
@@ -66,10 +79,17 @@ function App() {
 
       {/* Main content */}
       <main className="flex-1 max-w-3xl mx-auto w-full p-4">
+        {loadError && (
+          <div className="bg-red-900/20 border border-red-700 text-red-200 p-4 rounded-lg mb-4">
+            {loadError}
+          </div>
+        )}
+
         {!engine ? (
           scenarios.length === 0 ? (
             <div className="text-center py-12">
               <div className="animate-pulse text-[#a3a3a3]">Szenarien werden geladen…</div>
+              <div className="text-sm text-[#666] mt-2">Öffnen Sie die Konsole (F12) für Debug-Infos.</div>
             </div>
           ) : (
             <ScenarioList
