@@ -42,26 +42,14 @@ export class AudioEngine {
       osc.start();
       osc.stop(ctx.currentTime + 0.05);
     } catch (err) {
-      // ignore audio context errors
+      // ignore
     }
   }
 
-  async startRecording(): Promise<boolean> {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // We'll handle actual MediaRecorder in RadioCallModal; this just checks permission
-      return true;
-    } catch (err) {
-      console.error('Microphone access denied', err);
-      return false;
-    }
-  }
-
-  async stopRecording(): Promise<Blob | null> {
-    // RadioCallModal manages its own MediaRecorder; this is a no-op here
-    return null;
-  }
-
+  /**
+   * Transcribe live microphone input using Web Speech API.
+   * This directly opens the microphone – no prior getUserMedia needed.
+   */
   async transcribeLive(lang: string = 'de-DE'): Promise<Transcription> {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {

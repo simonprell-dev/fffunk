@@ -40,33 +40,22 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
 
   const startRecording = async () => {
     setStatus('recording');
-    const ok = await audio.startRecording();
-    if (!ok) {
-      setError('Mikrofon-Zugriff verweigert');
-      setStatus('idle');
-      return;
-    }
-    // Auto-stop after 5 seconds
+    // We don't pre-request microphone – let SpeechRecognition do it
+    // Auto-stop after 5 seconds and transcribe
     setTimeout(async () => {
-      const blob = await audio.stopRecording();
-      if (blob) {
-        setStatus('processing');
-        try {
-          const result = await audio.transcribeLive('de-DE');
-          setTranscript(result.text);
-          setStatus('done');
-          // Simple match: check if any expected phrase is substring
-          const expectedList = prompt.split('|');
-          const accepted = expectedList.some((phrase) =>
-            result.text.toLowerCase().includes(phrase.toLowerCase())
-          );
-          onResult(accepted, result.text);
-        } catch (e: any) {
-          setError(e.message || 'Transkription fehlgeschlagen');
-          setStatus('idle');
-        }
-      } else {
-        setError('Aufnahme fehlgeschlagen');
+      setStatus('processing');
+      try {
+        const result = await audio.transcribeLive('de-DE');
+        setTranscript(result.text);
+        setStatus('done');
+        // Simple match: check if any expected phrase is substring
+        const expectedList = prompt.split('|');
+        const accepted = expectedList.some((phrase) =>
+          result.text.toLowerCase().includes(phrase.toLowerCase())
+        );
+        onResult(accepted, result.text);
+      } catch (e: any) {
+        setError(e.message || 'Transkription fehlgeschlagen');
         setStatus('idle');
       }
     }, 5000);
@@ -145,10 +134,9 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
         {/* Manual stop */}
         {status === 'recording' && (
           <button
-            onClick={async () => {
+            onClick={() => {
               if (countdownRef.current) clearInterval(countdownRef.current);
-              const blob = await audio.stopRecording();
-              // Force process result (same as auto path) – skip for now
+              // No explicit stop – SpeechRecognition handles itself
             }}
             className="mt-6 w-full py-3 border border-[#333] rounded-lg text-[#a3a3a3] hover:bg-[#262626] flex items-center justify-center gap-2"
           >
