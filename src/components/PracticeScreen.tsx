@@ -105,7 +105,8 @@ export default function PracticeScreen({ scenario, engine, audio }: Props) {
           isOpen={true}
           onClose={() => setRadioModalOpen(false)}
           onResult={handleRadioResult}
-          prompt={pendingAction.radioCall!.hint}
+          expectedPhrases={pendingAction.radioCall!.expectedPhrases}
+          hint={pendingAction.radioCall!.hint}
           audio={audio}
         />
       )}

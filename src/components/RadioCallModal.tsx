@@ -6,11 +6,12 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onResult: (success: boolean, transcript: string) => void;
-  prompt: string;  // expected phrase(s) shown to user
+  expectedPhrases: string[];  // list of acceptable phrases
+  hint: string;              // example phrase to show user
   audio: AudioEngine;
 }
 
-export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audio }: Props) {
+export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhrases, hint, audio }: Props) {
   const [status, setStatus] = useState<'idle' | 'countdown' | 'ready' | 'recording' | 'processing' | 'done'>('idle');
   const [countdown, setCountdown] = useState(3);
   const [transcript, setTranscript] = useState('');
@@ -76,9 +77,8 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
       setStatus('done');
       recognitionRef.current = null;
 
-      // Evaluate
-      const expectedList = prompt.split('|');
-      const accepted = expectedList.some((phrase: string) =>
+      // Evaluate against expected phrases (case-insensitive substring match)
+      const accepted = expectedPhrases.some((phrase: string) =>
         transcript.toLowerCase().includes(phrase.toLowerCase())
       );
       onResult(accepted, transcript);
@@ -88,13 +88,13 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
       console.error('[PTT] Recognition error:', e.error);
       let msg = 'Spracherkennung fehlgeschlagen';
       if (e.error === 'not-allowed') {
-        msg = 'Mikrofon-Zugriff verweigert. Bitte erlauben Sie Mikrofon-Zugriff.';
+        msg = 'Mikrofon-Zugriff verweigert. Bitte erlauben Sie Mikrofon-Zugriff in den Browser-Einstellungen.';
       } else if (e.error === 'no-speech') {
-        msg = 'Keine Sprache erkannt. Bitte lauter sprechen.';
+        msg = 'Keine Sprache erkannt. Bitte lauter und deutlicher sprechen.';
       } else if (e.error === 'audio-capture') {
-        msg = 'Mikrofon nicht gefunden.';
+        msg = 'Mikrofon nicht gefunden. Bitte prüfen Sie Ihre Audio-Einstellungen.';
       } else if (e.error === 'network') {
-        msg = 'Netzwerkfehler. Internetverbindung prüfen.';
+        msg = 'Netzwerkfehler bei der Spracherkennung. Bitte Internetverbindung prüfen.';
       }
       setError(msg);
       setStatus('ready');
@@ -142,8 +142,8 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
 
         {/* Hint */}
         <div className="mb-6 p-4 bg-[#262626] border border-[#444] rounded-lg">
-          <div className="text-sm text-[#a3a3a3] mb-1">Erwartete Funk-Phrase:</div>
-          <div className="text-[#e5e5e5] font-radio italic text-center text-lg">„{prompt}“</div>
+          <div className="text-sm text-[#a3a3a3] mb-1">Sprechen Sie diese Phrase:</div>
+          <div className="text-[#e5e5e5] font-radio italic text-center text-lg">„{hint}“</div>
         </div>
 
         {/* Status & PTT Button */}
@@ -171,6 +171,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
               <button
                 onMouseDown={startRecording}
                 onMouseUp={stopRecording}
+                onMouseLeave={stopRecording}
                 onTouchStart={startRecording}
                 onTouchEnd={stopRecording}
                 className="w-full py-8 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-xl font-semibold flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform"
