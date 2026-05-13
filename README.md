@@ -4,6 +4,8 @@ Interaktives Trainingsprogramm für BOS-Funk, basierend auf den **Sprechfunkübu
 
 Trainieren Sie digitale Sprechfunk-Prozeduren, Alarmierungen und Einsatzabläufe – direkt im Browser, mit Spracherkennung und typischem Funk-Sound.
 
+**15 Szenarien** mit über 80 Funk-Gesprächen, basierend auf der Bayerischen Feuerwehrschule.
+
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 [![Deploy to GitHub Pages](https://github.com/simonprell-dev/fffunk/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/simonprell-dev/fffunk/actions/workflows/gh-pages.yml)
 
