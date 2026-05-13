@@ -65,9 +65,7 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold mb-2">Trainings-Szenarien</h2>
-            <p className="text-[#a3a3a3]">
-              Wählen Sie ein Szenario oder filtern Sie nach Kategorie.
-            </p>
+            <p className="text-[#a3a3a3]">Wählen Sie ein Szenario oder filtern Sie nach Ordner.</p>
           </div>
           <button
             onClick={onCreate}
@@ -106,7 +104,16 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
           return (
             <div
               key={scenario.id}
-              className="bg-[#1a1a1a] border border-[#333] rounded-xl p-4 hover:border-[#dc2626] hover:bg-[#262626] transition-colors"
+              role="button"
+              tabIndex={0}
+              onClick={() => onSelect(scenario)}
+              onKeyDown={event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onSelect(scenario);
+                }
+              }}
+              className="bg-[#1a1a1a] border border-[#333] rounded-xl p-4 hover:border-[#dc2626] hover:bg-[#262626] transition-colors cursor-pointer"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
@@ -134,26 +141,30 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
                     {radioTurns} Funk-Runden
                     {scenario.community?.authorName && ` · von ${scenario.community.authorName}`}
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <button
-                      onClick={() => onSelect(scenario)}
-                      className="px-3 py-2 rounded-lg bg-[#dc2626] hover:bg-[#b91c1c] text-white text-sm font-semibold"
-                    >
-                      Starten
-                    </button>
-                    {scenario.community?.source === 'local' && (
+                  {scenario.community?.source === 'local' && (
+                    <div className="mt-3 flex flex-wrap gap-2">
                       <button
-                        onClick={() => onDeleteLocal(scenario.id)}
+                        onClick={event => {
+                          event.stopPropagation();
+                          onDeleteLocal(scenario.id);
+                        }}
                         className="px-3 py-2 rounded-lg bg-[#261a1a] hover:bg-red-900/30 text-red-300 text-sm"
                       >
                         Lokal löschen
                       </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
-                <div className="text-[#dc2626] shrink-0 mt-1" aria-hidden="true">
+                <button
+                  onClick={event => {
+                    event.stopPropagation();
+                    onSelect(scenario);
+                  }}
+                  className="text-[#dc2626] shrink-0 mt-1 p-2 rounded-lg hover:bg-[#331f1f]"
+                  aria-label={`${scenario.title} starten`}
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </div>
+                </button>
               </div>
             </div>
           );

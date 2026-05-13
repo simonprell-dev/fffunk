@@ -155,7 +155,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     setMessage(`JSON exportiert. Ziel für PR: ${pkg.suggestedPath}`);
   };
 
-  const preparePullRequest = async () => {
+  const publishPullRequest = async () => {
     const scenario = buildScenario();
     if (!scenario) return;
     const pkg = createSharePackage(scenario);
@@ -163,6 +163,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     onSave(scenario);
 
     try {
+      setMessage('Veröffentliche Szenario als Pull Request...');
       const response = await fetch('http://localhost:5174/api/community-pr', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -174,20 +175,9 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
       }
       setMessage(`Pull Request erstellt: ${result.url}`);
       window.open(result.url, '_blank', 'noopener,noreferrer');
-      return;
     } catch (error) {
       const detail = error instanceof Error ? error.message : 'Lokaler PR-Server nicht erreichbar.';
-      setMessage(`Automatischer PR fehlgeschlagen: ${detail}`);
-    }
-
-    const githubWindow = window.open(pkg.publishUrl, '_blank', 'noopener,noreferrer');
-    try {
-      await copyText(`${JSON.stringify(pkg.scenario, null, 2)}\n`, 'Fallback: JSON kopiert. In GitHub einfügen, committen und anschließend Pull Request erstellen.');
-    } catch {
-      setMessage(`Fallback: GitHub wurde geöffnet. Falls die Zwischenablage blockiert wurde: JSON herunterladen und in ${pkg.suggestedPath} einfügen.`);
-    }
-    if (!githubWindow) {
-      setMessage(`Popup wurde blockiert. Öffnen Sie diesen Pfad manuell: ${pkg.publishUrl}`);
+      setMessage(`Veröffentlichen fehlgeschlagen: ${detail} Starten Sie den PR-Server mit GITHUB_TOKEN und npm run pr-server.`);
     }
   };
 
@@ -314,8 +304,8 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
         <button onClick={handleSave} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#dc2626] hover:bg-[#b91c1c] text-white font-semibold">
           <Save size={18} /> Lokal speichern
         </button>
-        <button onClick={preparePullRequest} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
-          <ExternalLink size={18} /> Pull Request vorbereiten
+        <button onClick={publishPullRequest} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
+          <ExternalLink size={18} /> Veröffentlichen
         </button>
         <button onClick={copyShareCode} disabled={!shareCode} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] disabled:opacity-40">
           <Copy size={18} /> Teilencode kopieren

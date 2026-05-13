@@ -96,7 +96,6 @@ function App() {
     };
 
     loadScenarioFolders()
-      .catch(() => loadJson<unknown>('/scenarios/default.json').then(data => Array.isArray(data) ? data as Scenario[] : []))
       .then((loaded) => {
         setBuiltInScenarios(loaded);
       })

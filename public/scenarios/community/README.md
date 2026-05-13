@@ -24,7 +24,7 @@ Community-Szenarien werden nach Einsatz-/Ausbildungsthema sortiert.
    npm run pr-server
    ```
 
-5. In der App `Pull Request vorbereiten` klicken. Der Server legt Branch, Szenario-Datei, `index.json`-Eintrag und Pull Request automatisch an.
+5. In der App `Veröffentlichen` klicken. Der Server legt Branch, Szenario-Datei, `index.json`-Eintrag und Pull Request automatisch an.
 
 Ohne lokalen PR-Server kann die exportierte Datei weiterhin manuell in den angezeigten Pfad gelegt werden, z.B. `public/scenarios/community/verkehr/mein-szenario.json`.
 Danach muss `public/scenarios/index.json` im Abschnitt `community` aktualisiert werden, z.B. `"verkehr": ["community/verkehr/mein-szenario.json"]`.
