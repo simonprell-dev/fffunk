@@ -48,26 +48,63 @@ export class AudioEngine {
 
   /**
    * Transcribe live microphone input using Web Speech API.
-   * This directly opens the microphone – no prior getUserMedia needed.
+   * Checks browser support and provides clear error messages.
    */
   async transcribeLive(lang: string = 'de-DE'): Promise<Transcription> {
+    // Check for Web Speech API support
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      throw new Error('Spracherkennung nicht verfügbar');
+      throw new Error(
+        'Spracherkennung nicht verfügbar. Bitte nutzen Sie Chrome oder Edge (Chromium). Firefox und Safari unterstützen die Spracherkennung nicht.'
+      );
     }
+
     const recognizer = new SpeechRecognition();
     recognizer.lang = lang;
     recognizer.continuous = false;
     recognizer.interimResults = false;
 
     return new Promise((resolve, reject) => {
+      recognizer.onstart = () => {
+        console.log('[AudioEngine] Speech recognition started');
+      };
+
       recognizer.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
+        console.log('[AudioEngine] Transcribed:', transcript);
         resolve({ text: transcript, confidence: event.results[0][0].confidence });
       };
-      recognizer.onerror = (e: any) => reject(e);
-      recognizer.start();
-      setTimeout(() => recognizer.stop(), 5000);
+
+      recognizer.onerror = (e: any) => {
+        console.error('[AudioEngine] Recognition error:', e.error);
+        let msg = 'Spracherkennung fehlgeschlagen';
+        if (e.error === 'not-allowed') {
+          msg = 'Mikrofon-Zugriff verweigert. Bitte erlauben Sie Mikrofon-Zugriff in den Browser-Einstellungen.';
+        } else if (e.error === 'no-speech') {
+          msg = 'Keine Sprache erkannt. Bitte lauter und deutlicher sprechen.';
+        } else if (e.error === 'audio-capture') {
+          msg = 'Mikrofon nicht gefunden. Bitte prüfen Sie Ihre Audio-Einstellungen.';
+        } else if (e.error === 'network') {
+          msg = 'Netzwerkfehler bei der Spracherkennung. Bitte Internetverbindung prüfen.';
+        }
+        reject(new Error(msg));
+      };
+
+      try {
+        recognizer.start();
+      } catch (e: any) {
+        reject(new Error('Spracherkennung konnte nicht gestartet werden: ' + e.message));
+        return;
+      }
+
+      // Auto-stop after 5 seconds
+      setTimeout(() => {
+        try {
+          recognizer.stop();
+        } catch (e) {
+          // ignore if already stopped
+        }
+      }, 5000);
     });
   }
 }
