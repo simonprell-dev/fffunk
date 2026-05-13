@@ -11,14 +11,25 @@ interface Props {
 }
 
 export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audio }: Props) {
-  const [status, setStatus] = useState<'idle' | 'countdown' | 'recording' | 'processing' | 'done'>('idle');
+  const [status, setStatus] = useState<'idle' | 'countdown' | 'ready' | 'recording' | 'processing' | 'done'>('idle');
   const [countdown, setCountdown] = useState(3);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const recognitionRef = useRef<any>(null);
 
-  // Start countdown then record
+  // Cleanup on unmount or close
+  useEffect(() => {
+    return () => {
+      if (countdownRef.current) clearInterval(countdownRef.current);
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch {}
+      }
+    };
+  }, []);
+
+  // Start countdown then get ready
   useEffect(() => {
     if (isOpen && status === 'idle') {
       setStatus('countdown');
@@ -29,36 +40,91 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
         setCountdown(remaining);
         if (remaining <= 0) {
           clearInterval(countdownRef.current!);
-          startRecording();
+          setStatus('ready');
         }
       }, 1000);
     }
     return () => {
       if (countdownRef.current) clearInterval(countdownRef.current);
     };
-  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOpen, status]);
 
-  const startRecording = async () => {
+  const startRecording = () => {
     setStatus('recording');
-    // We don't pre-request microphone – let SpeechRecognition do it
-    // Auto-stop after 5 seconds and transcribe
-    setTimeout(async () => {
-      setStatus('processing');
-      try {
-        const result = await audio.transcribeLive('de-DE');
-        setTranscript(result.text);
-        setStatus('done');
-        // Simple match: check if any expected phrase is substring
-        const expectedList = prompt.split('|');
-        const accepted = expectedList.some((phrase) =>
-          result.text.toLowerCase().includes(phrase.toLowerCase())
-        );
-        onResult(accepted, result.text);
-      } catch (e: any) {
-        setError(e.message || 'Transkription fehlgeschlagen');
-        setStatus('idle');
+    setError(null);
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setError('Spracherkennung nicht verfügbar (nur Chrome/Edge)');
+      setStatus('idle');
+      return;
+    }
+
+    const recognizer = new SpeechRecognition();
+    recognizer.lang = 'de-DE';
+    recognizer.continuous = false;
+    recognizer.interimResults = false;
+
+    recognizer.onstart = () => {
+      console.log('[PTT] Recognition started');
+    };
+
+    recognizer.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      console.log('[PTT] Transcribed:', transcript);
+      setTranscript(transcript);
+      setStatus('done');
+      recognitionRef.current = null;
+
+      // Evaluate
+      const expectedList = prompt.split('|');
+      const accepted = expectedList.some((phrase: string) =>
+        transcript.toLowerCase().includes(phrase.toLowerCase())
+      );
+      onResult(accepted, transcript);
+    };
+
+    recognizer.onerror = (e: any) => {
+      console.error('[PTT] Recognition error:', e.error);
+      let msg = 'Spracherkennung fehlgeschlagen';
+      if (e.error === 'not-allowed') {
+        msg = 'Mikrofon-Zugriff verweigert. Bitte erlauben Sie Mikrofon-Zugriff.';
+      } else if (e.error === 'no-speech') {
+        msg = 'Keine Sprache erkannt. Bitte lauter sprechen.';
+      } else if (e.error === 'audio-capture') {
+        msg = 'Mikrofon nicht gefunden.';
+      } else if (e.error === 'network') {
+        msg = 'Netzwerkfehler. Internetverbindung prüfen.';
       }
-    }, 5000);
+      setError(msg);
+      setStatus('ready');
+      recognitionRef.current = null;
+    };
+
+    try {
+      recognizer.start();
+      recognitionRef.current = recognizer;
+    } catch (e: any) {
+      setError('Start fehlgeschlagen: ' + e.message);
+      setStatus('idle');
+    }
+  };
+
+  const stopRecording = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
+    // onresult will handle evaluation
+  };
+
+  const handleClose = () => {
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch {}
+    }
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -71,16 +137,16 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
           <h3 className="text-lg font-bold flex items-center gap-2">
             <span className="text-[#dc2626]">📻</span> Funk-Gespräch
           </h3>
-          <button onClick={onClose} className="text-[#a3a3a3] hover:text-white">✕</button>
+          <button onClick={handleClose} className="text-[#a3a3a3] hover:text-white">✕</button>
         </div>
 
         {/* Hint */}
         <div className="mb-6 p-4 bg-[#262626] border border-[#444] rounded-lg">
-          <div className="text-sm text-[#a3a3a3] mb-1">Erwartet (Beispiel):</div>
-          <div className="text-[#e5e5e5] font-radio italic">„{prompt}“</div>
+          <div className="text-sm text-[#a3a3a3] mb-1">Erwartete Funk-Phrase:</div>
+          <div className="text-[#e5e5e5] font-radio italic text-center text-lg">„{prompt}“</div>
         </div>
 
-        {/* Status */}
+        {/* Status & PTT Button */}
         <div className="text-center">
           {status === 'idle' && (
             <button
@@ -95,7 +161,25 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
           {status === 'countdown' && (
             <div className="py-8">
               <div className="text-6xl font-bold text-[#dc2626] mb-2">{countdown}</div>
-              <div className="text-[#a3a3a3]">Aufnahme startet in…</div>
+              <div className="text-[#a3a3a3]">Bereit machen…</div>
+            </div>
+          )}
+
+          {status === 'ready' && (
+            <div className="py-4">
+              <div className="mb-4 text-[#e5e5e5] font-mono">Bereit zum Senden</div>
+              <button
+                onMouseDown={startRecording}
+                onMouseUp={stopRecording}
+                onTouchStart={startRecording}
+                onTouchEnd={stopRecording}
+                className="w-full py-8 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-xl font-semibold flex flex-col items-center justify-center gap-2 active:scale-95 transition-transform"
+                style={{ minHeight: '160px' }}
+              >
+                <Mic size={48} />
+                <span className="text-xl">GEDRÜCKT HALTEN ZUM SPRECHEN</span>
+                <span className="text-sm opacity-75">Loslassen, wenn fertig</span>
+              </button>
             </div>
           )}
 
@@ -104,8 +188,8 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
               <div className="w-24 h-24 mx-auto rounded-full bg-[#dc2626] animate-pulse flex items-center justify-center mb-4">
                 <Mic size={40} className="text-white" />
               </div>
-              <div className="text-[#e5e5e5] font-mono">Sprechen Sie jetzt…</div>
-              <div className="text-sm text-[#a3a3a3] mt-2">5 Sekunden</div>
+              <div className="text-[#e5e5e5] font-mono animate-pulse">SENDEN…</div>
+              <div className="text-sm text-[#a3a3a3] mt-2">Loslassen, um zu senden</div>
             </div>
           )}
 
@@ -127,22 +211,15 @@ export default function RadioCallModal({ isOpen, onClose, onResult, prompt, audi
           )}
 
           {error && (
-            <div className="text-red-400 p-4 bg-red-900/20 rounded-lg">{error}</div>
+            <div className="text-red-400 p-4 bg-red-900/20 rounded-lg mb-4">{error}</div>
           )}
         </div>
 
-        {/* Manual stop */}
-        {status === 'recording' && (
-          <button
-            onClick={() => {
-              if (countdownRef.current) clearInterval(countdownRef.current);
-              // No explicit stop – SpeechRecognition handles itself
-            }}
-            className="mt-6 w-full py-3 border border-[#333] rounded-lg text-[#a3a3a3] hover:bg-[#262626] flex items-center justify-center gap-2"
-          >
-            <Square size={18} />
-            Vorzeitig beenden
-          </button>
+        {/* Hinweis */}
+        {status === 'ready' && (
+          <div className="mt-4 text-xs text-[#a3a3a3] text-center">
+            Drücken Sie den Button und sprechen Sie deutlich. Loslassen, wenn Sie fertig sind.
+          </div>
         )}
       </div>
     </div>
