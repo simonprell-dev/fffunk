@@ -1,0 +1,208 @@
+{
+  "id": "trupp_thl_kombi",
+  "title": "Truppführer: Schlauchtrupp THL Kombi",
+  "description": "Truppführer-Übung: Anfunken, Absichern, Ausleuchten, Verkehrsleitung und Lage an den Gruppenführer melden. 5 Funk-Schritte.",
+  "startingNodeId": "n_anfunken",
+  "playerRole": "truppführer",
+  "nodes": {
+    "n_anfunken": {
+      "id": "n_anfunken",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** Gruppenführer für Schlauchtrupp.\n\nNach einem Sturmschaden muss abgesichert, ausgeleuchtet und Verkehr geführt werden. Der Gruppenführer funkt den Schlauchtrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
+      "actions": [
+        {
+          "id": "radio_hoert",
+          "label": "📞 Anruf beantworten",
+          "radioCall": {
+            "expectedPhrases": [
+              "Schlauchtrupp",
+              "hört"
+            ],
+            "hint": "Schlauchtrupp hört.",
+            "onSuccess": "n_start",
+            "onFailure": "n_anfunken_fail",
+            "feedbackSuccess": "✅ Anruf korrekt angenommen.",
+            "feedbackFailure": "❌ Antworten Sie knapp mit „Schlauchtrupp hört.“"
+          }
+        }
+      ]
+    },
+    "n_anfunken_fail": {
+      "id": "n_anfunken_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Schlauchtrupp hört.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anfunken"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** Nach Sturm liegt ein Ast auf der Fahrbahn, ein PKW steht im Gefahrenbereich. Auftrag: Einsatzstelle absichern, ausleuchten und Verkehr langsam vorbeiführen.\n\nBestätigen Sie den Auftrag.",
+      "actions": [
+        {
+          "id": "radio_auftrag",
+          "label": "📞 Auftrag bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Ast",
+              "Fahrbahn",
+              "absichern",
+              "ausleuchten",
+              "Verkehr vorbeiführen"
+            ],
+            "hint": "Schlauchtrupp verstanden: Ast auf Fahrbahn, sichern ab, leuchten aus und führen Verkehr langsam vorbei.",
+            "onSuccess": "n_absichern",
+            "onFailure": "n_start_fail",
+            "feedbackSuccess": "✅ Kombiauftrag bestätigt.",
+            "feedbackFailure": "❌ Wiederholen Sie Absichern, Ausleuchten und Verkehrsführung."
+          }
+        }
+      ]
+    },
+    "n_start_fail": {
+      "id": "n_start_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Bei mehreren Aufgaben werden alle Kernaufgaben wiederholt.\n\nBeispiel: *„Sichern ab, leuchten aus und führen den Verkehr langsam vorbei.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_absichern": {
+      "id": "n_absichern",
+      "role": "truppführer",
+      "narrative": "Die Einsatzstelle ist mit Faltsignalen und Warnleuchten abgesichert. Ein Strahler leuchtet den Ast und den PKW aus.\n\nMelden Sie den Stand.",
+      "actions": [
+        {
+          "id": "radio_stand",
+          "label": "📞 Stand melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Faltsignale",
+              "Warnleuchten",
+              "Strahler",
+              "ausgeleuchtet",
+              "Absicherung steht"
+            ],
+            "hint": "Schlauchtrupp an Gruppenführer: Absicherung steht mit Faltsignalen und Warnleuchten, Strahler gesetzt, Einsatzstelle ausgeleuchtet.",
+            "onSuccess": "n_verkehr",
+            "onFailure": "n_absichern_fail",
+            "feedbackSuccess": "✅ Standmeldung vollständig.",
+            "feedbackFailure": "❌ Melden Sie Absicherungsmittel und Ausleuchtung."
+          }
+        }
+      ]
+    },
+    "n_absichern_fail": {
+      "id": "n_absichern_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Die Rückmeldung soll Material und Zustand enthalten.\n\nBeispiel: *„Absicherung steht mit Faltsignalen und Warnleuchten, Strahler gesetzt.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_absichern"
+        }
+      ]
+    },
+    "n_verkehr": {
+      "id": "n_verkehr",
+      "role": "truppführer",
+      "narrative": "Der Verkehr kann nur wechselweise vorbeigeführt werden. Ein zweiter Trupp ist noch nicht verfügbar.\n\nMelden Sie die Verkehrsführung und Ihren Bedarf.",
+      "actions": [
+        {
+          "id": "radio_verkehr",
+          "label": "📞 Bedarf melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "wechselweise",
+              "Verkehr",
+              "zweiter Trupp",
+              "Unterstützung",
+              "vorbeiführen"
+            ],
+            "hint": "Schlauchtrupp an Gruppenführer: Verkehr wird wechselweise vorbeigeführt, benötigen zweiten Trupp zur Unterstützung.",
+            "onSuccess": "n_frei",
+            "onFailure": "n_verkehr_fail",
+            "feedbackSuccess": "✅ Verkehrsführung und Bedarf klar.",
+            "feedbackFailure": "❌ Melden Sie wechselweise Verkehrsführung und den Bedarf an Unterstützung."
+          }
+        }
+      ]
+    },
+    "n_verkehr_fail": {
+      "id": "n_verkehr_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Bei Bedarfsmeldungen muss klar sein, was fehlt.\n\nBeispiel: *„Verkehr wird wechselweise vorbeigeführt, benötigen zweiten Trupp zur Unterstützung.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_verkehr"
+        }
+      ]
+    },
+    "n_frei": {
+      "id": "n_frei",
+      "role": "truppführer",
+      "narrative": "Der Ast ist beseitigt, der PKW konnte wegfahren. Fahrbahn ist frei, Absicherung kann zurückgebaut werden.\n\nMelden Sie den Abschluss.",
+      "actions": [
+        {
+          "id": "radio_abschluss",
+          "label": "📞 Abschluss melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Ast beseitigt",
+              "Fahrbahn frei",
+              "PKW weg",
+              "Absicherung zurückbauen",
+              "Einsatzstelle frei"
+            ],
+            "hint": "Schlauchtrupp an Gruppenführer: Ast beseitigt, PKW weg, Fahrbahn frei, bauen Absicherung zurück.",
+            "onSuccess": "n_end",
+            "onFailure": "n_frei_fail",
+            "feedbackSuccess": "✅ Abschlussmeldung vollständig.",
+            "feedbackFailure": "❌ Melden Sie Ast beseitigt, Fahrbahn frei und Rückbau der Absicherung."
+          }
+        }
+      ]
+    },
+    "n_frei_fail": {
+      "id": "n_frei_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Abschlussmeldungen nennen Ergebnis und nächste Maßnahme.\n\nBeispiel: *„Ast beseitigt, PKW weg, Fahrbahn frei, bauen Absicherung zurück.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_frei"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** Abschluss verstanden. Nach Rückbau wieder am Fahrzeug sammeln.\n\n**Übung abgeschlossen!**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anfunken"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

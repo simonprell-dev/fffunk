@@ -1,10 +1,11 @@
 import { Scenario, PlayerRole } from '../types/story';
 
 const STORAGE_KEY = 'fffunk_community_scenarios_v1';
+const GITHUB_REPO_URL = 'https://github.com/simonprell-dev/fffunk';
 
 export interface ScenarioDraftStep {
   prompt: string;
-  expectedPhrases: string[];
+  expectedPhrases: string;
   hint: string;
   feedbackFailure: string;
 }
@@ -14,8 +15,8 @@ export interface ScenarioDraft {
   title: string;
   description: string;
   playerRole: PlayerRole;
+  category: string;
   authorName: string;
-  notifyContact: string;
   steps: ScenarioDraftStep[];
 }
 
@@ -26,10 +27,21 @@ export interface ScenarioSharePackage {
   suggestedPath: string;
   prTitle: string;
   prBody: string;
+  publishUrl: string;
 }
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
+
+export const categoryOptions = [
+  { value: 'brand', label: 'Brand' },
+  { value: 'thl', label: 'THL' },
+  { value: 'verkehr', label: 'Verkehr' },
+  { value: 'wasser', label: 'Wasseraufbau' },
+  { value: 'funk', label: 'Funkgrundlagen' },
+  { value: 'sonstige', label: 'Sonstige' },
+  { value: 'eigene', label: 'Eigene Kategorie' },
+];
 
 export function slugify(value: string): string {
   return value
@@ -41,9 +53,26 @@ export function slugify(value: string): string {
     .slice(0, 64) || 'community-szenario';
 }
 
+export function getCategoryLabel(category: string): string {
+  return categoryOptions.find(option => option.value === category)?.label || category;
+}
+
+function parseExpectedPhrases(value: string): string[] {
+  return value
+    .split(/[,\n]/)
+    .map(phrase => phrase.trim())
+    .filter(Boolean);
+}
+
+function createShareId(id: string): string {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `${id}-${Date.now()}`;
+}
+
 export function createScenarioFromDraft(draft: ScenarioDraft): Scenario {
   const now = new Date().toISOString();
   const id = slugify(draft.id || draft.title);
+  const category = slugify(draft.category || 'sonstige');
   const steps = draft.steps.filter(step => step.prompt.trim() && step.hint.trim());
 
   const nodes: Scenario['nodes'] = {};
@@ -59,14 +88,14 @@ export function createScenarioFromDraft(draft: ScenarioDraft): Scenario {
       actions: [
         {
           id: `radio_step_${index + 1}`,
-          label: '📞 Funk-Meldung sprechen',
+          label: 'Funk-Meldung sprechen',
           radioCall: {
-            expectedPhrases: step.expectedPhrases.map(p => p.trim()).filter(Boolean),
+            expectedPhrases: parseExpectedPhrases(step.expectedPhrases),
             hint: step.hint.trim(),
             onSuccess: nextNodeId,
             onFailure: failId,
-            feedbackSuccess: '✅ Funkmeldung korrekt.',
-            feedbackFailure: step.feedbackFailure.trim() || '❌ Wiederholen Sie die Meldung mit den erwarteten Kernbegriffen.',
+            feedbackSuccess: 'Funkmeldung korrekt.',
+            feedbackFailure: step.feedbackFailure.trim() || 'Wiederholen Sie die Meldung mit den erwarteten Kernbegriffen.',
           },
         },
       ],
@@ -77,7 +106,7 @@ export function createScenarioFromDraft(draft: ScenarioDraft): Scenario {
       role: draft.playerRole,
       narrative: `**Feedback:** ${step.feedbackFailure.trim() || 'Die Funkmeldung war noch nicht vollständig.'}\n\nBeispiel: *„${step.hint.trim()}“*`,
       actions: [
-        { id: 'retry', label: '🔄 Erneut versuchen', nextNodeId: nodeId },
+        { id: 'retry', label: 'Erneut versuchen', nextNodeId: nodeId },
       ],
     };
   });
@@ -87,8 +116,8 @@ export function createScenarioFromDraft(draft: ScenarioDraft): Scenario {
     role: draft.playerRole,
     narrative: '**Übung abgeschlossen!**\n\nDas Community-Szenario wurde erfolgreich durchgespielt.',
     actions: [
-      { id: 'restart', label: '🔄 Noch einmal trainieren', nextNodeId: steps.length > 0 ? 'n_step_1' : 'n_end' },
-      { id: 'exit', label: '← Zur Übersicht', nextNodeId: '__exit__' },
+      { id: 'restart', label: 'Noch einmal trainieren', nextNodeId: steps.length > 0 ? 'n_step_1' : 'n_end' },
+      { id: 'exit', label: 'Zur Übersicht', nextNodeId: '__exit__' },
     ],
   };
 
@@ -101,12 +130,12 @@ export function createScenarioFromDraft(draft: ScenarioDraft): Scenario {
     nodes,
     community: {
       authorName: draft.authorName.trim() || 'Unbekannt',
-      notifyContact: draft.notifyContact.trim() || undefined,
+      category,
       source: 'local',
       status: 'local',
       createdAt: now,
       updatedAt: now,
-      shareId: crypto.randomUUID?.() ?? `${id}-${Date.now()}`,
+      shareId: createShareId(id),
     },
   };
 }
@@ -144,12 +173,16 @@ export function deleteLocalScenario(id: string): Scenario[] {
 
 export function createSharePackage(scenario: Scenario): ScenarioSharePackage {
   const safeId = slugify(scenario.id);
-  const suggestedPath = `public/scenarios/community/${safeId}.json`;
+  const category = slugify(scenario.community?.category || 'sonstige');
+  const suggestedPath = `public/scenarios/community/${category}/${safeId}.json`;
+  const encodedPath = suggestedPath.split('/').map(encodeURIComponent).join('/');
+
   return {
     format: 'fffunk-community-scenario',
     version: 1,
     scenario,
     suggestedPath,
+    publishUrl: `${GITHUB_REPO_URL}/new/main?filename=${encodedPath}`,
     prTitle: `Community-Szenario: ${scenario.title}`,
     prBody: [
       `## Szenario`,
@@ -158,8 +191,8 @@ export function createSharePackage(scenario: Scenario): ScenarioSharePackage {
       `## Ersteller`,
       scenario.community?.authorName || 'Unbekannt',
       '',
-      `## Benachrichtigung`,
-      scenario.community?.notifyContact || 'Keine Angabe',
+      `## Kategorie`,
+      category,
       '',
       `## Datei`,
       suggestedPath,

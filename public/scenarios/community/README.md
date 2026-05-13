@@ -1,19 +1,34 @@
 # Community-Szenarien
 
-Dieser Ordner ist die Zielablage für Szenarien aus der Community.
+Community-Szenarien werden nach Einsatz-/Ausbildungsthema sortiert.
+
+## Ordner
+
+- `brand/` - Brand, Löschangriff, Brandabsicherung
+- `thl/` - Technische Hilfeleistung
+- `verkehr/` - Verkehrsabsicherung und Verkehrsleitung
+- `wasser/` - Wasserentnahme und Wasseraufbau
+- `funk/` - Funkgrundlagen, Anfunken, Statusmeldungen
+- `sonstige/` - alles, was nicht eindeutig passt
+- eigene Ordner sind erlaubt, wenn die Kategorie im Editor entsprechend gewählt wurde
 
 ## Ablauf
 
 1. In der App ein Szenario im Szenario-Editor erstellen.
-2. Lokal speichern und testen. Das Szenario funktioniert sofort auf dem eigenen Gerät.
-3. Im Editor `JSON für PR` exportieren.
-4. Die exportierte Datei nach `public/scenarios/community/<scenario-id>.json` legen.
-5. Einen GitHub Pull Request öffnen.
+2. Kategorie auswählen oder einen eigenen Ordnernamen eintragen.
+3. Lokal speichern und testen. Das Szenario funktioniert sofort auf dem eigenen Gerät.
+4. Für automatische Pull Requests lokal den PR-Server starten:
 
-## Benachrichtigung
+   ```powershell
+   $env:GITHUB_TOKEN="NEUER_TOKEN"
+   npm run pr-server
+   ```
 
-Der Editor speichert im Feld `community.notifyContact` optional einen GitHub-Namen oder eine E-Mail-Adresse. Nach dem Merge kann der Maintainer den Ersteller darüber benachrichtigen.
+5. In der App `Pull Request vorbereiten` klicken. Der Server legt Branch, Szenario-Datei, `index.json`-Eintrag und Pull Request automatisch an.
+
+Ohne lokalen PR-Server kann die exportierte Datei weiterhin manuell in den angezeigten Pfad gelegt werden, z.B. `public/scenarios/community/verkehr/mein-szenario.json`.
+Danach muss `public/scenarios/index.json` im Abschnitt `community` aktualisiert werden, z.B. `"verkehr": ["community/verkehr/mein-szenario.json"]`.
 
 ## Sicherheit
 
-GitHub Personal Access Tokens dürfen nicht in der App, im Repository oder im Browser-Code gespeichert werden. Für automatische PRs braucht es später GitHub OAuth oder ein kleines Backend, das Secrets serverseitig hält.
+GitHub Personal Access Tokens dürfen nicht in der App, im Repository oder im Browser-Code gespeichert werden. Der PR-Server liest den Token nur aus der lokalen Umgebungsvariable `GITHUB_TOKEN`.

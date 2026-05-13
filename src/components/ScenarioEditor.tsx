@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Copy, FileDown, Plus, Save, Trash2, Upload } from 'lucide-react';
+import { Copy, ExternalLink, FileDown, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { PlayerRole, Scenario } from '../types/story';
 import {
   ScenarioDraft,
+  categoryOptions,
   createScenarioFromDraft,
   createSharePackage,
   decodeSharePackage,
@@ -25,7 +26,7 @@ const roleOptions: Array<{ value: PlayerRole; label: string }> = [
 
 const emptyStep = {
   prompt: '',
-  expectedPhrases: [''],
+  expectedPhrases: '',
   hint: '',
   feedbackFailure: '',
 };
@@ -36,12 +37,12 @@ function createInitialDraft(): ScenarioDraft {
     title: '',
     description: '',
     playerRole: 'truppführer',
+    category: 'sonstige',
     authorName: '',
-    notifyContact: '',
     steps: [
       {
         prompt: '**Gruppenführer:** Gruppenführer für Wassertrupp.\n\nAntworten Sie korrekt auf den Anruf.',
-        expectedPhrases: ['Wassertrupp', 'hört'],
+        expectedPhrases: 'Wassertrupp, hört',
         hint: 'Wassertrupp hört.',
         feedbackFailure: 'Antworten Sie mit Rufname und „hört“.',
       },
@@ -52,14 +53,29 @@ function createInitialDraft(): ScenarioDraft {
 
 export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
   const [draft, setDraft] = useState<ScenarioDraft>(() => createInitialDraft());
+  const [categoryMode, setCategoryMode] = useState('sonstige');
+  const [customCategory, setCustomCategory] = useState('');
   const [savedScenario, setSavedScenario] = useState<Scenario | null>(null);
   const [importText, setImportText] = useState('');
   const [message, setMessage] = useState<string | null>(null);
 
+  const currentDraft = useMemo(() => ({
+    ...draft,
+    category: categoryMode === 'eigene' ? customCategory : categoryMode,
+  }), [categoryMode, customCategory, draft]);
+
+  const previewScenario = useMemo(() => {
+    if (!draft.title.trim() || !draft.description.trim()) return savedScenario;
+    return createScenarioFromDraft({
+      ...currentDraft,
+      id: draft.id || slugify(draft.title),
+    });
+  }, [currentDraft, draft.description, draft.id, draft.title, savedScenario]);
+
   const sharePackage = useMemo(() => {
-    if (!savedScenario) return null;
-    return createSharePackage(savedScenario);
-  }, [savedScenario]);
+    if (!previewScenario) return null;
+    return createSharePackage(previewScenario);
+  }, [previewScenario]);
 
   const shareCode = useMemo(() => {
     if (!sharePackage) return '';
@@ -81,45 +97,98 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     setDraft(current => ({ ...current, steps: current.steps.filter((_, stepIndex) => stepIndex !== index) }));
   };
 
-  const handleSave = () => {
+  const buildScenario = (): Scenario | null => {
     if (!draft.title.trim()) {
       setMessage('Bitte einen Titel eintragen.');
-      return;
+      return null;
     }
     if (!draft.description.trim()) {
       setMessage('Bitte eine kurze Beschreibung eintragen.');
-      return;
+      return null;
+    }
+    if (categoryMode === 'eigene' && !customCategory.trim()) {
+      setMessage('Bitte einen Namen für die eigene Kategorie eintragen.');
+      return null;
     }
     if (draft.steps.filter(step => step.prompt.trim() && step.hint.trim()).length === 0) {
       setMessage('Bitte mindestens einen Funk-Schritt anlegen.');
-      return;
+      return null;
     }
 
-    const scenario = createScenarioFromDraft({
-      ...draft,
+    return createScenarioFromDraft({
+      ...currentDraft,
       id: draft.id || slugify(draft.title),
     });
+  };
+
+  const handleSave = () => {
+    const scenario = buildScenario();
+    if (!scenario) return;
     setSavedScenario(scenario);
     onSave(scenario);
     setMessage('Szenario lokal gespeichert. Es ist sofort in der Übersicht spielbar.');
   };
 
+  const copyText = async (value: string, success: string) => {
+    await navigator.clipboard.writeText(value);
+    setMessage(success);
+  };
+
   const copyShareCode = async () => {
     if (!shareCode) return;
-    await navigator.clipboard.writeText(shareCode);
-    setMessage('Teilencode kopiert. Er kann z.B. per WhatsApp verschickt und hier wieder eingefügt werden.');
+    await copyText(shareCode, 'Teilencode kopiert. Er kann z.B. per WhatsApp verschickt und hier wieder eingefügt werden.');
   };
 
   const downloadJson = () => {
-    if (!sharePackage) return;
-    const blob = new Blob([`${JSON.stringify(sharePackage.scenario, null, 2)}\n`], { type: 'application/json' });
+    const scenario = buildScenario();
+    if (!scenario) return;
+    const pkg = createSharePackage(scenario);
+    const blob = new Blob([`${JSON.stringify(pkg.scenario, null, 2)}\n`], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${sharePackage.scenario.id}.json`;
+    link.download = `${pkg.scenario.id}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    setMessage(`JSON exportiert. Ziel für PR: ${sharePackage.suggestedPath}`);
+    setSavedScenario(scenario);
+    onSave(scenario);
+    setMessage(`JSON exportiert. Ziel für PR: ${pkg.suggestedPath}`);
+  };
+
+  const preparePullRequest = async () => {
+    const scenario = buildScenario();
+    if (!scenario) return;
+    const pkg = createSharePackage(scenario);
+    setSavedScenario(scenario);
+    onSave(scenario);
+
+    try {
+      const response = await fetch('http://localhost:5174/api/community-pr', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(pkg),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || 'Pull Request konnte nicht erstellt werden.');
+      }
+      setMessage(`Pull Request erstellt: ${result.url}`);
+      window.open(result.url, '_blank', 'noopener,noreferrer');
+      return;
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : 'Lokaler PR-Server nicht erreichbar.';
+      setMessage(`Automatischer PR fehlgeschlagen: ${detail}`);
+    }
+
+    const githubWindow = window.open(pkg.publishUrl, '_blank', 'noopener,noreferrer');
+    try {
+      await copyText(`${JSON.stringify(pkg.scenario, null, 2)}\n`, 'Fallback: JSON kopiert. In GitHub einfügen, committen und anschließend Pull Request erstellen.');
+    } catch {
+      setMessage(`Fallback: GitHub wurde geöffnet. Falls die Zwischenablage blockiert wurde: JSON herunterladen und in ${pkg.suggestedPath} einfügen.`);
+    }
+    if (!githubWindow) {
+      setMessage(`Popup wurde blockiert. Öffnen Sie diesen Pfad manuell: ${pkg.publishUrl}`);
+    }
   };
 
   const importScenario = () => {
@@ -133,7 +202,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
         ...parsed.scenario,
         community: {
           authorName: parsed.scenario.community?.authorName || 'Importiert',
-          notifyContact: parsed.scenario.community?.notifyContact,
+          category: parsed.scenario.community?.category || 'sonstige',
           source: 'local',
           status: 'local',
           createdAt: parsed.scenario.community?.createdAt || new Date().toISOString(),
@@ -154,7 +223,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
         <div>
           <h2 className="text-2xl font-bold">Szenario-Editor</h2>
           <p className="text-sm text-[#a3a3a3] mt-1">
-            Lokale Szenarien funktionieren sofort auf diesem Gerät. Für Community-PRs exportieren Sie die JSON-Datei in den angegebenen Ordner.
+            Lokale Szenarien funktionieren sofort. Für Pull Requests wird der passende Community-Ordner aus der Kategorie erzeugt.
           </p>
         </div>
         <button onClick={onClose} className="px-3 py-2 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
@@ -188,12 +257,20 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
           </select>
         </label>
         <label className="block">
+          <span className="text-sm text-[#a3a3a3]">Kategorie / Ordner</span>
+          <select value={categoryMode} onChange={e => setCategoryMode(e.target.value)} className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2">
+            {categoryOptions.map(category => <option key={category.value} value={category.value}>{category.label}</option>)}
+          </select>
+        </label>
+        {categoryMode === 'eigene' && (
+          <label className="block md:col-span-2">
+            <span className="text-sm text-[#a3a3a3]">Eigener Ordnername</span>
+            <input value={customCategory} onChange={e => setCustomCategory(e.target.value)} placeholder="z.B. gefahrgut" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
+          </label>
+        )}
+        <label className="block md:col-span-2">
           <span className="text-sm text-[#a3a3a3]">Ersteller</span>
           <input value={draft.authorName} onChange={e => setDraft({ ...draft, authorName: e.target.value })} className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
-        </label>
-        <label className="block md:col-span-2">
-          <span className="text-sm text-[#a3a3a3]">Benachrichtigung bei Merge</span>
-          <input value={draft.notifyContact} onChange={e => setDraft({ ...draft, notifyContact: e.target.value })} placeholder="GitHub-Name oder E-Mail, keine Pflicht" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
         </label>
       </div>
 
@@ -219,7 +296,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
             </label>
             <label className="block">
               <span className="text-sm text-[#a3a3a3]">Erwartete Schlüsselbegriffe, kommagetrennt</span>
-              <input value={step.expectedPhrases.join(', ')} onChange={e => updateStep(index, { expectedPhrases: e.target.value.split(',') })} className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
+              <textarea value={step.expectedPhrases} onChange={e => updateStep(index, { expectedPhrases: e.target.value })} rows={2} placeholder="z.B. Wassertrupp, hört, Verteiler" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
             </label>
             <label className="block">
               <span className="text-sm text-[#a3a3a3]">Beispiel-Funkspruch</span>
@@ -237,11 +314,14 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
         <button onClick={handleSave} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#dc2626] hover:bg-[#b91c1c] text-white font-semibold">
           <Save size={18} /> Lokal speichern
         </button>
+        <button onClick={preparePullRequest} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
+          <ExternalLink size={18} /> Pull Request vorbereiten
+        </button>
         <button onClick={copyShareCode} disabled={!shareCode} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] disabled:opacity-40">
           <Copy size={18} /> Teilencode kopieren
         </button>
-        <button onClick={downloadJson} disabled={!sharePackage} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] disabled:opacity-40">
-          <FileDown size={18} /> JSON für PR
+        <button onClick={downloadJson} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
+          <FileDown size={18} /> JSON herunterladen
         </button>
       </div>
 

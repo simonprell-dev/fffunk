@@ -1,0 +1,31 @@
+{
+  "builtin": {
+    "brand": [],
+    "thl": [
+      "builtin/thl/trupp_auto_absichern.json"
+    ],
+    "verkehr": [
+      "builtin/verkehr/trupp_thl_kombi.json",
+      "builtin/verkehr/trupp_verkehr_absichern.json",
+      "builtin/verkehr/trupp_verkehr_leiten.json"
+    ],
+    "wasser": [
+      "builtin/wasser/trupp_wasseraufbau.json"
+    ],
+    "funk": [
+      "builtin/funk/alarm_ausruecken.json",
+      "builtin/funk/koordination_nachkraefte.json",
+      "builtin/funk/lagemeldung_nachalarmierung.json",
+      "builtin/funk/volluebung_einsatzablauf.json"
+    ],
+    "sonstige": []
+  },
+  "community": {
+    "brand": [],
+    "thl": [],
+    "verkehr": [],
+    "wasser": [],
+    "funk": [],
+    "sonstige": []
+  }
+}

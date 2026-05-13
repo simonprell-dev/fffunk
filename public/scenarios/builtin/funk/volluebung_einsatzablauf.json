@@ -1,0 +1,214 @@
+{
+  "id": "volluebung_einsatzablauf",
+  "title": "Vollübung: Kompletter Einsatzablauf",
+  "description": "Profi: Vollständiger Einsatz von der Alarmierung bis zur Einsatzbeendigung mit Patientenübergabe. 5 Funk-Schritte.",
+  "startingNodeId": "n_alarm",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_alarm": {
+      "id": "n_alarm",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Funkalarm für Florian Kirchberg 44/1 — Feuer und Menschenleben in Gefahr, Hauptstraße 22, Kirchberg, Mehrfamilienhaus, Rauch aus dem zweiten Obergeschoss.\n\nMelden Sie **Einsatzbereitschaft (Status 1)** und fordern Sie den Einsatzbefehl an!",
+      "actions": [
+        {
+          "id": "radio_status1",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "einsatzbereit",
+              "Status 1",
+              "FMS 1",
+              "Einsatzbefehl"
+            ],
+            "hint": "Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten.",
+            "onSuccess": "n_ausruecken",
+            "onFailure": "n_alarm_fail",
+            "feedbackSuccess": "✅ Einsatzbereitschaft gemeldet!",
+            "feedbackFailure": "❌ Melden Sie Status 1 und fordern Sie den Einsatzbefehl an."
+          }
+        }
+      ]
+    },
+    "n_alarm_fail": {
+      "id": "n_alarm_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Melden Sie **Status 1** (einsatzbereit) und fordern Sie den Einsatzbefehl an.\n\nBeispiel: *„Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_alarm"
+        }
+      ]
+    },
+    "n_ausruecken": {
+      "id": "n_ausruecken",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Einsatzbefehl: Gebäudebrand mit Menschenleben in Gefahr, Hauptstraße 22, Kirchberg. Drei Personen noch im Gebäude, zweites Obergeschoss. Rücken Sie sofort aus!\n\nBestätigen Sie und melden Sie **Ausrücken (Status 3)**!",
+      "actions": [
+        {
+          "id": "radio_status3",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "verstanden",
+              "Status 3",
+              "FMS 3",
+              "rücke aus",
+              "ausgerückt"
+            ],
+            "hint": "Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3.",
+            "onSuccess": "n_lagemeldung",
+            "onFailure": "n_ausruecken_fail",
+            "feedbackSuccess": "✅ Ausrücken gemeldet — volle Fahrt!",
+            "feedbackFailure": "❌ Bestätigen Sie den Einsatzbefehl und melden Sie Status 3."
+          }
+        }
+      ]
+    },
+    "n_ausruecken_fail": {
+      "id": "n_ausruecken_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bestätigen Sie den Einsatzbefehl und melden Sie **Status 3**.\n\nBeispiel: *„Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_ausruecken"
+        }
+      ]
+    },
+    "n_lagemeldung": {
+      "id": "n_lagemeldung",
+      "role": "gruppenführer_a",
+      "narrative": "Sie treffen an der Hauptstraße 22 ein. Ein viergeschossiges Mehrfamilienhaus — zweites OG stark verqualmt, Flammen im Treppenhaus sichtbar. Zwei Personen stehen am Fenster im zweiten OG und rufen um Hilfe.\n\nGeben Sie **Status 4** und eine vollständige **Lagemeldung mit Nachalarmierung**!",
+      "actions": [
+        {
+          "id": "radio_lage",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Status 4",
+              "FMS 4",
+              "Menschenrettung",
+              "Person",
+              "Drehleiter",
+              "eingeschlossen"
+            ],
+            "hint": "Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Mehrfamilienhaus Hauptstraße 22, zweites OG in Vollbrand, zwei Personen eingeschlossen — Menschenrettung erforderlich! Anforderung Drehleiter.",
+            "onSuccess": "n_patient",
+            "onFailure": "n_lagemeldung_fail",
+            "feedbackSuccess": "✅ Vollständige Lagemeldung mit Nachalarmierung — sehr gut!",
+            "feedbackFailure": "❌ Vollständige Lagemeldung: Status 4 + Objekt + Brandlage + Personengefährdung + Nachalarmierung."
+          }
+        }
+      ]
+    },
+    "n_lagemeldung_fail": {
+      "id": "n_lagemeldung_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Vollständige Lagemeldung mit:\n1. **Status 4** — Einsatzstelle erreicht\n2. **Objekt** — Art und Adresse\n3. **Brandlage** — wo brennt es\n4. **Personengefährdung** — Anzahl und Lage der Personen\n5. **Nachalarmierung** — was wird gebraucht\n\nBeispiel: *„Florian Kirchberg 44/1 — Status 4. Lagemeldung: Mehrfamilienhaus, zweites OG in Vollbrand, zwei Personen eingeschlossen — Menschenrettung, Anforderung Drehleiter.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_lagemeldung"
+        }
+      ]
+    },
+    "n_patient": {
+      "id": "n_patient",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Drehleiter alarmiert, RTW auf dem Weg.\n\nNach der Menschenrettung: Ein Bewohner hat eine Rauchgasvergiftung erlitten. Der RTW ist eingetroffen. Übergeben Sie den Patienten und melden Sie **Status 7** (Patient übergeben)!",
+      "actions": [
+        {
+          "id": "radio_patient",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Patient",
+              "übergeben",
+              "Status 7",
+              "FMS 7",
+              "RTW",
+              "Rauchgas"
+            ],
+            "hint": "Florian Kirchberg 44/1 — Patient an RTW übergeben, Rauchgasvergiftung, Status 7.",
+            "onSuccess": "n_einsatzende",
+            "onFailure": "n_patient_fail",
+            "feedbackSuccess": "✅ Patientenübergabe korrekt gemeldet!",
+            "feedbackFailure": "❌ Melden Sie die Patientenübergabe mit Status 7 und kurzer Diagnose."
+          }
+        }
+      ]
+    },
+    "n_patient_fail": {
+      "id": "n_patient_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bei Patientenübergabe melden Sie **Status 7** mit kurzer Diagnose.\n\nBeispiel: *„Florian Kirchberg 44/1 — Patient an RTW übergeben, Rauchgasvergiftung, Status 7.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_patient"
+        }
+      ]
+    },
+    "n_einsatzende": {
+      "id": "n_einsatzende",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Status 7 erhalten. Ist der Brand unter Kontrolle?\n\nMelden Sie **Einsatz beendet** und Ihre Rückkehr zur Einsatzbereitschaft!",
+      "actions": [
+        {
+          "id": "radio_ende",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatz beendet",
+              "einsatzbereit",
+              "Status 1",
+              "FMS 1",
+              "Status 2",
+              "abrücken",
+              "klar"
+            ],
+            "hint": "Florian Kirchberg 44/1 — Einsatz beendet, Brand gelöscht, rücken ab — Status 1.",
+            "onSuccess": "n_end",
+            "onFailure": "n_einsatzende_fail",
+            "feedbackSuccess": "✅ Einsatz vollständig abgemeldet!",
+            "feedbackFailure": "❌ Melden Sie Einsatzende und Ihre Einsatzbereitschaft (Status 1 oder 2)."
+          }
+        }
+      ]
+    },
+    "n_einsatzende_fail": {
+      "id": "n_einsatzende_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Melden Sie Einsatzende und Einsatzbereitschaft.\n\nBeispiel: *„Florian Kirchberg 44/1 — Einsatz beendet, Brand gelöscht, rücken ab — Status 1.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_einsatzende"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Status 1 erhalten. Hervorragender Einsatz! Alle Phasen korrekt absolviert.\n\n**Vollübung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_alarm"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

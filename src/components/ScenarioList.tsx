@@ -1,4 +1,6 @@
+import { useMemo, useState } from 'react';
 import { Scenario, PlayerRole } from '../types/story';
+import { getCategoryLabel } from '../lib/community-scenarios';
 
 interface Props {
   scenarios: Scenario[];
@@ -15,7 +17,40 @@ function getRoleBadge(role: PlayerRole): { label: string; cls: string } {
   return { label: role, cls: 'bg-[#333] text-[#a3a3a3]' };
 }
 
+function inferCategory(scenario: Scenario): string {
+  if (scenario.community?.category) return scenario.community.category;
+  const text = `${scenario.id} ${scenario.title} ${scenario.description}`.toLowerCase();
+  if (text.includes('verkehr')) return 'verkehr';
+  if (text.includes('wasser')) return 'wasser';
+  if (text.includes('thl') || text.includes('hilfe')) return 'thl';
+  if (text.includes('funk') || text.includes('alarm')) return 'funk';
+  if (text.includes('brand') || text.includes('lage')) return 'brand';
+  return 'sonstige';
+}
+
 export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLocal }: Props) {
+  const [activeCategory, setActiveCategory] = useState('alle');
+
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    scenarios.forEach(scenario => {
+      const category = inferCategory(scenario);
+      counts.set(category, (counts.get(category) || 0) + 1);
+    });
+
+    return [
+      { value: 'alle', label: 'Alle', count: scenarios.length },
+      ...Array.from(counts.entries())
+        .sort(([a], [b]) => getCategoryLabel(a).localeCompare(getCategoryLabel(b), 'de'))
+        .map(([value, count]) => ({ value, label: getCategoryLabel(value), count })),
+    ];
+  }, [scenarios]);
+
+  const filteredScenarios = useMemo(() => {
+    if (activeCategory === 'alle') return scenarios;
+    return scenarios.filter(scenario => inferCategory(scenario) === activeCategory);
+  }, [activeCategory, scenarios]);
+
   if (scenarios.length === 0) {
     return (
       <div className="text-center py-12">
@@ -31,7 +66,7 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
           <div>
             <h2 className="text-2xl font-bold mb-2">Trainings-Szenarien</h2>
             <p className="text-[#a3a3a3]">
-              Wählen Sie ein Szenario und sprechen Sie die Funk-Meldungen deutlich ins Mikrofon.
+              Wählen Sie ein Szenario oder filtern Sie nach Kategorie.
             </p>
           </div>
           <button
@@ -43,13 +78,30 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
         </div>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        {categories.map(category => (
+          <button
+            key={category.value}
+            onClick={() => setActiveCategory(category.value)}
+            className={`px-3 py-2 rounded-lg border text-sm ${
+              activeCategory === category.value
+                ? 'bg-[#dc2626] border-[#dc2626] text-white'
+                : 'bg-[#1a1a1a] border-[#333] text-[#a3a3a3] hover:bg-[#262626] hover:text-white'
+            }`}
+          >
+            {category.label} ({category.count})
+          </button>
+        ))}
+      </div>
+
       <div className="grid gap-4">
-        {scenarios.map((scenario) => {
+        {filteredScenarios.map((scenario) => {
           const badge = getRoleBadge(scenario.playerRole);
           const radioTurns = Object.values(scenario.nodes).reduce(
             (n, node) => n + node.actions.filter(a => !!a.radioCall).length,
             0
           );
+          const category = inferCategory(scenario);
 
           return (
             <div
@@ -62,9 +114,17 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.cls}`}>
                       {badge.label}
                     </span>
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#333] text-[#d4d4d4] border border-[#444]">
+                      {getCategoryLabel(category)}
+                    </span>
                     {scenario.community?.source === 'local' && (
                       <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-900/40 text-emerald-300 border border-emerald-800">
                         Lokal
+                      </span>
+                    )}
+                    {scenario.community?.source === 'community' && (
+                      <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-900/40 text-blue-300 border border-blue-800">
+                        Community
                       </span>
                     )}
                   </div>
@@ -102,7 +162,7 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
 
       <div className="mt-8 p-4 bg-[#1a1a1a] border border-[#333] rounded-lg text-xs text-[#a3a3a3]">
         <strong className="block mb-2 text-[#e5e5e5]">Hinweis zum Datenschutz:</strong>
-        Alle Audiodaten bleiben lokal auf Ihrem Gerät. Community-Szenarien werden erst durch Export/Import oder PR geteilt.
+        Alle Audiodaten bleiben lokal auf Ihrem Gerät. Lokale Szenarien bleiben spielbar, bis Sie sie löschen.
       </div>
     </div>
   );

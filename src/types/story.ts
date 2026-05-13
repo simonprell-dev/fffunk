@@ -48,7 +48,7 @@ export interface Scenario {
 
 export interface CommunityScenarioMeta {
   authorName: string;
-  notifyContact?: string;
+  category?: string;
   source?: 'local' | 'community';
   status?: 'local' | 'submitted' | 'merged';
   createdAt: string;

@@ -1,0 +1,171 @@
+{
+  "id": "trupp_verkehr_absichern",
+  "title": "Truppführer: Schlauchtrupp Verkehrsabsicherung",
+  "description": "Truppführer-Übung: Anfunken, Einsatzstelle absichern, Rückmeldung geben und Absicherung erweitern. 4 Funk-Schritte.",
+  "startingNodeId": "n_anfunken",
+  "playerRole": "truppführer",
+  "nodes": {
+    "n_anfunken": {
+      "id": "n_anfunken",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** Gruppenführer für Schlauchtrupp.\n\nVerkehrsunfall auf der Kreisstraße, unübersichtliche Kurve. Der Gruppenführer funkt den Schlauchtrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
+      "actions": [
+        {
+          "id": "radio_hoert",
+          "label": "📞 Anruf beantworten",
+          "radioCall": {
+            "expectedPhrases": [
+              "Schlauchtrupp",
+              "hört"
+            ],
+            "hint": "Schlauchtrupp hört.",
+            "onSuccess": "n_start",
+            "onFailure": "n_anfunken_fail",
+            "feedbackSuccess": "✅ Anruf korrekt angenommen.",
+            "feedbackFailure": "❌ Antworten Sie knapp mit „Schlauchtrupp hört.“"
+          }
+        }
+      ]
+    },
+    "n_anfunken_fail": {
+      "id": "n_anfunken_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Schlauchtrupp hört.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anfunken"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** Schlauchtrupp nach vorne. Verkehrsunfall auf der Kreisstraße, unübersichtliche Kurve. Auftrag: Einsatzstelle gegen den fließenden Verkehr absichern.\n\nMelden Sie, dass Sie den Auftrag verstanden haben und mit der Verkehrsabsicherung beginnen.",
+      "actions": [
+        {
+          "id": "radio_auftrag",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Auftrag verstanden",
+              "Verkehrsabsicherung",
+              "beginnen",
+              "Absicherung",
+              "Kreisstraße"
+            ],
+            "hint": "Schlauchtrupp verstanden, beginnen mit Verkehrsabsicherung auf der Kreisstraße.",
+            "onSuccess": "n_absicherung",
+            "onFailure": "n_start_fail",
+            "feedbackSuccess": "✅ Auftrag korrekt bestätigt.",
+            "feedbackFailure": "❌ Bestätigen Sie den Auftrag und nennen Sie Verkehrsabsicherung als Tätigkeit."
+          }
+        }
+      ]
+    },
+    "n_start_fail": {
+      "id": "n_start_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Der Schlauchtrupp bestätigt den Auftrag kurz und eindeutig.\n\nBeispiel: *„Schlauchtrupp verstanden, beginnen mit Verkehrsabsicherung auf der Kreisstraße.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_absicherung": {
+      "id": "n_absicherung",
+      "role": "truppführer",
+      "narrative": "Sie haben Warnblitzer und Leitkegel gesetzt. Die Absicherung steht in beide Fahrtrichtungen, wegen der Kurve etwa 100 Meter vor der Einsatzstelle.\n\nGeben Sie eine Rückmeldung an den Gruppenführer.",
+      "actions": [
+        {
+          "id": "radio_rueckmeldung",
+          "label": "📞 Rückmeldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Warnblitzer",
+              "Leitkegel",
+              "beidseitig",
+              "100 Meter",
+              "Absicherung steht"
+            ],
+            "hint": "Schlauchtrupp an Gruppenführer: Absicherung steht beidseitig mit Warnblitzern und Leitkegeln, etwa 100 Meter vor der Einsatzstelle.",
+            "onSuccess": "n_erweitern",
+            "onFailure": "n_absicherung_fail",
+            "feedbackSuccess": "✅ Rückmeldung vollständig.",
+            "feedbackFailure": "❌ Nennen Sie, dass die Absicherung steht, womit abgesichert wurde und in welcher Entfernung."
+          }
+        }
+      ]
+    },
+    "n_absicherung_fail": {
+      "id": "n_absicherung_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Eine gute Rückmeldung enthält Maßnahme, Material und Lage.\n\nBeispiel: *„Absicherung steht beidseitig mit Warnblitzern und Leitkegeln, etwa 100 Meter vor der Einsatzstelle.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_absicherung"
+        }
+      ]
+    },
+    "n_erweitern": {
+      "id": "n_erweitern",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** Wegen einsetzendem Regen Absicherung erweitern und einen Posten mit Warnweste an die Kurve stellen.\n\nBestätigen Sie den Zusatzauftrag.",
+      "actions": [
+        {
+          "id": "radio_erweitern",
+          "label": "📞 Zusatzauftrag bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Absicherung erweitern",
+              "Posten",
+              "Warnweste",
+              "Kurve",
+              "verstanden"
+            ],
+            "hint": "Verstanden, erweitern die Absicherung und stellen einen Posten mit Warnweste an die Kurve.",
+            "onSuccess": "n_end",
+            "onFailure": "n_erweitern_fail",
+            "feedbackSuccess": "✅ Zusatzauftrag sauber bestätigt.",
+            "feedbackFailure": "❌ Bestätigen Sie Erweiterung, Posten, Warnweste und Kurve."
+          }
+        }
+      ]
+    },
+    "n_erweitern_fail": {
+      "id": "n_erweitern_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Zusatzaufträge werden mit den Kernmaßnahmen wiederholt.\n\nBeispiel: *„Verstanden, erweitern die Absicherung und stellen einen Posten mit Warnweste an die Kurve.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_erweitern"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** Absicherung bestätigt. Einsatzstelle ist gegen den Verkehr gesichert.\n\n**Übung abgeschlossen!**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anfunken"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

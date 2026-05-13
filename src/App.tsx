@@ -8,6 +8,10 @@ import ScenarioEditor from './components/ScenarioEditor';
 import { deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
 
 type View = 'list' | 'editor' | 'practice';
+type ScenarioFolderIndex = {
+  builtin?: Record<string, string[]>;
+  community?: Record<string, string[]>;
+};
 
 function App() {
   const [builtInScenarios, setBuiltInScenarios] = useState<Scenario[]>([]);
@@ -55,13 +59,46 @@ function App() {
   useEffect(() => {
     setLoadError(null);
 
-    fetch('/scenarios/default.json')
-      .then(res => {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      })
-      .then((data: unknown) => {
-        setBuiltInScenarios(Array.isArray(data) ? data as Scenario[] : []);
+    const loadJson = async <T,>(url: string): Promise<T> => {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json() as Promise<T>;
+    };
+
+    const loadScenarioFolders = async (): Promise<Scenario[]> => {
+      const index = await loadJson<ScenarioFolderIndex>('/scenarios/index.json');
+      const builtinPaths = Object.values(index.builtin ?? {}).flat();
+      const communityPaths = Object.values(index.community ?? {}).flat();
+
+      const builtin = await Promise.all(
+        builtinPaths.map(path => loadJson<Scenario>(path.startsWith('/') ? path : `/scenarios/${path}`))
+      );
+
+      const community = await Promise.all(
+        communityPaths.map(path => loadJson<Scenario>(path.startsWith('/') ? path : `/scenarios/${path}`))
+      );
+
+      return [
+        ...builtin,
+        ...community.map(scenario => ({
+          ...scenario,
+          community: {
+            authorName: scenario.community?.authorName || 'Community',
+            category: scenario.community?.category || 'sonstige',
+            source: 'community' as const,
+            status: 'merged' as const,
+            createdAt: scenario.community?.createdAt || new Date().toISOString(),
+            updatedAt: scenario.community?.updatedAt || new Date().toISOString(),
+            shareId: scenario.community?.shareId,
+          },
+        })),
+      ];
+    };
+
+    loadScenarioFolders()
+      .catch(() => loadJson<unknown>('/scenarios/default.json').then(data => Array.isArray(data) ? data as Scenario[] : []))
+      .then((loaded) => {
+        setBuiltInScenarios(loaded);
       })
       .catch(err => {
         setLoadError('Fehler beim Laden: ' + err.message);

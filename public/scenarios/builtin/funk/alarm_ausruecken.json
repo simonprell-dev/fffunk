@@ -1,0 +1,137 @@
+{
+  "id": "alarm_ausruecken",
+  "title": "Alarmierung und Ausrücken",
+  "description": "Einsteiger: Alarm annehmen, Einsatzbereitschaft melden und zum Einsatz ausrücken. 3 Funk-Schritte.",
+  "startingNodeId": "n_alarm",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_alarm": {
+      "id": "n_alarm",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Funkalarm für Florian Kirchberg 44/1 — Feuer in Kirchberg, Birkenweg 12, Einfamilienhaus, Rauchentwicklung im Obergeschoss.\n\nMelden Sie **Einsatzbereitschaft** und fordern Sie den **Einsatzbefehl** an!",
+      "actions": [
+        {
+          "id": "radio_einsatzbereit",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "einsatzbereit",
+              "Status 1",
+              "FMS 1",
+              "Einsatzbefehl"
+            ],
+            "hint": "Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten",
+            "onSuccess": "n_einsatzbefehl",
+            "onFailure": "n_alarm_fail",
+            "feedbackSuccess": "✅ Einsatzbereitschaft korrekt gemeldet!",
+            "feedbackFailure": "❌ Melden Sie Status 1 (einsatzbereit) und fordern Sie den Einsatzbefehl an."
+          }
+        }
+      ]
+    },
+    "n_alarm_fail": {
+      "id": "n_alarm_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bei Alarmierung melden Sie zuerst Ihre Einsatzbereitschaft mit **Status 1** und fordern den Einsatzbefehl an.\n\nBeispiel: *„Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_alarm"
+        }
+      ]
+    },
+    "n_einsatzbefehl": {
+      "id": "n_einsatzbefehl",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Einsatzbefehl: Wohnhausbrand, Birkenweg 12, Kirchberg. Zweigeschossiges Einfamilienhaus, Rauch aus dem Dachgeschoss. Rücken Sie aus!\n\nBestätigen Sie den Einsatzbefehl und melden Sie **Ausrücken (Status 3)**!",
+      "actions": [
+        {
+          "id": "radio_ausruecken",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "verstanden",
+              "rücke aus",
+              "Status 3",
+              "FMS 3",
+              "ausgerückt"
+            ],
+            "hint": "Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3",
+            "onSuccess": "n_ankunft",
+            "onFailure": "n_einsatzbefehl_fail",
+            "feedbackSuccess": "✅ Ausrücken korrekt gemeldet — gute Fahrt!",
+            "feedbackFailure": "❌ Bestätigen Sie den Einsatzbefehl und melden Sie Status 3 (Ausgerückt)."
+          }
+        }
+      ]
+    },
+    "n_einsatzbefehl_fail": {
+      "id": "n_einsatzbefehl_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Beim Ausrücken bestätigen Sie den Einsatzbefehl und melden **Status 3** (Einsatz übernommen, ausgerückt).\n\nBeispiel: *„Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_einsatzbefehl"
+        }
+      ]
+    },
+    "n_ankunft": {
+      "id": "n_ankunft",
+      "role": "gruppenführer_a",
+      "narrative": "Sie erreichen den Birkenweg 12. Dichter Rauch steigt aus dem Dachgeschoss auf. Das Gebäude ist ein freistehendes Einfamilienhaus — keine Personen sichtbar.\n\nMelden Sie **Einsatzstelle erreicht (Status 4)** und geben Sie eine erste **Lagemeldung** ab!",
+      "actions": [
+        {
+          "id": "radio_lagemeldung",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzstelle",
+              "Status 4",
+              "FMS 4",
+              "brennt",
+              "Lagemeldung",
+              "Dachgeschoss"
+            ],
+            "hint": "Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Zweigeschossiges Wohngebäude, Dachgeschoss brennt, kein Menschenleben in Gefahr sichtbar.",
+            "onSuccess": "n_end",
+            "onFailure": "n_ankunft_fail",
+            "feedbackSuccess": "✅ Ankunft und Lagemeldung korrekt übermittelt!",
+            "feedbackFailure": "❌ Melden Sie Status 4 und geben Sie eine Lagemeldung ab (Objekt, Brandlage, Menschengefährdung)."
+          }
+        }
+      ]
+    },
+    "n_ankunft_fail": {
+      "id": "n_ankunft_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bei Ankunft melden Sie **Status 4** und geben sofort eine kurze **Lagemeldung** ab:\n1. Objektart und Adresse\n2. Lage des Brandes\n3. Menschengefährdung (ja/nein)\n\nBeispiel: *„Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Zweigeschossiges Wohngebäude, Dachgeschoss brennt, kein Menschenleben in Gefahr sichtbar.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_ankunft"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Status 4 und Lagemeldung erhalten. Keine weiteren Kräfte erforderlich. Gut gemacht!\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_alarm"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

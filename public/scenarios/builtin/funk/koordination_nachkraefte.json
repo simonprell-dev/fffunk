@@ -1,0 +1,139 @@
+{
+  "id": "koordination_nachkraefte",
+  "title": "Koordination der Nachkräfte",
+  "description": "Mittel: Als Erstangreifer weitere Fahrzeuge einweisen, Anfahrtswege durchgeben und Drehleiter platzieren. 3 Funk-Schritte.",
+  "startingNodeId": "n_anfahrt_start",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_anfahrt_start": {
+      "id": "n_anfahrt_start",
+      "role": "gruppenführer_a",
+      "narrative": "Sie sind Erstangreifer an der Einsatzstelle **Dorfstraße 8, Kirchberg**. Ein weiteres Fahrzeug — Florian Bergheim 44/1 — ist auf der Anfahrt und fragt nach dem Weg.\n\n**Leitstelle:** Florian Kirchberg 44/1 — Florian Bergheim 44/1 meldet sich auf Kanal. Bitte Anfahrtsweg durchgeben!\n\nGeben Sie die **Anfahrtsroute mit Meldepunkt** durch!",
+      "actions": [
+        {
+          "id": "radio_anfahrt",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Hauptstraße",
+              "links",
+              "Dorfstraße",
+              "Kreuzung",
+              "melden"
+            ],
+            "hint": "Florian Bergheim 44/1 — Anfahrt über Hauptstraße Kirchberg, bei der Kirche links in die Dorfstraße, melden an der Kreuzung Dorfstraße/Gartenweg.",
+            "onSuccess": "n_weiterweisung",
+            "onFailure": "n_anfahrt_fail",
+            "feedbackSuccess": "✅ Anfahrtsroute korrekt durchgegeben!",
+            "feedbackFailure": "❌ Nennen Sie den genauen Anfahrtsweg mit Straßennamen und einem Meldepunkt."
+          }
+        }
+      ]
+    },
+    "n_anfahrt_fail": {
+      "id": "n_anfahrt_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Geben Sie den Anfahrtsweg mit konkreten Straßennamen und einem **Meldepunkt** durch.\n\nBeispiel: *„Florian Bergheim 44/1 — Anfahrt über Hauptstraße Kirchberg, bei der Kirche links in die Dorfstraße, melden an der Kreuzung Dorfstraße/Gartenweg.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anfahrt_start"
+        }
+      ]
+    },
+    "n_weiterweisung": {
+      "id": "n_weiterweisung",
+      "role": "gruppenführer_a",
+      "narrative": "**Florian Bergheim 44/1:** Kreuzung Dorfstraße/Gartenweg erreicht — was nun?\n\nWeisen Sie Florian Bergheim zur Einsatzstelle ein und geben Sie den **Einsatzauftrag** (Aufbau Wasserversorgung)!",
+      "actions": [
+        {
+          "id": "radio_einsatzauftrag",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Dorfstraße 8",
+              "Wasserversorgung",
+              "Hydrant",
+              "weiterfahren",
+              "Auftrag"
+            ],
+            "hint": "Florian Bergheim 44/1 — weiterfahren zur Dorfstraße 8, Auftrag: Aufbau Wasserversorgung über Hydrant Gartenweg.",
+            "onSuccess": "n_drehleiter",
+            "onFailure": "n_weiterweisung_fail",
+            "feedbackSuccess": "✅ Florian Bergheim mit Einsatzauftrag eingewiesen!",
+            "feedbackFailure": "❌ Weisen Sie das Fahrzeug mit Zieladresse und konkretem Einsatzauftrag ein."
+          }
+        }
+      ]
+    },
+    "n_weiterweisung_fail": {
+      "id": "n_weiterweisung_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Weisen Sie das Fahrzeug mit Zieladresse und konkretem Einsatzauftrag ein.\n\nBeispiel: *„Florian Bergheim 44/1 — weiterfahren zur Dorfstraße 8, Auftrag: Aufbau Wasserversorgung über Hydrant Gartenweg.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_weiterweisung"
+        }
+      ]
+    },
+    "n_drehleiter": {
+      "id": "n_drehleiter",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Kirchberg 30/1 (Drehleiter) nähert sich der Einsatzstelle. Bitte **Aufstellungsort** durchgeben!\n\nGeben Sie der Drehleiter Gebäudeseite und freie Anfahrt durch!",
+      "actions": [
+        {
+          "id": "radio_drehleiter_platz",
+          "label": "📞 Funk-Meldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Nordseite",
+              "Westseite",
+              "Südseite",
+              "Ostseite",
+              "Aufstellung",
+              "aufstellen",
+              "Seite"
+            ],
+            "hint": "Kirchberg 30/1 — Aufstellung Nordseite des Gebäudes Dorfstraße 8, freie Anfahrt vom Gartenweg.",
+            "onSuccess": "n_end",
+            "onFailure": "n_drehleiter_fail",
+            "feedbackSuccess": "✅ Drehleiter korrekt eingewiesen!",
+            "feedbackFailure": "❌ Nennen Sie Gebäudeseite und freie Anfahrt für die Drehleiter."
+          }
+        }
+      ]
+    },
+    "n_drehleiter_fail": {
+      "id": "n_drehleiter_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Geben Sie der Drehleiter die Gebäudeseite und freie Anfahrt durch.\n\nBeispiel: *„Kirchberg 30/1 — Aufstellung Nordseite des Gebäudes Dorfstraße 8, freie Anfahrt vom Gartenweg.\"*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_drehleiter"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** Alle Kräfte sind eingewiesen und an der Einsatzstelle. Sehr gute Koordination!\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anfahrt_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}
