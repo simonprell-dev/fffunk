@@ -1,0 +1,1473 @@
+[
+  {
+    "id": "alarm_basic_1",
+    "title": "Grundlagen: Alarmierung und Einsatzbefehl",
+    "description": "Einsatzleitstelle gibt Alarm, Fahrzeug meldet Einsatzbereitschaft und rückt aus.",
+    "roles": {
+      "dispatch": "Florian ÜBUNGSLEITUNG",
+      "userVehicles": [
+        "Florian A 44/1"
+      ]
+    },
+    "dialogue": [
+      {
+        "turn": 1,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A, Florian …",
+        "text": "Funkalarm für Florian A, Florian … Feuer in A",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 2,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Einsatzbereit (alternativ: FMS 1); Einsatzbefehl",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Einsatzbereit (alternativ: FMS 1); Einsatzbefehl"
+        ]
+      },
+      {
+        "turn": 3,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Rauchentwicklung in A; Anwesen Maier, Dorfstraße",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 4,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arrival_and_report_1",
+    "title": "Ankunft an der Einsatzstelle und Lagemeldung",
+    "description": "Fahrzeug A erreicht Einsatzstelle, meldet Lage, und weitere Kräfte werden alarmiert.",
+    "roles": {
+      "dispatch": "Florian ÜBUNGSLEITUNG",
+      "userVehicles": [
+        "Florian A 44/1",
+        "Florian C 44/1"
+      ]
+    },
+    "dialogue": [
+      {
+        "turn": 5,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian C 44/1",
+        "text": "Abrückebereit (alternativ: FMS 1); Einsatzbefehl",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 6,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Brand in A, Anwesen Maier, Dorfstraße",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Brand in A, Anwesen Maier, Dorfstraße"
+        ]
+      },
+      {
+        "turn": 7,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Auf der Anfahrt an der Kreuzung vor A bei Übungsleitung über Funk melden",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 8,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2"
+        ]
+      },
+      {
+        "turn": 9,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Funkalarm für: Florian B; Florian F; Florian D; Florian E; Alarmstufe 2: Feuer in A",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 10,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Zuschauer behindern Einsatz; Polizei verständigen",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 11,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Kreuzung erreicht",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Kreuzung erreicht"
+        ]
+      },
+      {
+        "turn": 12,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian C 44/1",
+        "text": "Melden bei Florian A 44/1",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      }
+    ]
+  },
+  {
+    "id": "multi_vehicle_coordination",
+    "title": "Mehrere Fahrzeuge koordinieren Anfahrt",
+    "description": "Zusätzliche Fahrzeuge B, D, E, F werden alarmiert; Wegbeschreibungen und Standortmeldungen.",
+    "roles": {
+      "dispatch": "Florian ÜBUNGSLEITUNG",
+      "userVehicles": [
+        "Florian B 20/1",
+        "Florian D 42/1",
+        "Florian E 30/1",
+        "Florian F 58/1"
+      ]
+    },
+    "dialogue": [
+      {
+        "turn": 13,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Brand in A, Anwesen Maier, Dorfstraße",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 14,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Anfahrt?",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 15,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Über ... in Richtung ... melden an der Kreuzung vor A",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Über ... in Richtung ... melden an der Kreuzung vor A"
+        ]
+      },
+      {
+        "turn": 16,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian C 44/1",
+        "text": "Standort Kreuzung vor A",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 17,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian A 44/1",
+        "text": "Wegbeschreibung zur Est. (in Ortschaft bei Kirche links abbiegen)",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 18,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Notarzt, Rettungswagen und KBR verständigen; Fw-Mann verletzt; 2 Hausbewohner noch im Obergeschoss",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 19,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 42/1",
+        "text": "Einsatzbereit (alternativ: FMS 1), Einsatzbefehl?",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 20,
+        "speaker": "Florian D 42/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Brand in A, Anwesen Maier, Dorfstraße",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Brand in A, Anwesen Maier, Dorfstraße"
+        ]
+      },
+      {
+        "turn": 21,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 42/1",
+        "text": "Anfahrt ab ...",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 22,
+        "speaker": "Florian D 42/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Wegbeschreibung (in C links in Richtung B) bei der Kreuzung vor A melden",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wegbeschreibung (in C links in Richtung B) bei der Kreuzung vor A melden"
+        ]
+      },
+      {
+        "turn": 23,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Polizei benachrichtigt",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 24,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian E 30/1",
+        "text": "Einsatzbefehl?",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 25,
+        "speaker": "Florian E 30/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A"
+        ]
+      },
+      {
+        "turn": 26,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Melden bei Florian A 44/1; TMO Gruppe …",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 27,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Alarm ist ausgelöst worden; Einsatzbefehl?",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 28,
+        "speaker": "Florian F 58/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Brand in A; Aufbau Wasserversorgung",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Brand in A; Aufbau Wasserversorgung"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "extended_operations",
+    "title": "Erweiterter Einsatz: Wasserversorgung, Verletzte, Gateway",
+    "description": "Aufbau Wasserversorgung, Verletztenmeldungen, Gateway-Umschaltung.",
+    "roles": {
+      "dispatch": "Florian ÜBUNGSLEITUNG",
+      "userVehicles": [
+        "Florian A 44/1",
+        "Florian B 20/1"
+      ]
+    },
+    "dialogue": [
+      {
+        "turn": 29,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Wasserwerk soll Druck erhöhen; Notarzt am Ort",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 30,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Standort ...",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 31,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Wasserwerk verständigt",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wasserwerk verständigt"
+        ]
+      },
+      {
+        "turn": 32,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian E 30/1",
+        "text": "Standort ...",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 33,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 48/1",
+        "text": "Standort B; kurz hinter Florian B 20/1",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 34,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Standort zwischen B und X, genaue Anfahrt",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 35,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden"
+        ]
+      },
+      {
+        "turn": 36,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Erreicht Kreuzung A",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 37,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Melden bei Florian A 44/1; TMO Gruppe …",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Melden bei Florian A 44/1; TMO Gruppe …"
+        ]
+      },
+      {
+        "turn": 38,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Ortsrand von A erreicht",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Ortsrand von A erreicht"
+        ]
+      },
+      {
+        "turn": 39,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian A 44/1",
+        "text": "Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät"
+        ]
+      },
+      {
+        "turn": 40,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian D 48/1",
+        "text": "Kreuzung erreicht",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Kreuzung erreicht"
+        ]
+      },
+      {
+        "turn": 41,
+        "speaker": "Florian D 48/1",
+        "listener": "Florian A 44/1",
+        "text": "Wegbeschreibung (Fahren Sie durch die Ortschaft, in südlicher Richtung der Brandstelle zum Weiher); Meldungen über Handfunkgerät",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 42,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian B 20/1",
+        "text": "Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar"
+        ]
+      },
+      {
+        "turn": 43,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian A 44/1",
+        "text": "Bestätigung",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Bestätigung"
+        ]
+      },
+      {
+        "turn": 44,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "MRT auf Gateway schalten; DMO Gruppe 302F",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "MRT auf Gateway schalten; DMO Gruppe 302F"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "full_operation_status",
+    "title": "Vollalarm: Einsatzkräfte vor Ort, detaillierte Rückmeldungen",
+    "description": "Einsatzleitung gibt ausführlichen Lagebericht; Einsatzkräfte melden Schlauchleitung, EVU.",
+    "roles": {
+      "dispatch": "Florian ÜBUNGSLEITUNG",
+      "userVehicles": [
+        "Florian F 58/1",
+        "Florian A 44/1"
+      ]
+    },
+    "dialogue": [
+      {
+        "turn": 45,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Gateway geschaltet",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 46,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian E 30/1",
+        "text": "Kreuzung erreicht",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 47,
+        "speaker": "Florian E 30/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Melden bei der Feuerwehr A 44/1",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 48,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian E 30/1",
+        "text": "Vor der Kreuzung, vor A",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Vor der Kreuzung, vor A"
+        ]
+      },
+      {
+        "turn": 49,
+        "speaker": "Florian E 30/1",
+        "listener": "Florian A 44/1",
+        "text": "Wegbeschreibung (Fahren Sie in die Ortschaft bei der Kirche, links abbiegen, geradeaus an die Nordseite der Brandstelle); Meldung über Handfunkgerät",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 50,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Rückmeldung: 7 C-Rohre eingesetzt; Personen noch im Dachgeschoss, DL 30 eingetroffen, Löschteich wird leer, Brand im Wohnhaus; Stall und östliches Gebäude unter Kontrolle, westliches Gebäude noch nicht unter Kontrolle",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 51,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Standort Kreuzung",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 52,
+        "speaker": "Florian F 58/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Melden bei Florian A 44/1",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Melden bei Florian A 44/1"
+        ]
+      },
+      {
+        "turn": 53,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Kreuzung erreicht",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 54,
+        "speaker": "Florian F 58/1",
+        "listener": "Florian A 44/1",
+        "text": "Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät"
+        ]
+      },
+      {
+        "turn": 55,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Verständigen Sie EVU, Dachständer droht herabzufallen",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 56,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt"
+        ]
+      },
+      {
+        "turn": 57,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Lagebericht?",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Lagebericht?"
+        ]
+      },
+      {
+        "turn": 58,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "2 Personen gerettet, an Notarzt übergeben, 1 Feuerwehrmann mit Rauchvergiftung ins Krankenhaus unterwegs; 7 Rinder und 10 Kälber gerettet; 2 PA-Trupps eingesetzt. 10 C-Rohre im Einsatz, Feuer unter Kontrolle, östliches Nebengebäude nicht mehr gefährdet. Feuer im Wohnhaus aus. Im Stall Obergeschoss noch Futtervorräte in Brand. Im westlichen Lager Brandbekämpfung noch im Gange. EVU an der Einsatzstelle.",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      }
+    ]
+  },
+  {
+    "id": "winding_down_and_return",
+    "title": "Einsatzende: Aufräumen, Abrücken, Fahrzeug wieder einsatzbereit",
+    "description": "Feuer gelöscht, Rückzug, Fahrzeuge zurück im Gerätehaus, Funk aus.",
+    "roles": {
+      "dispatch": "Florian ÜBUNGSLEITUNG",
+      "userVehicles": [
+        "Florian A 44/1",
+        "Florian B 20/1",
+        "Florian C 44/1",
+        "Florian D 48/1",
+        "Florian E 30/1",
+        "Florian F 58/1"
+      ]
+    },
+    "dialogue": [
+      {
+        "turn": 59,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Kreisbrandrat erreicht; soll er noch zur Einsatzstelle?",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Kreisbrandrat erreicht; soll er noch zur Einsatzstelle?"
+        ]
+      },
+      {
+        "turn": 60,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A",
+        "text": "Kreisbrandinspektor vor Ort",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 61,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Gaslieferanten verständigen, ein autogenes Schweißgerät im Lager gefunden, Druckgasflaschen sind heiß, werden gekühlt, Abholung",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 62,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Feuer aus; Weiher wird gefüllt; Wehren rücken in ca. 1 Stunde ab; A übernimmt Brandwache beim Abräumen der Futtervorräte im Stallobergeschoss",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 63,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Abrücken; Schläuche von Gemeindefahrzeug zur Schlauchpflege gebracht",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 64,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Rücken ab",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 65,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian C 44/1",
+        "text": "Verlassen die Brandstelle; zurück zum Standort",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 66,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 48/1",
+        "text": "Rücken ab; fahren Atemschutzwerkstatt; dann Standort",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 67,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Druckgasflaschen wurden vom Gaslieferanten abgeholt",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 68,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Auf dem Weg zur Unterkunft",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 69,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian C 44/1",
+        "text": "Im Gerätehaus; Fahrzeug wieder einsatzbereit; schalten ab",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 70,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Fahrzeug einsatzbereit; fahren zum Feuerwehrhaus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 71,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian E 30/1",
+        "text": "Gerätehaus eingetroffen; schalten ab",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 72,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 48/1",
+        "text": "Im Gerätehaus; Fahrzeug wieder einsatzbereit; Frage Ausrückezeit, Einsatzstelle an",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 73,
+        "speaker": "Florian D 48/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "AUS 14.08, Est 14.14",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "AUS 14.08, Est 14.14"
+        ]
+      },
+      {
+        "turn": 74,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 48/1",
+        "text": "Ok; Funk aus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 75,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Standort; Fahrzeug einsatzbereit; Funk aus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 76,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Fahrzeug wieder einsatzbereit; in der Unterkunft; Funk aus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 77,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Unterkunft erreicht; Funk aus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 78,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Alle",
+        "text": "Funkübung beendet",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      }
+    ]
+  },
+  {
+    "id": "complete_full_exercise",
+    "title": "Komplettübung TMO-Betrieb (Alle 6 Arbeitsblätter)",
+    "description": "Vollständige Einsatzübung von Alarmierung bis Einsatzabschluss. Nimm die Rolle aller Fahrzeuge nacheinander ein.",
+    "roles": {
+      "dispatch": "Florian ÜBUNGSLEITUNG",
+      "userVehicles": [
+        "Florian A 44/1",
+        "Florian B 20/1",
+        "Florian C 44/1",
+        "Florian D 48/1",
+        "Florian E 30/1",
+        "Florian F 58/1"
+      ]
+    },
+    "dialogue": [
+      {
+        "turn": 1,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A, Florian …",
+        "text": "Funkalarm für Florian A, Florian … Feuer in A",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 2,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Einsatzbereit (alternativ: FMS 1); Einsatzbefehl",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Einsatzbereit (alternativ: FMS 1); Einsatzbefehl"
+        ]
+      },
+      {
+        "turn": 3,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Rauchentwicklung in A; Anwesen Maier, Dorfstraße",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 4,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)"
+        ]
+      },
+      {
+        "turn": 5,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian C 44/1",
+        "text": "Abrückebereit (alternativ: FMS 1); Einsatzbefehl",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 6,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Brand in A, Anwesen Maier, Dorfstraße",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Brand in A, Anwesen Maier, Dorfstraße"
+        ]
+      },
+      {
+        "turn": 7,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Auf der Anfahrt an der Kreuzung vor A bei Übungsleitung über Funk melden",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 8,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2"
+        ]
+      },
+      {
+        "turn": 9,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Funkalarm für: Florian B; Florian F; Florian D; Florian E; Alarmstufe 2: Feuer in A",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 10,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Zuschauer behindern Einsatz; Polizei verständigen",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 11,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Kreuzung erreicht",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Kreuzung erreicht"
+        ]
+      },
+      {
+        "turn": 12,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian C 44/1",
+        "text": "Melden bei Florian A 44/1",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 13,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Brand in A, Anwesen Maier, Dorfstraße",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Brand in A, Anwesen Maier, Dorfstraße"
+        ]
+      },
+      {
+        "turn": 14,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Anfahrt?",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 15,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Über ... in Richtung ... melden an der Kreuzung vor A",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Über ... in Richtung ... melden an der Kreuzung vor A"
+        ]
+      },
+      {
+        "turn": 16,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian C 44/1",
+        "text": "Standort Kreuzung vor A",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Standort Kreuzung vor A"
+        ]
+      },
+      {
+        "turn": 17,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian A 44/1",
+        "text": "Wegbeschreibung zur Est. (in Ortschaft bei Kirche links abbiegen)",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wegbeschreibung zur Est. (in Ortschaft bei Kirche links abbiegen)"
+        ]
+      },
+      {
+        "turn": 18,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Notarzt, Rettungswagen und KBR verständigen; Fw-Mann verletzt; 2 Hausbewohner noch im Obergeschoss",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 19,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 42/1",
+        "text": "Einsatzbereit (alternativ: FMS 1), Einsatzbefehl?",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 20,
+        "speaker": "Florian D 42/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Brand in A, Anwesen Maier, Dorfstraße",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 21,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 42/1",
+        "text": "Anfahrt ab ...",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 22,
+        "speaker": "Florian D 42/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Wegbeschreibung (in C links in Richtung B) bei der Kreuzung vor A melden",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 23,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Polizei benachrichtigt",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Polizei benachrichtigt"
+        ]
+      },
+      {
+        "turn": 24,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian E 30/1",
+        "text": "Einsatzbefehl?",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 25,
+        "speaker": "Florian E 30/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A"
+        ]
+      },
+      {
+        "turn": 26,
+        "speaker": "Florian C 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Melden bei Florian A 44/1; TMO Gruppe …",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Melden bei Florian A 44/1; TMO Gruppe …"
+        ]
+      },
+      {
+        "turn": 27,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Alarm ist ausgelöst worden; Einsatzbefehl?",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 28,
+        "speaker": "Florian F 58/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Brand in A; Aufbau Wasserversorgung",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Brand in A; Aufbau Wasserversorgung"
+        ]
+      },
+      {
+        "turn": 29,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Wasserwerk soll Druck erhöhen; Notarzt am Ort",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 30,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Standort ...",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 31,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Wasserwerk verständigt",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wasserwerk verständigt"
+        ]
+      },
+      {
+        "turn": 32,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian E 30/1",
+        "text": "Standort ...",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 33,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 48/1",
+        "text": "Standort B; kurz hinter Florian B 20/1",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 34,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Standort zwischen B und X, genaue Anfahrt",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 35,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden"
+        ]
+      },
+      {
+        "turn": 36,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Erreicht Kreuzung A",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 37,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Melden bei Florian A 44/1; TMO Gruppe …",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Melden bei Florian A 44/1; TMO Gruppe …"
+        ]
+      },
+      {
+        "turn": 38,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Ortsrand von A erreicht",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Ortsrand von A erreicht"
+        ]
+      },
+      {
+        "turn": 39,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian A 44/1",
+        "text": "Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät"
+        ]
+      },
+      {
+        "turn": 40,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian D 48/1",
+        "text": "Kreuzung erreicht",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Kreuzung erreicht"
+        ]
+      },
+      {
+        "turn": 41,
+        "speaker": "Florian D 48/1",
+        "listener": "Florian A 44/1",
+        "text": "Wegbeschreibung (Fahren Sie durch die Ortschaft, in südlicher Richtung der Brandstelle zum Weiher); Meldungen über Handfunkgerät",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wegbeschreibung (Fahren Sie durch die Ortschaft, in südlicher Richtung der Brandstelle zum Weiher); Meldungen über Handfunkgerät"
+        ]
+      },
+      {
+        "turn": 42,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian B 20/1",
+        "text": "Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar"
+        ]
+      },
+      {
+        "turn": 43,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian A 44/1",
+        "text": "Bestätigung",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Bestätigung"
+        ]
+      },
+      {
+        "turn": 44,
+        "speaker": "Florian B 20/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "MRT auf Gateway schalten; DMO Gruppe 302F",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "MRT auf Gateway schalten; DMO Gruppe 302F"
+        ]
+      },
+      {
+        "turn": 45,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Gateway geschaltet",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 46,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian E 30/1",
+        "text": "Kreuzung erreicht",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 47,
+        "speaker": "Florian E 30/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Melden bei der Feuerwehr A 44/1",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Melden bei der Feuerwehr A 44/1"
+        ]
+      },
+      {
+        "turn": 48,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian E 30/1",
+        "text": "Vor der Kreuzung, vor A",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Vor der Kreuzung, vor A"
+        ]
+      },
+      {
+        "turn": 49,
+        "speaker": "Florian E 30/1",
+        "listener": "Florian A 44/1",
+        "text": "Wegbeschreibung (Fahren Sie in die Ortschaft bei der Kirche, links abbiegen, geradeaus an die Nordseite der Brandstelle); Meldung über Handfunkgerät",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Wegbeschreibung (Fahren Sie in die Ortschaft bei der Kirche, links abbiegen, geradeaus an die Nordseite der Brandstelle); Meldung über Handfunkgerät"
+        ]
+      },
+      {
+        "turn": 50,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Rückmeldung: 7 C-Rohre eingesetzt; Personen noch im Dachgeschoss, DL 30 eingetroffen, Löschteich wird leer, Brand im Wohnhaus; Stall und östliches Gebäude unter Kontrolle, westliches Gebäude noch nicht unter Kontrolle",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 51,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Standort Kreuzung",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 52,
+        "speaker": "Florian F 58/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Melden bei Florian A 44/1",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Melden bei Florian A 44/1"
+        ]
+      },
+      {
+        "turn": 53,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Kreuzung erreicht",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 54,
+        "speaker": "Florian F 58/1",
+        "listener": "Florian A 44/1",
+        "text": "Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät"
+        ]
+      },
+      {
+        "turn": 55,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Verständigen Sie EVU, Dachständer droht herabzufallen",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 56,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt"
+        ]
+      },
+      {
+        "turn": 57,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Lagebericht?",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Lagebericht?"
+        ]
+      },
+      {
+        "turn": 58,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "2 Personen gerettet, an Notarzt übergeben, 1 Feuerwehrmann mit Rauchvergiftung ins Krankenhaus unterwegs; 7 Rinder und 10 Kälber gerettet; 2 PA-Trupps eingesetzt. 10 C-Rohre im Einsatz, Feuer unter Kontrolle, östliches Nebengebäude nicht mehr gefährdet. Feuer im Wohnhaus aus. Im Stall Obergeschoss noch Futtervorräte in Brand. Im westlichen Lager Brandbekämpfung noch im Gange. EVU an der Einsatzstelle.",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 59,
+        "speaker": "Florian A 44/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "Kreisbrandrat erreicht; soll er noch zur Einsatzstelle?",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "Kreisbrandrat erreicht; soll er noch zur Einsatzstelle?"
+        ]
+      },
+      {
+        "turn": 60,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A",
+        "text": "Kreisbrandinspektor vor Ort",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 61,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Gaslieferanten verständigen, ein autogenes Schweißgerät im Lager gefunden, Druckgasflaschen sind heiß, werden gekühlt, Abholung",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 62,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Feuer aus; Weiher wird gefüllt; Wehren rücken in ca. 1 Stunde ab; A übernimmt Brandwache beim Abräumen der Futtervorräte im Stallobergeschoss",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 63,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Abrücken; Schläuche von Gemeindefahrzeug zur Schlauchpflege gebracht",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 64,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Rücken ab",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 65,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian C 44/1",
+        "text": "Verlassen die Brandstelle; zurück zum Standort",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 66,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 48/1",
+        "text": "Rücken ab; fahren Atemschutzwerkstatt; dann Standort",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 67,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Druckgasflaschen wurden vom Gaslieferanten abgeholt",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 68,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Auf dem Weg zur Unterkunft",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 69,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian C 44/1",
+        "text": "Im Gerätehaus; Fahrzeug wieder einsatzbereit; schalten ab",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 70,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Fahrzeug einsatzbereit; fahren zum Feuerwehrhaus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 71,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian E 30/1",
+        "text": "Gerätehaus eingetroffen; schalten ab",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 72,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 48/1",
+        "text": "Im Gerätehaus; Fahrzeug wieder einsatzbereit; Frage Ausrückezeit, Einsatzstelle an",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 73,
+        "speaker": "Florian D 48/1",
+        "listener": "Florian ÜBUNGSLEITUNG",
+        "text": "AUS 14.08, Est 14.14",
+        "isUserTurn": true,
+        "expectedPhrases": [
+          "AUS 14.08, Est 14.14"
+        ]
+      },
+      {
+        "turn": 74,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian D 48/1",
+        "text": "Ok; Funk aus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 75,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian B 20/1",
+        "text": "Standort; Fahrzeug einsatzbereit; Funk aus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 76,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian F 58/1",
+        "text": "Fahrzeug wieder einsatzbereit; in der Unterkunft; Funk aus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 77,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Florian A 44/1",
+        "text": "Unterkunft erreicht; Funk aus",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      },
+      {
+        "turn": 78,
+        "speaker": "Florian ÜBUNGSLEITUNG",
+        "listener": "Alle",
+        "text": "Funkübung beendet",
+        "isUserTurn": false,
+        "expectedPhrases": []
+      }
+    ]
+  }
+]
