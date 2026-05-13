@@ -1,94 +1,135 @@
 [
   {
-    "id": "alarm_basic_1",
-    "title": "Grundlagen: Alarmierung und Einsatzbefehl",
-    "description": "Einsatzleitstelle gibt Alarm, Fahrzeug meldet Einsatzbereitschaft und rückt aus.",
-    "startingNodeId": "node_000",
+    "id": "alarm_ausruecken",
+    "title": "Alarmierung und Ausrücken",
+    "description": "Einsteiger: Alarm annehmen, Einsatzbereitschaft melden und zum Einsatz ausrücken. 3 Funk-Schritte.",
+    "startingNodeId": "n_alarm",
     "playerRole": "gruppenführer_a",
     "nodes": {
-      "node_000": {
-        "id": "node_000",
+      "n_alarm": {
+        "id": "n_alarm",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Funkalarm für Florian A, Florian … Feuer in A",
-        "actions": []
-      },
-      "node_001": {
-        "id": "node_001",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Funkalarm für Florian A, Florian … Feuer in A\n\nWas ist Ihre Antwort?",
+        "narrative": "**Leitstelle:** Funkalarm für Florian Kirchberg 44/1 — Feuer in Kirchberg, Birkenweg 12, Einfamilienhaus, Rauchentwicklung im Obergeschoss.\n\nMelden Sie **Einsatzbereitschaft** und fordern Sie den **Einsatzbefehl** an!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_einsatzbereit",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Einsatzbereit (alternativ: FMS 1); Einsatzbefehl"
+                "einsatzbereit",
+                "Status 1",
+                "FMS 1",
+                "Einsatzbefehl"
               ],
-              "hint": "Einsatzbereit (alternativ: FMS 1); Einsatzbefehl",
-              "onSuccess": "node_002",
-              "onFailure": "node_001_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten",
+              "onSuccess": "n_einsatzbefehl",
+              "onFailure": "n_alarm_fail",
+              "feedbackSuccess": "✅ Einsatzbereitschaft korrekt gemeldet!",
+              "feedbackFailure": "❌ Melden Sie Status 1 (einsatzbereit) und fordern Sie den Einsatzbefehl an."
             }
           }
         ]
       },
-      "node_001_feedback": {
-        "id": "node_001_feedback",
+      "n_alarm_fail": {
+        "id": "n_alarm_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Einsatzbereit (alternativ: FMS 1); Einsatzbefehl\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Bei Alarmierung melden Sie zuerst Ihre Einsatzbereitschaft mit **Status 1** und fordern den Einsatzbefehl an.\n\nBeispiel: *„Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_001"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_alarm"
           }
         ]
       },
-      "node_002": {
-        "id": "node_002",
+      "n_einsatzbefehl": {
+        "id": "n_einsatzbefehl",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Rauchentwicklung in A; Anwesen Maier, Dorfstraße\n\nWas ist Ihre Antwort?",
+        "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Einsatzbefehl: Wohnhausbrand, Birkenweg 12, Kirchberg. Zweigeschossiges Einfamilienhaus, Rauch aus dem Dachgeschoss. Rücken Sie aus!\n\nBestätigen Sie den Einsatzbefehl und melden Sie **Ausrücken (Status 3)**!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_ausruecken",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)"
+                "verstanden",
+                "rücke aus",
+                "Status 3",
+                "FMS 3",
+                "ausgerückt"
               ],
-              "hint": "Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)",
-              "onSuccess": "node_003",
-              "onFailure": "node_002_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3",
+              "onSuccess": "n_ankunft",
+              "onFailure": "n_einsatzbefehl_fail",
+              "feedbackSuccess": "✅ Ausrücken korrekt gemeldet — gute Fahrt!",
+              "feedbackFailure": "❌ Bestätigen Sie den Einsatzbefehl und melden Sie Status 3 (Ausgerückt)."
             }
           }
         ]
       },
-      "node_002_feedback": {
-        "id": "node_002_feedback",
+      "n_einsatzbefehl_fail": {
+        "id": "n_einsatzbefehl_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Beim Ausrücken bestätigen Sie den Einsatzbefehl und melden **Status 3** (Einsatz übernommen, ausgerückt).\n\nBeispiel: *„Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_002"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_einsatzbefehl"
           }
         ]
       },
-      "node_003": {
-        "id": "node_003",
+      "n_ankunft": {
+        "id": "n_ankunft",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Übung beendet. Gut gemacht!",
+        "narrative": "Sie erreichen den Birkenweg 12. Dichter Rauch steigt aus dem Dachgeschoss auf. Das Gebäude ist ein freistehendes Einfamilienhaus — keine Personen sichtbar.\n\nMelden Sie **Einsatzstelle erreicht (Status 4)** und geben Sie eine erste **Lagemeldung** ab!",
+        "actions": [
+          {
+            "id": "radio_lagemeldung",
+            "label": "📞 Funk-Meldung sprechen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Einsatzstelle",
+                "Status 4",
+                "FMS 4",
+                "brennt",
+                "Lagemeldung",
+                "Dachgeschoss"
+              ],
+              "hint": "Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Zweigeschossiges Wohngebäude, Dachgeschoss brennt, kein Menschenleben in Gefahr sichtbar.",
+              "onSuccess": "n_end",
+              "onFailure": "n_ankunft_fail",
+              "feedbackSuccess": "✅ Ankunft und Lagemeldung korrekt übermittelt!",
+              "feedbackFailure": "❌ Melden Sie Status 4 und geben Sie eine Lagemeldung ab (Objekt, Brandlage, Menschengefährdung)."
+            }
+          }
+        ]
+      },
+      "n_ankunft_fail": {
+        "id": "n_ankunft_fail",
+        "role": "gruppenführer_a",
+        "narrative": "**Feedback:** Bei Ankunft melden Sie **Status 4** und geben sofort eine kurze **Lagemeldung** ab:\n1. Objektart und Adresse\n2. Lage des Brandes\n3. Menschengefährdung (ja/nein)\n\nBeispiel: *„Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Zweigeschossiges Wohngebäude, Dachgeschoss brennt, kein Menschenleben in Gefahr sichtbar.\"*",
+        "actions": [
+          {
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_ankunft"
+          }
+        ]
+      },
+      "n_end": {
+        "id": "n_end",
+        "role": "gruppenführer_a",
+        "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Status 4 und Lagemeldung erhalten. Keine weiteren Kräfte erforderlich. Gut gemacht!\n\n**Übung abgeschlossen! 🎉**",
         "actions": [
           {
             "id": "restart",
-            "label": "Noch einmal trainieren",
-            "nextNodeId": "node_000"
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_alarm"
           },
           {
             "id": "exit",
-            "label": "Zurück zur Übersicht",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]
@@ -96,127 +137,173 @@
     }
   },
   {
-    "id": "arrival_and_report_1",
-    "title": "Ankunft an der Einsatzstelle und Lagemeldung",
-    "description": "Fahrzeug A erreicht Einsatzstelle, meldet Lage, und weitere Kräfte werden alarmiert.",
-    "startingNodeId": "node_000",
+    "id": "lagemeldung_nachalarmierung",
+    "title": "Lagemeldung und Nachalarmierung",
+    "description": "Mittel: Vollständige Lagemeldung abgeben, Drehleiter anfordern und Menschenrettung melden. 4 Funk-Schritte.",
+    "startingNodeId": "n_vor_ort",
     "playerRole": "gruppenführer_a",
     "nodes": {
-      "node_000": {
-        "id": "node_000",
+      "n_vor_ort": {
+        "id": "n_vor_ort",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Abrückebereit (alternativ: FMS 1); Einsatzbefehl",
-        "actions": []
-      },
-      "node_001": {
-        "id": "node_001",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Abrückebereit (alternativ: FMS 1); Einsatzbefehl\n\nWas ist Ihre Antwort?",
+        "narrative": "Sie sind als Erstangreifer mit dem LF 10/6 an der Einsatzstelle **Bergstraße 4, Kirchberg** eingetroffen.\n\n**Lage:** Freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Im Dachgeschoss ist eine Person sichtbar und ruft um Hilfe. Keine weiteren Kräfte vor Ort.\n\nGeben Sie sofort eine **vollständige Lagemeldung** mit Menschenrettungshinweis ab!",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_lage",
+            "label": "📞 Lagemeldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Brand in A, Anwesen Maier, Dorfstraße"
+                "Status 4",
+                "FMS 4",
+                "Menschenrettung",
+                "Person",
+                "eingeschlossen",
+                "Vollbrand"
               ],
-              "hint": "Brand in A, Anwesen Maier, Dorfstraße",
-              "onSuccess": "node_002",
-              "onFailure": "node_001_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Einfamilienhaus Bergstraße 4, Dachgeschoss in Vollbrand, eine Person im Dachgeschoss eingeschlossen — Menschenrettung erforderlich!",
+              "onSuccess": "n_drehleiter",
+              "onFailure": "n_vor_ort_fail",
+              "feedbackSuccess": "✅ Vollständige Lagemeldung übermittelt!",
+              "feedbackFailure": "❌ Die Lagemeldung muss Status 4, Objektbeschreibung, Brandlage und Menschengefährdung enthalten."
             }
           }
         ]
       },
-      "node_001_feedback": {
-        "id": "node_001_feedback",
+      "n_vor_ort_fail": {
+        "id": "n_vor_ort_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Brand in A, Anwesen Maier, Dorfstraße\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Eine vollständige Lagemeldung enthält:\n1. **Status 4** — Einsatzstelle erreicht\n2. **Objektbeschreibung** — Art und Adresse\n3. **Brandlage** — wo brennt es\n4. **Menschengefährdung** — Personen in Gefahr?\n\nBeispiel: *„Florian Kirchberg 44/1 — Status 4. Lagemeldung: Einfamilienhaus Bergstraße 4, Dachgeschoss in Vollbrand, eine Person eingeschlossen — Menschenrettung erforderlich!\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_001"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_vor_ort"
           }
         ]
       },
-      "node_002": {
-        "id": "node_002",
+      "n_drehleiter": {
+        "id": "n_drehleiter",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Auf der Anfahrt an der Kreuzung vor A bei Übungsleitung über Funk melden\n\nWas ist Ihre Antwort?",
+        "narrative": "**Leitstelle:** Lagemeldung erhalten. Welche Kräfte benötigen Sie?\n\nFordern Sie eine **Drehleiter** für die Menschenrettung nach!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_drehleiter",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2"
+                "Drehleiter",
+                "anfordern",
+                "fordere",
+                "nachalarmi"
               ],
-              "hint": "Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2",
-              "onSuccess": "node_003",
-              "onFailure": "node_002_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1 — Anforderung Drehleiter, eine Person im Dachgeschoss eingeschlossen, Bergstraße 4, Kirchberg.",
+              "onSuccess": "n_wasserversorgung",
+              "onFailure": "n_drehleiter_fail",
+              "feedbackSuccess": "✅ Drehleiter angefordert!",
+              "feedbackFailure": "❌ Fordern Sie die Drehleiter für die Menschenrettung an."
             }
           }
         ]
       },
-      "node_002_feedback": {
-        "id": "node_002_feedback",
+      "n_drehleiter_fail": {
+        "id": "n_drehleiter_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Fordern Sie die Drehleiter mit Begründung und Einsatzort an.\n\nBeispiel: *„Florian Kirchberg 44/1 — Anforderung Drehleiter, eine Person im Dachgeschoss eingeschlossen, Bergstraße 4, Kirchberg.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_002"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_drehleiter"
           }
         ]
       },
-      "node_003": {
-        "id": "node_003",
+      "n_wasserversorgung": {
+        "id": "n_wasserversorgung",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Funkalarm für: Florian B; Florian F; Florian D; Florian E; Alarmstufe 2: Feuer in A\n\nWas ist Ihre Antwort?",
+        "narrative": "**Leitstelle:** Drehleiter ist alarmiert, ETA 4 Minuten. Melden Sie Ihren Status zur **Wasserversorgung**!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_wasser",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Kreuzung erreicht"
+                "Wasserversorgung",
+                "Hydrant",
+                "aufgebaut",
+                "gesichert",
+                "sichergestellt"
               ],
-              "hint": "Kreuzung erreicht",
-              "onSuccess": "node_004",
-              "onFailure": "node_003_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1 — Wasserversorgung gesichert über Hydrant Bergstraße 2.",
+              "onSuccess": "n_menschenrettung",
+              "onFailure": "n_wasserversorgung_fail",
+              "feedbackSuccess": "✅ Wasserversorgung korrekt gemeldet!",
+              "feedbackFailure": "❌ Melden Sie die gesicherte Wasserversorgung mit Lageangabe."
             }
           }
         ]
       },
-      "node_003_feedback": {
-        "id": "node_003_feedback",
+      "n_wasserversorgung_fail": {
+        "id": "n_wasserversorgung_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Kreuzung erreicht\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Melden Sie, dass die Wasserversorgung gesichert ist, und nennen Sie die Entnahmestelle.\n\nBeispiel: *„Florian Kirchberg 44/1 — Wasserversorgung gesichert über Hydrant Bergstraße 2.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_003"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_wasserversorgung"
           }
         ]
       },
-      "node_004": {
-        "id": "node_004",
+      "n_menschenrettung": {
+        "id": "n_menschenrettung",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Übung beendet. Gut gemacht!",
+        "narrative": "Die Drehleiter ist eingetroffen. Mit ihrer Hilfe wurde die Person aus dem Dachgeschoss gerettet — sie ist unverletzt.\n\nMelden Sie der Leitstelle, dass die **Menschenrettung abgeschlossen** ist!",
+        "actions": [
+          {
+            "id": "radio_gerettet",
+            "label": "📞 Funk-Meldung sprechen",
+            "radioCall": {
+              "expectedPhrases": [
+                "gerettet",
+                "Menschenrettung abgeschlossen",
+                "sicher",
+                "unverletzt",
+                "abgeschlossen"
+              ],
+              "hint": "Florian Kirchberg 44/1 — Menschenrettung abgeschlossen, Person unverletzt gerettet.",
+              "onSuccess": "n_end",
+              "onFailure": "n_menschenrettung_fail",
+              "feedbackSuccess": "✅ Menschenrettung gemeldet!",
+              "feedbackFailure": "❌ Melden Sie den Abschluss der Menschenrettung und den Zustand der Person."
+            }
+          }
+        ]
+      },
+      "n_menschenrettung_fail": {
+        "id": "n_menschenrettung_fail",
+        "role": "gruppenführer_a",
+        "narrative": "**Feedback:** Melden Sie, dass die Menschenrettung abgeschlossen ist und in welchem Zustand die Person ist.\n\nBeispiel: *„Florian Kirchberg 44/1 — Menschenrettung abgeschlossen, Person unverletzt gerettet.\"*",
+        "actions": [
+          {
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_menschenrettung"
+          }
+        ]
+      },
+      "n_end": {
+        "id": "n_end",
+        "role": "gruppenführer_a",
+        "narrative": "**Leitstelle:** Meldung erhalten. Ausgezeichnete Arbeit! Brandbekämpfung weiter fortsetzen.\n\n**Übung abgeschlossen! 🎉**",
         "actions": [
           {
             "id": "restart",
-            "label": "Noch einmal trainieren",
-            "nextNodeId": "node_000"
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_vor_ort"
           },
           {
             "id": "exit",
-            "label": "Zurück zur Übersicht",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]
@@ -224,191 +311,138 @@
     }
   },
   {
-    "id": "multi_vehicle_coordination",
-    "title": "Mehrere Fahrzeuge koordinieren Anfahrt",
-    "description": "Zusätzliche Fahrzeuge B, D, E, F werden alarmiert; Wegbeschreibungen und Standortmeldungen.",
-    "startingNodeId": "node_000",
+    "id": "koordination_nachkraefte",
+    "title": "Koordination der Nachkräfte",
+    "description": "Mittel: Als Erstangreifer weitere Fahrzeuge einweisen, Anfahrtswege durchgeben und Drehleiter platzieren. 3 Funk-Schritte.",
+    "startingNodeId": "n_anfahrt_start",
     "playerRole": "gruppenführer_a",
     "nodes": {
-      "node_000": {
-        "id": "node_000",
+      "n_anfahrt_start": {
+        "id": "n_anfahrt_start",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Brand in A, Anwesen Maier, Dorfstraße",
-        "actions": []
-      },
-      "node_001": {
-        "id": "node_001",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Brand in A, Anwesen Maier, Dorfstraße\n\nWas ist Ihre Antwort?",
+        "narrative": "Sie sind Erstangreifer an der Einsatzstelle **Dorfstraße 8, Kirchberg**. Ein weiteres Fahrzeug — Florian Bergheim 44/1 — ist auf der Anfahrt und fragt nach dem Weg.\n\n**Leitstelle:** Florian Kirchberg 44/1 — Florian Bergheim 44/1 meldet sich auf Kanal. Bitte Anfahrtsweg durchgeben!\n\nGeben Sie die **Anfahrtsroute mit Meldepunkt** durch!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_anfahrt",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Über ... in Richtung ... melden an der Kreuzung vor A"
+                "Hauptstraße",
+                "links",
+                "Dorfstraße",
+                "Kreuzung",
+                "melden"
               ],
-              "hint": "Über ... in Richtung ... melden an der Kreuzung vor A",
-              "onSuccess": "node_002",
-              "onFailure": "node_001_feedback",
-              "allowPartial": true
+              "hint": "Florian Bergheim 44/1 — Anfahrt über Hauptstraße Kirchberg, bei der Kirche links in die Dorfstraße, melden an der Kreuzung Dorfstraße/Gartenweg.",
+              "onSuccess": "n_weiterweisung",
+              "onFailure": "n_anfahrt_fail",
+              "feedbackSuccess": "✅ Anfahrtsroute korrekt durchgegeben!",
+              "feedbackFailure": "❌ Nennen Sie den genauen Anfahrtsweg mit Straßennamen und einem Meldepunkt."
             }
           }
         ]
       },
-      "node_001_feedback": {
-        "id": "node_001_feedback",
+      "n_anfahrt_fail": {
+        "id": "n_anfahrt_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Über ... in Richtung ... melden an der Kreuzung vor A\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Geben Sie den Anfahrtsweg mit konkreten Straßennamen und einem **Meldepunkt** durch.\n\nBeispiel: *„Florian Bergheim 44/1 — Anfahrt über Hauptstraße Kirchberg, bei der Kirche links in die Dorfstraße, melden an der Kreuzung Dorfstraße/Gartenweg.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_001"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_anfahrt_start"
           }
         ]
       },
-      "node_002": {
-        "id": "node_002",
+      "n_weiterweisung": {
+        "id": "n_weiterweisung",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Standort Kreuzung vor A\n\nWas ist Ihre Antwort?",
+        "narrative": "**Florian Bergheim 44/1:** Kreuzung Dorfstraße/Gartenweg erreicht — was nun?\n\nWeisen Sie Florian Bergheim zur Einsatzstelle ein und geben Sie den **Einsatzauftrag** (Aufbau Wasserversorgung)!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_einsatzauftrag",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Brand in A, Anwesen Maier, Dorfstraße"
+                "Dorfstraße 8",
+                "Wasserversorgung",
+                "Hydrant",
+                "weiterfahren",
+                "Auftrag"
               ],
-              "hint": "Brand in A, Anwesen Maier, Dorfstraße",
-              "onSuccess": "node_003",
-              "onFailure": "node_002_feedback",
-              "allowPartial": true
+              "hint": "Florian Bergheim 44/1 — weiterfahren zur Dorfstraße 8, Auftrag: Aufbau Wasserversorgung über Hydrant Gartenweg.",
+              "onSuccess": "n_drehleiter",
+              "onFailure": "n_weiterweisung_fail",
+              "feedbackSuccess": "✅ Florian Bergheim mit Einsatzauftrag eingewiesen!",
+              "feedbackFailure": "❌ Weisen Sie das Fahrzeug mit Zieladresse und konkretem Einsatzauftrag ein."
             }
           }
         ]
       },
-      "node_002_feedback": {
-        "id": "node_002_feedback",
+      "n_weiterweisung_fail": {
+        "id": "n_weiterweisung_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Brand in A, Anwesen Maier, Dorfstraße\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Weisen Sie das Fahrzeug mit Zieladresse und konkretem Einsatzauftrag ein.\n\nBeispiel: *„Florian Bergheim 44/1 — weiterfahren zur Dorfstraße 8, Auftrag: Aufbau Wasserversorgung über Hydrant Gartenweg.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_002"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_weiterweisung"
           }
         ]
       },
-      "node_003": {
-        "id": "node_003",
+      "n_drehleiter": {
+        "id": "n_drehleiter",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Anfahrt ab ...\n\nWas ist Ihre Antwort?",
+        "narrative": "**Leitstelle:** Kirchberg 30/1 (Drehleiter) nähert sich der Einsatzstelle. Bitte **Aufstellungsort** durchgeben!\n\nGeben Sie der Drehleiter Gebäudeseite und freie Anfahrt durch!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_drehleiter_platz",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Wegbeschreibung (in C links in Richtung B) bei der Kreuzung vor A melden"
+                "Nordseite",
+                "Westseite",
+                "Südseite",
+                "Ostseite",
+                "Aufstellung",
+                "aufstellen",
+                "Seite"
               ],
-              "hint": "Wegbeschreibung (in C links in Richtung B) bei der Kreuzung vor A melden",
-              "onSuccess": "node_004",
-              "onFailure": "node_003_feedback",
-              "allowPartial": true
+              "hint": "Kirchberg 30/1 — Aufstellung Nordseite des Gebäudes Dorfstraße 8, freie Anfahrt vom Gartenweg.",
+              "onSuccess": "n_end",
+              "onFailure": "n_drehleiter_fail",
+              "feedbackSuccess": "✅ Drehleiter korrekt eingewiesen!",
+              "feedbackFailure": "❌ Nennen Sie Gebäudeseite und freie Anfahrt für die Drehleiter."
             }
           }
         ]
       },
-      "node_003_feedback": {
-        "id": "node_003_feedback",
+      "n_drehleiter_fail": {
+        "id": "n_drehleiter_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wegbeschreibung (in C links in Richtung B) bei der Kreuzung vor A melden\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Geben Sie der Drehleiter die Gebäudeseite und freie Anfahrt durch.\n\nBeispiel: *„Kirchberg 30/1 — Aufstellung Nordseite des Gebäudes Dorfstraße 8, freie Anfahrt vom Gartenweg.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_003"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_drehleiter"
           }
         ]
       },
-      "node_004": {
-        "id": "node_004",
+      "n_end": {
+        "id": "n_end",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Polizei benachrichtigt\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A"
-              ],
-              "hint": "Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A",
-              "onSuccess": "node_005",
-              "onFailure": "node_004_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_004_feedback": {
-        "id": "node_004_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_004"
-          }
-        ]
-      },
-      "node_005": {
-        "id": "node_005",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Melden bei Florian A 44/1; TMO Gruppe …\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Brand in A; Aufbau Wasserversorgung"
-              ],
-              "hint": "Brand in A; Aufbau Wasserversorgung",
-              "onSuccess": "node_006",
-              "onFailure": "node_005_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_005_feedback": {
-        "id": "node_005_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Brand in A; Aufbau Wasserversorgung\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_005"
-          }
-        ]
-      },
-      "node_006": {
-        "id": "node_006",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Übung beendet. Gut gemacht!",
+        "narrative": "**Leitstelle:** Alle Kräfte sind eingewiesen und an der Einsatzstelle. Sehr gute Koordination!\n\n**Übung abgeschlossen! 🎉**",
         "actions": [
           {
             "id": "restart",
-            "label": "Noch einmal trainieren",
-            "nextNodeId": "node_000"
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_anfahrt_start"
           },
           {
             "id": "exit",
-            "label": "Zurück zur Übersicht",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]
@@ -416,319 +450,213 @@
     }
   },
   {
-    "id": "extended_operations",
-    "title": "Erweiterter Einsatz: Wasserversorgung, Verletzte, Gateway",
-    "description": "Aufbau Wasserversorgung, Verletztenmeldungen, Gateway-Umschaltung.",
-    "startingNodeId": "node_000",
+    "id": "volluebung_einsatzablauf",
+    "title": "Vollübung: Kompletter Einsatzablauf",
+    "description": "Profi: Vollständiger Einsatz von der Alarmierung bis zur Einsatzbeendigung mit Patientenübergabe. 5 Funk-Schritte.",
+    "startingNodeId": "n_alarm",
     "playerRole": "gruppenführer_a",
     "nodes": {
-      "node_000": {
-        "id": "node_000",
+      "n_alarm": {
+        "id": "n_alarm",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Wasserwerk soll Druck erhöhen; Notarzt am Ort",
-        "actions": []
-      },
-      "node_001": {
-        "id": "node_001",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Wasserwerk soll Druck erhöhen; Notarzt am Ort\n\nWas ist Ihre Antwort?",
+        "narrative": "**Leitstelle:** Funkalarm für Florian Kirchberg 44/1 — Feuer und Menschenleben in Gefahr, Hauptstraße 22, Kirchberg, Mehrfamilienhaus, Rauch aus dem zweiten Obergeschoss.\n\nMelden Sie **Einsatzbereitschaft (Status 1)** und fordern Sie den Einsatzbefehl an!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_status1",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Wasserwerk verständigt"
+                "einsatzbereit",
+                "Status 1",
+                "FMS 1",
+                "Einsatzbefehl"
               ],
-              "hint": "Wasserwerk verständigt",
-              "onSuccess": "node_002",
-              "onFailure": "node_001_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten.",
+              "onSuccess": "n_ausruecken",
+              "onFailure": "n_alarm_fail",
+              "feedbackSuccess": "✅ Einsatzbereitschaft gemeldet!",
+              "feedbackFailure": "❌ Melden Sie Status 1 und fordern Sie den Einsatzbefehl an."
             }
           }
         ]
       },
-      "node_001_feedback": {
-        "id": "node_001_feedback",
+      "n_alarm_fail": {
+        "id": "n_alarm_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wasserwerk verständigt\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Melden Sie **Status 1** (einsatzbereit) und fordern Sie den Einsatzbefehl an.\n\nBeispiel: *„Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_001"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_alarm"
           }
         ]
       },
-      "node_002": {
-        "id": "node_002",
+      "n_ausruecken": {
+        "id": "n_ausruecken",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Standort ...\n\nWas ist Ihre Antwort?",
+        "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Einsatzbefehl: Gebäudebrand mit Menschenleben in Gefahr, Hauptstraße 22, Kirchberg. Drei Personen noch im Gebäude, zweites Obergeschoss. Rücken Sie sofort aus!\n\nBestätigen Sie und melden Sie **Ausrücken (Status 3)**!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_status3",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden"
+                "verstanden",
+                "Status 3",
+                "FMS 3",
+                "rücke aus",
+                "ausgerückt"
               ],
-              "hint": "Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden",
-              "onSuccess": "node_003",
-              "onFailure": "node_002_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3.",
+              "onSuccess": "n_lagemeldung",
+              "onFailure": "n_ausruecken_fail",
+              "feedbackSuccess": "✅ Ausrücken gemeldet — volle Fahrt!",
+              "feedbackFailure": "❌ Bestätigen Sie den Einsatzbefehl und melden Sie Status 3."
             }
           }
         ]
       },
-      "node_002_feedback": {
-        "id": "node_002_feedback",
+      "n_ausruecken_fail": {
+        "id": "n_ausruecken_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Bestätigen Sie den Einsatzbefehl und melden Sie **Status 3**.\n\nBeispiel: *„Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_002"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_ausruecken"
           }
         ]
       },
-      "node_003": {
-        "id": "node_003",
+      "n_lagemeldung": {
+        "id": "n_lagemeldung",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Erreicht Kreuzung A\n\nWas ist Ihre Antwort?",
+        "narrative": "Sie treffen an der Hauptstraße 22 ein. Ein viergeschossiges Mehrfamilienhaus — zweites OG stark verqualmt, Flammen im Treppenhaus sichtbar. Zwei Personen stehen am Fenster im zweiten OG und rufen um Hilfe.\n\nGeben Sie **Status 4** und eine vollständige **Lagemeldung mit Nachalarmierung**!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_lage",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Melden bei Florian A 44/1; TMO Gruppe …"
+                "Status 4",
+                "FMS 4",
+                "Menschenrettung",
+                "Person",
+                "Drehleiter",
+                "eingeschlossen"
               ],
-              "hint": "Melden bei Florian A 44/1; TMO Gruppe …",
-              "onSuccess": "node_004",
-              "onFailure": "node_003_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Mehrfamilienhaus Hauptstraße 22, zweites OG in Vollbrand, zwei Personen eingeschlossen — Menschenrettung erforderlich! Anforderung Drehleiter.",
+              "onSuccess": "n_patient",
+              "onFailure": "n_lagemeldung_fail",
+              "feedbackSuccess": "✅ Vollständige Lagemeldung mit Nachalarmierung — sehr gut!",
+              "feedbackFailure": "❌ Vollständige Lagemeldung: Status 4 + Objekt + Brandlage + Personengefährdung + Nachalarmierung."
             }
           }
         ]
       },
-      "node_003_feedback": {
-        "id": "node_003_feedback",
+      "n_lagemeldung_fail": {
+        "id": "n_lagemeldung_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Melden bei Florian A 44/1; TMO Gruppe …\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Vollständige Lagemeldung mit:\n1. **Status 4** — Einsatzstelle erreicht\n2. **Objekt** — Art und Adresse\n3. **Brandlage** — wo brennt es\n4. **Personengefährdung** — Anzahl und Lage der Personen\n5. **Nachalarmierung** — was wird gebraucht\n\nBeispiel: *„Florian Kirchberg 44/1 — Status 4. Lagemeldung: Mehrfamilienhaus, zweites OG in Vollbrand, zwei Personen eingeschlossen — Menschenrettung, Anforderung Drehleiter.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_003"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_lagemeldung"
           }
         ]
       },
-      "node_004": {
-        "id": "node_004",
+      "n_patient": {
+        "id": "n_patient",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
+        "narrative": "**Leitstelle:** Drehleiter alarmiert, RTW auf dem Weg.\n\nNach der Menschenrettung: Ein Bewohner hat eine Rauchgasvergiftung erlitten. Der RTW ist eingetroffen. Übergeben Sie den Patienten und melden Sie **Status 7** (Patient übergeben)!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_patient",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Ortsrand von A erreicht"
+                "Patient",
+                "übergeben",
+                "Status 7",
+                "FMS 7",
+                "RTW",
+                "Rauchgas"
               ],
-              "hint": "Ortsrand von A erreicht",
-              "onSuccess": "node_005",
-              "onFailure": "node_004_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1 — Patient an RTW übergeben, Rauchgasvergiftung, Status 7.",
+              "onSuccess": "n_einsatzende",
+              "onFailure": "n_patient_fail",
+              "feedbackSuccess": "✅ Patientenübergabe korrekt gemeldet!",
+              "feedbackFailure": "❌ Melden Sie die Patientenübergabe mit Status 7 und kurzer Diagnose."
             }
           }
         ]
       },
-      "node_004_feedback": {
-        "id": "node_004_feedback",
+      "n_patient_fail": {
+        "id": "n_patient_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Ortsrand von A erreicht\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Bei Patientenübergabe melden Sie **Status 7** mit kurzer Diagnose.\n\nBeispiel: *„Florian Kirchberg 44/1 — Patient an RTW übergeben, Rauchgasvergiftung, Status 7.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_004"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_patient"
           }
         ]
       },
-      "node_005": {
-        "id": "node_005",
+      "n_einsatzende": {
+        "id": "n_einsatzende",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
+        "narrative": "**Leitstelle:** Status 7 erhalten. Ist der Brand unter Kontrolle?\n\nMelden Sie **Einsatz beendet** und Ihre Rückkehr zur Einsatzbereitschaft!",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_ende",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät"
+                "Einsatz beendet",
+                "einsatzbereit",
+                "Status 1",
+                "FMS 1",
+                "Status 2",
+                "abrücken",
+                "klar"
               ],
-              "hint": "Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät",
-              "onSuccess": "node_006",
-              "onFailure": "node_005_feedback",
-              "allowPartial": true
+              "hint": "Florian Kirchberg 44/1 — Einsatz beendet, Brand gelöscht, rücken ab — Status 1.",
+              "onSuccess": "n_end",
+              "onFailure": "n_einsatzende_fail",
+              "feedbackSuccess": "✅ Einsatz vollständig abgemeldet!",
+              "feedbackFailure": "❌ Melden Sie Einsatzende und Ihre Einsatzbereitschaft (Status 1 oder 2)."
             }
           }
         ]
       },
-      "node_005_feedback": {
-        "id": "node_005_feedback",
+      "n_einsatzende_fail": {
+        "id": "n_einsatzende_fail",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+        "narrative": "**Feedback:** Melden Sie Einsatzende und Einsatzbereitschaft.\n\nBeispiel: *„Florian Kirchberg 44/1 — Einsatz beendet, Brand gelöscht, rücken ab — Status 1.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_005"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_einsatzende"
           }
         ]
       },
-      "node_006": {
-        "id": "node_006",
+      "n_end": {
+        "id": "n_end",
         "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Kreuzung erreicht"
-              ],
-              "hint": "Kreuzung erreicht",
-              "onSuccess": "node_007",
-              "onFailure": "node_006_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_006_feedback": {
-        "id": "node_006_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Kreuzung erreicht\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_006"
-          }
-        ]
-      },
-      "node_007": {
-        "id": "node_007",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Wegbeschreibung (Fahren Sie durch die Ortschaft, in südlicher Richtung der Brandstelle zum Weiher); Meldungen über Handfunkgerät\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar"
-              ],
-              "hint": "Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar",
-              "onSuccess": "node_008",
-              "onFailure": "node_007_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_007_feedback": {
-        "id": "node_007_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_007"
-          }
-        ]
-      },
-      "node_008": {
-        "id": "node_008",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Bestätigung"
-              ],
-              "hint": "Bestätigung",
-              "onSuccess": "node_009",
-              "onFailure": "node_008_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_008_feedback": {
-        "id": "node_008_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Bestätigung\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_008"
-          }
-        ]
-      },
-      "node_009": {
-        "id": "node_009",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "MRT auf Gateway schalten; DMO Gruppe 302F"
-              ],
-              "hint": "MRT auf Gateway schalten; DMO Gruppe 302F",
-              "onSuccess": "node_010",
-              "onFailure": "node_009_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_009_feedback": {
-        "id": "node_009_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"MRT auf Gateway schalten; DMO Gruppe 302F\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_009"
-          }
-        ]
-      },
-      "node_010": {
-        "id": "node_010",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Übung beendet. Gut gemacht!",
+        "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Status 1 erhalten. Hervorragender Einsatz! Alle Phasen korrekt absolviert.\n\n**Vollübung abgeschlossen! 🏆**",
         "actions": [
           {
             "id": "restart",
-            "label": "Noch einmal trainieren",
-            "nextNodeId": "node_000"
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_alarm"
           },
           {
             "id": "exit",
-            "label": "Zurück zur Übersicht",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]
@@ -736,191 +664,170 @@
     }
   },
   {
-    "id": "full_operation_status",
-    "title": "Vollalarm: Einsatzkräfte vor Ort, detaillierte Rückmeldungen",
-    "description": "Einsatzleitung gibt ausführlichen Lagebericht; Einsatzkräfte melden Schlauchleitung, EVU.",
-    "startingNodeId": "node_000",
-    "playerRole": "gruppenführer_a",
+    "id": "trupp_verkehr_absichern",
+    "title": "Truppführer: Schlauchtrupp Verkehrsabsicherung",
+    "description": "Truppführer-Übung: Anfunken, Einsatzstelle absichern, Rückmeldung geben und Absicherung erweitern. 4 Funk-Schritte.",
+    "startingNodeId": "n_anfunken",
+    "playerRole": "truppführer",
     "nodes": {
-      "node_000": {
-        "id": "node_000",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Gateway geschaltet",
-        "actions": []
-      },
-      "node_001": {
-        "id": "node_001",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Gateway geschaltet\n\nWas ist Ihre Antwort?",
+      "n_anfunken": {
+        "id": "n_anfunken",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Gruppenführer für Schlauchtrupp.\n\nVerkehrsunfall auf der Kreisstraße, unübersichtliche Kurve. Der Gruppenführer funkt den Schlauchtrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_hoert",
+            "label": "📞 Anruf beantworten",
             "radioCall": {
               "expectedPhrases": [
-                "Vor der Kreuzung, vor A"
+                "Schlauchtrupp",
+                "hört"
               ],
-              "hint": "Vor der Kreuzung, vor A",
-              "onSuccess": "node_002",
-              "onFailure": "node_001_feedback",
-              "allowPartial": true
+              "hint": "Schlauchtrupp hört.",
+              "onSuccess": "n_start",
+              "onFailure": "n_anfunken_fail",
+              "feedbackSuccess": "✅ Anruf korrekt angenommen.",
+              "feedbackFailure": "❌ Antworten Sie knapp mit „Schlauchtrupp hört.“"
             }
           }
         ]
       },
-      "node_001_feedback": {
-        "id": "node_001_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Vor der Kreuzung, vor A\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_anfunken_fail": {
+        "id": "n_anfunken_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Schlauchtrupp hört.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_001"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_anfunken"
           }
         ]
       },
-      "node_002": {
-        "id": "node_002",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Wegbeschreibung (Fahren Sie in die Ortschaft bei der Kirche, links abbiegen, geradeaus an die Nordseite der Brandstelle); Meldung über Handfunkgerät\n\nWas ist Ihre Antwort?",
+      "n_start": {
+        "id": "n_start",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Schlauchtrupp nach vorne. Verkehrsunfall auf der Kreisstraße, unübersichtliche Kurve. Auftrag: Einsatzstelle gegen den fließenden Verkehr absichern.\n\nMelden Sie, dass Sie den Auftrag verstanden haben und mit der Verkehrsabsicherung beginnen.",
         "actions": [
           {
-            "id": "radio_call",
+            "id": "radio_auftrag",
             "label": "📞 Funk-Meldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Melden bei Florian A 44/1"
+                "Auftrag verstanden",
+                "Verkehrsabsicherung",
+                "beginnen",
+                "Absicherung",
+                "Kreisstraße"
               ],
-              "hint": "Melden bei Florian A 44/1",
-              "onSuccess": "node_003",
-              "onFailure": "node_002_feedback",
-              "allowPartial": true
+              "hint": "Schlauchtrupp verstanden, beginnen mit Verkehrsabsicherung auf der Kreisstraße.",
+              "onSuccess": "n_absicherung",
+              "onFailure": "n_start_fail",
+              "feedbackSuccess": "✅ Auftrag korrekt bestätigt.",
+              "feedbackFailure": "❌ Bestätigen Sie den Auftrag und nennen Sie Verkehrsabsicherung als Tätigkeit."
             }
           }
         ]
       },
-      "node_002_feedback": {
-        "id": "node_002_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Melden bei Florian A 44/1\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_start_fail": {
+        "id": "n_start_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Der Schlauchtrupp bestätigt den Auftrag kurz und eindeutig.\n\nBeispiel: *„Schlauchtrupp verstanden, beginnen mit Verkehrsabsicherung auf der Kreisstraße.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_002"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_start"
           }
         ]
       },
-      "node_003": {
-        "id": "node_003",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Kreuzung erreicht\n\nWas ist Ihre Antwort?",
+      "n_absicherung": {
+        "id": "n_absicherung",
+        "role": "truppführer",
+        "narrative": "Sie haben Warnblitzer und Leitkegel gesetzt. Die Absicherung steht in beide Fahrtrichtungen, wegen der Kurve etwa 100 Meter vor der Einsatzstelle.\n\nGeben Sie eine Rückmeldung an den Gruppenführer.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_rueckmeldung",
+            "label": "📞 Rückmeldung sprechen",
             "radioCall": {
               "expectedPhrases": [
-                "Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät"
+                "Warnblitzer",
+                "Leitkegel",
+                "beidseitig",
+                "100 Meter",
+                "Absicherung steht"
               ],
-              "hint": "Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät",
-              "onSuccess": "node_004",
-              "onFailure": "node_003_feedback",
-              "allowPartial": true
+              "hint": "Schlauchtrupp an Gruppenführer: Absicherung steht beidseitig mit Warnblitzern und Leitkegeln, etwa 100 Meter vor der Einsatzstelle.",
+              "onSuccess": "n_erweitern",
+              "onFailure": "n_absicherung_fail",
+              "feedbackSuccess": "✅ Rückmeldung vollständig.",
+              "feedbackFailure": "❌ Nennen Sie, dass die Absicherung steht, womit abgesichert wurde und in welcher Entfernung."
             }
           }
         ]
       },
-      "node_003_feedback": {
-        "id": "node_003_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_absicherung_fail": {
+        "id": "n_absicherung_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Eine gute Rückmeldung enthält Maßnahme, Material und Lage.\n\nBeispiel: *„Absicherung steht beidseitig mit Warnblitzern und Leitkegeln, etwa 100 Meter vor der Einsatzstelle.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_003"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_absicherung"
           }
         ]
       },
-      "node_004": {
-        "id": "node_004",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verständigen Sie EVU, Dachständer droht herabzufallen\n\nWas ist Ihre Antwort?",
+      "n_erweitern": {
+        "id": "n_erweitern",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Wegen einsetzendem Regen Absicherung erweitern und einen Posten mit Warnweste an die Kurve stellen.\n\nBestätigen Sie den Zusatzauftrag.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_erweitern",
+            "label": "📞 Zusatzauftrag bestätigen",
             "radioCall": {
               "expectedPhrases": [
-                "Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt"
+                "Absicherung erweitern",
+                "Posten",
+                "Warnweste",
+                "Kurve",
+                "verstanden"
               ],
-              "hint": "Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt",
-              "onSuccess": "node_005",
-              "onFailure": "node_004_feedback",
-              "allowPartial": true
+              "hint": "Verstanden, erweitern die Absicherung und stellen einen Posten mit Warnweste an die Kurve.",
+              "onSuccess": "n_end",
+              "onFailure": "n_erweitern_fail",
+              "feedbackSuccess": "✅ Zusatzauftrag sauber bestätigt.",
+              "feedbackFailure": "❌ Bestätigen Sie Erweiterung, Posten, Warnweste und Kurve."
             }
           }
         ]
       },
-      "node_004_feedback": {
-        "id": "node_004_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_erweitern_fail": {
+        "id": "n_erweitern_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Zusatzaufträge werden mit den Kernmaßnahmen wiederholt.\n\nBeispiel: *„Verstanden, erweitern die Absicherung und stellen einen Posten mit Warnweste an die Kurve.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_004"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_erweitern"
           }
         ]
       },
-      "node_005": {
-        "id": "node_005",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Lagebericht?"
-              ],
-              "hint": "Lagebericht?",
-              "onSuccess": "node_006",
-              "onFailure": "node_005_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_005_feedback": {
-        "id": "node_005_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Lagebericht?\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_005"
-          }
-        ]
-      },
-      "node_006": {
-        "id": "node_006",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Übung beendet. Gut gemacht!",
+      "n_end": {
+        "id": "n_end",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Absicherung bestätigt. Einsatzstelle ist gegen den Verkehr gesichert.\n\n**Übung abgeschlossen!**",
         "actions": [
           {
             "id": "restart",
-            "label": "Noch einmal trainieren",
-            "nextNodeId": "node_000"
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_anfunken"
           },
           {
             "id": "exit",
-            "label": "Zurück zur Übersicht",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]
@@ -928,63 +835,170 @@
     }
   },
   {
-    "id": "winding_down_and_return",
-    "title": "Einsatzende: Aufräumen, Abrücken, Fahrzeug wieder einsatzbereit",
-    "description": "Feuer gelöscht, Rückzug, Fahrzeuge zurück im Gerätehaus, Funk aus.",
-    "startingNodeId": "node_000",
-    "playerRole": "gruppenführer_a",
+    "id": "trupp_verkehr_leiten",
+    "title": "Truppführer: Schlauchtrupp Verkehr Leiten",
+    "description": "Truppführer-Übung: Anfunken, einseitige Verkehrsführung, Sperrpunkt und Übergabe an Polizei. 4 Funk-Schritte.",
+    "startingNodeId": "n_anfunken",
+    "playerRole": "truppführer",
     "nodes": {
-      "node_000": {
-        "id": "node_000",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Kreisbrandrat erreicht; soll er noch zur Einsatzstelle?",
-        "actions": []
-      },
-      "node_001": {
-        "id": "node_001",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Kreisbrandinspektor vor Ort\n\nWas ist Ihre Antwort?",
+      "n_anfunken": {
+        "id": "n_anfunken",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Gruppenführer für Schlauchtrupp.\n\nNach einer Ölspur an der Kreuzung soll der Verkehr geregelt werden. Der Gruppenführer funkt den Schlauchtrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_hoert",
+            "label": "📞 Anruf beantworten",
             "radioCall": {
               "expectedPhrases": [
-                "AUS 14.08, Est 14.14"
+                "Schlauchtrupp",
+                "hört"
               ],
-              "hint": "AUS 14.08, Est 14.14",
-              "onSuccess": "node_002",
-              "onFailure": "node_001_feedback",
-              "allowPartial": true
+              "hint": "Schlauchtrupp hört.",
+              "onSuccess": "n_start",
+              "onFailure": "n_anfunken_fail",
+              "feedbackSuccess": "✅ Anruf korrekt angenommen.",
+              "feedbackFailure": "❌ Antworten Sie knapp mit „Schlauchtrupp hört.“"
             }
           }
         ]
       },
-      "node_001_feedback": {
-        "id": "node_001_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"AUS 14.08, Est 14.14\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_anfunken_fail": {
+        "id": "n_anfunken_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Schlauchtrupp hört.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_001"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_anfunken"
           }
         ]
       },
-      "node_002": {
-        "id": "node_002",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Übung beendet. Gut gemacht!",
+      "n_start": {
+        "id": "n_start",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Nach Ölspur an einer Kreuzung muss der Verkehr einseitig an der Einsatzstelle vorbeigeführt werden. Der Schlauchtrupp übernimmt den ersten Sperrpunkt.\n\nBestätigen Sie den Auftrag.",
+        "actions": [
+          {
+            "id": "radio_auftrag",
+            "label": "📞 Funk-Meldung sprechen",
+            "radioCall": {
+              "expectedPhrases": [
+                "Sperrpunkt",
+                "Verkehr",
+                "einseitig",
+                "verstanden",
+                "Kreuzung"
+              ],
+              "hint": "Schlauchtrupp verstanden, übernehmen Sperrpunkt an der Kreuzung und leiten den Verkehr einseitig vorbei.",
+              "onSuccess": "n_status",
+              "onFailure": "n_start_fail",
+              "feedbackSuccess": "✅ Auftrag bestätigt.",
+              "feedbackFailure": "❌ Nennen Sie Sperrpunkt, Kreuzung und einseitige Verkehrsleitung."
+            }
+          }
+        ]
+      },
+      "n_start_fail": {
+        "id": "n_start_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Wiederholen Sie den Auftrag mit Aufgabe und Ort.\n\nBeispiel: *„Übernehmen Sperrpunkt an der Kreuzung und leiten den Verkehr einseitig vorbei.\"*",
+        "actions": [
+          {
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_start"
+          }
+        ]
+      },
+      "n_status": {
+        "id": "n_status",
+        "role": "truppführer",
+        "narrative": "Die Verkehrsleitung läuft. Ein Fahrzeugführer ignoriert die Zeichen, außerdem staut sich der Verkehr aus Richtung Schule.\n\nMelden Sie die Lage und fordern Sie Unterstützung für einen zweiten Sperrpunkt an.",
+        "actions": [
+          {
+            "id": "radio_unterstuetzung",
+            "label": "📞 Lage melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Verkehr staut",
+                "Richtung Schule",
+                "zweiter Sperrpunkt",
+                "Unterstützung",
+                "Fahrzeugführer"
+              ],
+              "hint": "Schlauchtrupp an Gruppenführer: Verkehr staut sich aus Richtung Schule, ein Fahrzeugführer missachtet Zeichen. Benötigen Unterstützung für zweiten Sperrpunkt.",
+              "onSuccess": "n_polizei",
+              "onFailure": "n_status_fail",
+              "feedbackSuccess": "✅ Lage und Bedarf klar gemeldet.",
+              "feedbackFailure": "❌ Melden Sie Stau/Lage und fordern Sie Unterstützung für einen zweiten Sperrpunkt an."
+            }
+          }
+        ]
+      },
+      "n_status_fail": {
+        "id": "n_status_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Rückmeldungen müssen Lage und konkreten Bedarf enthalten.\n\nBeispiel: *„Verkehr staut sich aus Richtung Schule. Benötigen Unterstützung für zweiten Sperrpunkt.\"*",
+        "actions": [
+          {
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_status"
+          }
+        ]
+      },
+      "n_polizei": {
+        "id": "n_polizei",
+        "role": "truppführer",
+        "narrative": "Die Polizei trifft ein und übernimmt die Verkehrsregelung. Der Schlauchtrupp bleibt bis zur vollständigen Übergabe am Sperrpunkt.\n\nMelden Sie die Übergabe.",
+        "actions": [
+          {
+            "id": "radio_uebergabe",
+            "label": "📞 Übergabe melden",
+            "radioCall": {
+              "expectedPhrases": [
+                "Polizei",
+                "übernimmt",
+                "Verkehrsregelung",
+                "Sperrpunkt",
+                "Übergabe"
+              ],
+              "hint": "Schlauchtrupp an Gruppenführer: Polizei ist am Sperrpunkt und übernimmt die Verkehrsregelung, Übergabe läuft.",
+              "onSuccess": "n_end",
+              "onFailure": "n_polizei_fail",
+              "feedbackSuccess": "✅ Übergabe korrekt gemeldet.",
+              "feedbackFailure": "❌ Melden Sie, dass die Polizei am Sperrpunkt ist und die Verkehrsregelung übernimmt."
+            }
+          }
+        ]
+      },
+      "n_polizei_fail": {
+        "id": "n_polizei_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Bei Übergabe nennen Sie Empfänger, Aufgabe und Status.\n\nBeispiel: *„Polizei ist am Sperrpunkt und übernimmt die Verkehrsregelung, Übergabe läuft.\"*",
+        "actions": [
+          {
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_polizei"
+          }
+        ]
+      },
+      "n_end": {
+        "id": "n_end",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Übergabe verstanden. Trupp bleibt bis zur Freigabe einsatzbereit.\n\n**Übung abgeschlossen!**",
         "actions": [
           {
             "id": "restart",
-            "label": "Noch einmal trainieren",
-            "nextNodeId": "node_000"
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_anfunken"
           },
           {
             "id": "exit",
-            "label": "Zurück zur Übersicht",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]
@@ -992,1055 +1006,207 @@
     }
   },
   {
-    "id": "complete_full_exercise",
-    "title": "Komplettübung TMO-Betrieb (Alle 6 Arbeitsblätter)",
-    "description": "Vollständige Einsatzübung von Alarmierung bis Einsatzabschluss. Nimm die Rolle aller Fahrzeuge nacheinander ein.",
-    "startingNodeId": "node_000",
-    "playerRole": "gruppenführer_a",
+    "id": "trupp_wasseraufbau",
+    "title": "Truppführer: Wassertrupp Wasseraufbau",
+    "description": "Truppführer-Übung: Anfunken, Wasserentnahme, B-Leitung, Verteiler und Wasser marsch. 5 Funk-Schritte.",
+    "startingNodeId": "n_anfunken",
+    "playerRole": "truppführer",
     "nodes": {
-      "node_000": {
-        "id": "node_000",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Funkalarm für Florian A, Florian … Feuer in A",
-        "actions": []
-      },
-      "node_001": {
-        "id": "node_001",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Funkalarm für Florian A, Florian … Feuer in A\n\nWas ist Ihre Antwort?",
+      "n_anfunken": {
+        "id": "n_anfunken",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Gruppenführer für Wassertrupp.\n\nFür den Löschangriff wird eine Wasserversorgung benötigt. Der Gruppenführer funkt den Wassertrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_hoert",
+            "label": "📞 Anruf beantworten",
             "radioCall": {
               "expectedPhrases": [
-                "Einsatzbereit (alternativ: FMS 1); Einsatzbefehl"
+                "Wassertrupp",
+                "hört"
               ],
-              "hint": "Einsatzbereit (alternativ: FMS 1); Einsatzbefehl",
-              "onSuccess": "node_002",
-              "onFailure": "node_001_feedback",
-              "allowPartial": true
+              "hint": "Wassertrupp hört.",
+              "onSuccess": "n_start",
+              "onFailure": "n_anfunken_fail",
+              "feedbackSuccess": "✅ Anruf korrekt angenommen.",
+              "feedbackFailure": "❌ Antworten Sie knapp mit „Wassertrupp hört.“"
             }
           }
         ]
       },
-      "node_001_feedback": {
-        "id": "node_001_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Einsatzbereit (alternativ: FMS 1); Einsatzbefehl\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_anfunken_fail": {
+        "id": "n_anfunken_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Wassertrupp hört.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_001"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_anfunken"
           }
         ]
       },
-      "node_002": {
-        "id": "node_002",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Rauchentwicklung in A; Anwesen Maier, Dorfstraße\n\nWas ist Ihre Antwort?",
+      "n_start": {
+        "id": "n_start",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Wassertrupp zur Wasserentnahme. Hydrant an der Hofeinfahrt, B-Leitung zum Verteiler vor die Scheune. Angriffstrupp wartet auf Wasser.\n\nBestätigen Sie den Auftrag nach dem Anfunken.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_auftrag",
+            "label": "📞 Auftrag bestätigen",
             "radioCall": {
               "expectedPhrases": [
-                "Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)"
+                "Wasserentnahme",
+                "Hydrant",
+                "Hofeinfahrt",
+                "B-Leitung",
+                "Verteiler"
               ],
-              "hint": "Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)",
-              "onSuccess": "node_003",
-              "onFailure": "node_002_feedback",
-              "allowPartial": true
+              "hint": "Wassertrupp verstanden: Wasserentnahme am Hydrant Hofeinfahrt, B-Leitung zum Verteiler vor die Scheune.",
+              "onSuccess": "n_hydrant",
+              "onFailure": "n_start_fail",
+              "feedbackSuccess": "✅ Wasseraufbau-Auftrag bestätigt.",
+              "feedbackFailure": "❌ Wiederholen Sie Wasserentnahme, Hydrant, B-Leitung und Verteiler."
             }
           }
         ]
       },
-      "node_002_feedback": {
-        "id": "node_002_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Einsatzbefehl verstanden; rücken aus (alternativ: FMS 3)\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_start_fail": {
+        "id": "n_start_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Beim Wasseraufbau sind Entnahmestelle und Ziel wichtig.\n\nBeispiel: *„Wasserentnahme am Hydrant Hofeinfahrt, B-Leitung zum Verteiler vor die Scheune.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_002"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_start"
           }
         ]
       },
-      "node_003": {
-        "id": "node_003",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Abrückebereit (alternativ: FMS 1); Einsatzbefehl\n\nWas ist Ihre Antwort?",
+      "n_hydrant": {
+        "id": "n_hydrant",
+        "role": "truppführer",
+        "narrative": "Der Hydrant ist geöffnet, Standrohr und Systemtrenner sind gesetzt. Die Leitung ist noch nicht vollständig gefüllt.\n\nMelden Sie den Zwischenstand.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_zwischenstand",
+            "label": "📞 Zwischenstand melden",
             "radioCall": {
               "expectedPhrases": [
-                "Brand in A, Anwesen Maier, Dorfstraße"
+                "Hydrant geöffnet",
+                "Standrohr",
+                "Systemtrenner",
+                "Leitung",
+                "füllen"
               ],
-              "hint": "Brand in A, Anwesen Maier, Dorfstraße",
-              "onSuccess": "node_004",
-              "onFailure": "node_003_feedback",
-              "allowPartial": true
+              "hint": "Wassertrupp an Gruppenführer: Hydrant geöffnet, Standrohr und Systemtrenner gesetzt, Leitung wird gefüllt.",
+              "onSuccess": "n_verteiler",
+              "onFailure": "n_hydrant_fail",
+              "feedbackSuccess": "✅ Zwischenstand verständlich.",
+              "feedbackFailure": "❌ Melden Sie Hydrant, Standrohr/Systemtrenner und dass die Leitung gefüllt wird."
             }
           }
         ]
       },
-      "node_003_feedback": {
-        "id": "node_003_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Brand in A, Anwesen Maier, Dorfstraße\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_hydrant_fail": {
+        "id": "n_hydrant_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Zwischenstände sollen den aktuellen Zustand beschreiben.\n\nBeispiel: *„Hydrant geöffnet, Standrohr und Systemtrenner gesetzt, Leitung wird gefüllt.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_003"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_hydrant"
           }
         ]
       },
-      "node_004": {
-        "id": "node_004",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Auf der Anfahrt an der Kreuzung vor A bei Übungsleitung über Funk melden\n\nWas ist Ihre Antwort?",
+      "n_verteiler": {
+        "id": "n_verteiler",
+        "role": "truppführer",
+        "narrative": "Die B-Leitung liegt, der Verteiler ist gesetzt. Der Angriffstrupp meldet am Rohr: bereit für Wasser.\n\nGeben Sie die Meldung **Wasser marsch** weiter.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_wasser_marsch",
+            "label": "📞 Wasser marsch melden",
             "radioCall": {
               "expectedPhrases": [
-                "Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2"
+                "Verteiler gesetzt",
+                "B-Leitung",
+                "Angriffstrupp",
+                "Wasser marsch",
+                "bereit"
               ],
-              "hint": "Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2",
-              "onSuccess": "node_005",
-              "onFailure": "node_004_feedback",
-              "allowPartial": true
+              "hint": "Wassertrupp an Maschinist: B-Leitung steht, Verteiler gesetzt, Angriffstrupp bereit, Wasser marsch.",
+              "onSuccess": "n_druck",
+              "onFailure": "n_verteiler_fail",
+              "feedbackSuccess": "✅ Wasser marsch korrekt weitergegeben.",
+              "feedbackFailure": "❌ Nennen Sie B-Leitung, Verteiler, Angriffstrupp bereit und Wasser marsch."
             }
           }
         ]
       },
-      "node_004_feedback": {
-        "id": "node_004_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Einsatzstelle erreicht (alternativ: FMS 4); Lagemeldung: brennt zweigeschossiges Bauernhaus; Stall angrenzend; Tiere in Gefahr, Alarmstufe 2\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_verteiler_fail": {
+        "id": "n_verteiler_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Die Wasseranforderung muss klar und eindeutig sein.\n\nBeispiel: *„B-Leitung steht, Verteiler gesetzt, Angriffstrupp bereit, Wasser marsch.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_004"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_verteiler"
           }
         ]
       },
-      "node_005": {
-        "id": "node_005",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Funkalarm für: Florian B; Florian F; Florian D; Florian E; Alarmstufe 2: Feuer in A\n\nWas ist Ihre Antwort?",
+      "n_druck": {
+        "id": "n_druck",
+        "role": "truppführer",
+        "narrative": "Am Verteiler kommt Wasser an. Der Druck ist stabil, keine sichtbaren Undichtigkeiten.\n\nMelden Sie den abgeschlossenen Wasseraufbau.",
         "actions": [
           {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
+            "id": "radio_fertig",
+            "label": "📞 Abschluss melden",
             "radioCall": {
               "expectedPhrases": [
-                "Kreuzung erreicht"
+                "Wasser am Verteiler",
+                "Druck stabil",
+                "keine Undichtigkeiten",
+                "Wasseraufbau abgeschlossen",
+                "Einsatzbereit"
               ],
-              "hint": "Kreuzung erreicht",
-              "onSuccess": "node_006",
-              "onFailure": "node_005_feedback",
-              "allowPartial": true
+              "hint": "Wassertrupp an Gruppenführer: Wasser am Verteiler, Druck stabil, keine Undichtigkeiten, Wasseraufbau abgeschlossen.",
+              "onSuccess": "n_end",
+              "onFailure": "n_druck_fail",
+              "feedbackSuccess": "✅ Abschlussmeldung vollständig.",
+              "feedbackFailure": "❌ Melden Sie Wasser am Verteiler, stabilen Druck und dass der Wasseraufbau abgeschlossen ist."
             }
           }
         ]
       },
-      "node_005_feedback": {
-        "id": "node_005_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Kreuzung erreicht\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
+      "n_druck_fail": {
+        "id": "n_druck_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Eine Abschlussmeldung enthält Ergebnis und Betriebszustand.\n\nBeispiel: *„Wasser am Verteiler, Druck stabil, keine Undichtigkeiten, Wasseraufbau abgeschlossen.\"*",
         "actions": [
           {
             "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_005"
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_druck"
           }
         ]
       },
-      "node_006": {
-        "id": "node_006",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Melden bei Florian A 44/1\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Brand in A, Anwesen Maier, Dorfstraße"
-              ],
-              "hint": "Brand in A, Anwesen Maier, Dorfstraße",
-              "onSuccess": "node_007",
-              "onFailure": "node_006_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_006_feedback": {
-        "id": "node_006_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Brand in A, Anwesen Maier, Dorfstraße\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_006"
-          }
-        ]
-      },
-      "node_007": {
-        "id": "node_007",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Anfahrt?\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Über ... in Richtung ... melden an der Kreuzung vor A"
-              ],
-              "hint": "Über ... in Richtung ... melden an der Kreuzung vor A",
-              "onSuccess": "node_008",
-              "onFailure": "node_007_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_007_feedback": {
-        "id": "node_007_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Über ... in Richtung ... melden an der Kreuzung vor A\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_007"
-          }
-        ]
-      },
-      "node_008": {
-        "id": "node_008",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Standort Kreuzung vor A"
-              ],
-              "hint": "Standort Kreuzung vor A",
-              "onSuccess": "node_009",
-              "onFailure": "node_008_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_008_feedback": {
-        "id": "node_008_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Standort Kreuzung vor A\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_008"
-          }
-        ]
-      },
-      "node_009": {
-        "id": "node_009",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Wegbeschreibung zur Est. (in Ortschaft bei Kirche links abbiegen)"
-              ],
-              "hint": "Wegbeschreibung zur Est. (in Ortschaft bei Kirche links abbiegen)",
-              "onSuccess": "node_010",
-              "onFailure": "node_009_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_009_feedback": {
-        "id": "node_009_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wegbeschreibung zur Est. (in Ortschaft bei Kirche links abbiegen)\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_009"
-          }
-        ]
-      },
-      "node_010": {
-        "id": "node_010",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Notarzt, Rettungswagen und KBR verständigen; Fw-Mann verletzt; 2 Hausbewohner noch im Obergeschoss\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Polizei benachrichtigt"
-              ],
-              "hint": "Polizei benachrichtigt",
-              "onSuccess": "node_011",
-              "onFailure": "node_010_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_010_feedback": {
-        "id": "node_010_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Polizei benachrichtigt\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_010"
-          }
-        ]
-      },
-      "node_011": {
-        "id": "node_011",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Einsatzbefehl?\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A"
-              ],
-              "hint": "Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A",
-              "onSuccess": "node_012",
-              "onFailure": "node_011_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_011_feedback": {
-        "id": "node_011_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Drehleiter nach A; Anwesen Maier, Dorfstraße, Personen im Dachgeschoss eingeschlossen, Anfahrt über ... in Richtung ..., melden an der Kreuzung vor A\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_011"
-          }
-        ]
-      },
-      "node_012": {
-        "id": "node_012",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Melden bei Florian A 44/1; TMO Gruppe …"
-              ],
-              "hint": "Melden bei Florian A 44/1; TMO Gruppe …",
-              "onSuccess": "node_013",
-              "onFailure": "node_012_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_012_feedback": {
-        "id": "node_012_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Melden bei Florian A 44/1; TMO Gruppe …\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_012"
-          }
-        ]
-      },
-      "node_013": {
-        "id": "node_013",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Alarm ist ausgelöst worden; Einsatzbefehl?\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Brand in A; Aufbau Wasserversorgung"
-              ],
-              "hint": "Brand in A; Aufbau Wasserversorgung",
-              "onSuccess": "node_014",
-              "onFailure": "node_013_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_013_feedback": {
-        "id": "node_013_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Brand in A; Aufbau Wasserversorgung\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_013"
-          }
-        ]
-      },
-      "node_014": {
-        "id": "node_014",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Wasserwerk soll Druck erhöhen; Notarzt am Ort\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Wasserwerk verständigt"
-              ],
-              "hint": "Wasserwerk verständigt",
-              "onSuccess": "node_015",
-              "onFailure": "node_014_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_014_feedback": {
-        "id": "node_014_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wasserwerk verständigt\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_014"
-          }
-        ]
-      },
-      "node_015": {
-        "id": "node_015",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Standort ...\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden"
-              ],
-              "hint": "Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden",
-              "onSuccess": "node_016",
-              "onFailure": "node_015_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_015_feedback": {
-        "id": "node_015_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wegbeschreibung (in C in Richtung D, bei der Kirche links ab in Richtung B) vor der Kreuzung A melden\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_015"
-          }
-        ]
-      },
-      "node_016": {
-        "id": "node_016",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Erreicht Kreuzung A\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Melden bei Florian A 44/1; TMO Gruppe …"
-              ],
-              "hint": "Melden bei Florian A 44/1; TMO Gruppe …",
-              "onSuccess": "node_017",
-              "onFailure": "node_016_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_016_feedback": {
-        "id": "node_016_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Melden bei Florian A 44/1; TMO Gruppe …\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_016"
-          }
-        ]
-      },
-      "node_017": {
-        "id": "node_017",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Ortsrand von A erreicht"
-              ],
-              "hint": "Ortsrand von A erreicht",
-              "onSuccess": "node_018",
-              "onFailure": "node_017_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_017_feedback": {
-        "id": "node_017_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Ortsrand von A erreicht\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_017"
-          }
-        ]
-      },
-      "node_018": {
-        "id": "node_018",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät"
-              ],
-              "hint": "Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät",
-              "onSuccess": "node_019",
-              "onFailure": "node_018_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_018_feedback": {
-        "id": "node_018_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wegbeschreibung zur Einsatzstelle (Fahren Sie in die Ortschaft – bei der Kirche links abbiegen, nördlich an der Brandstelle vorbei zum ostwärtigen Gebäude); Melden über Handfunkgerät\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_018"
-          }
-        ]
-      },
-      "node_019": {
-        "id": "node_019",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Kreuzung erreicht"
-              ],
-              "hint": "Kreuzung erreicht",
-              "onSuccess": "node_020",
-              "onFailure": "node_019_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_019_feedback": {
-        "id": "node_019_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Kreuzung erreicht\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_019"
-          }
-        ]
-      },
-      "node_020": {
-        "id": "node_020",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Wegbeschreibung (Fahren Sie durch die Ortschaft, in südlicher Richtung der Brandstelle zum Weiher); Meldungen über Handfunkgerät"
-              ],
-              "hint": "Wegbeschreibung (Fahren Sie durch die Ortschaft, in südlicher Richtung der Brandstelle zum Weiher); Meldungen über Handfunkgerät",
-              "onSuccess": "node_021",
-              "onFailure": "node_020_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_020_feedback": {
-        "id": "node_020_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wegbeschreibung (Fahren Sie durch die Ortschaft, in südlicher Richtung der Brandstelle zum Weiher); Meldungen über Handfunkgerät\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_020"
-          }
-        ]
-      },
-      "node_021": {
-        "id": "node_021",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar"
-              ],
-              "hint": "Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar",
-              "onSuccess": "node_022",
-              "onFailure": "node_021_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_021_feedback": {
-        "id": "node_021_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Florian B 20/1 an Einsatzstelle; Über Handfunkgerät erreichbar\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_021"
-          }
-        ]
-      },
-      "node_022": {
-        "id": "node_022",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Bestätigung"
-              ],
-              "hint": "Bestätigung",
-              "onSuccess": "node_023",
-              "onFailure": "node_022_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_022_feedback": {
-        "id": "node_022_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Bestätigung\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_022"
-          }
-        ]
-      },
-      "node_023": {
-        "id": "node_023",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "MRT auf Gateway schalten; DMO Gruppe 302F"
-              ],
-              "hint": "MRT auf Gateway schalten; DMO Gruppe 302F",
-              "onSuccess": "node_024",
-              "onFailure": "node_023_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_023_feedback": {
-        "id": "node_023_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"MRT auf Gateway schalten; DMO Gruppe 302F\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_023"
-          }
-        ]
-      },
-      "node_024": {
-        "id": "node_024",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Gateway geschaltet\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Melden bei der Feuerwehr A 44/1"
-              ],
-              "hint": "Melden bei der Feuerwehr A 44/1",
-              "onSuccess": "node_025",
-              "onFailure": "node_024_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_024_feedback": {
-        "id": "node_024_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Melden bei der Feuerwehr A 44/1\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_024"
-          }
-        ]
-      },
-      "node_025": {
-        "id": "node_025",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Vor der Kreuzung, vor A"
-              ],
-              "hint": "Vor der Kreuzung, vor A",
-              "onSuccess": "node_026",
-              "onFailure": "node_025_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_025_feedback": {
-        "id": "node_025_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Vor der Kreuzung, vor A\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_025"
-          }
-        ]
-      },
-      "node_026": {
-        "id": "node_026",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Wegbeschreibung (Fahren Sie in die Ortschaft bei der Kirche, links abbiegen, geradeaus an die Nordseite der Brandstelle); Meldung über Handfunkgerät"
-              ],
-              "hint": "Wegbeschreibung (Fahren Sie in die Ortschaft bei der Kirche, links abbiegen, geradeaus an die Nordseite der Brandstelle); Meldung über Handfunkgerät",
-              "onSuccess": "node_027",
-              "onFailure": "node_026_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_026_feedback": {
-        "id": "node_026_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Wegbeschreibung (Fahren Sie in die Ortschaft bei der Kirche, links abbiegen, geradeaus an die Nordseite der Brandstelle); Meldung über Handfunkgerät\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_026"
-          }
-        ]
-      },
-      "node_027": {
-        "id": "node_027",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Rückmeldung: 7 C-Rohre eingesetzt; Personen noch im Dachgeschoss, DL 30 eingetroffen, Löschteich wird leer, Brand im Wohnhaus; Stall und östliches Gebäude unter Kontrolle, westliches Gebäude noch nicht unter Kontrolle\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Melden bei Florian A 44/1"
-              ],
-              "hint": "Melden bei Florian A 44/1",
-              "onSuccess": "node_028",
-              "onFailure": "node_027_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_027_feedback": {
-        "id": "node_027_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Melden bei Florian A 44/1\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_027"
-          }
-        ]
-      },
-      "node_028": {
-        "id": "node_028",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Kreuzung erreicht\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät"
-              ],
-              "hint": "Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät",
-              "onSuccess": "node_029",
-              "onFailure": "node_028_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_028_feedback": {
-        "id": "node_028_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Verlegen einer Schlauchleitung vom Bach zum Weiher südlich der Brandstelle; Weiher wird leer; Meldung über Handfunkgerät\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_028"
-          }
-        ]
-      },
-      "node_029": {
-        "id": "node_029",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verständigen Sie EVU, Dachständer droht herabzufallen\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt"
-              ],
-              "hint": "Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt",
-              "onSuccess": "node_030",
-              "onFailure": "node_029_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_029_feedback": {
-        "id": "node_029_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Kreisbrandrat nicht erreichbar; Kreisbrandinspektor ist verständigt\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_029"
-          }
-        ]
-      },
-      "node_030": {
-        "id": "node_030",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "Sprechen Sie Ihre Funk-Meldung:",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Lagebericht?"
-              ],
-              "hint": "Lagebericht?",
-              "onSuccess": "node_031",
-              "onFailure": "node_030_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_030_feedback": {
-        "id": "node_030_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Lagebericht?\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_030"
-          }
-        ]
-      },
-      "node_031": {
-        "id": "node_031",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** 2 Personen gerettet, an Notarzt übergeben, 1 Feuerwehrmann mit Rauchvergiftung ins Krankenhaus unterwegs; 7 Rinder und 10 Kälber gerettet; 2 PA-Trupps eingesetzt. 10 C-Rohre im Einsatz, Feuer unter Kontrolle, östliches Nebengebäude nicht mehr gefährdet. Feuer im Wohnhaus aus. Im Stall Obergeschoss noch Futtervorräte in Brand. Im westlichen Lager Brandbekämpfung noch im Gange. EVU an der Einsatzstelle.\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Kreisbrandrat erreicht; soll er noch zur Einsatzstelle?"
-              ],
-              "hint": "Kreisbrandrat erreicht; soll er noch zur Einsatzstelle?",
-              "onSuccess": "node_032",
-              "onFailure": "node_031_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_031_feedback": {
-        "id": "node_031_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"Kreisbrandrat erreicht; soll er noch zur Einsatzstelle?\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_031"
-          }
-        ]
-      },
-      "node_032": {
-        "id": "node_032",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Kreisbrandinspektor vor Ort\n\nWas ist Ihre Antwort?",
-        "actions": [
-          {
-            "id": "radio_call",
-            "label": "📞 Funk-Meldung sprechen",
-            "radioCall": {
-              "expectedPhrases": [
-                "AUS 14.08, Est 14.14"
-              ],
-              "hint": "AUS 14.08, Est 14.14",
-              "onSuccess": "node_033",
-              "onFailure": "node_032_feedback",
-              "allowPartial": true
-            }
-          }
-        ]
-      },
-      "node_032_feedback": {
-        "id": "node_032_feedback",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "__FEEDBACK__\n**Nicht ganz richtig.**\n\nErwartet wurde z.B.: \"AUS 14.08, Est 14.14\"\n\nTipp: Beachten Sie die genaue Wortwahl und Reihenfolge.\n                    ",
-        "actions": [
-          {
-            "id": "retry",
-            "label": "Erneut versuchen",
-            "nextNodeId": "node_032"
-          }
-        ]
-      },
-      "node_033": {
-        "id": "node_033",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Übung beendet. Gut gemacht!",
+      "n_end": {
+        "id": "n_end",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Wasseraufbau verstanden. Angriffstrupp kann vorgehen.\n\n**Übung abgeschlossen!**",
         "actions": [
           {
             "id": "restart",
-            "label": "Noch einmal trainieren",
-            "nextNodeId": "node_000"
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_anfunken"
           },
           {
             "id": "exit",
-            "label": "Zurück zur Übersicht",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]
@@ -2048,552 +1214,171 @@
     }
   },
   {
-    "id": "brandobjekt_einfach",
-    "title": "Brandobjekt: Einfache Meldung",
-    "description": "Klassischer Brandeinsatz mit Inventory-Meldung und Rückmeldung.",
-    "startingNodeId": "start",
-    "playerRole": "gruppenführer_a",
+    "id": "trupp_auto_absichern",
+    "title": "Truppführer: Brandabsicherung und Bergung",
+    "description": "Truppführer-Übung: Anfunken, Angriffstrupp übernimmt Brandabsicherung, Fahrzeugsicherung und Bergungsvorbereitung. 4 Funk-Schritte.",
+    "startingNodeId": "n_anfunken",
+    "playerRole": "truppführer",
     "nodes": {
-      "start": {
-        "id": "start",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Florian A, Kielkrug, Brandobjekt, 2. Obergeschoss, Personen可能 im Gebäude, Melden Sie Einsatzbereitschaft.",
+      "n_anfunken": {
+        "id": "n_anfunken",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Gruppenführer für Angriffstrupp.\n\nBei einem PKW-Unfall übernimmt der Angriffstrupp Brandabsicherung und Bergungsvorbereitung. Der Gruppenführer funkt den Angriffstrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
         "actions": [
           {
-            "id": "ack",
-            "label": "Einsatzbereitschaft melden",
+            "id": "radio_hoert",
+            "label": "📞 Anruf beantworten",
             "radioCall": {
               "expectedPhrases": [
-                "Florian A nach Kiel, einsatzbereit",
-                "Florian A an Kiel, einsatzbereit"
+                "Angriffstrupp",
+                "hört"
               ],
-              "hint": "Florian A nach Kiel, einsatzbereit",
-              "onSuccess": "arrived",
-              "onFailure": "retry_ack"
+              "hint": "Angriffstrupp hört.",
+              "onSuccess": "n_start",
+              "onFailure": "n_anfunken_fail",
+              "feedbackSuccess": "✅ Anruf korrekt angenommen.",
+              "feedbackFailure": "❌ Antworten Sie knapp mit „Angriffstrupp hört.“"
             }
           }
         ]
       },
-      "retry_ack": {
-        "id": "retry_ack",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie Einsatzbereitschaft.",
+      "n_anfunken_fail": {
+        "id": "n_anfunken_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Angriffstrupp hört.\"*",
         "actions": [
           {
-            "id": "ack2",
-            "label": "Einsatzbereitschaft melden",
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_anfunken"
+          }
+        ]
+      },
+      "n_start": {
+        "id": "n_start",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** PKW nach Auffahrunfall, Fahrer ausgestiegen, Fahrzeug steht auf abschüssiger Straße. Auftrag für den Angriffstrupp: Brandabsicherung aufbauen, Fahrzeug gegen Wegrollen sichern und Bergung vorbereiten.\n\nBestätigen Sie den Auftrag.",
+        "actions": [
+          {
+            "id": "radio_auftrag",
+            "label": "📞 Auftrag bestätigen",
             "radioCall": {
               "expectedPhrases": [
-                "Florian A nach Kiel, einsatzbereit"
+                "Brandabsicherung",
+                "Wegrollen",
+                "Brandschutz",
+                "Bergung",
+                "abschüssig",
+                "verstanden"
               ],
-              "hint": "Florian A nach Kiel, einsatzbereit",
-              "onSuccess": "arrived",
-              "onFailure": "failed"
+              "hint": "Angriffstrupp verstanden, bauen Brandabsicherung auf, sichern den PKW gegen Wegrollen und bereiten die Bergung vor.",
+              "onSuccess": "n_sichern",
+              "onFailure": "n_start_fail",
+              "feedbackSuccess": "✅ Auftrag bestätigt.",
+              "feedbackFailure": "❌ Bestätigen Sie Brandabsicherung, Wegrollsicherung und Bergungsvorbereitung."
             }
           }
         ]
       },
-      "arrived": {
-        "id": "arrived",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Sie (Gruppenführer A):** **Funkrufname:** Florian A\n\nSie sind am Einsatzort. Was ist die nächste Meldung?",
+      "n_start_fail": {
+        "id": "n_start_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Beim Angriffstrupp sind Brandabsicherung, Eigenschutz, Wegrollsicherung und Bergungsvorbereitung wichtig.\n\nBeispiel: *„Bauen Brandabsicherung auf, sichern den PKW gegen Wegrollen und bereiten die Bergung vor.\"*",
         "actions": [
           {
-            "id": "inventory",
-            "label": "Inventory melden",
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_start"
+          }
+        ]
+      },
+      "n_sichern": {
+        "id": "n_sichern",
+        "role": "truppführer",
+        "narrative": "Unterlegkeile sind gesetzt, Handbremse ist kontrolliert, Zündung ist aus. Pulverlöscher und Schnellangriff stehen für die Brandabsicherung bereit.\n\nMelden Sie den Stand der Sicherungsmaßnahmen.",
+        "actions": [
+          {
+            "id": "radio_sicherung",
+            "label": "📞 Sicherung melden",
             "radioCall": {
               "expectedPhrases": [
-                "Inventory: 1 Verletzter, 2 Geräte",
-                "Inventory: ein Verletzter, zwei Geräte"
+                "Unterlegkeile",
+                "Handbremse",
+                "Zündung aus",
+                "Pulverlöscher",
+                "Brandschutz"
               ],
-              "hint": "Inventory: 1 Verletzter, 2 Geräte",
-              "onSuccess": "done",
-              "onFailure": "retry_inventory"
+              "hint": "Angriffstrupp an Gruppenführer: Unterlegkeile gesetzt, Handbremse kontrolliert, Zündung aus, Pulverlöscher und Schnellangriff zur Brandabsicherung bereit.",
+              "onSuccess": "n_batterie",
+              "onFailure": "n_sichern_fail",
+              "feedbackSuccess": "✅ Sicherungsmaßnahmen vollständig gemeldet.",
+              "feedbackFailure": "❌ Nennen Sie Wegrollsicherung, Zündung aus und bereitgestellte Brandabsicherung."
             }
           }
         ]
       },
-      "retry_inventory": {
-        "id": "retry_inventory",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, wiederholen Sie Ihre Inventory-Meldung.",
+      "n_sichern_fail": {
+        "id": "n_sichern_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Eine Rückmeldung nennt konkrete Maßnahmen.\n\nBeispiel: *„Unterlegkeile gesetzt, Handbremse kontrolliert, Zündung aus, Brandabsicherung bereit.\"*",
         "actions": [
           {
-            "id": "inv2",
-            "label": "Inventory melden",
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_sichern"
+          }
+        ]
+      },
+      "n_batterie": {
+        "id": "n_batterie",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Batterie abklemmen, wenn gefahrlos möglich. Danach Bergung mit Spreizer und Glasmanagement vorbereiten und Rückmeldung geben.\n\nMelden Sie die Durchführung.",
+        "actions": [
+          {
+            "id": "radio_batterie",
+            "label": "📞 Durchführung melden",
             "radioCall": {
               "expectedPhrases": [
-                "Inventory: 1 Verletzter, 2 Geräte"
+                "Batterie",
+                "abgeklemmt",
+                "gefahrfrei",
+                "Fahrzeug gesichert",
+                "Brandschutz"
               ],
-              "hint": "Inventory: 1 Verletzter, 2 Geräte",
-              "onSuccess": "done",
-              "onFailure": "failed"
+              "hint": "Angriffstrupp an Gruppenführer: Batterie gefahrlos abgeklemmt, Fahrzeug gesichert, Brandabsicherung steht, Bergung vorbereitet.",
+              "onSuccess": "n_end",
+              "onFailure": "n_batterie_fail",
+              "feedbackSuccess": "✅ Durchführung klar gemeldet.",
+              "feedbackFailure": "❌ Melden Sie Batterie abgeklemmt, Fahrzeug gesichert, Brandabsicherung und Bergung vorbereitet."
             }
           }
         ]
       },
-      "done": {
-        "id": "done",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Gute Arbeit, Florian A. Ende.",
+      "n_batterie_fail": {
+        "id": "n_batterie_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Melden Sie nur durchgeführte Maßnahmen und den verbleibenden Schutz.\n\nBeispiel: *„Batterie gefahrlos abgeklemmt, Fahrzeug gesichert, Brandabsicherung steht, Bergung vorbereitet.\"*",
         "actions": [
           {
-            "id": "exit",
-            "label": "Zurück zur Übersicht",
-            "nextNodeId": "__exit__"
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_batterie"
           }
         ]
       },
-      "failed": {
-        "id": "failed",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bleiben Sie am Kanal. Ende.",
+      "n_end": {
+        "id": "n_end",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Brandabsicherung und Bergungsvorbereitung verstanden. Angriffstrupp bleibt in Bereitstellung.\n\n**Übung abgeschlossen!**",
         "actions": [
           {
-            "id": "exit_fail",
-            "label": "Szenario beenden",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "id": "tiefgarage_vollalarm",
-    "title": "Tiefgarage: Vollalarm und Menschenrettung",
-    "description": "Einsatz in Tiefgarage mit Menschenrettung und erhöhtem Alarmstufe.",
-    "startingNodeId": "start",
-    "playerRole": "einsatzleit",
-    "nodes": {
-      "start": {
-        "id": "start",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** **Vollalarm für Florian A, Florian C, Florian D!** Tiefgarage Musterstraße, PKW in Feuer, Personen可能 eingeschlossen. Florian A übernimmt Einsatzleitung. **Bestätigen Sie Vollalarm!**",
-        "actions": [
-          {
-            "id": "confirm",
-            "label": "Vollalarm bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Alle Kräfte Vollalarm, Einsatzleitung Florian A",
-                "Vollalarm bestätigt, Einsatzleitung A"
-              ],
-              "hint": "Alle Kräfte Vollalarm, Einsatzleitung Florian A",
-              "onSuccess": "assign_units",
-              "onFailure": "retry_confirm"
-            }
-          }
-        ]
-      },
-      "retry_confirm": {
-        "id": "retry_confirm",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Vollalarm bestätigen.",
-        "actions": [
-          {
-            "id": "confirm2",
-            "label": "Vollalarm bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Alle Kräfte Vollalarm, Einsatzleitung Florian A"
-              ],
-              "hint": "Alle Kräfte Vollalarm, Einsatzleitung Florian A",
-              "onSuccess": "assign_units",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "assign_units": {
-        "id": "assign_units",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie (Einsatzleitung):** Weisen Sie die Kräfte zu: **Florian C** – Angriffstrupp Innenangriff, **Florian D** – Rettungstrupp mit Rettungssatz. **Melden Sie sich!**",
-        "actions": [
-          {
-            "id": "assign_c",
-            "label": "Florian C zuweisen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C an Einsatzleitung, übernehmen Angriffstrupp Innenangriff"
-              ],
-              "hint": "Florian C an Einsatzleitung, übernehmen Angriffstrupp Innenangriff",
-              "onSuccess": "assign_d",
-              "onFailure": "retry_c"
-            }
-          }
-        ]
-      },
-      "retry_c": {
-        "id": "retry_c",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, wiederholen Sie die Zuweisung für Florian C.",
-        "actions": [
-          {
-            "id": "assign_c2",
-            "label": "Florian C zuweisen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C an Einsatzleitung, übernehmen Angriffstrupp Innenangriff"
-              ],
-              "hint": "Florian C an Einsatzleitung, übernehmen Angriffstrupp Innenangriff",
-              "onSuccess": "assign_d",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "assign_d": {
-        "id": "assign_d",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** Nennen Sie nun Florian D den Rettungstrupp mit Rettungssatz.",
-        "actions": [
-          {
-            "id": "assign_d_action",
-            "label": "Florian D zuweisen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian D an Einsatzleitung, übernehmen Rettungstrupp mit Rettungssatz"
-              ],
-              "hint": "Florian D an Einsatzleitung, übernehmen Rettungstrupp mit Rettungssatz",
-              "onSuccess": "status_report",
-              "onFailure": "retry_d"
-            }
-          }
-        ]
-      },
-      "retry_d": {
-        "id": "retry_d",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Zuweisung für Florian D wiederholen.",
-        "actions": [
-          {
-            "id": "assign_d2",
-            "label": "Florian D zuweisen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian D an Einsatzleitung, übernehmen Rettungstrupp mit Rettungssatz"
-              ],
-              "hint": "Florian D an Einsatzleitung, übernehmen Rettungstrupp mit Rettungssatz",
-              "onSuccess": "status_report",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "status_report": {
-        "id": "status_report",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Sie (Gruppenführer A):** Sie sind vor Ort. Geben Sie eine erste Lagemeldung.",
-        "actions": [
-          {
-            "id": "status",
-            "label": "Lagemeldung geben",
-            "radioCall": {
-              "expectedPhrases": [
-                "Lagemeldung: Brand in Tiefgarage, PKW brennt, Personen可能 in Gefahr"
-              ],
-              "hint": "Lagemeldung: Brand in Tiefgarage, PKW brennt, Personen可能 in Gefahr",
-              "onSuccess": "done",
-              "onFailure": "retry_status"
-            }
-          }
-        ]
-      },
-      "retry_status": {
-        "id": "retry_status",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Lagemeldung wiederholen.",
-        "actions": [
-          {
-            "id": "status2",
-            "label": "Lagemeldung geben",
-            "radioCall": {
-              "expectedPhrases": [
-                "Lagemeldung: Brand in Tiefgarage, PKW brennt, Personen可能 in Gefahr"
-              ],
-              "hint": "Lagemeldung: Brand in Tiefgarage, PKW brennt, Personen可能 in Gefahr",
-              "onSuccess": "done",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "done": {
-        "id": "done",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden, Florian A. Halten Sie mich auf dem Laufenden. Ende.",
-        "actions": [
-          {
-            "id": "exit",
-            "label": "Zurück zur Übersicht",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      },
-      "failed": {
-        "id": "failed",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Verbindung unsauber. Wiederholen Sie den letzten Sprechwunsch.",
-        "actions": [
-          {
-            "id": "exit_fail",
-            "label": "Szenario beenden",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "id": "verkehrsunfall_oben",
-    "title": "Verkehrsunfall: Mehrfachverletzte",
-    "description": "Komplexer Verkehrsunfall mit mehreren Verletzten, Koordination mehrrer Fahrzeuge.",
-    "startingNodeId": "start",
-    "playerRole": "gruppenführer_a",
-    "nodes": {
-      "start": {
-        "id": "start",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** **Alarm für Florian A, Florian C, Florian D!** Verkehrsunfall B12, Höhe km 45, mehrere PKW, mindestens 3 Verletzte. Florian A übernimmt Einsatzleitung. **Melden Sie Einsatzbereitschaft!**",
-        "actions": [
-          {
-            "id": "ack",
-            "label": "Einsatzbereitschaft",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian A nach Kiel, einsatzbereit",
-                "Florian A an Kiel, einsatzbereit"
-              ],
-              "hint": "Florian A nach Kiel, einsatzbereit",
-              "onSuccess": "route",
-              "onFailure": "retry_ack"
-            }
-          }
-        ]
-      },
-      "retry_ack": {
-        "id": "retry_ack",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie.",
-        "actions": [
-          {
-            "id": "ack2",
-            "label": "Einsatzbereitschaft",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian A nach Kiel, einsatzbereit"
-              ],
-              "hint": "Florian A nach Kiel, einsatzbereit",
-              "onSuccess": "route",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "route": {
-        "id": "route",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Sie (Gruppenführer A):** Sie sind unterwegs. Was melden Sie der Einsatzleitstelle?",
-        "actions": [
-          {
-            "id": "en_route",
-            "label": "Anfahrt melden",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian A ist auf der Anfahrt",
-                "Florian A auf Anfahrt"
-              ],
-              "hint": "Florian A ist auf der Anfahrt",
-              "onSuccess": "arrival",
-              "onFailure": "retry_route"
-            }
-          }
-        ]
-      },
-      "retry_route": {
-        "id": "retry_route",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte melden Sie Ihre Position.",
-        "actions": [
-          {
-            "id": "route2",
-            "label": "Anfahrt melden",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian A ist auf der Anfahrt"
-              ],
-              "hint": "Florian A ist auf der Anfahrt",
-              "onSuccess": "arrival",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "arrival": {
-        "id": "arrival",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Sie:** Sie sind am Einsatzort. Erste Beobachtungen?",
-        "actions": [
-          {
-            "id": "scene",
-            "label": "Lagemeldung",
-            "radioCall": {
-              "expectedPhrases": [
-                "Lagemeldung: Verkehrsunfall mit 3 Verletzten, Fahrzeuge blockiert"
-              ],
-              "hint": "Lagemeldung: Verkehrsunfall mit 3 Verletzten, Fahrzeuge blockiert",
-              "onSuccess": "triage",
-              "onFailure": "retry_scene"
-            }
-          }
-        ]
-      },
-      "retry_scene": {
-        "id": "retry_scene",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Lagemeldung wiederholen.",
-        "actions": [
-          {
-            "id": "scene2",
-            "label": "Lagemeldung",
-            "radioCall": {
-              "expectedPhrases": [
-                "Lagemeldung: Verkehrsunfall mit 3 Verletzten, Fahrzeuge blockiert"
-              ],
-              "hint": "Lagemeldung: Verkehrsunfall mit 3 Verletzten, Fahrzeuge blockiert",
-              "onSuccess": "triage",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "triage": {
-        "id": "triage",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Sie:** Koordinieren Sie die Ersteinsatzkräfte. **Weisen Sie Florian C zu:** \"übernehmen Verletztenversorgung\". **Weisen Sie Florian D zu:** \"übernehmen Verkehrssicherung\".",
-        "actions": [
-          {
-            "id": "assign_c",
-            "label": "Florian C zuweisen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C an Einsatzleitung, übernehmen Verletztenversorgung"
-              ],
-              "hint": "Florian C an Einsatzleitung, übernehmen Verletztenversorgung",
-              "onSuccess": "assign_d2",
-              "onFailure": "retry_c"
-            }
+            "id": "restart",
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_anfunken"
           },
           {
-            "id": "assign_d",
-            "label": "Florian D zuweisen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian D an Einsatzleitung, übernehmen Verkehrssicherung"
-              ],
-              "hint": "Florian D an Einsatzleitung, übernehmen Verkehrssicherung",
-              "onSuccess": "assign_c2",
-              "onFailure": "retry_d"
-            }
-          }
-        ]
-      },
-      "retry_c": {
-        "id": "retry_c",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, wiederholen Sie Zuweisung für Florian C.",
-        "actions": [
-          {
-            "id": "assign_c2",
-            "label": "Florian C zuweisen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C an Einsatzleitung, übernehmen Verletztenversorgung"
-              ],
-              "hint": "Florian C an Einsatzleitung, übernehmen Verletztenversorgung",
-              "onSuccess": "assign_d",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "retry_d": {
-        "id": "retry_d",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, wiederholen Sie Zuweisung für Florian D.",
-        "actions": [
-          {
-            "id": "assign_d2",
-            "label": "Florian D zuweisen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian D an Einsatzleitung, übernehmen Verkehrssicherung"
-              ],
-              "hint": "Florian D an Einsatzleitung, übernehmen Verkehrssicherung",
-              "onSuccess": "assign_c",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "assign_c2": {
-        "id": "assign_c2",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian D hat Zugwiesen. Was ist der Status von Florian C?",
-        "actions": [
-          {
-            "id": "c_ok",
-            "label": "Florian C bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C hat Auftrag angenommen"
-              ],
-              "hint": "Florian C hat Auftrag angenommen",
-              "onSuccess": "done",
-              "onFailure": "retry_c_ok"
-            }
-          }
-        ]
-      },
-      "retry_c_ok": {
-        "id": "retry_c_ok",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie Florian C.",
-        "actions": [
-          {
-            "id": "c_ok2",
-            "label": "Bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C hat Auftrag angenommen"
-              ],
-              "hint": "Florian C hat Auftrag angenommen",
-              "onSuccess": "done",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "done": {
-        "id": "done",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Gute Arbeit. Ende.",
-        "actions": [
-          {
             "id": "exit",
-            "label": "Zurück",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      },
-      "failed": {
-        "id": "failed",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Verbindung gestört. Bitte wiederholen.",
-        "actions": [
-          {
-            "id": "exit_fail",
-            "label": "Beenden",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]
@@ -2601,815 +1386,207 @@
     }
   },
   {
-    "id": "kleinbrand_schnell",
-    "title": "Kleinbrand: Schnelle Löschung",
-    "description": "Kurzer Einsatz – Brand schnell unter Kontrolle, Rückmeldung an Leitstelle.",
-    "startingNodeId": "start",
-    "playerRole": "gruppenführer_a",
+    "id": "trupp_thl_kombi",
+    "title": "Truppführer: Schlauchtrupp THL Kombi",
+    "description": "Truppführer-Übung: Anfunken, Absichern, Ausleuchten, Verkehrsleitung und Lage an den Gruppenführer melden. 5 Funk-Schritte.",
+    "startingNodeId": "n_anfunken",
+    "playerRole": "truppführer",
     "nodes": {
-      "start": {
-        "id": "start",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Meldung über Brand an Musterweg, Kleinbrand, keine Personen可能. **Status?**",
+      "n_anfunken": {
+        "id": "n_anfunken",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Gruppenführer für Schlauchtrupp.\n\nNach einem Sturmschaden muss abgesichert, ausgeleuchtet und Verkehr geführt werden. Der Gruppenführer funkt den Schlauchtrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
         "actions": [
           {
-            "id": "status",
-            "label": "Status melden",
+            "id": "radio_hoert",
+            "label": "📞 Anruf beantworten",
             "radioCall": {
               "expectedPhrases": [
-                "Florian A ist in 5 Minuten am Einsatzort",
-                "Ankunft in 5 Minuten"
+                "Schlauchtrupp",
+                "hört"
               ],
-              "hint": "Florian A ist in 5 Minuten am Einsatzort",
-              "onSuccess": "on_scene",
-              "onFailure": "retry_status"
+              "hint": "Schlauchtrupp hört.",
+              "onSuccess": "n_start",
+              "onFailure": "n_anfunken_fail",
+              "feedbackSuccess": "✅ Anruf korrekt angenommen.",
+              "feedbackFailure": "❌ Antworten Sie knapp mit „Schlauchtrupp hört.“"
             }
           }
         ]
       },
-      "retry_status": {
-        "id": "retry_status",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte melden Sie Ihren Status.",
+      "n_anfunken_fail": {
+        "id": "n_anfunken_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Schlauchtrupp hört.\"*",
         "actions": [
           {
-            "id": "status2",
-            "label": "Status",
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_anfunken"
+          }
+        ]
+      },
+      "n_start": {
+        "id": "n_start",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Nach Sturm liegt ein Ast auf der Fahrbahn, ein PKW steht im Gefahrenbereich. Auftrag: Einsatzstelle absichern, ausleuchten und Verkehr langsam vorbeiführen.\n\nBestätigen Sie den Auftrag.",
+        "actions": [
+          {
+            "id": "radio_auftrag",
+            "label": "📞 Auftrag bestätigen",
             "radioCall": {
               "expectedPhrases": [
-                "Florian A ist in 5 Minuten am Einsatzort"
+                "Ast",
+                "Fahrbahn",
+                "absichern",
+                "ausleuchten",
+                "Verkehr vorbeiführen"
               ],
-              "hint": "Florian A ist in 5 Minuten am Einsatzort",
-              "onSuccess": "on_scene",
-              "onFailure": "failed"
+              "hint": "Schlauchtrupp verstanden: Ast auf Fahrbahn, sichern ab, leuchten aus und führen Verkehr langsam vorbei.",
+              "onSuccess": "n_absichern",
+              "onFailure": "n_start_fail",
+              "feedbackSuccess": "✅ Kombiauftrag bestätigt.",
+              "feedbackFailure": "❌ Wiederholen Sie Absichern, Ausleuchten und Verkehrsführung."
             }
           }
         ]
       },
-      "on_scene": {
-        "id": "on_scene",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Sie:** Sie sind vor Ort. Brand bestätigt. Was melden Sie?",
+      "n_start_fail": {
+        "id": "n_start_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Bei mehreren Aufgaben werden alle Kernaufgaben wiederholt.\n\nBeispiel: *„Sichern ab, leuchten aus und führen den Verkehr langsam vorbei.\"*",
         "actions": [
           {
-            "id": "fire_confirmed",
-            "label": "Brand bestätigen",
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_start"
+          }
+        ]
+      },
+      "n_absichern": {
+        "id": "n_absichern",
+        "role": "truppführer",
+        "narrative": "Die Einsatzstelle ist mit Faltsignalen und Warnleuchten abgesichert. Ein Strahler leuchtet den Ast und den PKW aus.\n\nMelden Sie den Stand.",
+        "actions": [
+          {
+            "id": "radio_stand",
+            "label": "📞 Stand melden",
             "radioCall": {
               "expectedPhrases": [
-                "Brand bestätigt, beginnen mit Löschangriff"
+                "Faltsignale",
+                "Warnleuchten",
+                "Strahler",
+                "ausgeleuchtet",
+                "Absicherung steht"
               ],
-              "hint": "Brand bestätigt, beginnen mit Löschangriff",
-              "onSuccess": "extinguished",
-              "onFailure": "retry_fire"
+              "hint": "Schlauchtrupp an Gruppenführer: Absicherung steht mit Faltsignalen und Warnleuchten, Strahler gesetzt, Einsatzstelle ausgeleuchtet.",
+              "onSuccess": "n_verkehr",
+              "onFailure": "n_absichern_fail",
+              "feedbackSuccess": "✅ Standmeldung vollständig.",
+              "feedbackFailure": "❌ Melden Sie Absicherungsmittel und Ausleuchtung."
             }
           }
         ]
       },
-      "retry_fire": {
-        "id": "retry_fire",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte wiederholen Sie.",
+      "n_absichern_fail": {
+        "id": "n_absichern_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Die Rückmeldung soll Material und Zustand enthalten.\n\nBeispiel: *„Absicherung steht mit Faltsignalen und Warnleuchten, Strahler gesetzt.\"*",
         "actions": [
           {
-            "id": "fire2",
-            "label": "Brand bestätigen",
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_absichern"
+          }
+        ]
+      },
+      "n_verkehr": {
+        "id": "n_verkehr",
+        "role": "truppführer",
+        "narrative": "Der Verkehr kann nur wechselweise vorbeigeführt werden. Ein zweiter Trupp ist noch nicht verfügbar.\n\nMelden Sie die Verkehrsführung und Ihren Bedarf.",
+        "actions": [
+          {
+            "id": "radio_verkehr",
+            "label": "📞 Bedarf melden",
             "radioCall": {
               "expectedPhrases": [
-                "Brand bestätigt, beginnen mit Löschangriff"
+                "wechselweise",
+                "Verkehr",
+                "zweiter Trupp",
+                "Unterstützung",
+                "vorbeiführen"
               ],
-              "hint": "Brand bestätigt, beginnen mit Löschangriff",
-              "onSuccess": "extinguished",
-              "onFailure": "failed"
+              "hint": "Schlauchtrupp an Gruppenführer: Verkehr wird wechselweise vorbeigeführt, benötigen zweiten Trupp zur Unterstützung.",
+              "onSuccess": "n_frei",
+              "onFailure": "n_verkehr_fail",
+              "feedbackSuccess": "✅ Verkehrsführung und Bedarf klar.",
+              "feedbackFailure": "❌ Melden Sie wechselweise Verkehrsführung und den Bedarf an Unterstützung."
             }
           }
         ]
       },
-      "extinguished": {
-        "id": "extinguished",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Sie:** Der Brand ist gelöscht. Keine Verletzten. Was ist das abschließende?",
+      "n_verkehr_fail": {
+        "id": "n_verkehr_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Bei Bedarfsmeldungen muss klar sein, was fehlt.\n\nBeispiel: *„Verkehr wird wechselweise vorbeigeführt, benötigen zweiten Trupp zur Unterstützung.\"*",
         "actions": [
           {
-            "id": "final",
-            "label": "Abschlussmeldung",
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_verkehr"
+          }
+        ]
+      },
+      "n_frei": {
+        "id": "n_frei",
+        "role": "truppführer",
+        "narrative": "Der Ast ist beseitigt, der PKW konnte wegfahren. Fahrbahn ist frei, Absicherung kann zurückgebaut werden.\n\nMelden Sie den Abschluss.",
+        "actions": [
+          {
+            "id": "radio_abschluss",
+            "label": "📞 Abschluss melden",
             "radioCall": {
               "expectedPhrases": [
-                "Florian A: Brand gelöscht, keine Verletzten, Einsatz beendet"
+                "Ast beseitigt",
+                "Fahrbahn frei",
+                "PKW weg",
+                "Absicherung zurückbauen",
+                "Einsatzstelle frei"
               ],
-              "hint": "Florian A: Brand gelöscht, keine Verletzten, Einsatz beendet",
-              "onSuccess": "done",
-              "onFailure": "retry_final"
+              "hint": "Schlauchtrupp an Gruppenführer: Ast beseitigt, PKW weg, Fahrbahn frei, bauen Absicherung zurück.",
+              "onSuccess": "n_end",
+              "onFailure": "n_frei_fail",
+              "feedbackSuccess": "✅ Abschlussmeldung vollständig.",
+              "feedbackFailure": "❌ Melden Sie Ast beseitigt, Fahrbahn frei und Rückbau der Absicherung."
             }
           }
         ]
       },
-      "retry_final": {
-        "id": "retry_final",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte Abschlussmeldung.",
+      "n_frei_fail": {
+        "id": "n_frei_fail",
+        "role": "truppführer",
+        "narrative": "**Feedback:** Abschlussmeldungen nennen Ergebnis und nächste Maßnahme.\n\nBeispiel: *„Ast beseitigt, PKW weg, Fahrbahn frei, bauen Absicherung zurück.\"*",
         "actions": [
           {
-            "id": "final2",
-            "label": "Abschluss",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian A: Brand gelöscht, keine Verletzten, Einsatz beendet"
-              ],
-              "hint": "Florian A: Brand gelöscht, keine Verletzten, Einsatz beendet",
-              "onSuccess": "done",
-              "onFailure": "failed"
-            }
+            "id": "retry",
+            "label": "🔄 Erneut versuchen",
+            "nextNodeId": "n_frei"
           }
         ]
       },
-      "done": {
-        "id": "done",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Danke, Florian A. Ende.",
+      "n_end": {
+        "id": "n_end",
+        "role": "truppführer",
+        "narrative": "**Gruppenführer:** Abschluss verstanden. Nach Rückbau wieder am Fahrzeug sammeln.\n\n**Übung abgeschlossen!**",
         "actions": [
           {
-            "id": "exit",
-            "label": "Zurück",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      },
-      "failed": {
-        "id": "failed",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte wiederholen Sie die letzte Meldung.",
-        "actions": [
-          {
-            "id": "exit_fail",
-            "label": "Beenden",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "id": "wasserversorgung_laengs",
-    "title": "Wasserversorgung: Schlauchleitung legen",
-    "description": "Aufbau einer Schlauchleitung über längere Distanz, Koordination zwischen Fahrzeugen.",
-    "startingNodeId": "start",
-    "playerRole": "gruppenführer_b",
-    "nodes": {
-      "start": {
-        "id": "start",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, übernehmen Sie die Wasserversorgung vom Hydranten bis zum Brandobjekt. Entfernung ca. 200 m. **Bestätigen Sie!**",
-        "actions": [
-          {
-            "id": "ack",
-            "label": "Auftrag bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian B an Kiel, übernehme Wasserversorgung",
-                "Wasserversorgung bestätigt"
-              ],
-              "hint": "Florian B an Kiel, übernehme Wasserversorgung",
-              "onSuccess": "setup",
-              "onFailure": "retry_ack"
-            }
-          }
-        ]
-      },
-      "retry_ack": {
-        "id": "retry_ack",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, bitte Auftrag bestätigen.",
-        "actions": [
-          {
-            "id": "ack2",
-            "label": "Bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian B an Kiel, übernehme Wasserversorgung"
-              ],
-              "hint": "Florian B an Kiel, übernehme Wasserversorgung",
-              "onSuccess": "setup",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "setup": {
-        "id": "setup",
-        "role": "gruppenführer_b",
-        "narrativeMarkdown": "**Sie (Gruppenführer B):** Sie legen die Schlauchleitung. Nach 150 m melden Sie: \"Schlauchleitung liegt, Wasser fließt\".",
-        "actions": [
-          {
-            "id": "progress",
-            "label": "Fortschritt melden",
-            "radioCall": {
-              "expectedPhrases": [
-                "Schlauchleitung liegt, Wasser fließt"
-              ],
-              "hint": "Schlauchleitung liegt, Wasser fließt",
-              "onSuccess": "pressure",
-              "onFailure": "retry_progress"
-            }
-          }
-        ]
-      },
-      "retry_progress": {
-        "id": "retry_progress",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, bitte melden Sie den Status der Wasserversorgung.",
-        "actions": [
-          {
-            "id": "prog2",
-            "label": "Status",
-            "radioCall": {
-              "expectedPhrases": [
-                "Schlauchleitung liegt, Wasser fließt"
-              ],
-              "hint": "Schlauchleitung liegt, Wasser fließt",
-              "onSuccess": "pressure",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "pressure": {
-        "id": "pressure",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, geben Sie **Druck an der Entnahmestelle** bekannt.",
-        "actions": [
-          {
-            "id": "press",
-            "label": "Druck melden",
-            "radioCall": {
-              "expectedPhrases": [
-                "Druck am Hydranten 8 bar",
-                "Hydrantendruck 8 bar"
-              ],
-              "hint": "Druck am Hydranten 8 bar",
-              "onSuccess": "done",
-              "onFailure": "retry_press"
-            }
-          }
-        ]
-      },
-      "retry_press": {
-        "id": "retry_press",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, bitte Druck wiederholen.",
-        "actions": [
-          {
-            "id": "press2",
-            "label": "Druck",
-            "radioCall": {
-              "expectedPhrases": [
-                "Druck am Hydranten 8 bar"
-              ],
-              "hint": "Druck am Hydranten 8 bar",
-              "onSuccess": "done",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "done": {
-        "id": "done",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Danke, Florian B. Ende.",
-        "actions": [
-          {
-            "id": "exit",
-            "label": "Zurück",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      },
-      "failed": {
-        "id": "failed",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian B, Funk unsauber. Wiederholen.",
-        "actions": [
-          {
-            "id": "exit_fail",
-            "label": "Beenden",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "id": "verletztenversorgung",
-    "title": "Verletztenversorgung: Rettungstrupp",
-    "description": "Priorisierung und Transport von Verletzten, Kommunikation mit Rettungsdienst.",
-    "startingNodeId": "start",
-    "playerRole": "gruppenführer_c",
-    "nodes": {
-      "start": {
-        "id": "start",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, übernehmen Sie die Verletztenversorgung. Es sind mindestens 3 Verletzte, davon 1 dringend. **Status?**",
-        "actions": [
-          {
-            "id": "ack",
-            "label": "Auftrag bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C übernimmt Verletztenversorgung",
-                "Verletztenversorgung bestätigt"
-              ],
-              "hint": "Florian C übernimmt Verletztenversorgung",
-              "onSuccess": "triage",
-              "onFailure": "retry_ack"
-            }
-          }
-        ]
-      },
-      "retry_ack": {
-        "id": "retry_ack",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, bitte bestätigen.",
-        "actions": [
-          {
-            "id": "ack2",
-            "label": "Bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C übernimmt Verletztenversorgung"
-              ],
-              "hint": "Florian C übernimmt Verletztenversorgung",
-              "onSuccess": "triage",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "triage": {
-        "id": "triage",
-        "role": "gruppenführer_c",
-        "narrativeMarkdown": "**Sie (Gruppenführer C):** Sie triagieren die Verletzten. Was melden Sie?",
-        "actions": [
-          {
-            "id": "triage_report",
-            "label": "Triage melden",
-            "radioCall": {
-              "expectedPhrases": [
-                "Triage: 1 dringend, 2 leicht verletzt",
-                "ein dringend, zwei leicht"
-              ],
-              "hint": "Triage: 1 dringend, 2 leicht verletzt",
-              "onSuccess": "transport",
-              "onFailure": "retry_triage"
-            }
-          }
-        ]
-      },
-      "retry_triage": {
-        "id": "retry_triage",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, bitte Triage-Ergebnis wiederholen.",
-        "actions": [
-          {
-            "id": "tri2",
-            "label": "Triage",
-            "radioCall": {
-              "expectedPhrases": [
-                "Triage: 1 dringend, 2 leicht verletzt"
-              ],
-              "hint": "Triage: 1 dringend, 2 leicht verletzt",
-              "onSuccess": "transport",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "transport": {
-        "id": "transport",
-        "role": "gruppenführer_c",
-        "narrativeMarkdown": "**Sie:** Der dringende Patient wird transportiert. Wohin?",
-        "actions": [
-          {
-            "id": "dest",
-            "label": "Ziel nennen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Transport zum Krankenhaus Musterstadt",
-                "Patienten transportiert nach Musterstadt"
-              ],
-              "hint": "Transport zum Krankenhaus Musterstadt",
-              "onSuccess": "done",
-              "onFailure": "retry_dest"
-            }
-          }
-        ]
-      },
-      "retry_dest": {
-        "id": "retry_dest",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, bitte Ziel des Transports nennen.",
-        "actions": [
-          {
-            "id": "dest2",
-            "label": "Ziel",
-            "radioCall": {
-              "expectedPhrases": [
-                "Transport zum Krankenhaus Musterstadt"
-              ],
-              "hint": "Transport zum Krankenhaus Musterstadt",
-              "onSuccess": "done",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "done": {
-        "id": "done",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Danke, Florian C. Ende.",
-        "actions": [
-          {
-            "id": "exit",
-            "label": "Zurück",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      },
-      "failed": {
-        "id": "failed",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian C, Funk unsauber. Wiederholen.",
-        "actions": [
-          {
-            "id": "exit_fail",
-            "label": "Beenden",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "id": "einsatzabbruch",
-    "title": "Einsatzabbruch: Frühes Ende",
-    "description": "Einsatz wird vorzeitig abgebrochen (Wetter, Fehlalarm). Korrekte Meldungen.",
-    "startingNodeId": "start",
-    "playerRole": "einsatzleit",
-    "nodes": {
-      "start": {
-        "id": "start",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie (Einsatzleitstelle):** **Alarmabbruch für alle Kräfte!** Florian A, Florian C, Florian D – Einsatz wird abgebrochen, kein Brand, Fehlalarm. **Bestätigen Sie Abbruch!**",
-        "actions": [
-          {
-            "id": "ack_a",
-            "label": "Florian A bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian A bestätigt Alarmabbruch",
-                "Florian A: Alarmabbruch"
-              ],
-              "hint": "Florian A bestätigt Alarmabbruch",
-              "onSuccess": "ack_c",
-              "onFailure": "retry_a"
-            }
-          }
-        ]
-      },
-      "retry_a": {
-        "id": "retry_a",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** Florian A, bitte bestätigen Sie Alarmabbruch.",
-        "actions": [
-          {
-            "id": "ack_a2",
-            "label": "Bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian A bestätigt Alarmabbruch"
-              ],
-              "hint": "Florian A bestätigt Alarmabbruch",
-              "onSuccess": "ack_c",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "ack_c": {
-        "id": "ack_c",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** Florian C, bestätigen Sie ebenfalls.",
-        "actions": [
-          {
-            "id": "ack_c_action",
-            "label": "Florian C",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C bestätigt Alarmabbruch"
-              ],
-              "hint": "Florian C bestätigt Alarmabbruch",
-              "onSuccess": "ack_d",
-              "onFailure": "retry_c"
-            }
-          }
-        ]
-      },
-      "retry_c": {
-        "id": "retry_c",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** Florian C, bitte bestätigen.",
-        "actions": [
-          {
-            "id": "ack_c2",
-            "label": "Bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian C bestätigt Alarmabbruch"
-              ],
-              "hint": "Florian C bestätigt Alarmabbruch",
-              "onSuccess": "ack_d",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "ack_d": {
-        "id": "ack_d",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** Florian D, letzte Bestätigung.",
-        "actions": [
-          {
-            "id": "ack_d_action",
-            "label": "Florian D",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian D bestätigt Alarmabbruch"
-              ],
-              "hint": "Florian D bestätigt Alarmabbruch",
-              "onSuccess": "standdown",
-              "onFailure": "retry_d"
-            }
-          }
-        ]
-      },
-      "retry_d": {
-        "id": "retry_d",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** Florian D, bitte bestätigen.",
-        "actions": [
-          {
-            "id": "ack_d2",
-            "label": "Bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian D bestätigt Alarmabbruch"
-              ],
-              "hint": "Florian D bestätigt Alarmabbruch",
-              "onSuccess": "standown",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "standdown": {
-        "id": "standdown",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** **Alle Kräfte: Einsatzziel erreicht, Einsatz beendet. Fahrzeuge wieder einsatzbereit melden.**",
-        "actions": [
-          {
-            "id": "final_ack",
-            "label": "Abschluss",
-            "radioCall": {
-              "expectedPhrases": [
-                "Alle Kräfte einsatzbereit",
-                "Fahrzeuge wieder einsatzbereit"
-              ],
-              "hint": "Alle Kräfte einsatzbereit",
-              "onSuccess": "done",
-              "onFailure": "retry_final"
-            }
-          }
-        ]
-      },
-      "retry_final": {
-        "id": "retry_final",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** Bitte wiederholen Sie die Stand-down-Meldung.",
-        "actions": [
-          {
-            "id": "final2",
-            "label": "Stand-down",
-            "radioCall": {
-              "expectedPhrases": [
-                "Alle Kräfte einsatzbereit"
-              ],
-              "hint": "Alle Kräfte einsatzbereit",
-              "onSuccess": "done",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "done": {
-        "id": "done",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Sie:** Einsatz beendet. Danke an alle. Ende.",
-        "actions": [
-          {
-            "id": "exit",
-            "label": "Zurück",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      },
-      "failed": {
-        "id": "failed",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Unklarheiten, Wiederholung erforderlich.",
-        "actions": [
-          {
-            "id": "exit_fail",
-            "label": "Beenden",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "id": "nachschub_anfordern",
-    "title": "Nachschub: Geräte anfordern",
-    "description": "Zusätzliche Geräte (z.B. Motorsäge, Beleuchtung) bei Bedarf anfordern.",
-    "startingNodeId": "start",
-    "playerRole": "gruppenführer_a",
-    "nodes": {
-      "start": {
-        "id": "start",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, Sie sind vor Ort. **Benötigen Sie weitere Geräte?**",
-        "actions": [
-          {
-            "id": "yes",
-            "label": "Ja, Nachschub",
-            "radioCall": {
-              "expectedPhrases": [
-                "Anforderung: 1 Motorsäge, 1 Beleuchtungssatz",
-                "Wir benötigen Motorsäge und Beleuchtung"
-              ],
-              "hint": "Anforderung: 1 Motorsäge, 1 Beleuchtungssatz",
-              "onSuccess": "confirm",
-              "onFailure": "retry_request"
-            }
+            "id": "restart",
+            "label": "🔄 Noch einmal trainieren",
+            "nextNodeId": "n_anfunken"
           },
           {
-            "id": "no",
-            "label": "Nein, danke",
-            "radioCall": {
-              "expectedPhrases": [
-                "Kein Nachschub benötigt",
-                "Danke, wir kommen zurecht"
-              ],
-              "hint": "Kein Nachschub benötigt",
-              "onSuccess": "done",
-              "onFailure": "retry_no"
-            }
-          }
-        ]
-      },
-      "retry_request": {
-        "id": "retry_request",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte wiederholen Sie Ihre Anforderung.",
-        "actions": [
-          {
-            "id": "req2",
-            "label": "Anforderung",
-            "radioCall": {
-              "expectedPhrases": [
-                "Anforderung: 1 Motorsäge, 1 Beleuchtungssatz"
-              ],
-              "hint": "Anforderung: 1 Motorsäge, 1 Beleuchtungssatz",
-              "onSuccess": "confirm",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "retry_no": {
-        "id": "retry_no",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie, dass Sie keinen Nachschub benötigen.",
-        "actions": [
-          {
-            "id": "no2",
-            "label": "Bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Kein Nachschub benötigt"
-              ],
-              "hint": "Kein Nachschub benötigt",
-              "onSuccess": "done",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "confirm": {
-        "id": "confirm",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. **Florian D** bringt die angeforderten Geräte. **Melden Sie sich, wenn eingetroffen!**",
-        "actions": [
-          {
-            "id": "wait",
-            "label": "Warten auf Florian D",
-            "radioCall": {
-              "expectedPhrases": [
-                "Warten auf Florian D",
-                "Florian D wird erwartet"
-              ],
-              "hint": "Warten auf Florian D",
-              "onSuccess": "arrived",
-              "onFailure": "retry_wait"
-            }
-          }
-        ]
-      },
-      "retry_wait": {
-        "id": "retry_wait",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bestätigen Sie, dass Sie auf Florian D warten.",
-        "actions": [
-          {
-            "id": "wait2",
-            "label": "Warten",
-            "radioCall": {
-              "expectedPhrases": [
-                "Warten auf Florian D"
-              ],
-              "hint": "Warten auf Florian D",
-              "onSuccess": "arrived",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "arrived": {
-        "id": "arrived",
-        "role": "gruppenführer_a",
-        "narrativeMarkdown": "**Sie:** Florian D ist eingetroffen. Was melden Sie?",
-        "actions": [
-          {
-            "id": "received",
-            "label": "Empfang bestätigen",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian D ist eingetroffen, Geräte übernommen",
-                "Geräte erhalten"
-              ],
-              "hint": "Florian D ist eingetroffen, Geräte übernommen",
-              "onSuccess": "done",
-              "onFailure": "retry_received"
-            }
-          }
-        ]
-      },
-      "retry_received": {
-        "id": "retry_received",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte bestätigen Sie Empfang.",
-        "actions": [
-          {
-            "id": "rec2",
-            "label": "Empfang",
-            "radioCall": {
-              "expectedPhrases": [
-                "Florian D ist eingetroffen, Geräte übernommen"
-              ],
-              "hint": "Florian D ist eingetroffen, Geräte übernommen",
-              "onSuccess": "done",
-              "onFailure": "failed"
-            }
-          }
-        ]
-      },
-      "done": {
-        "id": "done",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Verstanden. Danke, Florian A. Ende.",
-        "actions": [
-          {
             "id": "exit",
-            "label": "Zurück",
-            "nextNodeId": "__exit__"
-          }
-        ]
-      },
-      "failed": {
-        "id": "failed",
-        "role": "einsatzleit",
-        "narrativeMarkdown": "**Einsatzleitstelle:** Florian A, bitte wiederholen.",
-        "actions": [
-          {
-            "id": "exit_fail",
-            "label": "Beenden",
+            "label": "← Zur Übersicht",
             "nextNodeId": "__exit__"
           }
         ]

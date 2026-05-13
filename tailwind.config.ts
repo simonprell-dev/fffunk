@@ -18,6 +18,16 @@ export default {
         border: '#333333',
         text: '#e5e5e5',
         muted: '#a3a3a3',
+        dark: {
+          500: '#525252',
+          700: '#262626',
+          800: '#171717',
+          900: '#0a0a0a',
+        },
+        fire: {
+          500: '#ef4444',
+          600: '#dc2626',
+        },
       },
       fontFamily: {
         radio: ['"Courier New"', 'Courier', 'monospace'],

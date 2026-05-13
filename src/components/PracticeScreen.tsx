@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Scenario, StoryNode, Action } from '../types/story';
 import { StoryEngine } from '../lib/story-engine';
 import { AudioEngine } from '../lib/audio-engine';
@@ -10,23 +10,28 @@ interface Props {
   scenario: Scenario;
   engine: StoryEngine;
   audio: AudioEngine;
+  onExit: () => void;
 }
 
-export default function PracticeScreen({ scenario, engine, audio }: Props) {
+export default function PracticeScreen({ scenario, engine, audio, onExit }: Props) {
   const [currentNode, setCurrentNode] = useState<StoryNode>(engine.getCurrentNode());
   const [radioModalOpen, setRadioModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
   const [feedback, setFeedback] = useState<{ success: boolean; message: string } | null>(null);
   const [score, setScore] = useState(engine.getProgress().score);
 
-  // Update when engine state changes
+  const navigationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const refreshNode = () => {
     setCurrentNode(engine.getCurrentNode());
     setScore(engine.getProgress().score);
   };
 
-  // Handle simple action (no radio)
   const handleAction = (action: Action) => {
+    if (navigationTimerRef.current) {
+      clearTimeout(navigationTimerRef.current);
+      navigationTimerRef.current = null;
+    }
     if (action.radioCall) {
       setPendingAction(action);
       setRadioModalOpen(true);
@@ -34,7 +39,7 @@ export default function PracticeScreen({ scenario, engine, audio }: Props) {
     }
     if (action.nextNodeId) {
       if (action.nextNodeId === '__exit__') {
-        // handled by parent
+        onExit();
         return;
       }
       engine.goTo(action.nextNodeId);
@@ -42,7 +47,6 @@ export default function PracticeScreen({ scenario, engine, audio }: Props) {
     }
   };
 
-  // Handle radio call result
   const handleRadioResult = (success: boolean, transcript: string) => {
     setRadioModalOpen(false);
     const action = pendingAction!;
@@ -58,18 +62,23 @@ export default function PracticeScreen({ scenario, engine, audio }: Props) {
       });
     }
 
-    // Navigate after brief delay to let user read feedback
-    setTimeout(() => {
+    navigationTimerRef.current = setTimeout(() => {
+      navigationTimerRef.current = null;
       engine.goTo(nextNodeId);
       refreshNode();
       setFeedback(null);
     }, 1500);
   };
 
-  // Play TTS for narrative when node changes
+  useEffect(() => {
+    return () => {
+      if (navigationTimerRef.current) clearTimeout(navigationTimerRef.current);
+    };
+  }, []);
+
   useEffect(() => {
     if (currentNode.narrative) {
-      audio.speakRadio(currentNode.narrative).catch(() => { });
+      audio.speakRadio(currentNode.narrative).catch(() => {});
     }
   }, [currentNode.id, audio]);
 
@@ -107,7 +116,7 @@ export default function PracticeScreen({ scenario, engine, audio }: Props) {
           onResult={handleRadioResult}
           expectedPhrases={pendingAction.radioCall!.expectedPhrases}
           hint={pendingAction.radioCall!.hint}
-          audio={audio}
+          feedbackFailure={pendingAction.radioCall!.feedbackFailure}
         />
       )}
     </div>

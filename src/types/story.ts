@@ -5,6 +5,8 @@ export type PlayerRole =
   | 'gruppenführer_d'
   | 'gruppenführer_e'
   | 'gruppenführer_f'
+  | 'truppführer'
+  | 'atemschutzüberwachung'
   | 'einsatzleit';
 
 export interface StoryNode {
@@ -41,6 +43,17 @@ export interface Scenario {
   startingNodeId: string;
   playerRole: PlayerRole;
   nodes: Record<string, StoryNode>;
+  community?: CommunityScenarioMeta;
+}
+
+export interface CommunityScenarioMeta {
+  authorName: string;
+  notifyContact?: string;
+  source?: 'local' | 'community';
+  status?: 'local' | 'submitted' | 'merged';
+  createdAt: string;
+  updatedAt: string;
+  shareId?: string;
 }
 
 export interface Transcription {
