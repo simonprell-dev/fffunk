@@ -2,15 +2,10 @@ import { Transcription } from '../types/story';
 
 export type RadioMode = 'tmo' | 'dmo' | 'dispatch' | 'clear';
 
-const ELEVENLABS_DEFAULT_VOICE = 'pNInz6obpgDQGcFmaJgB'; // Adam — good German with multilingual model
-const ELEVENLABS_MODEL = 'eleven_multilingual_v2';
-
 export class AudioEngine {
   private radioMode: RadioMode = 'tmo';
   private audioCtx: AudioContext | null = null;
   private radioHissEnabled = true;
-  private elevenLabsApiKey: string | null = null;
-  private elevenLabsVoiceId: string = ELEVENLABS_DEFAULT_VOICE;
 
   setRadioMode(mode: RadioMode): void {
     this.radioMode = mode;
@@ -18,11 +13,6 @@ export class AudioEngine {
 
   setRadioHissEnabled(enabled: boolean): void {
     this.radioHissEnabled = enabled;
-  }
-
-  configure(opts: { apiKey?: string | null; voiceId?: string }): void {
-    if (opts.apiKey !== undefined) this.elevenLabsApiKey = opts.apiKey || null;
-    if (opts.voiceId) this.elevenLabsVoiceId = opts.voiceId;
   }
 
   private getCtx(): AudioContext {
@@ -51,38 +41,13 @@ export class AudioEngine {
       .trim();
   }
 
-  private async fetchElevenLabsAudio(text: string): Promise<AudioBuffer> {
-    const url = `https://api.elevenlabs.io/v1/text-to-speech/${this.elevenLabsVoiceId}`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': this.elevenLabsApiKey!,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        text,
-        model_id: ELEVENLABS_MODEL,
-        voice_settings: { stability: 0.55, similarity_boost: 0.75, style: 0.1 },
-      }),
-    });
-
-    if (!response.ok) {
-      const msg = await response.text().catch(() => String(response.status));
-      throw new Error(`ElevenLabs ${response.status}: ${msg}`);
-    }
-
-    const arrayBuffer = await response.arrayBuffer();
-    return this.getCtx().decodeAudioData(arrayBuffer);
-  }
-
-  // Route decoded audio through a bandpass + compression chain to simulate radio sound
+  // Route a decoded AudioBuffer through a radio-band filter + compression chain
   private playAudioBufferWithRadioFx(buffer: AudioBuffer): Promise<void> {
     const ctx = this.getCtx();
-
     const source = ctx.createBufferSource();
     source.buffer = buffer;
 
-    // Cut below ~300 Hz (rumble) and above ~3 kHz (hiss) — the classic radio band
+    // Cut below ~300 Hz and above ~3.2 kHz — classic radio band
     const hp = ctx.createBiquadFilter();
     hp.type = 'highpass';
     hp.frequency.value = 280;
@@ -93,14 +58,14 @@ export class AudioEngine {
     lp.frequency.value = 3200;
     lp.Q.value = 0.8;
 
-    // Slight presence boost around 2 kHz for intelligibility
+    // Presence boost for intelligibility
     const mid = ctx.createBiquadFilter();
     mid.type = 'peaking';
     mid.frequency.value = 2000;
     mid.gain.value = 3;
     mid.Q.value = 1.2;
 
-    // Gentle compression to tighten dynamics, like a real radio TX/RX pair
+    // Compression like a real radio TX/RX pair
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -18;
     comp.knee.value = 8;
@@ -125,7 +90,7 @@ export class AudioEngine {
     });
   }
 
-  private speakWebSpeech(text: string, lang: string, onStart: () => void): Promise<void> {
+  private speakWebSpeech(text: string, lang: string): Promise<void> {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
     utterance.pitch = 1.1;
@@ -143,17 +108,16 @@ export class AudioEngine {
       let noiseNode: AudioBufferSourceNode | null = null;
 
       utterance.onstart = () => {
-        onStart();
         noiseNode = this.radioHissEnabled ? this.playRadioHiss() : null;
       };
 
       utterance.onend = () => {
-        if (noiseNode) { try { noiseNode.stop(); } catch {} }
+        if (noiseNode) { try { noiseNode.stop(); } catch { /* ignore */ } }
         resolve();
       };
 
       utterance.onerror = (e) => {
-        if (noiseNode) { try { noiseNode.stop(); } catch {} }
+        if (noiseNode) { try { noiseNode.stop(); } catch { /* ignore */ } }
         reject(e);
       };
 
@@ -169,24 +133,34 @@ export class AudioEngine {
 
     this.playPttClick('open');
 
-    if (this.elevenLabsApiKey) {
-      let noiseNode: AudioBufferSourceNode | null = null;
-      try {
-        // Fetch audio first (network latency), then start hiss + play together
-        const buffer = await this.fetchElevenLabsAudio(clean);
+    let usedPiper = false;
+    let noiseNode: AudioBufferSourceNode | null = null;
+
+    try {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ text: clean }),
+      });
+
+      if (response.ok) {
+        usedPiper = true;
+        const arrayBuffer = await response.arrayBuffer();
+        const ctx = this.getCtx();
+        const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
         noiseNode = this.radioHissEnabled ? this.playRadioHiss() : null;
-        await this.playAudioBufferWithRadioFx(buffer);
-      } finally {
-        if (noiseNode) { try { noiseNode.stop(); } catch {} }
-        this.playPttClick('close');
+        await this.playAudioBufferWithRadioFx(audioBuffer);
       }
-    } else {
-      try {
-        await this.speakWebSpeech(clean, lang, () => {});
-      } finally {
-        this.playPttClick('close');
-      }
+    } catch {
+      // network error or not deployed — fall through to Web Speech
     }
+
+    if (!usedPiper) {
+      await this.speakWebSpeech(clean, lang);
+    }
+
+    if (noiseNode) { try { noiseNode.stop(); } catch { /* ignore */ } }
+    this.playPttClick('close');
   }
 
   private playPttClick(type: 'open' | 'close'): void {
@@ -314,7 +288,7 @@ export class AudioEngine {
       }
 
       setTimeout(() => {
-        try { recognizer.stop(); } catch {}
+        try { recognizer.stop(); } catch { /* ignore */ }
       }, 5000);
     });
   }

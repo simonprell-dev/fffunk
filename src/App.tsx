@@ -26,8 +26,6 @@ function App() {
   });
   const [showSettings, setShowSettings] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
-  const [elevenLabsKey, setElevenLabsKey] = useState(() => localStorage.getItem('fffunk_elevenlabs_key') ?? '');
-  const [elevenLabsVoiceId, setElevenLabsVoiceId] = useState(() => localStorage.getItem('fffunk_elevenlabs_voice_id') ?? '');
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -84,12 +82,6 @@ function App() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [showSettings]);
-
-  useEffect(() => {
-    localStorage.setItem('fffunk_elevenlabs_key', elevenLabsKey);
-    localStorage.setItem('fffunk_elevenlabs_voice_id', elevenLabsVoiceId);
-    audio.configure({ apiKey: elevenLabsKey || null, voiceId: elevenLabsVoiceId || undefined });
-  }, [audio, elevenLabsKey, elevenLabsVoiceId]);
 
   useEffect(() => {
     setLocalScenarios(loadLocalScenarios());
@@ -219,12 +211,11 @@ function App() {
               </button>
 
               {showSettings && (
-                <div className="absolute right-0 top-full mt-2 w-72 bg-[#1e1e1e] border border-[#333] rounded-lg shadow-xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-[#1e1e1e] border border-[#333] rounded-lg shadow-xl z-50 overflow-hidden">
                   <div className="px-4 py-2 border-b border-[#2a2a2a]">
                     <span className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">Einstellungen</span>
                   </div>
-
-                  <div className="p-4 flex flex-col gap-4">
+                  <div className="p-4">
                     <label className="flex items-center justify-between cursor-pointer">
                       <span className="text-sm text-[#e5e5e5]">Funk-Rauschen</span>
                       <input
@@ -234,34 +225,6 @@ function App() {
                         className="accent-[#dc2626] w-4 h-4"
                       />
                     </label>
-
-                    <div className="border-t border-[#2a2a2a] pt-4 flex flex-col gap-3">
-                      <span className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">Sprachsynthese (TTS)</span>
-
-                      <div className="flex flex-col gap-1">
-                        <label className="text-xs text-[#a3a3a3]">Piper-Server URL</label>
-                        <input
-                          type="text"
-                          placeholder="http://localhost:5000 (leer = Browser-TTS)"
-                          value={elevenLabsKey}
-                          onChange={e => setElevenLabsKey(e.target.value)}
-                          className="bg-[#111] border border-[#444] rounded px-2 py-1.5 text-sm text-white placeholder-[#555] focus:outline-none focus:border-[#dc2626]"
-                        />
-                      </div>
-
-                      <div className="flex flex-col gap-1">
-                        <label className="text-xs text-[#a3a3a3]">Stimme / Voice</label>
-                        <input
-                          type="text"
-                          placeholder="de_DE-thorsten-medium"
-                          value={elevenLabsVoiceId}
-                          onChange={e => setElevenLabsVoiceId(e.target.value)}
-                          className="bg-[#111] border border-[#444] rounded px-2 py-1.5 text-sm text-white placeholder-[#555] focus:outline-none focus:border-[#dc2626]"
-                        />
-                      </div>
-
-                      <p className="text-xs text-[#555]">Piper läuft lokal oder auf Railway · kostenlos · bessere Qualität als Browser-TTS</p>
-                    </div>
                   </div>
                 </div>
               )}
