@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Copy, ExternalLink, FileDown, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { PlayerRole, Scenario } from '../types/story';
 import {
@@ -41,10 +41,10 @@ function createInitialDraft(): ScenarioDraft {
     authorName: '',
     steps: [
       {
-        prompt: '**Gruppenführer:** Gruppenführer für Wassertrupp.\n\nAntworten Sie korrekt auf den Anruf.',
-        expectedPhrases: 'Wassertrupp, hört',
-        hint: 'Wassertrupp hört.',
-        feedbackFailure: 'Antworten Sie mit Rufname und „hört“.',
+        prompt: '**GruppenfÃ¼hrer:** GruppenfÃ¼hrer fÃ¼r Wassertrupp.\n\nAntworten Sie korrekt auf den Anruf.',
+        expectedPhrases: 'Wassertrupp, hÃ¶rt',
+        hint: 'Wassertrupp hÃ¶rt.',
+        feedbackFailure: 'Antworten Sie mit Rufname und â€žhÃ¶rtâ€œ.',
       },
       { ...emptyStep },
     ],
@@ -107,7 +107,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
       return null;
     }
     if (categoryMode === 'eigene' && !customCategory.trim()) {
-      setMessage('Bitte einen Namen für die eigene Kategorie eintragen.');
+      setMessage('Bitte einen Namen fÃ¼r die eigene Kategorie eintragen.');
       return null;
     }
     if (draft.steps.filter(step => step.prompt.trim() && step.hint.trim()).length === 0) {
@@ -126,7 +126,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     if (!scenario) return;
     setSavedScenario(scenario);
     onSave(scenario);
-    setMessage('Szenario lokal gespeichert. Es ist sofort in der Übersicht spielbar.');
+    setMessage('Szenario lokal gespeichert. Es ist sofort in der Ãœbersicht spielbar.');
   };
 
   const copyText = async (value: string, success: string) => {
@@ -136,7 +136,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
 
   const copyShareCode = async () => {
     if (!shareCode) return;
-    await copyText(shareCode, 'Teilencode kopiert. Er kann z.B. per WhatsApp verschickt und hier wieder eingefügt werden.');
+    await copyText(shareCode, 'Teilencode kopiert. Er kann z.B. per WhatsApp verschickt und hier wieder eingefÃ¼gt werden.');
   };
 
   const downloadJson = () => {
@@ -152,7 +152,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     URL.revokeObjectURL(url);
     setSavedScenario(scenario);
     onSave(scenario);
-    setMessage(`JSON exportiert. Ziel für PR: ${pkg.suggestedPath}`);
+    setMessage(`JSON exportiert. Ziel fÃ¼r PR: ${pkg.suggestedPath}`);
   };
 
   const publishToApi = async (pkg: ReturnType<typeof createSharePackage>) => {
@@ -189,14 +189,18 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     setSavedScenario(scenario);
     onSave(scenario);
 
+    const code = encodeSharePackage(pkg);
+    const previewUrl = `${window.location.origin}${window.location.pathname}#import=${encodeURIComponent(code)}`;
+    pkg.prBody = `${pkg.prBody}\n\n## Vorschau\n[▶ Szenario direkt testen](${previewUrl})`;
+
     try {
       setMessage('Veröffentliche Szenario als Pull Request...');
       const result = await publishToApi(pkg);
       setMessage(`Pull Request erstellt: ${result.url}`);
       window.open(result.url, '_blank', 'noopener,noreferrer');
     } catch (error) {
-      const detail = error instanceof Error ? error.message : 'Lokaler PR-Server nicht erreichbar.';
-      setMessage(`Veröffentlichen fehlgeschlagen: ${detail} Starten Sie den PR-Server mit GITHUB_TOKEN und npm run pr-server.`);
+      const detail = error instanceof Error ? error.message : 'API nicht erreichbar.';
+      setMessage(`Veröffentlichen fehlgeschlagen: ${detail}`);
     }
   };
 
@@ -232,11 +236,11 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
         <div>
           <h2 className="text-2xl font-bold">Szenario-Editor</h2>
           <p className="text-sm text-[#a3a3a3] mt-1">
-            Lokale Szenarien funktionieren sofort. Für Pull Requests wird der passende Community-Ordner aus der Kategorie erzeugt.
+            Lokale Szenarien funktionieren sofort. FÃ¼r Pull Requests wird der passende Community-Ordner aus der Kategorie erzeugt.
           </p>
         </div>
         <button onClick={onClose} className="px-3 py-2 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
-          Übersicht
+          Ãœbersicht
         </button>
       </div>
 
@@ -295,7 +299,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
           <div key={index} className="border border-[#333] bg-[#1a1a1a] rounded-lg p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div className="font-semibold">Schritt {index + 1}</div>
-              <button onClick={() => removeStep(index)} className="p-2 rounded bg-[#261a1a] text-red-300 hover:bg-red-900/30" title="Schritt löschen">
+              <button onClick={() => removeStep(index)} className="p-2 rounded bg-[#261a1a] text-red-300 hover:bg-red-900/30" title="Schritt lÃ¶schen">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -304,8 +308,8 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
               <textarea value={step.prompt} onChange={e => updateStep(index, { prompt: e.target.value })} rows={4} className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
             </label>
             <label className="block">
-              <span className="text-sm text-[#a3a3a3]">Erwartete Schlüsselbegriffe, kommagetrennt</span>
-              <textarea value={step.expectedPhrases} onChange={e => updateStep(index, { expectedPhrases: e.target.value })} rows={2} placeholder="z.B. Wassertrupp, hört, Verteiler" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
+              <span className="text-sm text-[#a3a3a3]">Erwartete SchlÃ¼sselbegriffe, kommagetrennt</span>
+              <textarea value={step.expectedPhrases} onChange={e => updateStep(index, { expectedPhrases: e.target.value })} rows={2} placeholder="z.B. Wassertrupp, hÃ¶rt, Verteiler" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
             </label>
             <label className="block">
               <span className="text-sm text-[#a3a3a3]">Beispiel-Funkspruch</span>
@@ -324,7 +328,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
           <Save size={18} /> Lokal speichern
         </button>
         <button onClick={publishPullRequest} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
-          <ExternalLink size={18} /> Veröffentlichen
+          <ExternalLink size={18} /> VerÃ¶ffentlichen
         </button>
         <button onClick={copyShareCode} disabled={!shareCode} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] disabled:opacity-40">
           <Copy size={18} /> Teilencode kopieren
@@ -343,7 +347,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
 
       <div className="border border-[#333] bg-[#1a1a1a] rounded-lg p-4 space-y-3">
         <h3 className="text-lg font-semibold">Szenario importieren</h3>
-        <textarea value={importText} onChange={e => setImportText(e.target.value)} rows={5} placeholder="fffunk:... oder JSON einfügen" className="w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
+        <textarea value={importText} onChange={e => setImportText(e.target.value)} rows={5} placeholder="fffunk:... oder JSON einfÃ¼gen" className="w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
         <button onClick={importScenario} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
           <Upload size={18} /> Importieren
         </button>
@@ -351,3 +355,4 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     </div>
   );
 }
+

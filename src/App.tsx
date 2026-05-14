@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Scenario } from './types/story';
 import { StoryEngine } from './lib/story-engine';
 import { AudioEngine } from './lib/audio-engine';
 import ScenarioList from './components/ScenarioList';
 import PracticeScreen from './components/PracticeScreen';
 import ScenarioEditor from './components/ScenarioEditor';
-import { deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
+import { decodeSharePackage, deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
 
 type View = 'list' | 'editor' | 'practice';
 type ScenarioFolderIndex = {
@@ -24,18 +24,40 @@ function App() {
   const [radioHissEnabled, setRadioHissEnabled] = useState(() => {
     return localStorage.getItem('fffunk_radio_hiss_enabled') !== 'false';
   });
+  const [showSettings, setShowSettings] = useState(false);
+  const settingsRef = useRef<HTMLDivElement>(null);
+  const [elevenLabsKey, setElevenLabsKey] = useState(() => localStorage.getItem('fffunk_elevenlabs_key') ?? '');
+  const [elevenLabsVoiceId, setElevenLabsVoiceId] = useState(() => localStorage.getItem('fffunk_elevenlabs_voice_id') ?? '');
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     const applyHash = () => {
-      if (window.location.hash === '#editor') {
+      const hash = window.location.hash;
+
+      if (hash.startsWith('#import=')) {
+        try {
+          const code = decodeURIComponent(hash.slice('#import='.length));
+          const pkg = decodeSharePackage(code);
+          upsertLocalScenario(pkg.scenario);
+          setLocalScenarios(loadLocalScenarios());
+          window.history.replaceState(null, '', '#scenarios');
+        } catch {
+          setLoadError('Vorschau-Link konnte nicht geladen werden.');
+        }
+        setEngine(null);
+        setSelectedScenario(null);
+        setView('list');
+        return;
+      }
+
+      if (hash === '#editor') {
         setEngine(null);
         setSelectedScenario(null);
         setView('editor');
         return;
       }
 
-      if (window.location.hash === '' || window.location.hash === '#scenarios') {
+      if (hash === '' || hash === '#scenarios') {
         setEngine(null);
         setSelectedScenario(null);
         setView('list');
@@ -51,6 +73,23 @@ function App() {
     audio.setRadioHissEnabled(radioHissEnabled);
     localStorage.setItem('fffunk_radio_hiss_enabled', String(radioHissEnabled));
   }, [audio, radioHissEnabled]);
+
+  useEffect(() => {
+    if (!showSettings) return;
+    const handler = (e: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
+        setShowSettings(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showSettings]);
+
+  useEffect(() => {
+    localStorage.setItem('fffunk_elevenlabs_key', elevenLabsKey);
+    localStorage.setItem('fffunk_elevenlabs_voice_id', elevenLabsVoiceId);
+    audio.configure({ apiKey: elevenLabsKey || null, voiceId: elevenLabsVoiceId || undefined });
+  }, [audio, elevenLabsKey, elevenLabsVoiceId]);
 
   useEffect(() => {
     setLocalScenarios(loadLocalScenarios());
@@ -154,16 +193,6 @@ function App() {
           </a>
 
           <nav className="flex items-center gap-3 text-sm">
-            <label className="flex items-center gap-2 text-[#a3a3a3] hover:text-white cursor-pointer">
-              <input
-                type="checkbox"
-                checked={radioHissEnabled}
-                onChange={event => setRadioHissEnabled(event.target.checked)}
-                className="accent-[#dc2626]"
-              />
-              Rauschen
-            </label>
-
             {view !== 'practice' && (
               <>
                 <a href="#scenarios" onClick={openList} className="text-[#a3a3a3] hover:text-white">Szenarien</a>
@@ -176,6 +205,67 @@ function App() {
                 Zurück
               </button>
             )}
+
+            <div className="relative" ref={settingsRef}>
+              <button
+                onClick={() => setShowSettings(s => !s)}
+                title="Einstellungen"
+                className={`w-8 h-8 flex items-center justify-center rounded hover:bg-[#2a2a2a] transition-colors ${showSettings ? 'bg-[#2a2a2a] text-white' : 'text-[#a3a3a3]'}`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+              </button>
+
+              {showSettings && (
+                <div className="absolute right-0 top-full mt-2 w-72 bg-[#1e1e1e] border border-[#333] rounded-lg shadow-xl z-50 overflow-hidden">
+                  <div className="px-4 py-2 border-b border-[#2a2a2a]">
+                    <span className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">Einstellungen</span>
+                  </div>
+
+                  <div className="p-4 flex flex-col gap-4">
+                    <label className="flex items-center justify-between cursor-pointer">
+                      <span className="text-sm text-[#e5e5e5]">Funk-Rauschen</span>
+                      <input
+                        type="checkbox"
+                        checked={radioHissEnabled}
+                        onChange={e => setRadioHissEnabled(e.target.checked)}
+                        className="accent-[#dc2626] w-4 h-4"
+                      />
+                    </label>
+
+                    <div className="border-t border-[#2a2a2a] pt-4 flex flex-col gap-3">
+                      <span className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">Sprachsynthese (TTS)</span>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs text-[#a3a3a3]">Piper-Server URL</label>
+                        <input
+                          type="text"
+                          placeholder="http://localhost:5000 (leer = Browser-TTS)"
+                          value={elevenLabsKey}
+                          onChange={e => setElevenLabsKey(e.target.value)}
+                          className="bg-[#111] border border-[#444] rounded px-2 py-1.5 text-sm text-white placeholder-[#555] focus:outline-none focus:border-[#dc2626]"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <label className="text-xs text-[#a3a3a3]">Stimme / Voice</label>
+                        <input
+                          type="text"
+                          placeholder="de_DE-thorsten-medium"
+                          value={elevenLabsVoiceId}
+                          onChange={e => setElevenLabsVoiceId(e.target.value)}
+                          className="bg-[#111] border border-[#444] rounded px-2 py-1.5 text-sm text-white placeholder-[#555] focus:outline-none focus:border-[#dc2626]"
+                        />
+                      </div>
+
+                      <p className="text-xs text-[#555]">Piper läuft lokal oder auf Railway · kostenlos · bessere Qualität als Browser-TTS</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </nav>
         </div>
       </header>

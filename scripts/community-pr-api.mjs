@@ -1,7 +1,8 @@
 const OWNER = process.env.GITHUB_OWNER || 'simonprell-dev';
 const REPO = process.env.GITHUB_REPO || 'fffunk';
 const BASE_BRANCH = process.env.GITHUB_BASE_BRANCH || 'main';
-const TOKEN = process.env.GITHUB_TOKEN;
+const TOKEN = process.env.GITHUB_TOKEN || process.env.GITHUB_PAT || process.env.GH_TOKEN;
+const TOKEN_ENV_NAME = process.env.GITHUB_TOKEN ? 'GITHUB_TOKEN' : process.env.GITHUB_PAT ? 'GITHUB_PAT' : process.env.GH_TOKEN ? 'GH_TOKEN' : null;
 
 export function sendJson(res, status, body, extraHeaders = {}) {
   res.writeHead(status, {
@@ -20,7 +21,7 @@ function encodeBase64(value) {
 
 async function github(path, options = {}) {
   if (!TOKEN) {
-    throw new Error('GITHUB_TOKEN ist nicht gesetzt.');
+    throw new Error('Kein GitHub Token gesetzt. Erwartet wird GITHUB_TOKEN, GITHUB_PAT oder GH_TOKEN.');
   }
 
   const response = await fetch(`https://api.github.com${path}`, {
@@ -107,6 +108,18 @@ export async function handleCommunityPrRequest(req, res) {
     return true;
   }
 
+  if (req.method === 'GET' && req.url?.startsWith('/api/community-pr/health')) {
+    sendJson(res, 200, {
+      ok: true,
+      tokenConfigured: Boolean(TOKEN),
+      tokenEnvName: TOKEN_ENV_NAME,
+      owner: OWNER,
+      repo: REPO,
+      baseBranch: BASE_BRANCH,
+    });
+    return true;
+  }
+
   if (req.method !== 'POST') {
     sendJson(res, 405, { ok: false, error: 'Method not allowed' });
     return true;
@@ -127,5 +140,9 @@ export async function handleCommunityPrRequest(req, res) {
 
 export function logPrConfig() {
   console.log(`Repository: ${OWNER}/${REPO}, base branch: ${BASE_BRANCH}`);
-  if (!TOKEN) console.warn('GITHUB_TOKEN is not set. PR creation will fail until it is provided.');
+  if (TOKEN) {
+    console.log(`GitHub token configured via ${TOKEN_ENV_NAME}`);
+  } else {
+    console.warn('No GitHub token configured. Set GITHUB_TOKEN, GITHUB_PAT, or GH_TOKEN.');
+  }
 }
