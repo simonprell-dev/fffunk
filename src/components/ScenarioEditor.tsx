@@ -1,6 +1,6 @@
-﻿import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Copy, ExternalLink, FileDown, Plus, Save, Trash2, Upload } from 'lucide-react';
-import { PlayerRole, Scenario } from '../types/story';
+import { Action, PlayerRole, Scenario } from '../types/story';
 import {
   ScenarioDraft,
   categoryOptions,
@@ -15,6 +15,7 @@ interface Props {
   onSave: (scenario: Scenario) => void;
   onImport: (scenario: Scenario) => void;
   onClose: () => void;
+  initialScenario?: Scenario;
 }
 
 const roleOptions: Array<{ value: PlayerRole; label: string }> = [
@@ -31,6 +32,38 @@ const emptyStep = {
   feedbackFailure: '',
 };
 
+const KNOWN_CATEGORIES = new Set(['brand', 'thl', 'verkehr', 'wasser', 'funk', 'sonstige']);
+
+function scenarioToDraft(scenario: Scenario): ScenarioDraft {
+  const steps: ScenarioDraft['steps'] = [];
+  let nodeId: string | undefined = scenario.startingNodeId;
+
+  while (nodeId && nodeId !== '__exit__' && nodeId !== 'n_end') {
+    const node: Scenario['nodes'][string] | undefined = scenario.nodes[nodeId];
+    if (!node) break;
+    const radioAction: Action | undefined = node.actions.find((a: Action) => a.radioCall);
+    if (!radioAction?.radioCall) break;
+    steps.push({
+      prompt: node.narrative || '',
+      expectedPhrases: radioAction.radioCall.expectedPhrases.join(', '),
+      hint: radioAction.radioCall.hint,
+      feedbackFailure: radioAction.radioCall.feedbackFailure || '',
+    });
+    nodeId = radioAction.radioCall.onSuccess;
+  }
+
+  const cat = scenario.community?.category || 'sonstige';
+  return {
+    id: scenario.id,
+    title: scenario.title,
+    description: scenario.description,
+    playerRole: scenario.playerRole,
+    category: KNOWN_CATEGORIES.has(cat) ? cat : 'eigene',
+    authorName: scenario.community?.authorName || '',
+    steps: steps.length > 0 ? steps : [{ ...emptyStep }],
+  };
+}
+
 function createInitialDraft(): ScenarioDraft {
   return {
     id: '',
@@ -41,23 +74,28 @@ function createInitialDraft(): ScenarioDraft {
     authorName: '',
     steps: [
       {
-        prompt: '**GruppenfÃ¼hrer:** GruppenfÃ¼hrer fÃ¼r Wassertrupp.\n\nAntworten Sie korrekt auf den Anruf.',
-        expectedPhrases: 'Wassertrupp, hÃ¶rt',
-        hint: 'Wassertrupp hÃ¶rt.',
-        feedbackFailure: 'Antworten Sie mit Rufname und â€žhÃ¶rtâ€œ.',
+        prompt: '**Gruppenführer:** Gruppenführer für Wassertrupp.\n\nAntworten Sie korrekt auf den Anruf.',
+        expectedPhrases: 'Wassertrupp, hört',
+        hint: 'Wassertrupp hört.',
+        feedbackFailure: 'Antworten Sie mit Rufname und „hört".',
       },
       { ...emptyStep },
     ],
   };
 }
 
-export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
-  const [draft, setDraft] = useState<ScenarioDraft>(() => createInitialDraft());
-  const [categoryMode, setCategoryMode] = useState('sonstige');
-  const [customCategory, setCustomCategory] = useState('');
-  const [savedScenario, setSavedScenario] = useState<Scenario | null>(null);
+export default function ScenarioEditor({ onSave, onImport, onClose, initialScenario }: Props) {
+  const initDraft = initialScenario ? scenarioToDraft(initialScenario) : createInitialDraft();
+  const initCategory = initDraft.category === 'eigene' ? 'eigene' : (initDraft.category || 'sonstige');
+  const initCustom = !KNOWN_CATEGORIES.has(initDraft.category) ? (initialScenario?.community?.category || '') : '';
+
+  const [draft, setDraft] = useState<ScenarioDraft>(initDraft);
+  const [categoryMode, setCategoryMode] = useState(initCategory);
+  const [customCategory, setCustomCategory] = useState(initCustom);
+  const [savedScenario, setSavedScenario] = useState<Scenario | null>(initialScenario ?? null);
   const [importText, setImportText] = useState('');
   const [message, setMessage] = useState<string | null>(null);
+  const [publishing, setPublishing] = useState(false);
 
   const currentDraft = useMemo(() => ({
     ...draft,
@@ -107,7 +145,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
       return null;
     }
     if (categoryMode === 'eigene' && !customCategory.trim()) {
-      setMessage('Bitte einen Namen fÃ¼r die eigene Kategorie eintragen.');
+      setMessage('Bitte einen Namen für die eigene Kategorie eintragen.');
       return null;
     }
     if (draft.steps.filter(step => step.prompt.trim() && step.hint.trim()).length === 0) {
@@ -126,7 +164,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     if (!scenario) return;
     setSavedScenario(scenario);
     onSave(scenario);
-    setMessage('Szenario lokal gespeichert. Es ist sofort in der Ãœbersicht spielbar.');
+    setMessage('Szenario lokal gespeichert. Es ist sofort in der Übersicht spielbar.');
   };
 
   const copyText = async (value: string, success: string) => {
@@ -136,7 +174,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
 
   const copyShareCode = async () => {
     if (!shareCode) return;
-    await copyText(shareCode, 'Teilencode kopiert. Er kann z.B. per WhatsApp verschickt und hier wieder eingefÃ¼gt werden.');
+    await copyText(shareCode, 'Teilencode kopiert. Er kann z.B. per WhatsApp verschickt und hier wieder eingefügt werden.');
   };
 
   const downloadJson = () => {
@@ -152,55 +190,46 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     URL.revokeObjectURL(url);
     setSavedScenario(scenario);
     onSave(scenario);
-    setMessage(`JSON exportiert. Ziel fÃ¼r PR: ${pkg.suggestedPath}`);
+    setMessage(`JSON exportiert. Ziel für PR: ${pkg.suggestedPath}`);
   };
 
   const publishToApi = async (pkg: ReturnType<typeof createSharePackage>) => {
-    const endpoints = ['/api/community-pr'];
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      endpoints.push('http://localhost:5174/api/community-pr');
+    const response = await fetch('/api/community-pr', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(pkg),
+    });
+    const result = await response.json();
+    if (!response.ok || !result.ok) {
+      throw new Error(result.error || 'Pull Request konnte nicht erstellt werden.');
     }
-
-    let lastError = 'API nicht erreichbar.';
-    for (const endpoint of endpoints) {
-      try {
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify(pkg),
-        });
-        const result = await response.json();
-        if (!response.ok || !result.ok) {
-          throw new Error(result.error || 'Pull Request konnte nicht erstellt werden.');
-        }
-        return result;
-      } catch (error) {
-        lastError = error instanceof Error ? error.message : String(error);
-      }
-    }
-
-    throw new Error(lastError);
+    return result;
   };
 
   const publishPullRequest = async () => {
     const scenario = buildScenario();
     if (!scenario) return;
+
+    setPublishing(true);
+    setMessage('Veröffentliche Szenario als Pull Request...');
+
     const pkg = createSharePackage(scenario);
     setSavedScenario(scenario);
     onSave(scenario);
 
     const code = encodeSharePackage(pkg);
     const previewUrl = `${window.location.origin}${window.location.pathname}#import=${encodeURIComponent(code)}`;
-    pkg.prBody = `${pkg.prBody}\n\n## Vorschau\n[▶ Szenario direkt testen](${previewUrl})`;
+    pkg.prBody = `${pkg.prBody}\n\n## Vorschau\n[Szenario direkt testen](${previewUrl})`;
 
     try {
-      setMessage('Veröffentliche Szenario als Pull Request...');
       const result = await publishToApi(pkg);
       setMessage(`Pull Request erstellt: ${result.url}`);
       window.open(result.url, '_blank', 'noopener,noreferrer');
     } catch (error) {
       const detail = error instanceof Error ? error.message : 'API nicht erreichbar.';
       setMessage(`Veröffentlichen fehlgeschlagen: ${detail}`);
+    } finally {
+      setPublishing(false);
     }
   };
 
@@ -226,7 +255,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
       setImportText('');
       setMessage('Szenario importiert und lokal gespeichert.');
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Import fehlgeschlagen.');
+      setMessage('Import fehlgeschlagen: ' + (error instanceof Error ? error.message : String(error)));
     }
   };
 
@@ -234,13 +263,13 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold">Szenario-Editor</h2>
+          <h2 className="text-2xl font-bold">{initialScenario ? 'Szenario bearbeiten' : 'Szenario-Editor'}</h2>
           <p className="text-sm text-[#a3a3a3] mt-1">
-            Lokale Szenarien funktionieren sofort. FÃ¼r Pull Requests wird der passende Community-Ordner aus der Kategorie erzeugt.
+            Lokale Szenarien funktionieren sofort. Für Pull Requests wird der passende Community-Ordner aus der Kategorie erzeugt.
           </p>
         </div>
         <button onClick={onClose} className="px-3 py-2 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
-          Ãœbersicht
+          Übersicht
         </button>
       </div>
 
@@ -299,7 +328,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
           <div key={index} className="border border-[#333] bg-[#1a1a1a] rounded-lg p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div className="font-semibold">Schritt {index + 1}</div>
-              <button onClick={() => removeStep(index)} className="p-2 rounded bg-[#261a1a] text-red-300 hover:bg-red-900/30" title="Schritt lÃ¶schen">
+              <button onClick={() => removeStep(index)} className="p-2 rounded bg-[#261a1a] text-red-300 hover:bg-red-900/30" title="Schritt löschen">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -308,8 +337,8 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
               <textarea value={step.prompt} onChange={e => updateStep(index, { prompt: e.target.value })} rows={4} className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
             </label>
             <label className="block">
-              <span className="text-sm text-[#a3a3a3]">Erwartete SchlÃ¼sselbegriffe, kommagetrennt</span>
-              <textarea value={step.expectedPhrases} onChange={e => updateStep(index, { expectedPhrases: e.target.value })} rows={2} placeholder="z.B. Wassertrupp, hÃ¶rt, Verteiler" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
+              <span className="text-sm text-[#a3a3a3]">Erwartete Schlüsselbegriffe, kommagetrennt</span>
+              <textarea value={step.expectedPhrases} onChange={e => updateStep(index, { expectedPhrases: e.target.value })} rows={2} placeholder="z.B. Wassertrupp, hört, Verteiler" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
             </label>
             <label className="block">
               <span className="text-sm text-[#a3a3a3]">Beispiel-Funkspruch</span>
@@ -327,8 +356,12 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
         <button onClick={handleSave} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#dc2626] hover:bg-[#b91c1c] text-white font-semibold">
           <Save size={18} /> Lokal speichern
         </button>
-        <button onClick={publishPullRequest} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
-          <ExternalLink size={18} /> VerÃ¶ffentlichen
+        <button
+          onClick={publishPullRequest}
+          disabled={publishing}
+          className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ExternalLink size={18} /> {publishing ? 'Wird veröffentlicht...' : 'Veröffentlichen'}
         </button>
         <button onClick={copyShareCode} disabled={!shareCode} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] disabled:opacity-40">
           <Copy size={18} /> Teilencode kopieren
@@ -347,7 +380,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
 
       <div className="border border-[#333] bg-[#1a1a1a] rounded-lg p-4 space-y-3">
         <h3 className="text-lg font-semibold">Szenario importieren</h3>
-        <textarea value={importText} onChange={e => setImportText(e.target.value)} rows={5} placeholder="fffunk:... oder JSON einfÃ¼gen" className="w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
+        <textarea value={importText} onChange={e => setImportText(e.target.value)} rows={5} placeholder="fffunk:... oder JSON einfügen" className="w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
         <button onClick={importScenario} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]">
           <Upload size={18} /> Importieren
         </button>
@@ -355,4 +388,3 @@ export default function ScenarioEditor({ onSave, onImport, onClose }: Props) {
     </div>
   );
 }
-

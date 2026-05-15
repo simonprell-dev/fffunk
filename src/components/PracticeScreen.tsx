@@ -19,12 +19,24 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
   const [feedback, setFeedback] = useState<{ success: boolean; message: string } | null>(null);
   const [score, setScore] = useState(engine.getProgress().score);
+  const [muted, setMuted] = useState(audio.isMuted());
 
   const navigationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const refreshNode = () => {
     setCurrentNode(engine.getCurrentNode());
     setScore(engine.getProgress().score);
+  };
+
+  const toggleMute = () => {
+    const next = !muted;
+    audio.setMuted(next);
+    setMuted(next);
+  };
+
+  const handleExit = () => {
+    audio.stop();
+    onExit();
   };
 
   const handleAction = (action: Action) => {
@@ -39,7 +51,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
     }
     if (action.nextNodeId) {
       if (action.nextNodeId === '__exit__') {
-        onExit();
+        handleExit();
         return;
       }
       engine.goTo(action.nextNodeId);
@@ -54,11 +66,11 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
 
     if (success) {
       engine.completeNode(10);
-      setFeedback({ success: true, message: action.radioCall!.feedbackSuccess || '✅ Gut so! Einsatzleitstelle bestätigt.' });
+      setFeedback({ success: true, message: 'Gut so! Einsatzleitstelle bestätigt.' });
     } else {
       setFeedback({
         success: false,
-        message: action.radioCall!.feedbackFailure || `❌ Nicht ganz richtig. ${action.radioCall!.hint}`,
+        message: `Nicht ganz richtig. ${action.radioCall!.hint}`,
       });
     }
 
@@ -73,8 +85,9 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
   useEffect(() => {
     return () => {
       if (navigationTimerRef.current) clearTimeout(navigationTimerRef.current);
+      audio.stop();
     };
-  }, []);
+  }, [audio]);
 
   useEffect(() => {
     if (currentNode.narrative) {
@@ -84,31 +97,48 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div>
-            <h2 className="text-lg font-bold">{scenario.title}</h2>
-            <p className="text-xs text-[#a3a3a3]">{scenario.description}</p>
-          </div>
+        <div>
+          <h2 className="text-lg font-bold">{scenario.title}</h2>
+          <p className="text-xs text-[#a3a3a3]">{scenario.description}</p>
         </div>
-        <div className="text-sm font-mono text-[#dc2626]">Punkte: {score}</div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggleMute}
+            title={muted ? 'Ton einschalten' : 'Stummschalten'}
+            className={`w-9 h-9 flex items-center justify-center rounded-lg border transition-colors ${
+              muted
+                ? 'bg-[#dc2626]/20 border-[#dc2626] text-[#dc2626]'
+                : 'bg-[#262626] border-[#444] text-[#a3a3a3] hover:text-white'
+            }`}
+          >
+            {muted ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            )}
+          </button>
+          <div className="text-sm font-mono text-[#dc2626]">Punkte: {score}</div>
+          <button onClick={handleExit} className="text-sm text-[#a3a3a3] hover:text-white px-3 py-1.5 rounded-lg bg-[#262626] border border-[#444]">
+            Abbrechen
+          </button>
+        </div>
       </div>
 
-      {/* Narrative */}
       <NarrativePanel narrative={currentNode.narrative} />
 
-      {/* Feedback toast */}
       {feedback && (
         <div className={`p-4 rounded-lg border ${feedback.success ? 'bg-green-900/20 border-green-700 text-green-200' : 'bg-red-900/20 border-red-700 text-red-200'}`}>
           {feedback.message}
         </div>
       )}
 
-      {/* Actions */}
       <ActionButtons actions={currentNode.actions} onSelect={handleAction} />
 
-      {/* Radio Call Modal */}
       {radioModalOpen && pendingAction && (
         <RadioCallModal
           isOpen={true}

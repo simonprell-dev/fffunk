@@ -6,6 +6,9 @@ export class AudioEngine {
   private radioMode: RadioMode = 'tmo';
   private audioCtx: AudioContext | null = null;
   private radioHissEnabled = true;
+  private muted = false;
+  private activeSources = new Set<AudioBufferSourceNode>();
+  private ttsAbortController: AbortController | null = null;
 
   setRadioMode(mode: RadioMode): void {
     this.radioMode = mode;
@@ -13,6 +16,25 @@ export class AudioEngine {
 
   setRadioHissEnabled(enabled: boolean): void {
     this.radioHissEnabled = enabled;
+  }
+
+  setMuted(muted: boolean): void {
+    this.muted = muted;
+    if (muted) this.stop();
+  }
+
+  isMuted(): boolean {
+    return this.muted;
+  }
+
+  stop(): void {
+    window.speechSynthesis.cancel();
+    this.ttsAbortController?.abort();
+    this.ttsAbortController = null;
+    for (const source of this.activeSources) {
+      try { source.stop(); } catch { /* ignore */ }
+    }
+    this.activeSources.clear();
   }
 
   private getCtx(): AudioContext {
@@ -35,19 +57,19 @@ export class AudioEngine {
       .replace(/^__FEEDBACK__\n?/gm, '')
       .replace(/[„""]/g, '')
       .replace(/—/g, ', ')
+      // strip emojis
+      .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '')
       .replace(/\n{2,}/g, '. ')
       .replace(/\n/g, ' ')
       .replace(/\s{2,}/g, ' ')
       .trim();
   }
 
-  // Route a decoded AudioBuffer through a radio-band filter + compression chain
   private playAudioBufferWithRadioFx(buffer: AudioBuffer): Promise<void> {
     const ctx = this.getCtx();
     const source = ctx.createBufferSource();
     source.buffer = buffer;
 
-    // Cut below ~300 Hz and above ~3.2 kHz — classic radio band
     const hp = ctx.createBiquadFilter();
     hp.type = 'highpass';
     hp.frequency.value = 280;
@@ -58,14 +80,12 @@ export class AudioEngine {
     lp.frequency.value = 3200;
     lp.Q.value = 0.8;
 
-    // Presence boost for intelligibility
     const mid = ctx.createBiquadFilter();
     mid.type = 'peaking';
     mid.frequency.value = 2000;
     mid.gain.value = 3;
     mid.Q.value = 1.2;
 
-    // Compression like a real radio TX/RX pair
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -18;
     comp.knee.value = 8;
@@ -83,9 +103,17 @@ export class AudioEngine {
     comp.connect(gain);
     gain.connect(ctx.destination);
 
+    this.activeSources.add(source);
+
     return new Promise((resolve, reject) => {
-      source.onended = () => resolve();
-      source.addEventListener('error', reject);
+      source.onended = () => {
+        this.activeSources.delete(source);
+        resolve();
+      };
+      source.addEventListener('error', (e) => {
+        this.activeSources.delete(source);
+        reject(e);
+      });
       source.start();
     });
   }
@@ -128,6 +156,8 @@ export class AudioEngine {
   async speakRadio(text: string, lang: string = 'de-DE'): Promise<void> {
     window.speechSynthesis.cancel();
 
+    if (this.muted) return;
+
     const clean = this.stripMarkdown(text);
     if (!clean) return;
 
@@ -137,10 +167,12 @@ export class AudioEngine {
     let noiseNode: AudioBufferSourceNode | null = null;
 
     try {
+      this.ttsAbortController = new AbortController();
       const response = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ text: clean }),
+        signal: this.ttsAbortController.signal,
       });
 
       if (response.ok) {
@@ -152,10 +184,12 @@ export class AudioEngine {
         await this.playAudioBufferWithRadioFx(audioBuffer);
       }
     } catch {
-      // network error or not deployed — fall through to Web Speech
+      // network error, abort, or Piper unavailable — fall through to Web Speech
+    } finally {
+      this.ttsAbortController = null;
     }
 
-    if (!usedPiper) {
+    if (!usedPiper && !this.muted) {
       await this.speakWebSpeech(clean, lang);
     }
 

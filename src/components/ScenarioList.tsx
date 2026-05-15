@@ -8,6 +8,7 @@ interface Props {
   onSelect: (scenario: Scenario) => void;
   onCreate: () => void;
   onDeleteLocal: (scenarioId: string) => void;
+  onEditLocal: (scenario: Scenario) => void;
 }
 
 interface FolderEntry {
@@ -35,7 +36,7 @@ function getScenarioFolder(scenario: Scenario): string {
   return 'sonstige';
 }
 
-export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLocal }: Props) {
+export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLocal, onEditLocal }: Props) {
   const folders = useMemo<FolderEntry[]>(() => {
     const grouped = new Map<string, Scenario[]>();
     scenarios.forEach(scenario => {
@@ -168,11 +169,20 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
                           <button
                             onClick={event => {
                               event.stopPropagation();
+                              onEditLocal(scenario);
+                            }}
+                            className="px-3 py-2 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] text-sm"
+                          >
+                            Bearbeiten
+                          </button>
+                          <button
+                            onClick={event => {
+                              event.stopPropagation();
                               onDeleteLocal(scenario.id);
                             }}
                             className="px-3 py-2 rounded-lg bg-[#261a1a] hover:bg-red-900/30 text-red-300 text-sm"
                           >
-                            Lokal löschen
+                            Löschen
                           </button>
                         </div>
                       )}

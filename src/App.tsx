@@ -20,6 +20,7 @@ function App() {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [engine, setEngine] = useState<StoryEngine | null>(null);
   const [view, setView] = useState<View>('list');
+  const [editScenario, setEditScenario] = useState<Scenario | undefined>();
   const [audio] = useState(() => new AudioEngine());
   const [radioHissEnabled, setRadioHissEnabled] = useState(() => {
     return localStorage.getItem('fffunk_radio_hiss_enabled') !== 'false';
@@ -145,15 +146,19 @@ function App() {
   }, [builtInScenarios, localScenarios]);
 
   const openList = () => {
+    audio.stop();
     setEngine(null);
     setSelectedScenario(null);
+    setEditScenario(undefined);
     setView('list');
     window.history.replaceState(null, '', '#scenarios');
   };
 
-  const openEditor = () => {
+  const openEditor = (scenario?: Scenario) => {
+    audio.stop();
     setEngine(null);
     setSelectedScenario(null);
+    setEditScenario(scenario);
     setView('editor');
     window.history.replaceState(null, '', '#editor');
   };
@@ -188,7 +193,7 @@ function App() {
             {view !== 'practice' && (
               <>
                 <a href="#scenarios" onClick={openList} className="text-[#a3a3a3] hover:text-white">Szenarien</a>
-                <a href="#editor" onClick={openEditor} className="text-[#a3a3a3] hover:text-white">Editor</a>
+                <a href="#editor" onClick={() => openEditor()} className="text-[#a3a3a3] hover:text-white">Editor</a>
               </>
             )}
 
@@ -242,9 +247,11 @@ function App() {
 
         {view === 'editor' ? (
           <ScenarioEditor
+            key={editScenario?.id ?? 'new'}
             onSave={saveLocalScenario}
             onImport={saveLocalScenario}
             onClose={openList}
+            initialScenario={editScenario}
           />
         ) : view === 'practice' && engine && selectedScenario ? (
           <PracticeScreen
@@ -261,8 +268,9 @@ function App() {
           <ScenarioList
             scenarios={scenarios}
             onSelect={startScenario}
-            onCreate={openEditor}
+            onCreate={() => openEditor()}
             onDeleteLocal={removeLocalScenario}
+            onEditLocal={openEditor}
           />
         )}
       </main>
