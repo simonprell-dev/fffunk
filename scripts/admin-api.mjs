@@ -6,10 +6,10 @@ import {
   isLicenseDbAvailable, createLicense, getLicenseByCode,
   getLicenseById, listLicenses, updateLicense, deleteLicense,
   listAdminScenarios, getAdminScenario, createAdminScenario,
-  updateAdminScenario, deleteAdminScenario, setScenarioLicenses,
+  updateAdminScenario, deleteAdminScenario, setScenarioLicenses, upsertAdminScenario,
   listTaxonomy, getTaxonomyItem, createTaxonomyItem, updateTaxonomyItem, deleteTaxonomyItem,
 } from './license-db.mjs';
-import { listScenarios, isDbAvailable, deleteScenario } from './community-db.mjs';
+import { listScenarios, getScenario as getCommunityScenario, isDbAvailable, deleteScenario } from './community-db.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
@@ -207,6 +207,86 @@ function buildScenarioFromQuickSteps(body) {
   };
 }
 
+function buildScenarioFromStepFields(body) {
+  const prompts = formArray(body.stepPrompt);
+  const expected = formArray(body.stepExpected);
+  const hints = formArray(body.stepHint);
+  const failures = formArray(body.stepFailure);
+  const steps = prompts.map((prompt, index) => ({
+    prompt: String(prompt || '').trim(),
+    expected: String(expected[index] || '').trim(),
+    hint: String(hints[index] || '').trim(),
+    failure: String(failures[index] || '').trim(),
+  })).filter(step => step.prompt && step.hint);
+
+  if (steps.length === 0) return null;
+
+  const scenarioId = String(body.scenarioId || body.title || 'neues_szenario').trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '') || 'neues_szenario';
+  const role = String(body.playerRole || 'gruppenführer_a').trim() || 'gruppenführer_a';
+  const nodes = {};
+
+  steps.forEach((step, index) => {
+    const nodeId = `n_step_${index + 1}`;
+    const failId = `n_step_${index + 1}_fail`;
+    const nextNodeId = index === steps.length - 1 ? 'n_end' : `n_step_${index + 2}`;
+    nodes[nodeId] = {
+      id: nodeId,
+      role,
+      narrative: step.prompt,
+      actions: [{
+        id: `radio_step_${index + 1}`,
+        label: 'Funk-Meldung sprechen',
+        radioCall: {
+          expectedPhrases: step.expected.split(/[,\n]/).map(item => item.trim()).filter(Boolean),
+          hint: step.hint,
+          onSuccess: nextNodeId,
+          onFailure: failId,
+          feedbackSuccess: 'Funkmeldung korrekt.',
+          feedbackFailure: step.failure || 'Wiederholen Sie die Meldung mit den erwarteten Kernbegriffen.',
+        },
+      }],
+    };
+    nodes[failId] = {
+      id: failId,
+      role,
+      narrative: `**Feedback:** ${step.failure || 'Die Funkmeldung war noch nicht vollständig.'}\n\nBeispiel: *"${step.hint}"*`,
+      actions: [{ id: 'retry', label: 'Erneut versuchen', nextNodeId: nodeId }],
+    };
+  });
+
+  nodes.n_end = {
+    id: 'n_end',
+    role,
+    narrative: '**Übung abgeschlossen!**',
+    actions: [
+      { id: 'restart', label: 'Noch einmal trainieren', nextNodeId: 'n_step_1' },
+      { id: 'exit', label: 'Zur Übersicht', nextNodeId: '__exit__' },
+    ],
+  };
+
+  return {
+    id: scenarioId,
+    title: String(body.title || 'Neues Szenario').trim(),
+    description: String(body.description || '').trim(),
+    startingNodeId: 'n_step_1',
+    playerRole: role,
+    nodes,
+    community: {
+      authorName: 'Admin',
+      category: String(body.category || 'sonstige').trim() || 'sonstige',
+      source: 'license',
+      status: 'local',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  };
+}
+
 function syncScenarioMeta(scenario, { scenarioId, title, description, category, playerRole }) {
   const next = {
     ...scenario,
@@ -254,6 +334,62 @@ function scenarioToQuickSteps(scenario) {
   return lines.join('\n');
 }
 
+function scenarioToStepEditorSteps(scenario) {
+  if (!scenario?.nodes || !scenario?.startingNodeId) {
+    return [{ prompt: '', expected: '', hint: '', failure: '' }];
+  }
+  const steps = [];
+  const seen = new Set();
+  let nodeId = scenario.startingNodeId;
+  while (nodeId && nodeId !== 'n_end' && nodeId !== '__exit__' && !seen.has(nodeId)) {
+    seen.add(nodeId);
+    const node = scenario.nodes[nodeId];
+    if (!node) break;
+    const action = (node.actions || []).find(item => item.radioCall);
+    if (!action?.radioCall) break;
+    steps.push({
+      prompt: node.narrative || '',
+      expected: (action.radioCall.expectedPhrases || []).join(', '),
+      hint: action.radioCall.hint || '',
+      failure: action.radioCall.feedbackFailure || '',
+    });
+    nodeId = action.radioCall.onSuccess;
+  }
+  return steps.length ? steps : [{ prompt: '', expected: '', hint: '', failure: '' }];
+}
+
+function scenarioToAdminRecord(scenario, prefix = 'standard') {
+  const category = scenario.community?.category || 'sonstige';
+  const id = `${prefix}_${scenario.id}`;
+  const next = syncScenarioMeta({
+    ...scenario,
+    id,
+    community: {
+      authorName: scenario.community?.authorName || 'Admin',
+      source: 'license',
+      status: 'local',
+      createdAt: scenario.community?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      ...scenario.community,
+      category,
+    },
+  }, {
+    scenarioId: id,
+    title: scenario.title,
+    description: scenario.description || '',
+    category,
+    playerRole: scenario.playerRole || 'gruppenführer_a',
+  });
+  return {
+    scenarioId: id,
+    title: next.title,
+    description: next.description || '',
+    category,
+    playerRole: next.playerRole,
+    scenarioJson: JSON.stringify(next, null, 2),
+  };
+}
+
 function parseFormMulti(body) {
   const p = new URLSearchParams(body);
   const o = {};
@@ -272,8 +408,15 @@ function parseIdList(value) {
   return values.map(v => Number(v)).filter(Number.isFinite);
 }
 
+function formArray(value) {
+  if (Array.isArray(value)) return value;
+  if (value == null) return [];
+  return [value];
+}
+
 function normalizeScenarioForm(body) {
-  let scenario = body.useQuickSteps === 'true' ? buildScenarioFromQuickSteps(body) : null;
+  let scenario = body.useStepEditor === 'true' ? buildScenarioFromStepFields(body) : null;
+  if (!scenario) scenario = body.useQuickSteps === 'true' ? buildScenarioFromQuickSteps(body) : null;
   if (!scenario) {
     try {
       scenario = JSON.parse(String(body.scenarioJson || ''));
@@ -368,6 +511,48 @@ async function getScenarioTemplate(templatePath) {
     }, null, 2),
     assignedLicenseIds: [],
   };
+}
+
+async function importDefaultScenarios() {
+  const defaults = await listDefaultScenarios();
+  let imported = 0;
+  for (const entry of defaults) {
+    const record = scenarioToAdminRecord({
+      ...entry.scenario,
+      community: {
+        authorName: entry.scenario.community?.authorName || 'FFFunk',
+        source: 'license',
+        status: 'local',
+        createdAt: entry.scenario.community?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        ...entry.scenario.community,
+        category: entry.category,
+      },
+    }, 'standard');
+    await upsertAdminScenario(record);
+    imported += 1;
+  }
+  return imported;
+}
+
+async function migrateCommunityScenario(shareId) {
+  const row = await getCommunityScenario(shareId);
+  if (!row) return null;
+  const scenario = JSON.parse(row.scenario_json);
+  const record = scenarioToAdminRecord({
+    ...scenario,
+    community: {
+      authorName: row.author_name || scenario.community?.authorName || 'Community',
+      source: 'license',
+      status: 'local',
+      createdAt: scenario.community?.createdAt || row.published_at || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      ...scenario.community,
+      category: row.category || scenario.community?.category || 'sonstige',
+      shareId: row.share_id,
+    },
+  }, 'community');
+  return upsertAdminScenario(record);
 }
 
 // ── Shared CSS ────────────────────────────────────────────────────────────────
@@ -701,7 +886,12 @@ async function adminScenariosPage(flash = '') {
   return page('Lizenz-Szenarien', `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
       <h2 style="margin:0;">Lizenz-Szenarien</h2>
-      <a href="/admin/scenarios/new" class="btn btn-primary">+ Neues Szenario</a>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <form method="POST" action="/admin/scenarios/import-defaults" style="margin:0;">
+          <button type="submit" class="btn btn-secondary">Default-Szenarien migrieren</button>
+        </form>
+        <a href="/admin/scenarios/new" class="btn btn-primary">+ Neues Szenario</a>
+      </div>
     </div>
     ${flash ? `<div class="flash-ok">${esc(flash)}</div>` : ''}
     ${!isLicenseDbAvailable() ? '<div class="flash-err">Datenbank nicht verfügbar. Bitte DATABASE_URL setzen.</div>' : ''}
@@ -761,11 +951,29 @@ async function adminScenarioFormPage(s = null, err = '') {
 }`);
   let quickSteps = '';
   try { quickSteps = scenarioToQuickSteps(JSON.parse(s?.scenario_json || 'null')); } catch {}
+  let stepEditorSteps = [{ prompt: '', expected: '', hint: '', failure: '' }];
+  try { stepEditorSteps = scenarioToStepEditorSteps(JSON.parse(s?.scenario_json || 'null')); } catch {}
   const licenseChecks = licenses.map(l => `
     <label style="display:flex;align-items:center;gap:.5rem;margin:.35rem 0;color:#e5e5e5;">
       <input type="checkbox" name="licenseIds" value="${l.id}" ${assigned.has(Number(l.id)) ? 'checked' : ''} style="width:auto;">
       <span><span class="code">${esc(l.code)}</span> ${esc(l.organization_name)}</span>
     </label>
+  `).join('');
+  const stepCards = stepEditorSteps.map((step, index) => `
+    <div class="step-card" style="border:1px solid #333;background:#111;border-radius:.5rem;padding:1rem;margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:.75rem;">
+        <strong>Schritt <span class="step-number">${index + 1}</span></strong>
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeStepCard(this)">Löschen</button>
+      </div>
+      <label>Ansage / Lage</label>
+      <textarea name="stepPrompt" rows="4">${esc(step.prompt)}</textarea>
+      <label>Erwartete Schlüsselbegriffe</label>
+      <textarea name="stepExpected" rows="2" placeholder="z.B. verstanden, Status 3">${esc(step.expected)}</textarea>
+      <label>Beispiel-Funkspruch</label>
+      <input name="stepHint" value="${esc(step.hint)}">
+      <label>Feedback bei falscher Meldung</label>
+      <input name="stepFailure" value="${esc(step.failure)}">
+    </div>
   `).join('');
 
   return page(isEdit ? 'Szenario bearbeiten' : 'Neues Szenario', `
@@ -806,17 +1014,25 @@ async function adminScenarioFormPage(s = null, err = '') {
           </div>
         </div>
         <div class="card">
-          <h3>Funk-Schritte einfach erstellen</h3>
+          <h3>Funk-Schritte</h3>
           <p style="font-size:.8rem;color:#a3a3a3;margin:0 0 .75rem;">
-            Optional. Eine Zeile pro Schritt im Format:
-            <code style="background:#0a0a0a;padding:.1rem .35rem;border-radius:.25rem;">Ansage | Erwartete Begriffe | Beispiel-Funkspruch | Fehler-Feedback</code>.
-            Aktivieren Sie den Schalter darunter, wenn aus diesen Zeilen beim Speichern automatisch das Szenario-JSON erzeugt werden soll.
+            Ähnlich wie im App-Editor: pro Funk-Schritt Ansage, erwartete Begriffe, Beispiel-Funkspruch und Fehler-Feedback pflegen.
           </p>
           <label style="display:flex;align-items:center;gap:.5rem;margin:.5rem 0 1rem;color:#e5e5e5;">
-            <input type="checkbox" name="useQuickSteps" value="true" style="width:auto;">
-            <span>Funk-Schritte beim Speichern als Szenario verwenden</span>
+            <input type="checkbox" name="useStepEditor" value="true" style="width:auto;">
+            <span>Diese Funk-Schritte beim Speichern als Szenario verwenden</span>
           </label>
-          <textarea name="quickSteps" rows="8" class="mono" placeholder="**Leitstelle:** Einsatzauftrag... | verstanden, Status 3 | Florian Musterstadt 1/40/1, verstanden, Status 3 | Bestätigen Sie den Einsatzauftrag und melden Sie Status 3.">${esc(quickSteps)}</textarea>
+          <div id="step-editor">${stepCards}</div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addStepCard()">+ Schritt hinzufügen</button>
+          <details style="margin-top:1rem;">
+            <summary style="cursor:pointer;color:#a3a3a3;">Altes Zeilenformat anzeigen</summary>
+            <p style="font-size:.8rem;color:#a3a3a3;">Eine Zeile pro Schritt: Ansage | Erwartete Begriffe | Beispiel-Funkspruch | Fehler-Feedback</p>
+            <label style="display:flex;align-items:center;gap:.5rem;margin:.5rem 0;color:#e5e5e5;">
+              <input type="checkbox" name="useQuickSteps" value="true" style="width:auto;">
+              <span>Zeilenformat verwenden</span>
+            </label>
+            <textarea name="quickSteps" rows="6" class="mono">${esc(quickSteps)}</textarea>
+          </details>
         </div>
         <div class="card">
           <h3>Zuweisung</h3>
@@ -840,6 +1056,40 @@ async function adminScenarioFormPage(s = null, err = '') {
         </div>
       </div>
     </form>
+    <script>
+      function renumberSteps() {
+        document.querySelectorAll('.step-card .step-number').forEach((el, index) => { el.textContent = String(index + 1); });
+      }
+      function removeStepCard(button) {
+        const cards = document.querySelectorAll('.step-card');
+        if (cards.length <= 1) return;
+        button.closest('.step-card').remove();
+        renumberSteps();
+      }
+      function addStepCard() {
+        const editor = document.getElementById('step-editor');
+        const template = document.createElement('div');
+        template.className = 'step-card';
+        template.style.cssText = 'border:1px solid #333;background:#111;border-radius:.5rem;padding:1rem;margin-bottom:1rem;';
+        template.innerHTML = \`
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:.75rem;">
+            <strong>Schritt <span class="step-number"></span></strong>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeStepCard(this)">Löschen</button>
+          </div>
+          <label>Ansage / Lage</label>
+          <textarea name="stepPrompt" rows="4"></textarea>
+          <label>Erwartete Schlüsselbegriffe</label>
+          <textarea name="stepExpected" rows="2" placeholder="z.B. verstanden, Status 3"></textarea>
+          <label>Beispiel-Funkspruch</label>
+          <input name="stepHint">
+          <label>Feedback bei falscher Meldung</label>
+          <input name="stepFailure">
+        \`;
+        editor.appendChild(template);
+        renumberSteps();
+      }
+      renumberSteps();
+    </script>
   `, 'scenarios');
 }
 
@@ -970,10 +1220,16 @@ async function communityPage(flash = '') {
     <td style="color:#a3a3a3;">♥ ${s.thank_count}</td>
     <td style="color:#666;white-space:nowrap;">${new Date(s.published_at).toLocaleDateString('de-DE')}</td>
     <td>
-      <form method="POST" action="/admin/community/${esc(s.share_id)}/delete" style="margin:0;"
-            onsubmit="return confirm('Szenario wirklich löschen?')">
-        <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
-      </form>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <a href="/admin/community/${esc(s.share_id)}" class="btn btn-secondary btn-sm">Ansehen</a>
+        <form method="POST" action="/admin/community/${esc(s.share_id)}/migrate" style="margin:0;">
+          <button type="submit" class="btn btn-primary btn-sm">In Standards übernehmen</button>
+        </form>
+        <form method="POST" action="/admin/community/${esc(s.share_id)}/delete" style="margin:0;"
+              onsubmit="return confirm('Szenario wirklich löschen?')">
+          <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
+        </form>
+      </div>
     </td>
   </tr>`).join('');
 
@@ -989,6 +1245,48 @@ async function communityPage(flash = '') {
              <th>Danke</th><th>Veröffentlicht</th><th>Aktion</th>
            </tr></thead><tbody>${rows}</tbody></table>
          </div>`}
+  `, 'community');
+}
+
+async function communityScenarioPage(shareId, flash = '') {
+  const row = await getCommunityScenario(shareId);
+  if (!row) return page('Nicht gefunden', '<p style="color:#a3a3a3;">Community-Szenario nicht gefunden.</p>', 'community');
+  let scenario = null;
+  try { scenario = JSON.parse(row.scenario_json); } catch {}
+  const steps = scenarioToStepEditorSteps(scenario);
+  const stepRows = steps.map((step, index) => `<tr>
+    <td>${index + 1}</td>
+    <td>${esc(step.prompt)}</td>
+    <td>${esc(step.expected)}</td>
+    <td>${esc(step.hint)}</td>
+  </tr>`).join('');
+
+  return page(row.title, `
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <a href="/admin/community" class="btn btn-secondary btn-sm">← Zurück</a>
+      <h2 style="margin:0;">${esc(row.title)}</h2>
+    </div>
+    ${flash ? `<div class="flash-ok">${esc(flash)}</div>` : ''}
+    <div class="card" style="margin-bottom:1.5rem;">
+      <h3>Metadaten</h3>
+      <table style="width:auto;">
+        <tr><td style="color:#a3a3a3;padding:.35rem 1rem .35rem 0;">Share-ID</td><td><span class="code">${esc(row.share_id)}</span></td></tr>
+        <tr><td style="color:#a3a3a3;padding:.35rem 1rem .35rem 0;">Autor</td><td>${esc(row.author_name)}</td></tr>
+        <tr><td style="color:#a3a3a3;padding:.35rem 1rem .35rem 0;">Kategorie</td><td><span class="badge warn">${esc(row.category)}</span></td></tr>
+        <tr><td style="color:#a3a3a3;padding:.35rem 1rem .35rem 0;">Danke</td><td>${Number(row.thank_count) || 0}</td></tr>
+      </table>
+      <p style="color:#a3a3a3;">${esc(row.description)}</p>
+      <form method="POST" action="/admin/community/${esc(row.share_id)}/migrate" style="margin:1rem 0 0;">
+        <button type="submit" class="btn btn-primary">In Standards übernehmen</button>
+      </form>
+    </div>
+    <div class="card" style="padding:0;overflow:auto;margin-bottom:1.5rem;">
+      <table><thead><tr><th>#</th><th>Ansage</th><th>Erwartet</th><th>Beispiel</th></tr></thead><tbody>${stepRows}</tbody></table>
+    </div>
+    <details class="card">
+      <summary style="cursor:pointer;font-weight:600;">JSON anzeigen</summary>
+      <pre class="mono" style="white-space:pre-wrap;overflow:auto;">${esc(JSON.stringify(scenario, null, 2))}</pre>
+    </details>
   `, 'community');
 }
 
@@ -1101,6 +1399,15 @@ export async function handleAdminRequest(req, res) {
   if (p === '/admin/scenarios' && m === 'GET')
     return sendHtml(res, 200, await adminScenariosPage(url.searchParams.get('msg') || ''));
 
+  if (p === '/admin/scenarios/import-defaults' && m === 'POST') {
+    try {
+      const count = await importDefaultScenarios();
+      return redirect(res, `/admin/scenarios?msg=${encodeURIComponent(count + ' Default-Szenarien migriert')}`);
+    } catch (e) {
+      return sendHtml(res, 200, await adminScenariosPage(e.message));
+    }
+  }
+
   if (p === '/admin/scenarios/new' && m === 'GET') {
     const template = url.searchParams.get('template');
     const scenario = template ? await getScenarioTemplate(template) : null;
@@ -1189,6 +1496,18 @@ export async function handleAdminRequest(req, res) {
 
   if (p === '/admin/community' && m === 'GET')
     return sendHtml(res, 200, await communityPage(url.searchParams.get('msg') || ''));
+
+  const comViewM = p.match(/^\/admin\/community\/([^/]+)$/);
+  if (comViewM && m === 'GET') {
+    return sendHtml(res, 200, await communityScenarioPage(comViewM[1]));
+  }
+
+  const comMigrateM = p.match(/^\/admin\/community\/([^/]+)\/migrate$/);
+  if (comMigrateM && m === 'POST') {
+    const migrated = await migrateCommunityScenario(comMigrateM[1]);
+    if (!migrated) return sendHtml(res, 404, page('Nicht gefunden', '<p style="color:#a3a3a3;">Community-Szenario nicht gefunden.</p>'));
+    return redirect(res, `/admin/scenarios?msg=${encodeURIComponent('Community-Szenario übernommen: ' + migrated.title)}`);
+  }
 
   const comDelM = p.match(/^\/admin\/community\/([^/]+)\/delete$/);
   if (comDelM && m === 'POST') {

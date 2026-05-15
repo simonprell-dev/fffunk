@@ -199,6 +199,23 @@ export async function createAdminScenario({ scenarioId, title, description, cate
   return result.rows[0];
 }
 
+export async function upsertAdminScenario({ scenarioId, title, description, category, playerRole, scenarioJson }) {
+  const result = await pool.query(
+    `INSERT INTO admin_scenarios (scenario_id, title, description, category, player_role, scenario_json)
+     VALUES ($1,$2,$3,$4,$5,$6)
+     ON CONFLICT (scenario_id) DO UPDATE SET
+       title = EXCLUDED.title,
+       description = EXCLUDED.description,
+       category = EXCLUDED.category,
+       player_role = EXCLUDED.player_role,
+       scenario_json = EXCLUDED.scenario_json,
+       updated_at = NOW()
+     RETURNING *`,
+    [scenarioId, title, description || '', category || 'sonstige', playerRole || 'gruppenführer_a', scenarioJson]
+  );
+  return result.rows[0];
+}
+
 export async function updateAdminScenario(id, { scenarioId, title, description, category, playerRole, scenarioJson }) {
   const result = await pool.query(
     `UPDATE admin_scenarios SET
