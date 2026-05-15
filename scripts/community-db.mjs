@@ -83,3 +83,7 @@ export async function addThank(shareId) {
   );
   return result.rows[0]?.thank_count ?? 0;
 }
+
+export async function deleteScenario(shareId) {
+  await pool.query(`DELETE FROM community_scenarios WHERE share_id = $1`, [shareId]);
+}

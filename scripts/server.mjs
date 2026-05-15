@@ -5,6 +5,8 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { handleCommunityApiRequest } from './community-api.mjs';
 import { initDb } from './community-db.mjs';
+import { initLicenseDb } from './license-db.mjs';
+import { handleAdminRequest, handleLicenseLookup } from './admin-api.mjs';
 import { logPrConfig } from './community-pr-api.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -119,6 +121,16 @@ async function handleTtsRequest(req, res) {
 }
 
 const server = http.createServer(async (req, res) => {
+  if (req.url?.startsWith('/admin')) {
+    await handleAdminRequest(req, res);
+    return;
+  }
+
+  if (req.url?.startsWith('/api/license/')) {
+    await handleLicenseLookup(req, res);
+    return;
+  }
+
   if (req.url?.startsWith('/api/community/')) {
     await handleCommunityApiRequest(req, res);
     return;
@@ -147,4 +159,5 @@ server.listen(PORT, async () => {
   console.log(`Piper TTS: ${PIPER_AVAILABLE ? 'verfügbar' : 'nicht verfügbar (Browser-TTS als Fallback)'}`);
   logPrConfig();
   await initDb();
+  await initLicenseDb();
 });

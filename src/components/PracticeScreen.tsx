@@ -1,19 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Scenario, StoryNode, Action } from '../types/story';
 import { StoryEngine } from '../lib/story-engine';
 import { AudioEngine } from '../lib/audio-engine';
 import NarrativePanel from './NarrativePanel';
 import { ActionButtons } from './ActionButtons';
 import RadioCallModal from './RadioCallModal';
+import { applyRufnamen } from '../lib/rufnamen';
 
 interface Props {
   scenario: Scenario;
   engine: StoryEngine;
   audio: AudioEngine;
   onExit: () => void;
+  rufnamen?: Record<string, string>;
 }
 
-export default function PracticeScreen({ scenario, engine, audio, onExit }: Props) {
+export default function PracticeScreen({ scenario, engine, audio, onExit, rufnamen }: Props) {
   const [currentNode, setCurrentNode] = useState<StoryNode>(engine.getCurrentNode());
   const [radioModalOpen, setRadioModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
@@ -22,6 +24,13 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
   const [muted, setMuted] = useState(audio.isMuted());
 
   const navigationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const ruf = rufnamen ?? {};
+  const narrative = useMemo(
+    () => applyRufnamen(currentNode.narrative, ruf),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentNode.narrative, rufnamen]
+  );
 
   const refreshNode = () => {
     setCurrentNode(engine.getCurrentNode());
@@ -90,10 +99,10 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
   }, [audio]);
 
   useEffect(() => {
-    if (currentNode.narrative) {
-      audio.speakRadio(currentNode.narrative).catch(() => {});
+    if (narrative) {
+      audio.speakRadio(narrative).catch(() => {});
     }
-  }, [currentNode.id, audio]);
+  }, [currentNode.id, audio, narrative]);
 
   return (
     <div className="space-y-6">
@@ -129,7 +138,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
         </div>
       </div>
 
-      <NarrativePanel narrative={currentNode.narrative} />
+      <NarrativePanel narrative={narrative} />
 
       {feedback && (
         <div className={`p-4 rounded-lg border ${feedback.success ? 'bg-green-900/20 border-green-700 text-green-200' : 'bg-red-900/20 border-red-700 text-red-200'}`}>
@@ -145,8 +154,8 @@ export default function PracticeScreen({ scenario, engine, audio, onExit }: Prop
           onClose={() => setRadioModalOpen(false)}
           onResult={handleRadioResult}
           expectedPhrases={pendingAction.radioCall!.expectedPhrases}
-          hint={pendingAction.radioCall!.hint}
-          feedbackFailure={pendingAction.radioCall!.feedbackFailure}
+          hint={applyRufnamen(pendingAction.radioCall!.hint, ruf)}
+          feedbackFailure={applyRufnamen(pendingAction.radioCall!.feedbackFailure ?? '', ruf)}
         />
       )}
     </div>

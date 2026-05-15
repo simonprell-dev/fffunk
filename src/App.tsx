@@ -8,6 +8,11 @@ import ScenarioEditor from './components/ScenarioEditor';
 import { decodeSharePackage, deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
 import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community-api';
 
+interface LicenseData {
+  organizationName: string;
+  rufnamen: Record<string, string>;
+}
+
 type View = 'list' | 'editor' | 'practice';
 type ScenarioFolderIndex = {
   builtin?: Record<string, string[]>;
@@ -30,6 +35,10 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const settingsRef = useRef<HTMLDivElement>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [licenseCode, setLicenseCode] = useState(() => localStorage.getItem('fffunk_license_code') || '');
+  const [licenseInput, setLicenseInput] = useState(() => localStorage.getItem('fffunk_license_code') || '');
+  const [licenseData, setLicenseData] = useState<LicenseData | null>(null);
+  const [licenseError, setLicenseError] = useState<string | null>(null);
 
   // Hash routing
   useEffect(() => {
@@ -84,6 +93,14 @@ function App() {
     audio.setRadioHissEnabled(radioHissEnabled);
     localStorage.setItem('fffunk_radio_hiss_enabled', String(radioHissEnabled));
   }, [audio, radioHissEnabled]);
+
+  useEffect(() => {
+    if (!licenseCode) { setLicenseData(null); return; }
+    fetch(`/api/license/${encodeURIComponent(licenseCode)}`)
+      .then(r => r.ok ? r.json() : r.json().then(d => Promise.reject(d.error || 'Unbekannter Code')))
+      .then((data: LicenseData) => { setLicenseData(data); setLicenseError(null); })
+      .catch((e: unknown) => { setLicenseData(null); setLicenseError(String(e)); });
+  }, [licenseCode]);
 
   useEffect(() => {
     if (!showSettings) return;
@@ -222,11 +239,11 @@ function App() {
               </button>
 
               {showSettings && (
-                <div className="absolute right-0 top-full mt-2 w-56 bg-[#1e1e1e] border border-[#333] rounded-lg shadow-xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-full mt-2 w-72 bg-[#1e1e1e] border border-[#333] rounded-lg shadow-xl z-50 overflow-hidden">
                   <div className="px-4 py-2 border-b border-[#2a2a2a]">
                     <span className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider">Einstellungen</span>
                   </div>
-                  <div className="p-4">
+                  <div className="p-4 space-y-4">
                     <label className="flex items-center justify-between cursor-pointer">
                       <span className="text-sm text-[#e5e5e5]">Funk-Rauschen</span>
                       <input
@@ -236,6 +253,48 @@ function App() {
                         className="accent-[#dc2626] w-4 h-4"
                       />
                     </label>
+                    <div className="border-t border-[#2a2a2a] pt-4">
+                      <div className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider mb-2">Wehr-Code</div>
+                      {licenseData && (
+                        <div className="text-xs text-emerald-400 mb-2 flex items-center gap-1">
+                          <span>✓</span>
+                          <span className="font-medium">{licenseData.organizationName}</span>
+                        </div>
+                      )}
+                      {licenseError && (
+                        <div className="text-xs text-red-400 mb-2">{licenseError}</div>
+                      )}
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={licenseInput}
+                          onChange={e => setLicenseInput(e.target.value.toUpperCase())}
+                          placeholder="XXXX-XXXX"
+                          className="flex-1 bg-[#111] border border-[#444] rounded px-2 py-1 text-xs font-mono focus:outline-none focus:border-[#dc2626]"
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              localStorage.setItem('fffunk_license_code', licenseInput);
+                              setLicenseCode(licenseInput);
+                            }
+                          }}
+                        />
+                        <button
+                          onClick={() => {
+                            if (!licenseInput) {
+                              localStorage.removeItem('fffunk_license_code');
+                              setLicenseCode('');
+                            } else {
+                              localStorage.setItem('fffunk_license_code', licenseInput);
+                              setLicenseCode(licenseInput);
+                            }
+                          }}
+                          className="px-2 py-1 text-xs bg-[#262626] border border-[#444] rounded hover:bg-[#333]"
+                        >
+                          {licenseInput ? 'Übernehmen' : 'Zurücksetzen'}
+                        </button>
+                      </div>
+                      <p className="text-xs text-[#555] mt-1">Code von Ihrer Feuerwehr eingeben</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -259,7 +318,7 @@ function App() {
             initialScenario={editScenario}
           />
         ) : view === 'practice' && engine && selectedScenario ? (
-          <PracticeScreen scenario={selectedScenario} engine={engine} audio={audio} onExit={openList} />
+          <PracticeScreen scenario={selectedScenario} engine={engine} audio={audio} onExit={openList} rufnamen={licenseData?.rufnamen} />
         ) : !loadError && scenarios.length === 0 ? (
           <div className="text-center py-12">
             <div className="animate-pulse text-[#a3a3a3]">Szenarien werden geladen...</div>
