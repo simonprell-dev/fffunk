@@ -4,3 +4,20 @@ dist
 .env
 *.log
 .DS_Store
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Android / Capacitor generated files
+android/.gradle/
+android/build/
+android/**/build/
+android/local.properties
+android/capacitor-cordova-android-plugins/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/res/xml/config.xml
+*.apk
+*.aab
+*.aar

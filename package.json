@@ -8,12 +8,17 @@
     "pr-server": "node scripts/community-pr-server.mjs",
     "start": "node scripts/server.mjs",
     "build": "tsc -b && vite build",
+    "android:add": "cap add android",
+    "android:sync": "npm run build && cap sync android",
+    "android:build": "npm run android:sync && cd android && gradlew.bat assembleDebug",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "pg": "^8.13.3",
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/core": "^8.3.4",
     "lucide-react": "^0.460.0",
+    "pg": "^8.13.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",
@@ -21,6 +26,7 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.3.4",
     "@eslint/js": "^9.10.0",
     "@types/node": "^25.7.0",
     "@types/react": "^18.3.10",
