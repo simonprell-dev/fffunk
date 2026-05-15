@@ -4,6 +4,28 @@ import { randomBytes } from 'node:crypto';
 const { Pool } = pg;
 let pool = null;
 
+const DEFAULT_TAXONOMY = {
+  category: [
+    ['brand', 'Brand'],
+    ['thl', 'THL'],
+    ['verkehr', 'Verkehr'],
+    ['wasser', 'Wasseraufbau'],
+    ['funk', 'Funkgrundlagen'],
+    ['sonstige', 'Sonstige'],
+  ],
+  role: [
+    ['gruppenführer_a', 'Gruppenführer A'],
+    ['gruppenführer_b', 'Gruppenführer B'],
+    ['gruppenführer_c', 'Gruppenführer C'],
+    ['gruppenführer_d', 'Gruppenführer D'],
+    ['gruppenführer_e', 'Gruppenführer E'],
+    ['gruppenführer_f', 'Gruppenführer F'],
+    ['truppführer', 'Truppführer'],
+    ['atemschutzüberwachung', 'Atemschutzüberwachung'],
+    ['einsatzleit', 'Einsatzleitung'],
+  ],
+};
+
 export function isLicenseDbAvailable() {
   return pool !== null;
 }
@@ -120,6 +142,28 @@ export async function initAdminScenariosDb() {
       PRIMARY KEY (license_id, scenario_id)
     )
   `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS admin_taxonomy (
+      id         SERIAL PRIMARY KEY,
+      kind       TEXT NOT NULL CHECK (kind IN ('category', 'role')),
+      value      TEXT NOT NULL,
+      label      TEXT NOT NULL,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (kind, value)
+    )
+  `);
+
+  for (const [kind, items] of Object.entries(DEFAULT_TAXONOMY)) {
+    for (const [index, [value, label]] of items.entries()) {
+      await pool.query(
+        `INSERT INTO admin_taxonomy (kind, value, label, sort_order)
+         VALUES ($1,$2,$3,$4) ON CONFLICT (kind, value) DO NOTHING`,
+        [kind, value, label, index * 10]
+      );
+    }
+  }
 }
 
 export async function listAdminScenarios() {
@@ -190,4 +234,130 @@ export async function getScenariosByLicenseCode(code) {
     ORDER BY s.created_at ASC
   `, [code.trim().toUpperCase()]);
   return result.rows.map(r => JSON.parse(r.scenario_json));
+}
+
+// ── Admin taxonomy ────────────────────────────────────────────────────────────
+
+function fallbackTaxonomy(kind) {
+  return (DEFAULT_TAXONOMY[kind] || []).map(([value, label], index) => ({
+    id: null,
+    kind,
+    value,
+    label,
+    sort_order: index * 10,
+  }));
+}
+
+export async function listTaxonomy(kind) {
+  if (!pool) return fallbackTaxonomy(kind);
+  const result = await pool.query(
+    `SELECT * FROM admin_taxonomy WHERE kind = $1 ORDER BY sort_order ASC, label ASC`,
+    [kind]
+  );
+  return result.rows.length ? result.rows : fallbackTaxonomy(kind);
+}
+
+export async function getTaxonomyItem(id) {
+  if (!pool) return null;
+  const result = await pool.query(`SELECT * FROM admin_taxonomy WHERE id = $1`, [Number(id)]);
+  return result.rows[0] ?? null;
+}
+
+export async function createTaxonomyItem({ kind, value, label, sortOrder }) {
+  const result = await pool.query(
+    `INSERT INTO admin_taxonomy (kind, value, label, sort_order)
+     VALUES ($1,$2,$3,$4) RETURNING *`,
+    [kind, value, label, Number(sortOrder) || 0]
+  );
+  return result.rows[0];
+}
+
+function migrateScenarioJson(rawJson, kind, oldValue, newValue, newLabel = null) {
+  let scenario;
+  try { scenario = JSON.parse(rawJson); } catch { return rawJson; }
+
+  if (kind === 'role') {
+    if (scenario.playerRole === oldValue) scenario.playerRole = newValue;
+    for (const node of Object.values(scenario.nodes || {})) {
+      if (node?.role === oldValue) node.role = newValue;
+    }
+  }
+
+  if (kind === 'category') {
+    scenario.community = {
+      authorName: scenario.community?.authorName || 'Admin',
+      source: scenario.community?.source || 'license',
+      status: scenario.community?.status || 'local',
+      createdAt: scenario.community?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      ...scenario.community,
+      category: newValue,
+    };
+  }
+
+  return JSON.stringify(scenario, null, 2);
+}
+
+export async function updateTaxonomyItem(id, { value, label, sortOrder }) {
+  const existing = await getTaxonomyItem(id);
+  if (!existing) return null;
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await client.query(
+      `UPDATE admin_taxonomy SET value = $2, label = $3, sort_order = $4, updated_at = NOW()
+       WHERE id = $1 RETURNING *`,
+      [Number(id), value, label, Number(sortOrder) || 0]
+    );
+
+    if (existing.value !== value) {
+      await migrateScenarioValue(client, existing.kind, existing.value, value, label);
+    }
+
+    await client.query('COMMIT');
+    return result.rows[0];
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function deleteTaxonomyItem(id, replacementValue) {
+  const existing = await getTaxonomyItem(id);
+  if (!existing) return;
+  if (!replacementValue || replacementValue === existing.value) {
+    throw new Error('Bitte einen anderen Zielwert für die Migration wählen.');
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await migrateScenarioValue(client, existing.kind, existing.value, replacementValue);
+    await client.query(`DELETE FROM admin_taxonomy WHERE id = $1`, [Number(id)]);
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+async function migrateScenarioValue(client, kind, oldValue, newValue, newLabel = null) {
+  const column = kind === 'role' ? 'player_role' : 'category';
+  const result = await client.query(
+    `SELECT id, scenario_json FROM admin_scenarios WHERE ${column} = $1`,
+    [oldValue]
+  );
+
+  for (const row of result.rows) {
+    await client.query(
+      `UPDATE admin_scenarios SET ${column} = $2, scenario_json = $3, updated_at = NOW()
+       WHERE id = $1`,
+      [row.id, newValue, migrateScenarioJson(row.scenario_json, kind, oldValue, newValue, newLabel)]
+    );
+  }
 }

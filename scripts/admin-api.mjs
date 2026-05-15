@@ -1,11 +1,19 @@
 import { randomBytes } from 'node:crypto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   isLicenseDbAvailable, createLicense, getLicenseByCode,
   getLicenseById, listLicenses, updateLicense, deleteLicense,
   listAdminScenarios, getAdminScenario, createAdminScenario,
   updateAdminScenario, deleteAdminScenario, setScenarioLicenses,
+  listTaxonomy, getTaxonomyItem, createTaxonomyItem, updateTaxonomyItem, deleteTaxonomyItem,
 } from './license-db.mjs';
 import { listScenarios, isDbAvailable, deleteScenario } from './community-db.mjs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(__dirname, '..');
+const scenariosDir = path.join(rootDir, 'public', 'scenarios');
 
 // ── Session auth ──────────────────────────────────────────────────────────────
 
@@ -81,6 +89,16 @@ function rufToText(rufnamen) {
   return Object.entries(rufnamen).map(([k, v]) => `${k}=${v}`).join('\n');
 }
 
+function defaultWildcardText() {
+  return [
+    'Florian Kirchberg 44/1=Florian [Ort] 1/40/1',
+    'Florian Kirchberg 44/2=Florian [Ort] 2/40/1',
+    'Florian Kirchberg=Florian [Ort]',
+    'Kirchberg=[Ort]',
+    'Leitstelle=ILS [Region]',
+  ].join('\n');
+}
+
 function parseRufText(text) {
   const result = {};
   for (const line of String(text || '').split('\n')) {
@@ -91,6 +109,149 @@ function parseRufText(text) {
     if (k && v) result[k] = v;
   }
   return result;
+}
+
+function applyTextMapDeep(value, replacements) {
+  if (!replacements || Object.keys(replacements).length === 0) return value;
+  if (typeof value === 'string') {
+    return Object.entries(replacements)
+      .sort((a, b) => b[0].length - a[0].length)
+      .reduce((text, [from, to]) => text.split(from).join(to), value);
+  }
+  if (Array.isArray(value)) return value.map(item => applyTextMapDeep(item, replacements));
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, applyTextMapDeep(item, replacements)])
+    );
+  }
+  return value;
+}
+
+function splitQuickStepLine(line) {
+  return String(line || '').split('|').map(part => part.trim());
+}
+
+function buildScenarioFromQuickSteps(body) {
+  const quickSteps = String(body.quickSteps || '')
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean)
+    .map(splitQuickStepLine)
+    .filter(parts => parts[0] && parts[2]);
+
+  if (quickSteps.length === 0) return null;
+
+  const scenarioId = String(body.scenarioId || body.title || 'neues_szenario').trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '') || 'neues_szenario';
+  const role = String(body.playerRole || 'gruppenführer_a').trim() || 'gruppenführer_a';
+  const nodes = {};
+
+  quickSteps.forEach(([prompt, expected, hint, feedback], index) => {
+    const nodeId = `n_step_${index + 1}`;
+    const failId = `n_step_${index + 1}_fail`;
+    const nextNodeId = index === quickSteps.length - 1 ? 'n_end' : `n_step_${index + 2}`;
+    nodes[nodeId] = {
+      id: nodeId,
+      role,
+      narrative: prompt,
+      actions: [{
+        id: `radio_step_${index + 1}`,
+        label: 'Funk-Meldung sprechen',
+        radioCall: {
+          expectedPhrases: String(expected || '').split(',').map(item => item.trim()).filter(Boolean),
+          hint,
+          onSuccess: nextNodeId,
+          onFailure: failId,
+          feedbackSuccess: 'Funkmeldung korrekt.',
+          feedbackFailure: feedback || 'Wiederholen Sie die Meldung mit den erwarteten Kernbegriffen.',
+        },
+      }],
+    };
+    nodes[failId] = {
+      id: failId,
+      role,
+      narrative: `**Feedback:** ${feedback || 'Die Funkmeldung war noch nicht vollständig.'}\n\nBeispiel: *"${hint}"*`,
+      actions: [{ id: 'retry', label: 'Erneut versuchen', nextNodeId: nodeId }],
+    };
+  });
+
+  nodes.n_end = {
+    id: 'n_end',
+    role,
+    narrative: '**Übung abgeschlossen!**',
+    actions: [
+      { id: 'restart', label: 'Noch einmal trainieren', nextNodeId: 'n_step_1' },
+      { id: 'exit', label: 'Zur Übersicht', nextNodeId: '__exit__' },
+    ],
+  };
+
+  return {
+    id: scenarioId,
+    title: String(body.title || 'Neues Szenario').trim(),
+    description: String(body.description || '').trim(),
+    startingNodeId: 'n_step_1',
+    playerRole: role,
+    nodes,
+    community: {
+      authorName: 'Admin',
+      category: String(body.category || 'sonstige').trim() || 'sonstige',
+      source: 'license',
+      status: 'local',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  };
+}
+
+function syncScenarioMeta(scenario, { scenarioId, title, description, category, playerRole }) {
+  const next = {
+    ...scenario,
+    id: scenarioId || scenario.id,
+    title: title || scenario.title,
+    description: description ?? scenario.description ?? '',
+    playerRole: playerRole || scenario.playerRole || 'gruppenführer_a',
+    community: {
+      authorName: scenario.community?.authorName || 'Admin',
+      source: scenario.community?.source || 'license',
+      status: scenario.community?.status || 'local',
+      createdAt: scenario.community?.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      ...scenario.community,
+      category: category || scenario.community?.category || 'sonstige',
+    },
+  };
+
+  for (const node of Object.values(next.nodes || {})) {
+    if (node && typeof node === 'object') node.role = next.playerRole;
+  }
+
+  return next;
+}
+
+function scenarioToQuickSteps(scenario) {
+  if (!scenario?.nodes || !scenario?.startingNodeId) return '';
+  const lines = [];
+  const seen = new Set();
+  let nodeId = scenario.startingNodeId;
+  while (nodeId && nodeId !== 'n_end' && nodeId !== '__exit__' && !seen.has(nodeId)) {
+    seen.add(nodeId);
+    const node = scenario.nodes[nodeId];
+    if (!node) break;
+    const action = (node.actions || []).find(item => item.radioCall);
+    if (!action?.radioCall) break;
+    lines.push([
+      String(node.narrative || '').replace(/\s+/g, ' ').trim(),
+      (action.radioCall.expectedPhrases || []).join(', '),
+      action.radioCall.hint || '',
+      action.radioCall.feedbackFailure || '',
+    ].join(' | '));
+    nodeId = action.radioCall.onSuccess;
+  }
+  return lines.join('\n');
 }
 
 function parseFormMulti(body) {
@@ -112,25 +273,100 @@ function parseIdList(value) {
 }
 
 function normalizeScenarioForm(body) {
-  let scenario;
-  try {
-    scenario = JSON.parse(String(body.scenarioJson || ''));
-  } catch {
-    throw new Error('Szenario-JSON ist nicht gültig.');
+  let scenario = body.useQuickSteps === 'true' ? buildScenarioFromQuickSteps(body) : null;
+  if (!scenario) {
+    try {
+      scenario = JSON.parse(String(body.scenarioJson || ''));
+    } catch {
+      throw new Error('Szenario-JSON ist nicht gültig.');
+    }
   }
   if (!scenario || typeof scenario !== 'object') throw new Error('Szenario-JSON muss ein Objekt sein.');
   if (!scenario.id || !scenario.title || !scenario.startingNodeId || !scenario.nodes) {
     throw new Error('Szenario-JSON braucht mindestens id, title, startingNodeId und nodes.');
   }
 
-  return {
+  const meta = {
     scenarioId: String(body.scenarioId || scenario.id).trim(),
     title: String(body.title || scenario.title).trim(),
     description: String(body.description || scenario.description || '').trim(),
     category: String(body.category || scenario.community?.category || 'sonstige').trim() || 'sonstige',
     playerRole: String(body.playerRole || scenario.playerRole || 'gruppenführer_a').trim() || 'gruppenführer_a',
+  };
+
+  scenario = syncScenarioMeta(scenario, meta);
+
+  const wildcardMap = parseRufText(body.wildcards);
+  scenario = applyTextMapDeep(scenario, wildcardMap);
+  scenario = syncScenarioMeta(scenario, meta);
+
+  return {
+    ...meta,
     scenarioJson: JSON.stringify(scenario, null, 2),
     licenseIds: parseIdList(body.licenseIds),
+  };
+}
+
+function normalizeScenarioPath(value) {
+  const clean = String(value || '').replace(/\\/g, '/').replace(/^\/+/, '');
+  if (!clean || clean.includes('..') || path.isAbsolute(clean)) return null;
+  return clean;
+}
+
+async function readScenarioFile(relativePath) {
+  const clean = normalizeScenarioPath(relativePath);
+  if (!clean) return null;
+  const absolute = path.resolve(scenariosDir, clean);
+  if (!absolute.startsWith(scenariosDir + path.sep)) return null;
+  const raw = await fs.readFile(absolute, 'utf8');
+  return JSON.parse(raw);
+}
+
+async function listDefaultScenarios() {
+  try {
+    const raw = await fs.readFile(path.join(scenariosDir, 'index.json'), 'utf8');
+    const index = JSON.parse(raw);
+    const entries = [];
+    for (const [source, groups] of Object.entries(index)) {
+      for (const [category, paths] of Object.entries(groups || {})) {
+        for (const relativePath of paths || []) {
+          try {
+            const scenario = await readScenarioFile(relativePath);
+            if (scenario) entries.push({ source, category, path: relativePath, scenario });
+          } catch {}
+        }
+      }
+    }
+    return entries.sort((a, b) => a.scenario.title.localeCompare(b.scenario.title, 'de'));
+  } catch {
+    return [];
+  }
+}
+
+async function getScenarioTemplate(templatePath) {
+  const scenario = await readScenarioFile(templatePath);
+  if (!scenario) return null;
+  const category = normalizeScenarioPath(templatePath)?.split('/').at(-2) || scenario.community?.category || 'sonstige';
+  return {
+    scenario_id: `lizenz_${scenario.id}`,
+    title: scenario.title,
+    description: scenario.description || '',
+    category,
+    player_role: scenario.playerRole || 'gruppenführer_a',
+    scenario_json: JSON.stringify({
+      ...scenario,
+      id: `lizenz_${scenario.id}`,
+      community: {
+        authorName: scenario.community?.authorName || 'FFFunk',
+        category,
+        source: 'license',
+        status: 'local',
+        createdAt: scenario.community?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        shareId: scenario.community?.shareId,
+      },
+    }, null, 2),
+    assignedLicenseIds: [],
   };
 }
 
@@ -194,6 +430,7 @@ function page(title, content, active = '') {
       <a href="/admin/dashboard" class="${active === 'dashboard' ? 'active' : ''}">Übersicht</a>
       <a href="/admin/licenses" class="${active === 'licenses' ? 'active' : ''}">Lizenzen</a>
       <a href="/admin/scenarios" class="${active === 'scenarios' ? 'active' : ''}">Szenarien</a>
+      <a href="/admin/taxonomy" class="${active === 'taxonomy' ? 'active' : ''}">Kategorien & Rollen</a>
       <a href="/admin/community" class="${active === 'community' ? 'active' : ''}">Community</a>
     </nav>
   </div>
@@ -420,6 +657,7 @@ function licenseFormPage(l, err = '') {
 
 async function adminScenariosPage(flash = '') {
   const scenarios = await listAdminScenarios();
+  const defaults = await listDefaultScenarios();
 
   const rows = scenarios.map(s => {
     const assigned = Array.isArray(s.licenses) ? s.licenses : [];
@@ -447,6 +685,19 @@ async function adminScenariosPage(flash = '') {
     </tr>`;
   }).join('');
 
+  const defaultRows = defaults.map(entry => `<tr>
+    <td>
+      <strong>${esc(entry.scenario.title)}</strong><br>
+      <span style="color:#666;font-size:.8rem;">${esc(entry.scenario.description)}</span>
+    </td>
+    <td><span class="code">${esc(entry.scenario.id)}</span></td>
+    <td><span class="badge warn">${esc(entry.category)}</span></td>
+    <td><span class="badge ok">${entry.source === 'builtin' ? 'Default' : 'Datei'}</span></td>
+    <td>
+      <a href="/admin/scenarios/new?template=${encodeURIComponent(entry.path)}" class="btn btn-secondary btn-sm">Als Vorlage bearbeiten</a>
+    </td>
+  </tr>`).join('');
+
   return page('Lizenz-Szenarien', `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
       <h2 style="margin:0;">Lizenz-Szenarien</h2>
@@ -454,6 +705,18 @@ async function adminScenariosPage(flash = '') {
     </div>
     ${flash ? `<div class="flash-ok">${esc(flash)}</div>` : ''}
     ${!isLicenseDbAvailable() ? '<div class="flash-err">Datenbank nicht verfügbar. Bitte DATABASE_URL setzen.</div>' : ''}
+    <div class="card" style="margin-bottom:1.5rem;">
+      <h3>Default-Szenarien</h3>
+      <p style="font-size:.85rem;color:#a3a3a3;margin:0 0 1rem;">
+        Diese Szenarien kommen aus <span class="code">public/scenarios</span>. Über „Als Vorlage bearbeiten“ wird eine lizenzgebundene Kopie erstellt, die Sie mit Wildcards und Lizenz-Zuweisungen anpassen können.
+      </p>
+      ${defaultRows
+        ? `<div style="overflow:auto;"><table><thead><tr>
+             <th>Titel</th><th>ID</th><th>Kategorie</th><th>Quelle</th><th>Aktion</th>
+           </tr></thead><tbody>${defaultRows}</tbody></table></div>`
+        : '<p style="color:#a3a3a3;margin:0;">Keine Default-Szenarien gefunden.</p>'}
+    </div>
+    <h3>Lizenzgebundene Szenarien</h3>
     ${scenarios.length === 0
       ? '<div class="card" style="text-align:center;color:#a3a3a3;padding:3rem;">Noch keine Lizenz-Szenarien erstellt.</div>'
       : `<div class="card" style="padding:0;overflow:auto;">
@@ -465,8 +728,10 @@ async function adminScenariosPage(flash = '') {
 }
 
 async function adminScenarioFormPage(s = null, err = '') {
-  const isEdit = s != null;
+  const isEdit = s?.id != null;
   const licenses = await listLicenses();
+  const categories = await listTaxonomy('category');
+  const roles = await listTaxonomy('role');
   const assigned = new Set((s?.assignedLicenseIds || []).map(Number));
   const v = (f, fb = '') => esc(s?.[f] ?? fb);
   const json = esc(s?.scenario_json || `{
@@ -494,6 +759,8 @@ async function adminScenarioFormPage(s = null, err = '') {
     }
   }
 }`);
+  let quickSteps = '';
+  try { quickSteps = scenarioToQuickSteps(JSON.parse(s?.scenario_json || 'null')); } catch {}
   const licenseChecks = licenses.map(l => `
     <label style="display:flex;align-items:center;gap:.5rem;margin:.35rem 0;color:#e5e5e5;">
       <input type="checkbox" name="licenseIds" value="${l.id}" ${assigned.has(Number(l.id)) ? 'checked' : ''} style="width:auto;">
@@ -527,20 +794,41 @@ async function adminScenarioFormPage(s = null, err = '') {
             <div>
               <label>Kategorie</label>
               <select name="category">
-                ${['brand','thl','verkehr','wasser','funk','sonstige'].map(c => `<option value="${c}" ${(s?.category || 'sonstige') === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}
+                ${categories.map(c => `<option value="${esc(c.value)}" ${(s?.category || 'sonstige') === c.value ? 'selected' : ''}>${esc(c.label)}</option>`).join('')}
               </select>
             </div>
             <div>
               <label>Rolle</label>
               <select name="playerRole">
-                ${['gruppenführer_a','gruppenführer_b','gruppenführer_c','gruppenführer_d','gruppenführer_e','gruppenführer_f','truppführer','atemschutzüberwachung','einsatzleit'].map(r => `<option value="${esc(r)}" ${(s?.player_role || 'gruppenführer_a') === r ? 'selected' : ''}>${esc(r)}</option>`).join('')}
+                ${roles.map(r => `<option value="${esc(r.value)}" ${(s?.player_role || 'gruppenführer_a') === r.value ? 'selected' : ''}>${esc(r.label)}</option>`).join('')}
               </select>
             </div>
           </div>
         </div>
         <div class="card">
+          <h3>Funk-Schritte einfach erstellen</h3>
+          <p style="font-size:.8rem;color:#a3a3a3;margin:0 0 .75rem;">
+            Optional. Eine Zeile pro Schritt im Format:
+            <code style="background:#0a0a0a;padding:.1rem .35rem;border-radius:.25rem;">Ansage | Erwartete Begriffe | Beispiel-Funkspruch | Fehler-Feedback</code>.
+            Aktivieren Sie den Schalter darunter, wenn aus diesen Zeilen beim Speichern automatisch das Szenario-JSON erzeugt werden soll.
+          </p>
+          <label style="display:flex;align-items:center;gap:.5rem;margin:.5rem 0 1rem;color:#e5e5e5;">
+            <input type="checkbox" name="useQuickSteps" value="true" style="width:auto;">
+            <span>Funk-Schritte beim Speichern als Szenario verwenden</span>
+          </label>
+          <textarea name="quickSteps" rows="8" class="mono" placeholder="**Leitstelle:** Einsatzauftrag... | verstanden, Status 3 | Florian Musterstadt 1/40/1, verstanden, Status 3 | Bestätigen Sie den Einsatzauftrag und melden Sie Status 3.">${esc(quickSteps)}</textarea>
+        </div>
+        <div class="card">
           <h3>Zuweisung</h3>
           ${licenses.length ? licenseChecks : '<p style="color:#a3a3a3;margin:0;">Noch keine Lizenzen vorhanden.</p>'}
+        </div>
+        <div class="card">
+          <h3>Wildcards / Text-Ersetzungen</h3>
+          <p style="font-size:.8rem;color:#a3a3a3;margin:0 0 .75rem;">
+            Optional. Eine Ersetzung pro Zeile: <code style="background:#0a0a0a;padding:.1rem .35rem;border-radius:.25rem;">Suchtext=Ersetzung</code>.
+            Beim Speichern werden diese Texte im kompletten Szenario-JSON ersetzt. Das ist praktisch für Orte, Leitstellen und Rufnamen.
+          </p>
+          <textarea name="wildcards" rows="7" class="mono" placeholder="Florian Kirchberg 44/1=Florian Musterstadt 1/40/1&#10;Kirchberg=Musterstadt&#10;Leitstelle=ILS München">${isEdit ? '' : esc(defaultWildcardText())}</textarea>
         </div>
         <div class="card">
           <h3>Szenario-JSON</h3>
@@ -553,6 +841,117 @@ async function adminScenarioFormPage(s = null, err = '') {
       </div>
     </form>
   `, 'scenarios');
+}
+
+// ── Taxonomy pages ────────────────────────────────────────────────────────────
+
+function taxonomyKindLabel(kind) {
+  return kind === 'role' ? 'Rolle' : 'Kategorie';
+}
+
+function taxonomyKindPlural(kind) {
+  return kind === 'role' ? 'Rollen' : 'Kategorien';
+}
+
+function normalizeTaxonomyBody(body) {
+  const kind = body.kind === 'role' ? 'role' : 'category';
+  const value = String(body.value || '').trim();
+  const label = String(body.label || value).trim();
+  if (!value) throw new Error('Technischer Wert ist ein Pflichtfeld.');
+  if (!label) throw new Error('Anzeigename ist ein Pflichtfeld.');
+  return {
+    kind,
+    value,
+    label,
+    sortOrder: Number(body.sortOrder) || 0,
+  };
+}
+
+async function taxonomyPage(flash = '', err = '') {
+  const [categories, roles] = await Promise.all([listTaxonomy('category'), listTaxonomy('role')]);
+
+  const renderTable = (kind, items) => {
+    const otherOptions = item => items
+      .filter(candidate => candidate.value !== item.value)
+      .map(candidate => `<option value="${esc(candidate.value)}">${esc(candidate.label)} (${esc(candidate.value)})</option>`)
+      .join('');
+
+    const rows = items.map(item => `<tr>
+      <td><strong>${esc(item.label)}</strong></td>
+      <td><span class="code">${esc(item.value)}</span></td>
+      <td style="color:#a3a3a3;">${Number(item.sort_order) || 0}</td>
+      <td>
+        <form method="POST" action="/admin/taxonomy/${item.id}/update" style="display:grid;grid-template-columns:1fr 1fr 90px auto;gap:.5rem;align-items:end;margin:0 0 .75rem;">
+          <input type="hidden" name="kind" value="${kind}">
+          <div>
+            <label>Wert</label>
+            <input name="value" value="${esc(item.value)}" required>
+          </div>
+          <div>
+            <label>Name</label>
+            <input name="label" value="${esc(item.label)}" required>
+          </div>
+          <div>
+            <label>Sort.</label>
+            <input name="sortOrder" type="number" value="${Number(item.sort_order) || 0}">
+          </div>
+          <button type="submit" class="btn btn-secondary btn-sm">Speichern</button>
+        </form>
+        <form method="POST" action="/admin/taxonomy/${item.id}/delete" style="display:flex;gap:.5rem;align-items:end;flex-wrap:wrap;margin:0;"
+              onsubmit="return confirm('${taxonomyKindLabel(kind)} ${esc(item.label)} löschen und bestehende Szenarien migrieren?')">
+          <input type="hidden" name="kind" value="${kind}">
+          <div style="min-width:220px;">
+            <label>Beim Löschen migrieren nach</label>
+            <select name="replacementValue" required>
+              <option value="">Ziel wählen...</option>
+              ${otherOptions(item)}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-danger btn-sm">Löschen & migrieren</button>
+        </form>
+      </td>
+    </tr>`).join('');
+
+    return `<div class="card" style="padding:0;overflow:auto;margin-bottom:1.5rem;">
+      <table><thead><tr><th>Name</th><th>Wert</th><th>Sortierung</th><th>Aktionen</th></tr></thead><tbody>${rows}</tbody></table>
+    </div>`;
+  };
+
+  const createForm = kind => `<form method="POST" action="/admin/taxonomy/create" class="card" style="margin-bottom:1.5rem;">
+    <input type="hidden" name="kind" value="${kind}">
+    <h3>${taxonomyKindLabel(kind)} hinzufügen</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr 110px auto;gap:1rem;align-items:end;">
+      <div>
+        <label>Technischer Wert</label>
+        <input name="value" required placeholder="${kind === 'role' ? 'maschinist' : 'gefahrgut'}">
+      </div>
+      <div>
+        <label>Anzeigename</label>
+        <input name="label" required placeholder="${kind === 'role' ? 'Maschinist' : 'Gefahrgut'}">
+      </div>
+      <div>
+        <label>Sortierung</label>
+        <input name="sortOrder" type="number" value="100">
+      </div>
+      <button type="submit" class="btn btn-primary">Hinzufügen</button>
+    </div>
+  </form>`;
+
+  return page('Kategorien & Rollen', `
+    <h2>Kategorien & Rollen</h2>
+    ${flash ? `<div class="flash-ok">${esc(flash)}</div>` : ''}
+    ${err ? `<div class="flash-err">${esc(err)}</div>` : ''}
+    ${!isLicenseDbAvailable() ? '<div class="flash-err">Datenbank nicht verfügbar. Änderungen können erst mit DATABASE_URL gespeichert werden.</div>' : ''}
+    <p style="color:#a3a3a3;margin-top:-.75rem;margin-bottom:1.5rem;">
+      Werte werden im Szenario-Editor verwendet. Wenn ein Wert geändert oder gelöscht wird, werden bestehende lizenzgebundene Szenarien inklusive gespeichertem JSON migriert.
+    </p>
+    <h3>Kategorien</h3>
+    ${createForm('category')}
+    ${renderTable('category', categories)}
+    <h3>Rollen</h3>
+    ${createForm('role')}
+    ${renderTable('role', roles)}
+  `, 'taxonomy');
 }
 
 // ── Community page ────────────────────────────────────────────────────────────
@@ -702,8 +1101,14 @@ export async function handleAdminRequest(req, res) {
   if (p === '/admin/scenarios' && m === 'GET')
     return sendHtml(res, 200, await adminScenariosPage(url.searchParams.get('msg') || ''));
 
-  if (p === '/admin/scenarios/new' && m === 'GET')
-    return sendHtml(res, 200, await adminScenarioFormPage(null));
+  if (p === '/admin/scenarios/new' && m === 'GET') {
+    const template = url.searchParams.get('template');
+    const scenario = template ? await getScenarioTemplate(template) : null;
+    if (template && !scenario) {
+      return sendHtml(res, 404, page('Nicht gefunden', '<p style="color:#a3a3a3;">Vorlage nicht gefunden.</p>'));
+    }
+    return sendHtml(res, 200, await adminScenarioFormPage(scenario));
+  }
 
   if (p === '/admin/scenarios/create' && m === 'POST') {
     const body = parseFormMulti(await readBody(req));
@@ -742,6 +1147,44 @@ export async function handleAdminRequest(req, res) {
   if (scenarioDeleteM && m === 'POST') {
     await deleteAdminScenario(scenarioDeleteM[1]);
     return redirect(res, '/admin/scenarios?msg=Szenario+gelöscht');
+  }
+
+  if (p === '/admin/taxonomy' && m === 'GET')
+    return sendHtml(res, 200, await taxonomyPage(url.searchParams.get('msg') || '', url.searchParams.get('err') || ''));
+
+  if (p === '/admin/taxonomy/create' && m === 'POST') {
+    const body = parseForm(await readBody(req));
+    try {
+      const data = normalizeTaxonomyBody(body);
+      await createTaxonomyItem(data);
+      return redirect(res, `/admin/taxonomy?msg=${encodeURIComponent(taxonomyKindLabel(data.kind) + ' hinzugefügt')}`);
+    } catch (e) {
+      return sendHtml(res, 200, await taxonomyPage('', e.message));
+    }
+  }
+
+  const taxonomyUpdateM = p.match(/^\/admin\/taxonomy\/(\d+)\/update$/);
+  if (taxonomyUpdateM && m === 'POST') {
+    const body = parseForm(await readBody(req));
+    try {
+      const data = normalizeTaxonomyBody(body);
+      await updateTaxonomyItem(taxonomyUpdateM[1], data);
+      return redirect(res, `/admin/taxonomy?msg=${encodeURIComponent(taxonomyKindLabel(data.kind) + ' gespeichert')}`);
+    } catch (e) {
+      return sendHtml(res, 200, await taxonomyPage('', e.message));
+    }
+  }
+
+  const taxonomyDeleteM = p.match(/^\/admin\/taxonomy\/(\d+)\/delete$/);
+  if (taxonomyDeleteM && m === 'POST') {
+    const body = parseForm(await readBody(req));
+    const item = await getTaxonomyItem(taxonomyDeleteM[1]);
+    try {
+      await deleteTaxonomyItem(taxonomyDeleteM[1], body.replacementValue);
+      return redirect(res, `/admin/taxonomy?msg=${encodeURIComponent((item ? taxonomyKindLabel(item.kind) : 'Wert') + ' gelöscht und migriert')}`);
+    } catch (e) {
+      return sendHtml(res, 200, await taxonomyPage('', e.message));
+    }
   }
 
   if (p === '/admin/community' && m === 'GET')
