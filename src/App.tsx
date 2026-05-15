@@ -22,6 +22,7 @@ type ScenarioFolderIndex = {
 function App() {
   const [builtInScenarios, setBuiltInScenarios] = useState<Scenario[]>([]);
   const [localScenarios, setLocalScenarios] = useState<Scenario[]>([]);
+  const [licenseScenarios, setLicenseScenarios] = useState<Scenario[]>([]);
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [apiScenarios, setApiScenarios] = useState<ApiScenarioEntry[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
@@ -95,11 +96,29 @@ function App() {
   }, [audio, radioHissEnabled]);
 
   useEffect(() => {
-    if (!licenseCode) { setLicenseData(null); return; }
+    if (!licenseCode) { setLicenseData(null); setLicenseScenarios([]); return; }
     fetch(`/api/license/${encodeURIComponent(licenseCode)}`)
       .then(r => r.ok ? r.json() : r.json().then(d => Promise.reject(d.error || 'Unbekannter Code')))
-      .then((data: LicenseData) => { setLicenseData(data); setLicenseError(null); })
-      .catch((e: unknown) => { setLicenseData(null); setLicenseError(String(e)); });
+      .then(async (data: LicenseData) => {
+        setLicenseData(data);
+        setLicenseError(null);
+        const scenariosRes = await fetch(`/api/license/${encodeURIComponent(licenseCode)}/scenarios`);
+        const assignedScenarios: Scenario[] = scenariosRes.ok ? await scenariosRes.json() : [];
+        setLicenseScenarios(assignedScenarios.map(scenario => ({
+          ...scenario,
+          community: {
+            authorName: scenario.community?.authorName || data.organizationName,
+            category: scenario.community?.category || 'sonstige',
+            source: 'license',
+            status: scenario.community?.status || 'merged',
+            createdAt: scenario.community?.createdAt || new Date().toISOString(),
+            updatedAt: scenario.community?.updatedAt || new Date().toISOString(),
+            shareId: scenario.community?.shareId,
+            thankCount: scenario.community?.thankCount,
+          },
+        })));
+      })
+      .catch((e: unknown) => { setLicenseData(null); setLicenseScenarios([]); setLicenseError(String(e)); });
   }, [licenseCode]);
 
   useEffect(() => {
@@ -167,11 +186,13 @@ function App() {
 
   useEffect(() => {
     const localIds = new Set(localScenarios.map(s => s.id));
+    const licenseIds = new Set(licenseScenarios.map(s => s.id));
     setScenarios([
       ...localScenarios,
-      ...builtInScenarios.filter(s => !localIds.has(s.id)),
+      ...licenseScenarios.filter(s => !localIds.has(s.id)),
+      ...builtInScenarios.filter(s => !localIds.has(s.id) && !licenseIds.has(s.id)),
     ]);
-  }, [builtInScenarios, localScenarios]);
+  }, [builtInScenarios, licenseScenarios, localScenarios]);
 
   const openList = () => {
     audio.stop();

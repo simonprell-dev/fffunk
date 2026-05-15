@@ -95,3 +95,99 @@ export async function updateLicense(id, data) {
 export async function deleteLicense(id) {
   await pool.query(`DELETE FROM licenses WHERE id = $1`, [Number(id)]);
 }
+
+// ── Admin scenarios ────────────────────────────────────────────────────────────
+
+export async function initAdminScenariosDb() {
+  if (!pool) return;
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS admin_scenarios (
+      id            SERIAL PRIMARY KEY,
+      scenario_id   TEXT NOT NULL UNIQUE,
+      title         TEXT NOT NULL,
+      description   TEXT NOT NULL DEFAULT '',
+      category      TEXT NOT NULL DEFAULT 'sonstige',
+      player_role   TEXT NOT NULL DEFAULT 'gruppenführer_a',
+      scenario_json TEXT NOT NULL,
+      created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS license_scenarios (
+      license_id    INTEGER REFERENCES licenses(id) ON DELETE CASCADE,
+      scenario_id   INTEGER REFERENCES admin_scenarios(id) ON DELETE CASCADE,
+      PRIMARY KEY (license_id, scenario_id)
+    )
+  `);
+}
+
+export async function listAdminScenarios() {
+  if (!pool) return [];
+  const result = await pool.query(`
+    SELECT s.*,
+      COALESCE(json_agg(json_build_object('id', l.id, 'code', l.code, 'organization_name', l.organization_name))
+        FILTER (WHERE l.id IS NOT NULL), '[]') AS licenses
+    FROM admin_scenarios s
+    LEFT JOIN license_scenarios ls ON ls.scenario_id = s.id
+    LEFT JOIN licenses l ON l.id = ls.license_id
+    GROUP BY s.id ORDER BY s.created_at DESC
+  `);
+  return result.rows;
+}
+
+export async function getAdminScenario(id) {
+  if (!pool) return null;
+  const s = await pool.query(`SELECT * FROM admin_scenarios WHERE id = $1`, [Number(id)]);
+  if (!s.rows[0]) return null;
+  const ls = await pool.query(
+    `SELECT license_id FROM license_scenarios WHERE scenario_id = $1`, [Number(id)]
+  );
+  return { ...s.rows[0], assignedLicenseIds: ls.rows.map(r => r.license_id) };
+}
+
+export async function createAdminScenario({ scenarioId, title, description, category, playerRole, scenarioJson }) {
+  const result = await pool.query(
+    `INSERT INTO admin_scenarios (scenario_id, title, description, category, player_role, scenario_json)
+     VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+    [scenarioId, title, description || '', category || 'sonstige', playerRole || 'gruppenführer_a', scenarioJson]
+  );
+  return result.rows[0];
+}
+
+export async function updateAdminScenario(id, { scenarioId, title, description, category, playerRole, scenarioJson }) {
+  const result = await pool.query(
+    `UPDATE admin_scenarios SET
+       scenario_id=$2, title=$3, description=$4, category=$5, player_role=$6,
+       scenario_json=$7, updated_at=NOW()
+     WHERE id=$1 RETURNING *`,
+    [Number(id), scenarioId, title, description || '', category || 'sonstige', playerRole || 'gruppenführer_a', scenarioJson]
+  );
+  return result.rows[0];
+}
+
+export async function deleteAdminScenario(id) {
+  await pool.query(`DELETE FROM admin_scenarios WHERE id = $1`, [Number(id)]);
+}
+
+export async function setScenarioLicenses(scenarioDbId, licenseIds) {
+  await pool.query(`DELETE FROM license_scenarios WHERE scenario_id = $1`, [Number(scenarioDbId)]);
+  for (const lid of licenseIds) {
+    await pool.query(
+      `INSERT INTO license_scenarios (license_id, scenario_id) VALUES ($1,$2) ON CONFLICT DO NOTHING`,
+      [Number(lid), Number(scenarioDbId)]
+    );
+  }
+}
+
+export async function getScenariosByLicenseCode(code) {
+  if (!pool) return [];
+  const result = await pool.query(`
+    SELECT s.scenario_json FROM admin_scenarios s
+    JOIN license_scenarios ls ON ls.scenario_id = s.id
+    JOIN licenses l ON l.id = ls.license_id
+    WHERE l.code = $1 AND l.active = TRUE
+    ORDER BY s.created_at ASC
+  `, [code.trim().toUpperCase()]);
+  return result.rows.map(r => JSON.parse(r.scenario_json));
+}

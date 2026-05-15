@@ -282,6 +282,11 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                                 Community
                               </span>
                             )}
+                            {scenario.community?.source === 'license' && (
+                              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-900/40 text-amber-300 border border-amber-800">
+                                Lizenz
+                              </span>
+                            )}
                           </div>
                           <h3 className="text-lg font-semibold text-[#e5e5e5]">{scenario.title}</h3>
                           <p className="text-sm text-[#a3a3a3] mt-1">{scenario.description}</p>

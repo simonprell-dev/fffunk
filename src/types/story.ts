@@ -49,7 +49,7 @@ export interface Scenario {
 export interface CommunityScenarioMeta {
   authorName: string;
   category?: string;
-  source?: 'local' | 'community' | 'community-api';
+  source?: 'local' | 'community' | 'community-api' | 'license';
   status?: 'local' | 'submitted' | 'merged';
   createdAt: string;
   updatedAt: string;

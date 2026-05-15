@@ -2,6 +2,8 @@ import { randomBytes } from 'node:crypto';
 import {
   isLicenseDbAvailable, createLicense, getLicenseByCode,
   getLicenseById, listLicenses, updateLicense, deleteLicense,
+  listAdminScenarios, getAdminScenario, createAdminScenario,
+  updateAdminScenario, deleteAdminScenario, setScenarioLicenses,
 } from './license-db.mjs';
 import { listScenarios, isDbAvailable, deleteScenario } from './community-db.mjs';
 
@@ -91,6 +93,47 @@ function parseRufText(text) {
   return result;
 }
 
+function parseFormMulti(body) {
+  const p = new URLSearchParams(body);
+  const o = {};
+  for (const [k, v] of p) {
+    if (Object.prototype.hasOwnProperty.call(o, k)) {
+      o[k] = Array.isArray(o[k]) ? [...o[k], v] : [o[k], v];
+    } else {
+      o[k] = v;
+    }
+  }
+  return o;
+}
+
+function parseIdList(value) {
+  const values = Array.isArray(value) ? value : [value].filter(Boolean);
+  return values.map(v => Number(v)).filter(Number.isFinite);
+}
+
+function normalizeScenarioForm(body) {
+  let scenario;
+  try {
+    scenario = JSON.parse(String(body.scenarioJson || ''));
+  } catch {
+    throw new Error('Szenario-JSON ist nicht gültig.');
+  }
+  if (!scenario || typeof scenario !== 'object') throw new Error('Szenario-JSON muss ein Objekt sein.');
+  if (!scenario.id || !scenario.title || !scenario.startingNodeId || !scenario.nodes) {
+    throw new Error('Szenario-JSON braucht mindestens id, title, startingNodeId und nodes.');
+  }
+
+  return {
+    scenarioId: String(body.scenarioId || scenario.id).trim(),
+    title: String(body.title || scenario.title).trim(),
+    description: String(body.description || scenario.description || '').trim(),
+    category: String(body.category || scenario.community?.category || 'sonstige').trim() || 'sonstige',
+    playerRole: String(body.playerRole || scenario.playerRole || 'gruppenführer_a').trim() || 'gruppenführer_a',
+    scenarioJson: JSON.stringify(scenario, null, 2),
+    licenseIds: parseIdList(body.licenseIds),
+  };
+}
+
 // ── Shared CSS ────────────────────────────────────────────────────────────────
 
 const CSS = `
@@ -150,6 +193,7 @@ function page(title, content, active = '') {
     <nav style="display:flex;gap:1.25rem;font-size:.875rem;">
       <a href="/admin/dashboard" class="${active === 'dashboard' ? 'active' : ''}">Übersicht</a>
       <a href="/admin/licenses" class="${active === 'licenses' ? 'active' : ''}">Lizenzen</a>
+      <a href="/admin/scenarios" class="${active === 'scenarios' ? 'active' : ''}">Szenarien</a>
       <a href="/admin/community" class="${active === 'community' ? 'active' : ''}">Community</a>
     </nav>
   </div>
@@ -193,13 +237,14 @@ function loginPage(err = '') {
 // ── Dashboard page ────────────────────────────────────────────────────────────
 
 async function dashboardPage() {
-  let totalLicenses = 0, activeLicenses = 0, communityCount = 0;
+  let totalLicenses = 0, activeLicenses = 0, communityCount = 0, adminScenarioCount = 0;
   try {
     const ls = await listLicenses();
     totalLicenses = ls.length;
     activeLicenses = ls.filter(l => l.active).length;
   } catch {}
   try { communityCount = (await listScenarios()).length; } catch {}
+  try { adminScenarioCount = (await listAdminScenarios()).length; } catch {}
 
   const dbStatus = isLicenseDbAvailable()
     ? '<span class="badge ok">Verbunden</span>'
@@ -223,6 +268,10 @@ async function dashboardPage() {
         <div style="font-size:2.5rem;font-weight:700;color:#dc2626;">${communityCount}</div>
         <div style="color:#a3a3a3;font-size:.8rem;margin-top:.25rem;">Community-Szenarien</div>
       </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2.5rem;font-weight:700;color:#dc2626;">${adminScenarioCount}</div>
+        <div style="color:#a3a3a3;font-size:.8rem;margin-top:.25rem;">Lizenz-Szenarien</div>
+      </div>
     </div>
     <div class="card" style="margin-bottom:1.5rem;">
       <h3>System-Status</h3>
@@ -234,6 +283,7 @@ async function dashboardPage() {
     <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
       <a href="/admin/licenses/new" class="btn btn-primary">+ Neue Lizenz</a>
       <a href="/admin/licenses" class="btn btn-secondary">Alle Lizenzen</a>
+      <a href="/admin/scenarios" class="btn btn-secondary">Szenarien zuweisen</a>
       <a href="/admin/community" class="btn btn-secondary">Community verwalten</a>
     </div>
   `, 'dashboard');
@@ -364,6 +414,145 @@ function licenseFormPage(l, err = '') {
       </div>
     </form>
   `, 'licenses');
+}
+
+// ── Admin scenario pages ──────────────────────────────────────────────────────
+
+async function adminScenariosPage(flash = '') {
+  const scenarios = await listAdminScenarios();
+
+  const rows = scenarios.map(s => {
+    const assigned = Array.isArray(s.licenses) ? s.licenses : [];
+    return `<tr>
+      <td>
+        <strong>${esc(s.title)}</strong><br>
+        <span style="color:#666;font-size:.8rem;">${esc(s.description)}</span>
+      </td>
+      <td><span class="code">${esc(s.scenario_id)}</span></td>
+      <td><span class="badge warn">${esc(s.category)}</span></td>
+      <td style="color:#a3a3a3;">
+        ${assigned.length
+          ? assigned.map(l => `<div><span class="code">${esc(l.code)}</span> ${esc(l.organization_name)}</div>`).join('')
+          : '<span style="color:#666;">Nicht zugewiesen</span>'}
+      </td>
+      <td>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <a href="/admin/scenarios/${s.id}" class="btn btn-secondary btn-sm">Bearbeiten</a>
+          <form method="POST" action="/admin/scenarios/${s.id}/delete" style="margin:0;"
+                onsubmit="return confirm('Szenario ${esc(s.title)} wirklich löschen?')">
+            <button type="submit" class="btn btn-danger btn-sm">Löschen</button>
+          </form>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  return page('Lizenz-Szenarien', `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <h2 style="margin:0;">Lizenz-Szenarien</h2>
+      <a href="/admin/scenarios/new" class="btn btn-primary">+ Neues Szenario</a>
+    </div>
+    ${flash ? `<div class="flash-ok">${esc(flash)}</div>` : ''}
+    ${!isLicenseDbAvailable() ? '<div class="flash-err">Datenbank nicht verfügbar. Bitte DATABASE_URL setzen.</div>' : ''}
+    ${scenarios.length === 0
+      ? '<div class="card" style="text-align:center;color:#a3a3a3;padding:3rem;">Noch keine Lizenz-Szenarien erstellt.</div>'
+      : `<div class="card" style="padding:0;overflow:auto;">
+           <table><thead><tr>
+             <th>Titel</th><th>ID</th><th>Kategorie</th><th>Zugewiesen an</th><th>Aktionen</th>
+           </tr></thead><tbody>${rows}</tbody></table>
+         </div>`}
+  `, 'scenarios');
+}
+
+async function adminScenarioFormPage(s = null, err = '') {
+  const isEdit = s != null;
+  const licenses = await listLicenses();
+  const assigned = new Set((s?.assignedLicenseIds || []).map(Number));
+  const v = (f, fb = '') => esc(s?.[f] ?? fb);
+  const json = esc(s?.scenario_json || `{
+  "id": "neues_szenario",
+  "title": "Neues Szenario",
+  "description": "Kurze Beschreibung",
+  "startingNodeId": "n_start",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_start": {
+      "id": "n_start",
+      "role": "gruppenführer_a",
+      "narrative": "Ausgangslage beschreiben.",
+      "actions": [
+        { "id": "finish", "label": "Abschließen", "nextNodeId": "n_end" }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "Übung abgeschlossen.",
+      "actions": [
+        { "id": "exit", "label": "Zur Übersicht", "nextNodeId": "__exit__" }
+      ]
+    }
+  }
+}`);
+  const licenseChecks = licenses.map(l => `
+    <label style="display:flex;align-items:center;gap:.5rem;margin:.35rem 0;color:#e5e5e5;">
+      <input type="checkbox" name="licenseIds" value="${l.id}" ${assigned.has(Number(l.id)) ? 'checked' : ''} style="width:auto;">
+      <span><span class="code">${esc(l.code)}</span> ${esc(l.organization_name)}</span>
+    </label>
+  `).join('');
+
+  return page(isEdit ? 'Szenario bearbeiten' : 'Neues Szenario', `
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <a href="/admin/scenarios" class="btn btn-secondary btn-sm">← Zurück</a>
+      <h2 style="margin:0;">${isEdit ? 'Szenario bearbeiten' : 'Szenario erstellen'}</h2>
+    </div>
+    ${err ? `<div class="flash-err">${esc(err)}</div>` : ''}
+    <form method="POST" action="${isEdit ? `/admin/scenarios/${s.id}/update` : '/admin/scenarios/create'}">
+      <div style="display:grid;gap:1.5rem;">
+        <div class="card">
+          <h3>Metadaten</h3>
+          <div class="grid2">
+            <div>
+              <label>Szenario-ID *</label>
+              <input name="scenarioId" value="${v('scenario_id')}" required>
+            </div>
+            <div>
+              <label>Titel *</label>
+              <input name="title" value="${v('title')}" required>
+            </div>
+            <div class="full">
+              <label>Beschreibung</label>
+              <textarea name="description" rows="2">${v('description')}</textarea>
+            </div>
+            <div>
+              <label>Kategorie</label>
+              <select name="category">
+                ${['brand','thl','verkehr','wasser','funk','sonstige'].map(c => `<option value="${c}" ${(s?.category || 'sonstige') === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <label>Rolle</label>
+              <select name="playerRole">
+                ${['gruppenführer_a','gruppenführer_b','gruppenführer_c','gruppenführer_d','gruppenführer_e','gruppenführer_f','truppführer','atemschutzüberwachung','einsatzleit'].map(r => `<option value="${esc(r)}" ${(s?.player_role || 'gruppenführer_a') === r ? 'selected' : ''}>${esc(r)}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Zuweisung</h3>
+          ${licenses.length ? licenseChecks : '<p style="color:#a3a3a3;margin:0;">Noch keine Lizenzen vorhanden.</p>'}
+        </div>
+        <div class="card">
+          <h3>Szenario-JSON</h3>
+          <textarea name="scenarioJson" rows="24" class="mono" required>${json}</textarea>
+        </div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary">${isEdit ? 'Änderungen speichern' : 'Szenario erstellen'}</button>
+          <a href="/admin/scenarios" class="btn btn-secondary">Abbrechen</a>
+        </div>
+      </div>
+    </form>
+  `, 'scenarios');
 }
 
 // ── Community page ────────────────────────────────────────────────────────────
@@ -508,6 +697,51 @@ export async function handleAdminRequest(req, res) {
   if (deleteM && m === 'POST') {
     await deleteLicense(deleteM[1]);
     return redirect(res, '/admin/licenses?msg=Lizenz+gelöscht');
+  }
+
+  if (p === '/admin/scenarios' && m === 'GET')
+    return sendHtml(res, 200, await adminScenariosPage(url.searchParams.get('msg') || ''));
+
+  if (p === '/admin/scenarios/new' && m === 'GET')
+    return sendHtml(res, 200, await adminScenarioFormPage(null));
+
+  if (p === '/admin/scenarios/create' && m === 'POST') {
+    const body = parseFormMulti(await readBody(req));
+    try {
+      const data = normalizeScenarioForm(body);
+      const created = await createAdminScenario(data);
+      await setScenarioLicenses(created.id, data.licenseIds);
+      return redirect(res, '/admin/scenarios?msg=Szenario+erstellt');
+    } catch (e) {
+      return sendHtml(res, 200, await adminScenarioFormPage(null, e.message));
+    }
+  }
+
+  const scenarioEditM = p.match(/^\/admin\/scenarios\/(\d+)$/);
+  if (scenarioEditM && m === 'GET') {
+    const scenario = await getAdminScenario(scenarioEditM[1]);
+    if (!scenario) return sendHtml(res, 404, page('Nicht gefunden', '<p style="color:#a3a3a3;">Szenario nicht gefunden.</p>'));
+    return sendHtml(res, 200, await adminScenarioFormPage(scenario));
+  }
+
+  const scenarioUpdateM = p.match(/^\/admin\/scenarios\/(\d+)\/update$/);
+  if (scenarioUpdateM && m === 'POST') {
+    const body = parseFormMulti(await readBody(req));
+    const existing = await getAdminScenario(scenarioUpdateM[1]);
+    try {
+      const data = normalizeScenarioForm(body);
+      await updateAdminScenario(scenarioUpdateM[1], data);
+      await setScenarioLicenses(scenarioUpdateM[1], data.licenseIds);
+      return redirect(res, '/admin/scenarios?msg=Szenario+gespeichert');
+    } catch (e) {
+      return sendHtml(res, 200, await adminScenarioFormPage(existing, e.message));
+    }
+  }
+
+  const scenarioDeleteM = p.match(/^\/admin\/scenarios\/(\d+)\/delete$/);
+  if (scenarioDeleteM && m === 'POST') {
+    await deleteAdminScenario(scenarioDeleteM[1]);
+    return redirect(res, '/admin/scenarios?msg=Szenario+gelöscht');
   }
 
   if (p === '/admin/community' && m === 'GET')

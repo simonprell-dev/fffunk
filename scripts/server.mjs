@@ -5,7 +5,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { handleCommunityApiRequest } from './community-api.mjs';
 import { initDb } from './community-db.mjs';
-import { initLicenseDb } from './license-db.mjs';
+import { initLicenseDb, initAdminScenariosDb, getScenariosByLicenseCode } from './license-db.mjs';
 import { handleAdminRequest, handleLicenseLookup } from './admin-api.mjs';
 import { logPrConfig } from './community-pr-api.mjs';
 
@@ -126,6 +126,27 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.url?.startsWith('/api/license/') && req.url.includes('/scenarios')) {
+    // GET /api/license/:code/scenarios
+    const url = new URL(req.url, 'http://localhost');
+    const match = url.pathname.match(/^\/api\/license\/([^/]+)\/scenarios$/);
+    const code = match?.[1] ? decodeURIComponent(match[1]) : '';
+    if (code) {
+      try {
+        const scenarios = await getScenariosByLicenseCode(code);
+        res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(scenarios));
+      } catch (e) {
+        res.writeHead(500, { 'content-type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    } else {
+      res.writeHead(404, { 'content-type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ error: 'Not found' }));
+    }
+    return;
+  }
+
   if (req.url?.startsWith('/api/license/')) {
     await handleLicenseLookup(req, res);
     return;
@@ -160,4 +181,5 @@ server.listen(PORT, async () => {
   logPrConfig();
   await initDb();
   await initLicenseDb();
+  await initAdminScenariosDb();
 });
