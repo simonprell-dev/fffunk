@@ -49,11 +49,24 @@ export interface Scenario {
 export interface CommunityScenarioMeta {
   authorName: string;
   category?: string;
-  source?: 'local' | 'community';
+  source?: 'local' | 'community' | 'community-api';
   status?: 'local' | 'submitted' | 'merged';
   createdAt: string;
   updatedAt: string;
   shareId?: string;
+  thankCount?: number;
+}
+
+export interface ApiScenarioEntry {
+  shareId: string;
+  id: string;
+  title: string;
+  description: string;
+  authorName: string;
+  category: string;
+  thankCount: number;
+  publishedAt: string;
+  scenario: Scenario;
 }
 
 export interface Transcription {

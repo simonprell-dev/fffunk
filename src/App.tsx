@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Scenario } from './types/story';
+import { ApiScenarioEntry, Scenario } from './types/story';
 import { StoryEngine } from './lib/story-engine';
 import { AudioEngine } from './lib/audio-engine';
 import ScenarioList from './components/ScenarioList';
 import PracticeScreen from './components/PracticeScreen';
 import ScenarioEditor from './components/ScenarioEditor';
 import { decodeSharePackage, deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
+import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community-api';
 
 type View = 'list' | 'editor' | 'practice';
 type ScenarioFolderIndex = {
@@ -17,6 +18,7 @@ function App() {
   const [builtInScenarios, setBuiltInScenarios] = useState<Scenario[]>([]);
   const [localScenarios, setLocalScenarios] = useState<Scenario[]>([]);
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
+  const [apiScenarios, setApiScenarios] = useState<ApiScenarioEntry[]>([]);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [engine, setEngine] = useState<StoryEngine | null>(null);
   const [view, setView] = useState<View>('list');
@@ -29,8 +31,9 @@ function App() {
   const settingsRef = useRef<HTMLDivElement>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  // Hash routing
   useEffect(() => {
-    const applyHash = () => {
+    const applyHash = async () => {
       const hash = window.location.hash;
 
       if (hash.startsWith('#import=')) {
@@ -43,23 +46,32 @@ function App() {
         } catch {
           setLoadError('Vorschau-Link konnte nicht geladen werden.');
         }
-        setEngine(null);
-        setSelectedScenario(null);
+        setEngine(null); setSelectedScenario(null); setView('list');
+        return;
+      }
+
+      if (hash.startsWith('#community=')) {
+        const shareId = hash.slice('#community='.length);
+        try {
+          const entry = await fetchCommunityScenario(shareId);
+          if (entry) {
+            window.history.replaceState(null, '', '#scenarios');
+            startScenario(entry.scenario);
+            return;
+          }
+        } catch { /* ignore */ }
+        window.history.replaceState(null, '', '#scenarios');
         setView('list');
         return;
       }
 
       if (hash === '#editor') {
-        setEngine(null);
-        setSelectedScenario(null);
-        setView('editor');
+        setEngine(null); setSelectedScenario(null); setView('editor');
         return;
       }
 
       if (hash === '' || hash === '#scenarios') {
-        setEngine(null);
-        setSelectedScenario(null);
-        setView('list');
+        setEngine(null); setSelectedScenario(null); setView('list');
       }
     };
 
@@ -88,9 +100,9 @@ function App() {
     setLocalScenarios(loadLocalScenarios());
   }, []);
 
+  // Load built-in scenarios from index.json
   useEffect(() => {
     setLoadError(null);
-
     const loadJson = async <T,>(url: string): Promise<T> => {
       const res = await fetch(url);
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -103,71 +115,64 @@ function App() {
       const communityPaths = Object.values(index.community ?? {}).flat();
 
       const builtin = await Promise.all(
-        builtinPaths.map(path => loadJson<Scenario>(path.startsWith('/') ? path : `/scenarios/${path}`))
+        builtinPaths.map(p => loadJson<Scenario>(p.startsWith('/') ? p : `/scenarios/${p}`))
       );
-
       const community = await Promise.all(
-        communityPaths.map(path => loadJson<Scenario>(path.startsWith('/') ? path : `/scenarios/${path}`))
+        communityPaths.map(p => loadJson<Scenario>(p.startsWith('/') ? p : `/scenarios/${p}`))
       );
 
       return [
         ...builtin,
-        ...community.map(scenario => ({
-          ...scenario,
+        ...community.map(s => ({
+          ...s,
           community: {
-            authorName: scenario.community?.authorName || 'Community',
-            category: scenario.community?.category || 'sonstige',
+            authorName: s.community?.authorName || 'Community',
+            category: s.community?.category || 'sonstige',
             source: 'community' as const,
             status: 'merged' as const,
-            createdAt: scenario.community?.createdAt || new Date().toISOString(),
-            updatedAt: scenario.community?.updatedAt || new Date().toISOString(),
-            shareId: scenario.community?.shareId,
+            createdAt: s.community?.createdAt || new Date().toISOString(),
+            updatedAt: s.community?.updatedAt || new Date().toISOString(),
+            shareId: s.community?.shareId,
           },
         })),
       ];
     };
 
     loadScenarioFolders()
-      .then((loaded) => {
-        setBuiltInScenarios(loaded);
-      })
-      .catch(err => {
-        setLoadError('Fehler beim Laden: ' + err.message);
-        setBuiltInScenarios([]);
-      });
+      .then(setBuiltInScenarios)
+      .catch(err => { setLoadError('Fehler beim Laden: ' + err.message); setBuiltInScenarios([]); });
+  }, []);
+
+  // Load API community scenarios
+  useEffect(() => {
+    fetchCommunityScenarios().then(setApiScenarios).catch(() => {});
   }, []);
 
   useEffect(() => {
-    const localIds = new Set(localScenarios.map(scenario => scenario.id));
+    const localIds = new Set(localScenarios.map(s => s.id));
     setScenarios([
       ...localScenarios,
-      ...builtInScenarios.filter(scenario => !localIds.has(scenario.id)),
+      ...builtInScenarios.filter(s => !localIds.has(s.id)),
     ]);
   }, [builtInScenarios, localScenarios]);
 
   const openList = () => {
     audio.stop();
-    setEngine(null);
-    setSelectedScenario(null);
-    setEditScenario(undefined);
+    setEngine(null); setSelectedScenario(null); setEditScenario(undefined);
     setView('list');
     window.history.replaceState(null, '', '#scenarios');
   };
 
   const openEditor = (scenario?: Scenario) => {
     audio.stop();
-    setEngine(null);
-    setSelectedScenario(null);
-    setEditScenario(scenario);
+    setEngine(null); setSelectedScenario(null); setEditScenario(scenario);
     setView('editor');
     window.history.replaceState(null, '', '#editor');
   };
 
   const startScenario = (scenario: Scenario) => {
     const eng = new StoryEngine(scenario);
-    setEngine(eng);
-    setSelectedScenario(scenario);
-    setView('practice');
+    setEngine(eng); setSelectedScenario(scenario); setView('practice');
     window.history.replaceState(null, '', '#practice');
   };
 
@@ -177,6 +182,10 @@ function App() {
 
   const removeLocalScenario = (scenarioId: string) => {
     setLocalScenarios(deleteLocalScenario(scenarioId));
+  };
+
+  const refreshApiScenarios = () => {
+    fetchCommunityScenarios().then(setApiScenarios).catch(() => {});
   };
 
   return (
@@ -196,11 +205,8 @@ function App() {
                 <a href="#editor" onClick={() => openEditor()} className="text-[#a3a3a3] hover:text-white">Editor</a>
               </>
             )}
-
             {view === 'practice' && (
-              <button onClick={openList} className="text-[#a3a3a3] hover:text-white">
-                Zurück
-              </button>
+              <button onClick={openList} className="text-[#a3a3a3] hover:text-white">Zurück</button>
             )}
 
             <div className="relative" ref={settingsRef}>
@@ -240,9 +246,7 @@ function App() {
 
       <main className="flex-1 max-w-3xl mx-auto w-full p-4">
         {loadError && (
-          <div className="bg-red-900/20 border border-red-700 text-red-200 p-4 rounded-lg mb-4">
-            {loadError}
-          </div>
+          <div className="bg-red-900/20 border border-red-700 text-red-200 p-4 rounded-lg mb-4">{loadError}</div>
         )}
 
         {view === 'editor' ? (
@@ -251,15 +255,11 @@ function App() {
             onSave={saveLocalScenario}
             onImport={saveLocalScenario}
             onClose={openList}
+            onPublished={refreshApiScenarios}
             initialScenario={editScenario}
           />
         ) : view === 'practice' && engine && selectedScenario ? (
-          <PracticeScreen
-            scenario={selectedScenario}
-            engine={engine}
-            audio={audio}
-            onExit={openList}
-          />
+          <PracticeScreen scenario={selectedScenario} engine={engine} audio={audio} onExit={openList} />
         ) : !loadError && scenarios.length === 0 ? (
           <div className="text-center py-12">
             <div className="animate-pulse text-[#a3a3a3]">Szenarien werden geladen...</div>
@@ -267,16 +267,18 @@ function App() {
         ) : (
           <ScenarioList
             scenarios={scenarios}
+            apiScenarios={apiScenarios}
             onSelect={startScenario}
             onCreate={() => openEditor()}
             onDeleteLocal={removeLocalScenario}
             onEditLocal={openEditor}
+            onApiScenariosChange={setApiScenarios}
           />
         )}
       </main>
 
       <footer className="text-center p-4 text-xs text-[#a3a3a3]">
-        FFFunk v0.1 · Community-Szenarien laufen lokal und können per Export geteilt werden.
+        FFFunk · Community-Szenarien werden auf dem Server gespeichert.
       </footer>
     </div>
   );

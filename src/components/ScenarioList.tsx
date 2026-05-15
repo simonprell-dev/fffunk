@@ -1,14 +1,17 @@
 import { useMemo, useState } from 'react';
-import { Folder, FolderOpen } from 'lucide-react';
-import { Scenario, PlayerRole } from '../types/story';
+import { Copy, Folder, FolderOpen, Heart } from 'lucide-react';
+import { ApiScenarioEntry, Scenario, PlayerRole } from '../types/story';
 import { getCategoryLabel } from '../lib/community-scenarios';
+import { buildShareUrl, hasThankd, markThanked, thankScenario } from '../lib/community-api';
 
 interface Props {
   scenarios: Scenario[];
+  apiScenarios: ApiScenarioEntry[];
   onSelect: (scenario: Scenario) => void;
   onCreate: () => void;
   onDeleteLocal: (scenarioId: string) => void;
   onEditLocal: (scenario: Scenario) => void;
+  onApiScenariosChange: (entries: ApiScenarioEntry[]) => void;
 }
 
 interface FolderEntry {
@@ -36,7 +39,36 @@ function getScenarioFolder(scenario: Scenario): string {
   return 'sonstige';
 }
 
-export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLocal, onEditLocal }: Props) {
+const COMMUNITY_FOLDER_ID = '__community__';
+
+export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCreate, onDeleteLocal, onEditLocal, onApiScenariosChange }: Props) {
+  const [thankedIds, setThankedIds] = useState<Set<string>>(() => {
+    const set = new Set<string>();
+    apiScenarios.forEach(e => { if (hasThankd(e.shareId)) set.add(e.shareId); });
+    return set;
+  });
+  const [copyTooltip, setCopyTooltip] = useState<string | null>(null);
+
+  const handleThank = async (e: React.MouseEvent, entry: ApiScenarioEntry) => {
+    e.stopPropagation();
+    if (thankedIds.has(entry.shareId)) return;
+    markThanked(entry.shareId);
+    setThankedIds(prev => new Set(prev).add(entry.shareId));
+    try {
+      const newCount = await thankScenario(entry.shareId);
+      onApiScenariosChange(apiScenarios.map(a =>
+        a.shareId === entry.shareId ? { ...a, thankCount: newCount } : a
+      ));
+    } catch { /* ignore */ }
+  };
+
+  const copyLink = async (e: React.MouseEvent, shareId: string) => {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(buildShareUrl(shareId));
+    setCopyTooltip(shareId);
+    setTimeout(() => setCopyTooltip(null), 2000);
+  };
+
   const folders = useMemo<FolderEntry[]>(() => {
     const grouped = new Map<string, Scenario[]>();
     scenarios.forEach(scenario => {
@@ -54,7 +86,8 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
   }, [scenarios]);
 
   const [activeFolderId, setActiveFolderId] = useState<string | null>(null);
-  const activeFolder = folders.find(folder => folder.id === activeFolderId) ?? folders[0];
+  const isCommunityActive = activeFolderId === COMMUNITY_FOLDER_ID;
+  const activeFolder = isCommunityActive ? null : (folders.find(folder => folder.id === activeFolderId) ?? folders[0]);
 
   if (scenarios.length === 0) {
     return (
@@ -84,7 +117,7 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
           <div className="px-2 py-2 text-xs uppercase tracking-wide text-[#777]">Ordner</div>
           <div className="space-y-1">
             {folders.map(folder => {
-              const active = folder.id === activeFolder?.id;
+              const active = !isCommunityActive && folder.id === activeFolder?.id;
               const Icon = active ? FolderOpen : Folder;
               return (
                 <button
@@ -104,104 +137,189 @@ export default function ScenarioList({ scenarios, onSelect, onCreate, onDeleteLo
                 </button>
               );
             })}
+            {apiScenarios.length > 0 && (
+              <button
+                onClick={() => setActiveFolderId(COMMUNITY_FOLDER_ID)}
+                className={`w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm ${
+                  isCommunityActive
+                    ? 'bg-[#dc2626] text-white'
+                    : 'text-[#d4d4d4] hover:bg-[#262626]'
+                }`}
+              >
+                <span className="flex items-center gap-2 min-w-0">
+                  <Heart size={16} className="shrink-0" />
+                  <span className="truncate">Community</span>
+                </span>
+                <span className={`text-xs ${isCommunityActive ? 'text-white/80' : 'text-[#777]'}`}>{apiScenarios.length}</span>
+              </button>
+            )}
           </div>
         </aside>
 
         <section className="space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h3 className="text-lg font-semibold">{activeFolder?.label}</h3>
-              <p className="text-xs text-[#777]">{activeFolder?.scenarios.length ?? 0} Szenarien in diesem Ordner</p>
-            </div>
-          </div>
-
-          <div className="grid gap-4">
-            {(activeFolder?.scenarios ?? []).map((scenario) => {
-              const badge = getRoleBadge(scenario.playerRole);
-              const radioTurns = Object.values(scenario.nodes).reduce(
-                (n, node) => n + node.actions.filter(a => !!a.radioCall).length,
-                0
-              );
-              const folder = getScenarioFolder(scenario);
-
-              return (
-                <div
-                  key={scenario.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => onSelect(scenario)}
-                  onKeyDown={event => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      onSelect(scenario);
-                    }
-                  }}
-                  className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4 hover:border-[#dc2626] hover:bg-[#262626] transition-colors cursor-pointer"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.cls}`}>
-                          {badge.label}
-                        </span>
-                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#333] text-[#d4d4d4] border border-[#444]">
-                          {getCategoryLabel(folder)}
-                        </span>
-                        {scenario.community?.source === 'local' && (
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-900/40 text-emerald-300 border border-emerald-800">
-                            Lokal
-                          </span>
-                        )}
-                        {scenario.community?.source === 'community' && (
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-900/40 text-blue-300 border border-blue-800">
-                            Community
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="text-lg font-semibold text-[#e5e5e5]">{scenario.title}</h3>
-                      <p className="text-sm text-[#a3a3a3] mt-1">{scenario.description}</p>
-                      <div className="mt-2 text-xs text-[#666]">
-                        {radioTurns} Funk-Runden
-                        {scenario.community?.authorName && ` · von ${scenario.community.authorName}`}
-                      </div>
-                      {scenario.community?.source === 'local' && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <button
-                            onClick={event => {
-                              event.stopPropagation();
-                              onEditLocal(scenario);
-                            }}
-                            className="px-3 py-2 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] text-sm"
-                          >
-                            Bearbeiten
-                          </button>
-                          <button
-                            onClick={event => {
-                              event.stopPropagation();
-                              onDeleteLocal(scenario.id);
-                            }}
-                            className="px-3 py-2 rounded-lg bg-[#261a1a] hover:bg-red-900/30 text-red-300 text-sm"
-                          >
-                            Löschen
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      onClick={event => {
-                        event.stopPropagation();
-                        onSelect(scenario);
+          {isCommunityActive ? (
+            <>
+              <div>
+                <h3 className="text-lg font-semibold">Community</h3>
+                <p className="text-xs text-[#777]">{apiScenarios.length} Szenarien von der Community</p>
+              </div>
+              <div className="grid gap-4">
+                {apiScenarios.map(entry => {
+                  const badge = getRoleBadge(entry.scenario.playerRole);
+                  const thanked = thankedIds.has(entry.shareId);
+                  return (
+                    <div
+                      key={entry.shareId}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => onSelect(entry.scenario)}
+                      onKeyDown={event => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onSelect(entry.scenario);
+                        }
                       }}
-                      className="text-[#dc2626] shrink-0 mt-1 p-2 rounded-lg hover:bg-[#331f1f]"
-                      aria-label={`${scenario.title} starten`}
+                      className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4 hover:border-[#dc2626] hover:bg-[#262626] transition-colors cursor-pointer"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                  </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.cls}`}>
+                              {badge.label}
+                            </span>
+                            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#333] text-[#d4d4d4] border border-[#444]">
+                              {getCategoryLabel(entry.category)}
+                            </span>
+                          </div>
+                          <h3 className="text-lg font-semibold text-[#e5e5e5]">{entry.title}</h3>
+                          <p className="text-sm text-[#a3a3a3] mt-1">{entry.description}</p>
+                          <div className="mt-2 text-xs text-[#666]">
+                            von {entry.authorName}
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-2" onClick={e => e.stopPropagation()}>
+                            <button
+                              onClick={e => handleThank(e, entry)}
+                              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm border transition-colors ${
+                                thanked
+                                  ? 'bg-pink-900/40 text-pink-300 border-pink-800 cursor-default'
+                                  : 'bg-[#262626] text-[#a3a3a3] border-[#444] hover:bg-pink-900/30 hover:text-pink-300 hover:border-pink-800'
+                              }`}
+                            >
+                              <Heart size={14} className={thanked ? 'fill-current' : ''} />
+                              {entry.thankCount > 0 && <span>{entry.thankCount}</span>}
+                              <span>{thanked ? 'Danke gegeben' : 'Danke'}</span>
+                            </button>
+                            <button
+                              onClick={e => copyLink(e, entry.shareId)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm border bg-[#262626] text-[#a3a3a3] border-[#444] hover:bg-[#333]"
+                            >
+                              <Copy size={14} />
+                              {copyTooltip === entry.shareId ? 'Kopiert!' : 'Link teilen'}
+                            </button>
+                          </div>
+                        </div>
+                        <button
+                          onClick={event => { event.stopPropagation(); onSelect(entry.scenario); }}
+                          className="text-[#dc2626] shrink-0 mt-1 p-2 rounded-lg hover:bg-[#331f1f]"
+                          aria-label={`${entry.title} starten`}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold">{activeFolder?.label}</h3>
+                  <p className="text-xs text-[#777]">{activeFolder?.scenarios.length ?? 0} Szenarien in diesem Ordner</p>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+
+              <div className="grid gap-4">
+                {(activeFolder?.scenarios ?? []).map((scenario) => {
+                  const badge = getRoleBadge(scenario.playerRole);
+                  const radioTurns = Object.values(scenario.nodes).reduce(
+                    (n, node) => n + node.actions.filter(a => !!a.radioCall).length,
+                    0
+                  );
+                  const folder = getScenarioFolder(scenario);
+
+                  return (
+                    <div
+                      key={scenario.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => onSelect(scenario)}
+                      onKeyDown={event => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onSelect(scenario);
+                        }
+                      }}
+                      className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4 hover:border-[#dc2626] hover:bg-[#262626] transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.cls}`}>
+                              {badge.label}
+                            </span>
+                            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#333] text-[#d4d4d4] border border-[#444]">
+                              {getCategoryLabel(folder)}
+                            </span>
+                            {scenario.community?.source === 'local' && (
+                              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-900/40 text-emerald-300 border border-emerald-800">
+                                Lokal
+                              </span>
+                            )}
+                            {scenario.community?.source === 'community' && (
+                              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-900/40 text-blue-300 border border-blue-800">
+                                Community
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="text-lg font-semibold text-[#e5e5e5]">{scenario.title}</h3>
+                          <p className="text-sm text-[#a3a3a3] mt-1">{scenario.description}</p>
+                          <div className="mt-2 text-xs text-[#666]">
+                            {radioTurns} Funk-Runden
+                            {scenario.community?.authorName && ` · von ${scenario.community.authorName}`}
+                          </div>
+                          {scenario.community?.source === 'local' && (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                onClick={event => { event.stopPropagation(); onEditLocal(scenario); }}
+                                className="px-3 py-2 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] text-sm"
+                              >
+                                Bearbeiten
+                              </button>
+                              <button
+                                onClick={event => { event.stopPropagation(); onDeleteLocal(scenario.id); }}
+                                className="px-3 py-2 rounded-lg bg-[#261a1a] hover:bg-red-900/30 text-red-300 text-sm"
+                              >
+                                Löschen
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          onClick={event => { event.stopPropagation(); onSelect(scenario); }}
+                          className="text-[#dc2626] shrink-0 mt-1 p-2 rounded-lg hover:bg-[#331f1f]"
+                          aria-label={`${scenario.title} starten`}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </section>
       </div>
 

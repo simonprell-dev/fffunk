@@ -10,11 +10,13 @@ import {
   encodeSharePackage,
   slugify,
 } from '../lib/community-scenarios';
+import { buildShareUrl, publishCommunityScenario } from '../lib/community-api';
 
 interface Props {
   onSave: (scenario: Scenario) => void;
   onImport: (scenario: Scenario) => void;
   onClose: () => void;
+  onPublished?: () => void;
   initialScenario?: Scenario;
 }
 
@@ -84,7 +86,7 @@ function createInitialDraft(): ScenarioDraft {
   };
 }
 
-export default function ScenarioEditor({ onSave, onImport, onClose, initialScenario }: Props) {
+export default function ScenarioEditor({ onSave, onImport, onClose, onPublished, initialScenario }: Props) {
   const initDraft = initialScenario ? scenarioToDraft(initialScenario) : createInitialDraft();
   const initCategory = initDraft.category === 'eigene' ? 'eigene' : (initDraft.category || 'sonstige');
   const initCustom = !KNOWN_CATEGORIES.has(initDraft.category) ? (initialScenario?.community?.category || '') : '';
@@ -96,6 +98,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose, initialScena
   const [importText, setImportText] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
+  const [publishedShareId, setPublishedShareId] = useState<string | null>(null);
 
   const currentDraft = useMemo(() => ({
     ...draft,
@@ -193,38 +196,22 @@ export default function ScenarioEditor({ onSave, onImport, onClose, initialScena
     setMessage(`JSON exportiert. Ziel für PR: ${pkg.suggestedPath}`);
   };
 
-  const publishToApi = async (pkg: ReturnType<typeof createSharePackage>) => {
-    const response = await fetch('/api/community-pr', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(pkg),
-    });
-    const result = await response.json();
-    if (!response.ok || !result.ok) {
-      throw new Error(result.error || 'Pull Request konnte nicht erstellt werden.');
-    }
-    return result;
-  };
-
-  const publishPullRequest = async () => {
+  const publishToCommunity = async () => {
     const scenario = buildScenario();
     if (!scenario) return;
 
     setPublishing(true);
-    setMessage('Veröffentliche Szenario als Pull Request...');
+    setPublishedShareId(null);
+    setMessage('Szenario wird veröffentlicht...');
 
-    const pkg = createSharePackage(scenario);
     setSavedScenario(scenario);
     onSave(scenario);
 
-    const code = encodeSharePackage(pkg);
-    const previewUrl = `${window.location.origin}${window.location.pathname}#import=${encodeURIComponent(code)}`;
-    pkg.prBody = `${pkg.prBody}\n\n## Vorschau\n[Szenario direkt testen](${previewUrl})`;
-
     try {
-      const result = await publishToApi(pkg);
-      setMessage(`Pull Request erstellt: ${result.url}`);
-      window.open(result.url, '_blank', 'noopener,noreferrer');
+      const { shareId } = await publishCommunityScenario(scenario);
+      setPublishedShareId(shareId);
+      setMessage('Szenario veröffentlicht! Teile den Link mit anderen.');
+      onPublished?.();
     } catch (error) {
       const detail = error instanceof Error ? error.message : 'API nicht erreichbar.';
       setMessage(`Veröffentlichen fehlgeschlagen: ${detail}`);
@@ -357,11 +344,11 @@ export default function ScenarioEditor({ onSave, onImport, onClose, initialScena
           <Save size={18} /> Lokal speichern
         </button>
         <button
-          onClick={publishPullRequest}
+          onClick={publishToCommunity}
           disabled={publishing}
           className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <ExternalLink size={18} /> {publishing ? 'Wird veröffentlicht...' : 'Veröffentlichen'}
+          <ExternalLink size={18} /> {publishing ? 'Wird veröffentlicht...' : 'In Community veröffentlichen'}
         </button>
         <button onClick={copyShareCode} disabled={!shareCode} className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333] disabled:opacity-40">
           <Copy size={18} /> Teilencode kopieren
@@ -371,10 +358,21 @@ export default function ScenarioEditor({ onSave, onImport, onClose, initialScena
         </button>
       </div>
 
-      {sharePackage && (
-        <div className="bg-[#111] border border-[#333] rounded-lg p-4 text-sm space-y-2">
-          <div><span className="text-[#a3a3a3]">Community-Pfad:</span> <code>{sharePackage.suggestedPath}</code></div>
-          <div><span className="text-[#a3a3a3]">PR-Titel:</span> {sharePackage.prTitle}</div>
+      {publishedShareId && (
+        <div className="bg-[#111] border border-[#2d5a27] rounded-lg p-4 text-sm space-y-3">
+          <div className="font-semibold text-emerald-400">Szenario veröffentlicht!</div>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 bg-[#0a0a0a] border border-[#333] rounded px-3 py-2 text-xs break-all text-[#a3a3a3]">
+              {buildShareUrl(publishedShareId)}
+            </code>
+            <button
+              onClick={() => copyText(buildShareUrl(publishedShareId), 'Community-Link kopiert!')}
+              className="shrink-0 p-2 rounded-lg bg-[#262626] border border-[#444] hover:bg-[#333]"
+              title="Link kopieren"
+            >
+              <Copy size={16} />
+            </button>
+          </div>
         </div>
       )}
 
