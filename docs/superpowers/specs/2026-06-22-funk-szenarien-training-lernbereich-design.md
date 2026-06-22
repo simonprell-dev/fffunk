@@ -45,7 +45,7 @@ Header-Navigation: `Üben` · `Training` · `Lernen` · `Editor` (Zahnrad/Einste
 | Eigenes LF (Spieler) | Florian Neuhaus 44/1 |
 | Drehleiter | Florian Neuhaus 33/1 |
 | Einsatzleitwagen | Florian Neuhaus 11/1 |
-| Nachbar-LF (Nachforderung) | Florian Altdorf 44/1 |
+| Nachbar-LF (Nachforderung) | Florian Adelsdorf 44/1 |
 | Leitstelle | Leitstelle *(per Substitution lokalisierbar)* |
 
 Ortsbezug durchgängig „Neuhaus" statt „Kirchberg".
