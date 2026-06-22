@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mic, ShieldAlert } from 'lucide-react';
+import { Mic, ShieldAlert, ClipboardList, CheckCircle2, XCircle, RotateCcw, ArrowRight } from 'lucide-react';
 
 interface Props {
   isOpen: boolean;
@@ -8,16 +8,21 @@ interface Props {
   expectedPhrases: string[];
   hint: string;
   feedbackFailure?: string;
+  feedbackSuccess?: string;
+  briefing?: string;
+  mode?: 'guided' | 'training';
 }
 
-type Status = 'idle' | 'requesting' | 'countdown' | 'ready' | 'recording' | 'done';
+type Status = 'idle' | 'requesting' | 'countdown' | 'ready' | 'recording' | 'done' | 'reveal';
 
-export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhrases, hint, feedbackFailure }: Props) {
+export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhrases, hint, feedbackFailure, feedbackSuccess, briefing, mode = 'guided' }: Props) {
+  const isTraining = mode === 'training';
   const [status, setStatus] = useState<Status>('idle');
   const [countdown, setCountdown] = useState(3);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pressed, setPressed] = useState(false);
+  const [accepted, setAccepted] = useState(false);
 
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const recognitionRef = useRef<any>(null);
@@ -29,6 +34,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       setTranscript('');
       setError(null);
       setPressed(false);
+      setAccepted(false);
     }
   }, [isOpen]);
 
@@ -156,7 +162,17 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       recognitionRef.current = null;
       setPressed(false);
 
-      if (isAcceptedTransmission(text)) {
+      const ok = isAcceptedTransmission(text);
+
+      if (isTraining) {
+        // Im Training: nicht sofort weiter – erst Muster-Funkspruch aufdecken.
+        setAccepted(ok);
+        setError(null);
+        setStatus('reveal');
+        return;
+      }
+
+      if (ok) {
         setStatus('done');
         onResult(true, text);
       } else {
@@ -225,15 +241,28 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-            Funk-Gespräch
+            {isTraining ? 'Funk-Training' : 'Funk-Gespräch'}
           </h3>
           <button onClick={handleClose} className="text-[#a3a3a3] hover:text-white w-8 h-8 flex items-center justify-center">✕</button>
         </div>
 
-        <div className="mb-6 p-4 bg-[#262626] border border-[#444] rounded-lg">
-          <div className="text-sm text-[#a3a3a3] mb-1">Sprechen Sie diese Phrase:</div>
-          <div className="text-[#e5e5e5] italic text-center text-lg">„{hint}"</div>
-        </div>
+        {status !== 'reveal' && (
+          isTraining ? (
+            <div className="mb-6 p-4 bg-[#1f2a37] border border-[#2f4256] rounded-lg">
+              <div className="text-sm text-[#9db4d0] mb-2 flex items-center gap-2">
+                <ClipboardList size={16} /> Melde sinngemäß folgenden Inhalt – formuliere den Funkspruch selbst:
+              </div>
+              <div className="text-[#e5e5e5] whitespace-pre-line">
+                {briefing || 'Formuliere die passende Funkmeldung zur aktuellen Lage.'}
+              </div>
+            </div>
+          ) : (
+            <div className="mb-6 p-4 bg-[#262626] border border-[#444] rounded-lg">
+              <div className="text-sm text-[#a3a3a3] mb-1">Sprechen Sie diese Phrase:</div>
+              <div className="text-[#e5e5e5] italic text-center text-lg">„{hint}"</div>
+            </div>
+          )
+        )}
 
         <div className="text-center">
           {status === 'idle' && (
@@ -310,6 +339,62 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
                 „{transcript}"
               </div>
               <div className="animate-pulse text-green-400">Wertung…</div>
+            </div>
+          )}
+
+          {status === 'reveal' && (
+            <div className="py-2 text-left">
+              <div className="text-sm text-[#a3a3a3] mb-1">Dein Funkspruch:</div>
+              <div className="p-3 bg-[#262626] border border-[#444] rounded-lg text-[#e5e5e5] mb-4">
+                „{transcript || '—'}"
+              </div>
+
+              <div className="mb-4">
+                <div className="text-sm text-[#a3a3a3] mb-2">Kernbegriffe:</div>
+                <div className="flex flex-wrap gap-2">
+                  {expectedPhrases.map(p => {
+                    const hit = phraseMatches(transcript, p);
+                    return (
+                      <span
+                        key={p}
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs border ${
+                          hit ? 'bg-green-900/30 text-green-300 border-green-800' : 'bg-[#2a2a2a] text-[#888] border-[#444]'
+                        }`}
+                      >
+                        {hit ? <CheckCircle2 size={12} /> : <XCircle size={12} />}{p}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className={`mb-4 p-3 rounded-lg border ${accepted ? 'bg-green-900/20 border-green-700' : 'bg-amber-900/20 border-amber-700'}`}>
+                <div className={`text-sm font-medium ${accepted ? 'text-green-300' : 'text-amber-300'}`}>
+                  {accepted
+                    ? (feedbackSuccess || '✅ Inhaltlich vollständig.')
+                    : (feedbackFailure || '⚠️ Noch nicht vollständig – vergleiche mit dem Muster.')}
+                </div>
+              </div>
+
+              <div className="mb-4 p-4 bg-[#10240f] border border-green-900 rounded-lg">
+                <div className="text-sm text-[#9db09d] mb-1">So lautet der korrekte Funkspruch:</div>
+                <div className="text-[#e5e5e5] italic text-lg">„{hint}"</div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { setStatus('ready'); setTranscript(''); setError(null); setAccepted(false); }}
+                  className="flex-1 py-3 rounded-xl font-semibold bg-[#262626] border border-[#444] text-[#e5e5e5] hover:bg-[#333] flex items-center justify-center gap-2"
+                >
+                  <RotateCcw size={18} /> Nochmal
+                </button>
+                <button
+                  onClick={() => onResult(accepted, transcript)}
+                  className="flex-1 py-3 rounded-xl font-semibold bg-[#dc2626] hover:bg-[#b91c1c] text-white flex items-center justify-center gap-2"
+                >
+                  Weiter <ArrowRight size={18} />
+                </button>
+              </div>
             </div>
           )}
 

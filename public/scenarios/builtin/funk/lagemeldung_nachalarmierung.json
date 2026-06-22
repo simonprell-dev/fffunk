@@ -1,32 +1,33 @@
 {
   "id": "lagemeldung_nachalarmierung",
-  "title": "Lagemeldung und Nachalarmierung",
-  "description": "Mittel: Vollständige Lagemeldung abgeben, Drehleiter anfordern und Menschenrettung melden. 4 Funk-Schritte.",
+  "title": "Lagemeldung und Nachforderung",
+  "description": "Mittel: Vollständige Lagemeldung im Wechselverkehr abgeben, Drehleiter nachfordern, Wasserversorgung melden und Menschenrettung abschließen. 4 Funk-Schritte.",
   "startingNodeId": "n_vor_ort",
   "playerRole": "gruppenführer_a",
   "nodes": {
     "n_vor_ort": {
       "id": "n_vor_ort",
       "role": "gruppenführer_a",
-      "narrative": "Sie sind als Erstangreifer mit dem LF 10/6 an der Einsatzstelle **Bergstraße 4, Kirchberg** eingetroffen.\n\n**Lage:** Freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Im Dachgeschoss ist eine Person sichtbar und ruft um Hilfe. Keine weiteren Kräfte vor Ort.\n\nGeben Sie sofort eine **vollständige Lagemeldung** mit Menschenrettungshinweis ab!",
+      "narrative": "Sie sind als ersteintreffende Einheit mit **Florian Neuhaus 44/1** an der Einsatzstelle **Bergstraße 4, Neuhaus** eingetroffen. Sie haben bereits Status 4 (Ankunft an der Einsatzstelle) gedrückt.\n\n**Lage:** Freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Im Dachgeschoss ist eine Person sichtbar und ruft um Hilfe. Keine weiteren Kräfte vor Ort.\n\nGeben Sie der Leitstelle im Wechselverkehr eine **vollständige Lagemeldung** nach dem Schema Wo – Was – Menschenleben in Gefahr – eigene Maßnahmen – Nachforderung ab.",
       "actions": [
         {
           "id": "radio_lage",
           "label": "📞 Lagemeldung sprechen",
           "radioCall": {
             "expectedPhrases": [
-              "Status 4",
-              "FMS 4",
-              "Menschenrettung",
+              "Florian Neuhaus",
+              "Einfamilienhaus",
+              "Dachgeschoss",
+              "Vollbrand",
               "Person",
-              "eingeschlossen",
-              "Vollbrand"
+              "Menschenrettung"
             ],
-            "hint": "Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Einfamilienhaus Bergstraße 4, Dachgeschoss in Vollbrand, eine Person im Dachgeschoss eingeschlossen — Menschenrettung erforderlich!",
+            "briefing": "Leitstelle anrufen, eigener Rufname, Durchsage Lagemeldung . Wo: Bergstraße 4, Neuhaus . Was: freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand . Menschenleben in Gefahr: eine Person im Dachgeschoss, ruft um Hilfe . Eigene Maßnahmen: Menschenrettung eingeleitet, Brandbekämpfung über Tragbare Leiter / Innenangriff . Nachforderung ankündigen . mit kommen abschließen.",
+            "hint": "Leitstelle von Florian Neuhaus vier-vier/eins – Durchsage – kommen. Hier Florian Neuhaus vier-vier/eins, Lagemeldung: Einsatzstelle Bergstraße vier, Neuhaus, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand, eine Person im Dachgeschoss eingeschlossen und in Lebensgefahr; Menschenrettung eingeleitet, Brandbekämpfung läuft, Nachforderung folgt – kommen.",
             "onSuccess": "n_drehleiter",
             "onFailure": "n_vor_ort_fail",
-            "feedbackSuccess": "✅ Vollständige Lagemeldung übermittelt!",
-            "feedbackFailure": "❌ Die Lagemeldung muss Status 4, Objektbeschreibung, Brandlage und Menschengefährdung enthalten."
+            "feedbackSuccess": "✅ Vollständige Lagemeldung im Wechselverkehr übermittelt – Wo, Was, Menschenleben in Gefahr und eigene Maßnahmen sind enthalten.",
+            "feedbackFailure": "❌ Die Lagemeldung muss Objekt (Einfamilienhaus), Brandlage (Dachgeschoss in Vollbrand) und die Menschengefährdung (Person eingeschlossen) enthalten und mit \"kommen\" enden."
           }
         }
       ]
@@ -34,7 +35,7 @@
     "n_vor_ort_fail": {
       "id": "n_vor_ort_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Eine vollständige Lagemeldung enthält:\n1. **Status 4** — Einsatzstelle erreicht\n2. **Objektbeschreibung** — Art und Adresse\n3. **Brandlage** — wo brennt es\n4. **Menschengefährdung** — Personen in Gefahr?\n\nBeispiel: *„Florian Kirchberg 44/1 — Status 4. Lagemeldung: Einfamilienhaus Bergstraße 4, Dachgeschoss in Vollbrand, eine Person eingeschlossen — Menschenrettung erforderlich!\"*",
+      "narrative": "**Feedback:** Eine vollständige Lagemeldung folgt dem Schema:\n1. **Wo** – Ort/Adresse (Bergstraße 4, Neuhaus)\n2. **Was** – Art und Umfang (Einfamilienhaus, Dachgeschoss in Vollbrand)\n3. **Menschenleben in Gefahr** – eine Person im Dachgeschoss eingeschlossen\n4. **Eigene Maßnahmen** – Menschenrettung eingeleitet, Brandbekämpfung\n5. **Nachforderung** – ankündigen\n\nBeispiel: *„Leitstelle von Florian Neuhaus vier-vier/eins – Durchsage – kommen. Hier Florian Neuhaus vier-vier/eins, Lagemeldung: Einsatzstelle Bergstraße vier, Neuhaus, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand, eine Person im Dachgeschoss eingeschlossen und in Lebensgefahr; Menschenrettung eingeleitet, Brandbekämpfung läuft, Nachforderung folgt – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -46,23 +47,26 @@
     "n_drehleiter": {
       "id": "n_drehleiter",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** Lagemeldung erhalten. Welche Kräfte benötigen Sie?\n\nFordern Sie eine **Drehleiter** für die Menschenrettung nach!",
+      "narrative": "**Leitstelle:** „Hier Leitstelle, Lagemeldung verstanden. Welche Kräfte fordern Sie nach? – kommen.“\n\nFordern Sie für die Menschenrettung aus dem Dachgeschoss eine **Drehleiter** nach.",
       "actions": [
         {
           "id": "radio_drehleiter",
           "label": "📞 Funk-Meldung sprechen",
           "radioCall": {
+            "briefing": "Eigener Rufname zuerst (Antwort) . Nachforderung: eine Drehleiter . Begründung: Menschenrettung, Person im Dachgeschoss eingeschlossen . Einsatzort/Anfahrt: Bergstraße 4, Neuhaus . mit kommen abschließen.",
             "expectedPhrases": [
+              "Florian Neuhaus",
               "Drehleiter",
-              "anfordern",
-              "fordere",
-              "nachalarmi"
+              "nachfordern",
+              "Menschenrettung",
+              "Dachgeschoss",
+              "Bergstraße"
             ],
-            "hint": "Florian Kirchberg 44/1 — Anforderung Drehleiter, eine Person im Dachgeschoss eingeschlossen, Bergstraße 4, Kirchberg.",
+            "hint": "Hier Florian Neuhaus vier-vier/eins – Nachforderung: eine Drehleiter zur Menschenrettung, eine Person im Dachgeschoss eingeschlossen; Einsatzstelle Bergstraße vier, Neuhaus – kommen.",
             "onSuccess": "n_wasserversorgung",
             "onFailure": "n_drehleiter_fail",
-            "feedbackSuccess": "✅ Drehleiter angefordert!",
-            "feedbackFailure": "❌ Fordern Sie die Drehleiter für die Menschenrettung an."
+            "feedbackSuccess": "✅ Drehleiter mit Begründung und Einsatzort nachgefordert.",
+            "feedbackFailure": "❌ Fordern Sie die Drehleiter mit Begründung (Menschenrettung) und Einsatzort nach und schließen Sie mit \"kommen\"."
           }
         }
       ]
@@ -70,7 +74,7 @@
     "n_drehleiter_fail": {
       "id": "n_drehleiter_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Fordern Sie die Drehleiter mit Begründung und Einsatzort an.\n\nBeispiel: *„Florian Kirchberg 44/1 — Anforderung Drehleiter, eine Person im Dachgeschoss eingeschlossen, Bergstraße 4, Kirchberg.\"*",
+      "narrative": "**Feedback:** Beginnen Sie die Antwort mit dem eigenen Rufnamen, nennen Sie das nachgeforderte Mittel (Drehleiter), die Begründung (Menschenrettung) und den Einsatzort.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins – Nachforderung: eine Drehleiter zur Menschenrettung, eine Person im Dachgeschoss eingeschlossen; Einsatzstelle Bergstraße vier, Neuhaus – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -82,24 +86,25 @@
     "n_wasserversorgung": {
       "id": "n_wasserversorgung",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** Drehleiter ist alarmiert, ETA 4 Minuten. Melden Sie Ihren Status zur **Wasserversorgung**!",
+      "narrative": "**Leitstelle:** „Hier Leitstelle, verstanden. Drehleiter Florian Neuhaus dreidrei/eins ist alarmiert. Geben Sie Ihre Wasserversorgung durch. – kommen.“\n\nMelden Sie, dass die **Wasserversorgung** sichergestellt ist, und nennen Sie die Entnahmestelle.",
       "actions": [
         {
           "id": "radio_wasser",
           "label": "📞 Funk-Meldung sprechen",
           "radioCall": {
+            "briefing": "Eigener Rufname zuerst (Antwort) . Wasserversorgung sichergestellt . Entnahmestelle nennen: Überflurhydrant Bergstraße 2 . mit kommen abschließen.",
             "expectedPhrases": [
+              "Florian Neuhaus",
               "Wasserversorgung",
+              "sichergestellt",
               "Hydrant",
-              "aufgebaut",
-              "gesichert",
-              "sichergestellt"
+              "Bergstraße"
             ],
-            "hint": "Florian Kirchberg 44/1 — Wasserversorgung gesichert über Hydrant Bergstraße 2.",
+            "hint": "Hier Florian Neuhaus vier-vier/eins – Wasserversorgung sichergestellt über Überflurhydrant Bergstraße zwo – kommen.",
             "onSuccess": "n_menschenrettung",
             "onFailure": "n_wasserversorgung_fail",
-            "feedbackSuccess": "✅ Wasserversorgung korrekt gemeldet!",
-            "feedbackFailure": "❌ Melden Sie die gesicherte Wasserversorgung mit Lageangabe."
+            "feedbackSuccess": "✅ Wasserversorgung korrekt gemeldet – Status und Entnahmestelle sind enthalten.",
+            "feedbackFailure": "❌ Melden Sie die sichergestellte Wasserversorgung mit Entnahmestelle und schließen Sie mit \"kommen\"."
           }
         }
       ]
@@ -107,7 +112,7 @@
     "n_wasserversorgung_fail": {
       "id": "n_wasserversorgung_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Melden Sie, dass die Wasserversorgung gesichert ist, und nennen Sie die Entnahmestelle.\n\nBeispiel: *„Florian Kirchberg 44/1 — Wasserversorgung gesichert über Hydrant Bergstraße 2.\"*",
+      "narrative": "**Feedback:** Beginnen Sie mit dem eigenen Rufnamen, melden Sie, dass die Wasserversorgung sichergestellt ist, und nennen Sie die Entnahmestelle.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins – Wasserversorgung sichergestellt über Überflurhydrant Bergstraße zwo – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -119,24 +124,26 @@
     "n_menschenrettung": {
       "id": "n_menschenrettung",
       "role": "gruppenführer_a",
-      "narrative": "Die Drehleiter ist eingetroffen. Mit ihrer Hilfe wurde die Person aus dem Dachgeschoss gerettet — sie ist unverletzt.\n\nMelden Sie der Leitstelle, dass die **Menschenrettung abgeschlossen** ist!",
+      "narrative": "Die Drehleiter ist eingetroffen. Mit ihrer Hilfe wurde die Person aus dem Dachgeschoss gerettet – sie ist unverletzt.\n\nMelden Sie der Leitstelle, dass die **Menschenrettung abgeschlossen** ist. Da Sie eine Quittung der Leitstelle erwarten, schließen Sie mit „kommen“ ab – die Leitstelle beendet das Gespräch.",
       "actions": [
         {
           "id": "radio_gerettet",
           "label": "📞 Funk-Meldung sprechen",
           "radioCall": {
+            "briefing": "Leitstelle anrufen (eigener Rufname) oder Antwort mit eigenem Rufnamen zuerst . Menschenrettung abgeschlossen . eine Person gerettet, Zustand: unverletzt . Quittung der Leitstelle erwartet: mit kommen abschließen.",
             "expectedPhrases": [
-              "gerettet",
-              "Menschenrettung abgeschlossen",
-              "sicher",
+              "Florian Neuhaus",
+              "Menschenrettung",
+              "abgeschlossen",
+              "Person",
               "unverletzt",
-              "abgeschlossen"
+              "kommen"
             ],
-            "hint": "Florian Kirchberg 44/1 — Menschenrettung abgeschlossen, Person unverletzt gerettet.",
+            "hint": "Hier Florian Neuhaus vier-vier/eins – Menschenrettung abgeschlossen, eine Person unverletzt gerettet – kommen.",
             "onSuccess": "n_end",
             "onFailure": "n_menschenrettung_fail",
-            "feedbackSuccess": "✅ Menschenrettung gemeldet!",
-            "feedbackFailure": "❌ Melden Sie den Abschluss der Menschenrettung und den Zustand der Person."
+            "feedbackSuccess": "✅ Abschluss der Menschenrettung gemeldet – die Leitstelle quittiert und beendet das Gespräch.",
+            "feedbackFailure": "❌ Melden Sie den Abschluss der Menschenrettung und den Zustand der Person; schließen Sie mit \"kommen\", damit die Leitstelle quittieren kann."
           }
         }
       ]
@@ -144,7 +151,7 @@
     "n_menschenrettung_fail": {
       "id": "n_menschenrettung_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Melden Sie, dass die Menschenrettung abgeschlossen ist und in welchem Zustand die Person ist.\n\nBeispiel: *„Florian Kirchberg 44/1 — Menschenrettung abgeschlossen, Person unverletzt gerettet.\"*",
+      "narrative": "**Feedback:** Melden Sie, dass die Menschenrettung abgeschlossen ist und in welchem Zustand die Person ist. Da dies die letzte Übertragung des Gesprächs ist, schließen Sie mit „Ende“ ab.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins – Menschenrettung abgeschlossen, eine Person unverletzt gerettet – Ende.“*",
       "actions": [
         {
           "id": "retry",
@@ -156,7 +163,7 @@
     "n_end": {
       "id": "n_end",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** Meldung erhalten. Ausgezeichnete Arbeit! Brandbekämpfung weiter fortsetzen.\n\n**Übung abgeschlossen! 🎉**",
+      "narrative": "**Leitstelle:** „Hier Leitstelle, verstanden – Ende.“ Ausgezeichnete Arbeit! Brandbekämpfung weiter fortsetzen.\n\n**Übung abgeschlossen! 🎉**",
       "actions": [
         {
           "id": "restart",

@@ -13,9 +13,10 @@ interface Props {
   audio: AudioEngine;
   onExit: () => void;
   rufnamen?: Record<string, string>;
+  mode?: 'guided' | 'training';
 }
 
-export default function PracticeScreen({ scenario, engine, audio, onExit, rufnamen }: Props) {
+export default function PracticeScreen({ scenario, engine, audio, onExit, rufnamen, mode = 'guided' }: Props) {
   const [currentNode, setCurrentNode] = useState<StoryNode>(engine.getCurrentNode());
   const [radioModalOpen, setRadioModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
@@ -68,9 +69,20 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
     }
   };
 
-  const handleRadioResult = (success: boolean, transcript: string) => {
+  const handleRadioResult = (success: boolean, _transcript: string) => {
     setRadioModalOpen(false);
     const action = pendingAction!;
+
+    if (mode === 'training') {
+      // Im Training wurde der Muster-Funkspruch bereits im Modal aufgedeckt –
+      // unabhängig vom Treffer geht es zum nächsten Schritt weiter.
+      if (success) engine.completeNode(10);
+      engine.goTo(action.radioCall!.onSuccess);
+      refreshNode();
+      setFeedback(null);
+      return;
+    }
+
     const nextNodeId = success ? action.radioCall!.onSuccess : action.radioCall!.onFailure;
 
     if (success) {
@@ -108,7 +120,14 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold">{scenario.title}</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-bold">{scenario.title}</h2>
+            {mode === 'training' && (
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#1f2a37] text-[#9db4d0] border border-[#2f4256]">
+                Trainingsmodus
+              </span>
+            )}
+          </div>
           <p className="text-xs text-[#a3a3a3]">{scenario.description}</p>
         </div>
         <div className="flex items-center gap-3">
@@ -153,8 +172,11 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
           isOpen={true}
           onClose={() => setRadioModalOpen(false)}
           onResult={handleRadioResult}
+          mode={mode}
           expectedPhrases={pendingAction.radioCall!.expectedPhrases}
           hint={applyRufnamen(pendingAction.radioCall!.hint, ruf)}
+          briefing={applyRufnamen(pendingAction.radioCall!.briefing ?? '', ruf)}
+          feedbackSuccess={applyRufnamen(pendingAction.radioCall!.feedbackSuccess ?? '', ruf)}
           feedbackFailure={applyRufnamen(pendingAction.radioCall!.feedbackFailure ?? '', ruf)}
         />
       )}

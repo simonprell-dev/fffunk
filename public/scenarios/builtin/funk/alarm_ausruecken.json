@@ -1,30 +1,32 @@
 {
   "id": "alarm_ausruecken",
   "title": "Alarmierung und Ausrücken",
-  "description": "Einsteiger: Alarm annehmen, Einsatzbereitschaft melden und zum Einsatz ausrücken. 3 Funk-Schritte.",
+  "description": "Einsteiger: Alarm annehmen, Einsatzbereitschaft (Status 1) melden, Einsatzbefehl bestätigen und ausrücken (Status 3), an der Einsatzstelle (Status 4) eine erste Lagemeldung absetzen. 3 Funk-Schritte im Wechselverkehr GF an Leitstelle.",
   "startingNodeId": "n_alarm",
   "playerRole": "gruppenführer_a",
   "nodes": {
     "n_alarm": {
       "id": "n_alarm",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** Funkalarm für Florian Kirchberg 44/1 — Feuer in Kirchberg, Birkenweg 12, Einfamilienhaus, Rauchentwicklung im Obergeschoss.\n\nMelden Sie **Einsatzbereitschaft** und fordern Sie den **Einsatzbefehl** an!",
+      "narrative": "**Leitstelle (Anruf):** „Florian Neuhaus 44/1 von Leitstelle — kommen.\"\n\nAuf dem Display Ihres Fahrzeugs läuft der Alarm ein: Feuer in Neuhaus, Birkenweg 12, Einfamilienhaus, Rauchentwicklung aus dem Dachgeschoss.\n\nBeantworten Sie den Anruf, melden Sie Ihre **Einsatzbereitschaft (Status 1)** und fordern Sie den **Einsatzbefehl** an.",
       "actions": [
         {
           "id": "radio_einsatzbereit",
           "label": "📞 Funk-Meldung sprechen",
           "radioCall": {
             "expectedPhrases": [
+              "Florian Neuhaus",
               "einsatzbereit",
               "Status 1",
-              "FMS 1",
-              "Einsatzbefehl"
+              "Einsatzbefehl",
+              "kommen"
             ],
-            "hint": "Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten",
+            "briefing": "Anruf der Leitstelle beantworten (eigener Rufname zuerst) . Einsatzbereitschaft melden: Status 1 (einsatzbereit über Funk) . Einsatzbefehl anfordern . Übertragung mit „kommen\" abschließen",
+            "hint": "Hier Florian Neuhaus vier-vier-eins, einsatzbereit, Status 1 — Einsatzbefehl erbeten — kommen.",
             "onSuccess": "n_einsatzbefehl",
             "onFailure": "n_alarm_fail",
-            "feedbackSuccess": "✅ Einsatzbereitschaft korrekt gemeldet!",
-            "feedbackFailure": "❌ Melden Sie Status 1 (einsatzbereit) und fordern Sie den Einsatzbefehl an."
+            "feedbackSuccess": "✅ Anruf beantwortet und Einsatzbereitschaft (Status 1) korrekt gemeldet — Einsatzbefehl angefordert.",
+            "feedbackFailure": "❌ Beantworten Sie den Anruf mit Ihrem Rufnamen, melden Sie Status 1 (einsatzbereit) und fordern Sie den Einsatzbefehl an. Übertragung mit „kommen\" beenden."
           }
         }
       ]
@@ -32,7 +34,7 @@
     "n_alarm_fail": {
       "id": "n_alarm_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Bei Alarmierung melden Sie zuerst Ihre Einsatzbereitschaft mit **Status 1** und fordern den Einsatzbefehl an.\n\nBeispiel: *„Florian Kirchberg 44/1, einsatzbereit — Status 1, Einsatzbefehl erbeten\"*",
+      "narrative": "**Feedback:** Beantworten Sie zuerst den Anruf der Leitstelle (eigener Rufname zuerst, beginnend mit „Hier …\"). Melden Sie dann Ihre Einsatzbereitschaft mit **Status 1** (einsatzbereit über Funk) und fordern Sie den Einsatzbefehl an. Da Sie eine Antwort erwarten, endet die Übertragung mit **„kommen\"**.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier-eins, einsatzbereit, Status 1 — Einsatzbefehl erbeten — kommen.\"*",
       "actions": [
         {
           "id": "retry",
@@ -44,24 +46,25 @@
     "n_einsatzbefehl": {
       "id": "n_einsatzbefehl",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Einsatzbefehl: Wohnhausbrand, Birkenweg 12, Kirchberg. Zweigeschossiges Einfamilienhaus, Rauch aus dem Dachgeschoss. Rücken Sie aus!\n\nBestätigen Sie den Einsatzbefehl und melden Sie **Ausrücken (Status 3)**!",
+      "narrative": "**Leitstelle (Durchsage):** „Hier Leitstelle — Einsatzbefehl für Florian Neuhaus 44/1: Wohnhausbrand, Birkenweg 12 in Neuhaus. Freistehendes Einfamilienhaus, Rauch aus dem Dachgeschoss. Rücken Sie aus — kommen.\"\n\nBestätigen Sie den Einsatzbefehl und melden Sie **Ausrücken (Status 3)**.",
       "actions": [
         {
           "id": "radio_ausruecken",
           "label": "📞 Funk-Meldung sprechen",
           "radioCall": {
             "expectedPhrases": [
+              "Florian Neuhaus",
               "verstanden",
               "rücke aus",
               "Status 3",
-              "FMS 3",
-              "ausgerückt"
+              "kommen"
             ],
-            "hint": "Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3",
+            "briefing": "Einsatzbefehl bestätigen („verstanden\") . Ausrücken melden: Status 3 (Einsatzauftrag übernommen / auf Anfahrt) . eigener Rufname . Übertragung mit „kommen\" abschließen (Leitstelle quittiert)",
+            "hint": "Hier Florian Neuhaus vier-vier-eins, verstanden — rücke aus, Status 3 — kommen.",
             "onSuccess": "n_ankunft",
             "onFailure": "n_einsatzbefehl_fail",
-            "feedbackSuccess": "✅ Ausrücken korrekt gemeldet — gute Fahrt!",
-            "feedbackFailure": "❌ Bestätigen Sie den Einsatzbefehl und melden Sie Status 3 (Ausgerückt)."
+            "feedbackSuccess": "✅ Einsatzbefehl bestätigt und Ausrücken (Status 3) korrekt gemeldet — gute Anfahrt!",
+            "feedbackFailure": "❌ Bestätigen Sie den Einsatzbefehl mit „verstanden\" und melden Sie Status 3 (Einsatzauftrag übernommen, ausgerückt)."
           }
         }
       ]
@@ -69,7 +72,7 @@
     "n_einsatzbefehl_fail": {
       "id": "n_einsatzbefehl_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Beim Ausrücken bestätigen Sie den Einsatzbefehl und melden **Status 3** (Einsatz übernommen, ausgerückt).\n\nBeispiel: *„Florian Kirchberg 44/1 — Einsatzbefehl verstanden, rücke aus, Status 3\"*",
+      "narrative": "**Feedback:** Bestätigen Sie den Einsatzbefehl mit **„verstanden\"** und melden Sie **Status 3** (Einsatzauftrag übernommen / auf Anfahrt zum Einsatzort). Nennen Sie Ihren eigenen Rufnamen zuerst.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier-eins, verstanden — rücke aus, Status 3 — kommen.\"*",
       "actions": [
         {
           "id": "retry",
@@ -81,25 +84,27 @@
     "n_ankunft": {
       "id": "n_ankunft",
       "role": "gruppenführer_a",
-      "narrative": "Sie erreichen den Birkenweg 12. Dichter Rauch steigt aus dem Dachgeschoss auf. Das Gebäude ist ein freistehendes Einfamilienhaus — keine Personen sichtbar.\n\nMelden Sie **Einsatzstelle erreicht (Status 4)** und geben Sie eine erste **Lagemeldung** ab!",
+      "narrative": "Sie erreichen den Birkenweg 12 in Neuhaus. Dichter Rauch steigt aus dem Dachgeschoss des freistehenden Einfamilienhauses. Keine Personen sichtbar, keine Hinweise auf vermisste Bewohner.\n\nMelden Sie **Einsatzstelle erreicht (Status 4)** und geben Sie eine erste **Lagemeldung** ab (Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung).",
       "actions": [
         {
           "id": "radio_lagemeldung",
           "label": "📞 Funk-Meldung sprechen",
           "radioCall": {
             "expectedPhrases": [
-              "Einsatzstelle",
+              "Florian Neuhaus",
               "Status 4",
-              "FMS 4",
-              "brennt",
-              "Lagemeldung",
-              "Dachgeschoss"
+              "Einfamilienhaus",
+              "Dachgeschoss",
+              "kein Menschenleben in Gefahr",
+              "Brandbekämpfung",
+              "kommen"
             ],
-            "hint": "Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Zweigeschossiges Wohngebäude, Dachgeschoss brennt, kein Menschenleben in Gefahr sichtbar.",
+            "briefing": "Ankunft melden: Status 4 (an der Einsatzstelle) . Lagemeldung nach Schema: WO (Birkenweg 12, Neuhaus, freistehendes Einfamilienhaus) . WAS (Dachgeschoss brennt) . MENSCHENLEBEN (kein Menschenleben in Gefahr erkennbar) . EIGENE MASSNAHMEN (Brandbekämpfung / Erkundung eingeleitet) . NACHFORDERUNG (keine) . mit „kommen\" abschließen",
+            "hint": "Hier Florian Neuhaus vier-vier-eins, Status 4, Einsatzstelle erreicht — Lagemeldung: Birkenweg eins-zwo, freistehendes Einfamilienhaus, Brand im Dachgeschoss, kein Menschenleben in Gefahr erkennbar, Brandbekämpfung eingeleitet, keine Nachforderung — kommen.",
             "onSuccess": "n_end",
             "onFailure": "n_ankunft_fail",
-            "feedbackSuccess": "✅ Ankunft und Lagemeldung korrekt übermittelt!",
-            "feedbackFailure": "❌ Melden Sie Status 4 und geben Sie eine Lagemeldung ab (Objekt, Brandlage, Menschengefährdung)."
+            "feedbackSuccess": "✅ Status 4 gemeldet und Lagemeldung vollständig nach Schema übermittelt!",
+            "feedbackFailure": "❌ Melden Sie Status 4 und geben Sie die Lagemeldung nach Schema ab: Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung."
           }
         }
       ]
@@ -107,7 +112,7 @@
     "n_ankunft_fail": {
       "id": "n_ankunft_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Bei Ankunft melden Sie **Status 4** und geben sofort eine kurze **Lagemeldung** ab:\n1. Objektart und Adresse\n2. Lage des Brandes\n3. Menschengefährdung (ja/nein)\n\nBeispiel: *„Florian Kirchberg 44/1 — Status 4, Einsatzstelle erreicht. Lagemeldung: Zweigeschossiges Wohngebäude, Dachgeschoss brennt, kein Menschenleben in Gefahr sichtbar.\"*",
+      "narrative": "**Feedback:** Bei Ankunft melden Sie **Status 4** und setzen sofort eine kurze **Lagemeldung** nach Schema ab:\n1. **Wo** — Adresse und Objektart\n2. **Was** — Art und Umfang des Schadens\n3. **Menschenleben in Gefahr** — ja / nein\n4. **Eigene Maßnahmen** — was eingeleitet wurde\n5. **Nachforderung** — was zusätzlich benötigt wird\n\nBeispiel: *„Hier Florian Neuhaus vier-vier-eins, Status 4, Einsatzstelle erreicht — Lagemeldung: Birkenweg eins-zwo, freistehendes Einfamilienhaus, Brand im Dachgeschoss, kein Menschenleben in Gefahr erkennbar, Brandbekämpfung eingeleitet, keine Nachforderung — kommen.\"*",
       "actions": [
         {
           "id": "retry",
@@ -119,7 +124,7 @@
     "n_end": {
       "id": "n_end",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** Florian Kirchberg 44/1 — Status 4 und Lagemeldung erhalten. Keine weiteren Kräfte erforderlich. Gut gemacht!\n\n**Übung abgeschlossen! 🎉**",
+      "narrative": "**Leitstelle:** „Hier Leitstelle — Lagemeldung von Florian Neuhaus 44/1 verstanden. Keine weiteren Kräfte erforderlich. Ende.\"\n\nSauber gearbeitet: Anruf beantwortet, Status 1 / 3 / 4 korrekt gemeldet und eine vollständige Lagemeldung abgesetzt.\n\n**Übung abgeschlossen! 🎉**",
       "actions": [
         {
           "id": "restart",

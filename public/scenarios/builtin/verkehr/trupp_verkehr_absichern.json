@@ -1,28 +1,30 @@
 {
   "id": "trupp_verkehr_absichern",
   "title": "Truppführer: Schlauchtrupp Verkehrsabsicherung",
-  "description": "Truppführer-Übung: Anfunken, Einsatzstelle absichern, Rückmeldung geben und Absicherung erweitern. 4 Funk-Schritte.",
+  "description": "Truppführer-Übung im Trupp-Funk: Anruf beantworten, Auftrag wiederholen, Verkehrsabsicherung auf der Kreisstraße melden und auf Zusatzauftrag erweitern. 4 Funk-Schritte.",
   "startingNodeId": "n_anfunken",
   "playerRole": "truppführer",
   "nodes": {
     "n_anfunken": {
       "id": "n_anfunken",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Gruppenführer für Schlauchtrupp.\n\nVerkehrsunfall auf der Kreisstraße, unübersichtliche Kurve. Der Gruppenführer funkt den Schlauchtrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
+      "narrative": "**Gruppenführer:** Schlauchtrupp von Gruppenführer - kommen.\n\nVerkehrsunfall auf der Kreisstraße bei Neuhaus, unübersichtliche Kurve. Der Gruppenführer funkt den Schlauchtrupp am Einsatzstellenfunk an.\n\nBeantworten Sie den Anruf formal korrekt.",
       "actions": [
         {
           "id": "radio_hoert",
           "label": "📞 Anruf beantworten",
           "radioCall": {
             "expectedPhrases": [
+              "hier",
               "Schlauchtrupp",
-              "hört"
+              "kommen"
             ],
-            "hint": "Schlauchtrupp hört.",
+            "hint": "Hier Schlauchtrupp - kommen.",
+            "briefing": "Anrufantwort im Wechselverkehr . Eigener Rufname zuerst (taktischer Name: Schlauchtrupp) . Beginnt mit „hier“, endet mit „kommen“ . „hört“ ist kein BOS-Betriebswort.",
             "onSuccess": "n_start",
             "onFailure": "n_anfunken_fail",
-            "feedbackSuccess": "✅ Anruf korrekt angenommen.",
-            "feedbackFailure": "❌ Antworten Sie knapp mit „Schlauchtrupp hört.“"
+            "feedbackSuccess": "✅ Anrufantwort korrekt: „Hier Schlauchtrupp - kommen.“",
+            "feedbackFailure": "❌ Die Anrufantwort beginnt mit „hier“ und dem eigenen Rufnamen, nicht mit „hört“. Beispiel: „Hier Schlauchtrupp - kommen.“"
           }
         }
       ]
@@ -30,7 +32,7 @@
     "n_anfunken_fail": {
       "id": "n_anfunken_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Schlauchtrupp hört.\"*",
+      "narrative": "**Feedback:** Im Wechselverkehr beginnt jede Anrufantwort mit „hier“ und dem eigenen Rufnamen und endet mit „kommen“. „hört“ ist kein BOS-Betriebswort.\n\nBeispiel: *„Hier Schlauchtrupp - kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -42,24 +44,25 @@
     "n_start": {
       "id": "n_start",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Schlauchtrupp nach vorne. Verkehrsunfall auf der Kreisstraße, unübersichtliche Kurve. Auftrag: Einsatzstelle gegen den fließenden Verkehr absichern.\n\nMelden Sie, dass Sie den Auftrag verstanden haben und mit der Verkehrsabsicherung beginnen.",
+      "narrative": "**Gruppenführer:** Schlauchtrupp nach vorne. Verkehrsunfall auf der Kreisstraße bei Neuhaus, unübersichtliche Kurve. Auftrag: Einsatzstelle gegen den fließenden Verkehr absichern - kommen.\n\nWiederholen Sie den Auftrag, damit der Gruppenführer das richtige Verständnis erkennt.",
       "actions": [
         {
           "id": "radio_auftrag",
           "label": "📞 Funk-Meldung sprechen",
           "radioCall": {
             "expectedPhrases": [
-              "Auftrag verstanden",
+              "Schlauchtrupp",
+              "verstanden",
               "Verkehrsabsicherung",
-              "beginnen",
-              "Absicherung",
-              "Kreisstraße"
+              "Kreisstraße",
+              "kommen"
             ],
-            "hint": "Schlauchtrupp verstanden, beginnen mit Verkehrsabsicherung auf der Kreisstraße.",
+            "hint": "Hier Schlauchtrupp - verstanden, sichern die Einsatzstelle auf der Kreisstraße gegen den fließenden Verkehr ab - kommen.",
+            "briefing": "Auftrag-Wiederholung durch den Trupp . Eigener Rufname zuerst . Auftrag bestätigen (verstanden) und Kerninhalt wiederholen: Verkehrsabsicherung der Einsatzstelle gegen den fließenden Verkehr auf der Kreisstraße . Mit „kommen“ abschließen.",
             "onSuccess": "n_absicherung",
             "onFailure": "n_start_fail",
-            "feedbackSuccess": "✅ Auftrag korrekt bestätigt.",
-            "feedbackFailure": "❌ Bestätigen Sie den Auftrag und nennen Sie Verkehrsabsicherung als Tätigkeit."
+            "feedbackSuccess": "✅ Auftrag korrekt wiederholt und bestätigt.",
+            "feedbackFailure": "❌ Bestätigen Sie den Auftrag und wiederholen Sie die Kernmaßnahme (Verkehrsabsicherung gegen den fließenden Verkehr). Mit „kommen“ abschließen."
           }
         }
       ]
@@ -67,7 +70,7 @@
     "n_start_fail": {
       "id": "n_start_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Der Schlauchtrupp bestätigt den Auftrag kurz und eindeutig.\n\nBeispiel: *„Schlauchtrupp verstanden, beginnen mit Verkehrsabsicherung auf der Kreisstraße.\"*",
+      "narrative": "**Feedback:** Der Trupp wiederholt den Auftrag kurz und eindeutig und schließt mit „kommen“ ab.\n\nBeispiel: *„Hier Schlauchtrupp - verstanden, sichern die Einsatzstelle auf der Kreisstraße gegen den fließenden Verkehr ab - kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -79,24 +82,26 @@
     "n_absicherung": {
       "id": "n_absicherung",
       "role": "truppführer",
-      "narrative": "Sie haben Warnblitzer und Leitkegel gesetzt. Die Absicherung steht in beide Fahrtrichtungen, wegen der Kurve etwa 100 Meter vor der Einsatzstelle.\n\nGeben Sie eine Rückmeldung an den Gruppenführer.",
+      "narrative": "Sie haben Warnblitzer und Verkehrsleitkegel gesetzt. Die Absicherung steht in beide Fahrtrichtungen, wegen der unübersichtlichen Kurve etwa hundert Meter vor der Einsatzstelle.\n\nGeben Sie eine Rückmeldung an den Gruppenführer.",
       "actions": [
         {
           "id": "radio_rueckmeldung",
           "label": "📞 Rückmeldung sprechen",
           "radioCall": {
             "expectedPhrases": [
-              "Warnblitzer",
-              "Leitkegel",
+              "Schlauchtrupp",
+              "Absicherung steht",
               "beidseitig",
-              "100 Meter",
-              "Absicherung steht"
+              "Warnblitzer",
+              "hundert Meter",
+              "kommen"
             ],
-            "hint": "Schlauchtrupp an Gruppenführer: Absicherung steht beidseitig mit Warnblitzern und Leitkegeln, etwa 100 Meter vor der Einsatzstelle.",
+            "hint": "Gruppenführer von Schlauchtrupp - kommen. … Absicherung steht beidseitig mit Warnblitzern und Leitkegeln, etwa hundert Meter vor der Einsatzstelle - kommen.",
+            "briefing": "Rückmeldung des Trupps an den Gruppenführer . Zuerst Anruf (Gruppenführer von Schlauchtrupp), Sprecherlaubnis abwarten . Maßnahme: Absicherung steht . Womit: Warnblitzer und Leitkegel . Wo/Umfang: beidseitig, etwa hundert Meter vor der Einsatzstelle . Mit „kommen“ abschließen.",
             "onSuccess": "n_erweitern",
             "onFailure": "n_absicherung_fail",
-            "feedbackSuccess": "✅ Rückmeldung vollständig.",
-            "feedbackFailure": "❌ Nennen Sie, dass die Absicherung steht, womit abgesichert wurde und in welcher Entfernung."
+            "feedbackSuccess": "✅ Rückmeldung vollständig: Maßnahme, Material und Lage genannt.",
+            "feedbackFailure": "❌ Nennen Sie, dass die Absicherung steht, womit (Warnblitzer/Leitkegel) und in welcher Entfernung (etwa hundert Meter, beidseitig). Mit „kommen“ abschließen."
           }
         }
       ]
@@ -104,7 +109,7 @@
     "n_absicherung_fail": {
       "id": "n_absicherung_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Eine gute Rückmeldung enthält Maßnahme, Material und Lage.\n\nBeispiel: *„Absicherung steht beidseitig mit Warnblitzern und Leitkegeln, etwa 100 Meter vor der Einsatzstelle.\"*",
+      "narrative": "**Feedback:** Eine gute Rückmeldung enthält Maßnahme, Material und Lage und schließt mit „kommen“.\n\nBeispiel: *„Gruppenführer von Schlauchtrupp - Absicherung steht beidseitig mit Warnblitzern und Leitkegeln, etwa hundert Meter vor der Einsatzstelle - kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -116,24 +121,27 @@
     "n_erweitern": {
       "id": "n_erweitern",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Wegen einsetzendem Regen Absicherung erweitern und einen Posten mit Warnweste an die Kurve stellen.\n\nBestätigen Sie den Zusatzauftrag.",
+      "narrative": "**Gruppenführer:** Verstanden. Wegen einsetzendem Regen Absicherung erweitern und einen Posten mit Warnweste an die Kurve stellen - kommen.\n\nWiederholen Sie den Zusatzauftrag. Dies ist die letzte Übertragung des Gesprächs.",
       "actions": [
         {
           "id": "radio_erweitern",
           "label": "📞 Zusatzauftrag bestätigen",
           "radioCall": {
             "expectedPhrases": [
+              "Schlauchtrupp",
+              "verstanden",
               "Absicherung erweitern",
               "Posten",
               "Warnweste",
               "Kurve",
-              "verstanden"
+              "Ende"
             ],
-            "hint": "Verstanden, erweitern die Absicherung und stellen einen Posten mit Warnweste an die Kurve.",
+            "hint": "Hier Schlauchtrupp - verstanden, erweitern die Absicherung und stellen einen Posten mit Warnweste an die Kurve - Ende.",
+            "briefing": "Wiederholung des Zusatzauftrags durch den Trupp . Eigener Rufname zuerst, bestätigen (verstanden) . Kernmaßnahmen wiederholen: Absicherung erweitern, Posten mit Warnweste an die Kurve . Letzte Übertragung des Gesprächs - mit „Ende“ abschließen, nicht mit „kommen“.",
             "onSuccess": "n_end",
             "onFailure": "n_erweitern_fail",
-            "feedbackSuccess": "✅ Zusatzauftrag sauber bestätigt.",
-            "feedbackFailure": "❌ Bestätigen Sie Erweiterung, Posten, Warnweste und Kurve."
+            "feedbackSuccess": "✅ Zusatzauftrag sauber wiederholt und mit „Ende“ abgeschlossen.",
+            "feedbackFailure": "❌ Bestätigen Sie Erweiterung, Posten, Warnweste und Kurve. Da dies die letzte Übertragung ist, mit „Ende“ abschließen."
           }
         }
       ]
@@ -141,7 +149,7 @@
     "n_erweitern_fail": {
       "id": "n_erweitern_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Zusatzaufträge werden mit den Kernmaßnahmen wiederholt.\n\nBeispiel: *„Verstanden, erweitern die Absicherung und stellen einen Posten mit Warnweste an die Kurve.\"*",
+      "narrative": "**Feedback:** Zusatzaufträge werden mit den Kernmaßnahmen wiederholt. Die letzte Übertragung eines Gesprächs endet mit „Ende“.\n\nBeispiel: *„Hier Schlauchtrupp - verstanden, erweitern die Absicherung und stellen einen Posten mit Warnweste an die Kurve - Ende.“*",
       "actions": [
         {
           "id": "retry",
@@ -153,7 +161,7 @@
     "n_end": {
       "id": "n_end",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Absicherung bestätigt. Einsatzstelle ist gegen den Verkehr gesichert.\n\n**Übung abgeschlossen!**",
+      "narrative": "**Gruppenführer:** Absicherung erweitert und bestätigt. Die Einsatzstelle auf der Kreisstraße bei Neuhaus ist gegen den fließenden Verkehr gesichert.\n\n**Übung abgeschlossen!**",
       "actions": [
         {
           "id": "restart",

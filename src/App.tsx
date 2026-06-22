@@ -5,6 +5,7 @@ import { AudioEngine } from './lib/audio-engine';
 import ScenarioList from './components/ScenarioList';
 import PracticeScreen from './components/PracticeScreen';
 import ScenarioEditor from './components/ScenarioEditor';
+import LernbereichView from './components/LernbereichView';
 import { decodeSharePackage, deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
 import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community-api';
 
@@ -13,7 +14,7 @@ interface LicenseData {
   rufnamen: Record<string, string>;
 }
 
-type View = 'list' | 'editor' | 'practice';
+type View = 'list' | 'training' | 'lernen' | 'editor' | 'practice';
 type ScenarioFolderIndex = {
   builtin?: Record<string, string[]>;
   community?: Record<string, string[]>;
@@ -28,6 +29,7 @@ function App() {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [engine, setEngine] = useState<StoryEngine | null>(null);
   const [view, setView] = useState<View>('list');
+  const [practiceMode, setPracticeMode] = useState<'guided' | 'training'>('guided');
   const [editScenario, setEditScenario] = useState<Scenario | undefined>();
   const [audio] = useState(() => new AudioEngine());
   const [radioHissEnabled, setRadioHissEnabled] = useState(() => {
@@ -77,6 +79,16 @@ function App() {
 
       if (hash === '#editor') {
         setEngine(null); setSelectedScenario(null); setView('editor');
+        return;
+      }
+
+      if (hash === '#training') {
+        setEngine(null); setSelectedScenario(null); setView('training');
+        return;
+      }
+
+      if (hash === '#lernen') {
+        setEngine(null); setSelectedScenario(null); setView('lernen');
         return;
       }
 
@@ -208,11 +220,28 @@ function App() {
     window.history.replaceState(null, '', '#editor');
   };
 
-  const startScenario = (scenario: Scenario) => {
+  const openTraining = () => {
+    audio.stop();
+    setEngine(null); setSelectedScenario(null); setEditScenario(undefined);
+    setView('training');
+    window.history.replaceState(null, '', '#training');
+  };
+
+  const openLernen = () => {
+    audio.stop();
+    setEngine(null); setSelectedScenario(null); setEditScenario(undefined);
+    setView('lernen');
+    window.history.replaceState(null, '', '#lernen');
+  };
+
+  const startScenario = (scenario: Scenario, scenarioMode: 'guided' | 'training' = 'guided') => {
     const eng = new StoryEngine(scenario);
-    setEngine(eng); setSelectedScenario(scenario); setView('practice');
+    setEngine(eng); setSelectedScenario(scenario); setPracticeMode(scenarioMode); setView('practice');
     window.history.replaceState(null, '', '#practice');
   };
+
+  const navCls = (v: View) =>
+    `hover:text-white ${view === v ? 'text-white font-semibold' : 'text-[#a3a3a3]'}`;
 
   const saveLocalScenario = (scenario: Scenario) => {
     setLocalScenarios(upsertLocalScenario(scenario));
@@ -239,12 +268,14 @@ function App() {
           <nav className="flex items-center gap-3 text-sm">
             {view !== 'practice' && (
               <>
-                <a href="#scenarios" onClick={openList} className="text-[#a3a3a3] hover:text-white">Szenarien</a>
-                <a href="#editor" onClick={() => openEditor()} className="text-[#a3a3a3] hover:text-white">Editor</a>
+                <a href="#scenarios" onClick={openList} className={navCls('list')}>Üben</a>
+                <a href="#training" onClick={openTraining} className={navCls('training')}>Training</a>
+                <a href="#lernen" onClick={openLernen} className={navCls('lernen')}>Lernen</a>
+                <a href="#editor" onClick={() => openEditor()} className={navCls('editor')}>Editor</a>
               </>
             )}
             {view === 'practice' && (
-              <button onClick={openList} className="text-[#a3a3a3] hover:text-white">Zurück</button>
+              <button onClick={() => (practiceMode === 'training' ? openTraining() : openList())} className="text-[#a3a3a3] hover:text-white">Zurück</button>
             )}
 
             <div className="relative" ref={settingsRef}>
@@ -338,16 +369,37 @@ function App() {
             onPublished={refreshApiScenarios}
             initialScenario={editScenario}
           />
+        ) : view === 'lernen' ? (
+          <LernbereichView rufnamen={licenseData?.rufnamen} />
         ) : view === 'practice' && engine && selectedScenario ? (
-          <PracticeScreen scenario={selectedScenario} engine={engine} audio={audio} onExit={openList} rufnamen={licenseData?.rufnamen} />
+          <PracticeScreen
+            scenario={selectedScenario}
+            engine={engine}
+            audio={audio}
+            onExit={() => (practiceMode === 'training' ? openTraining() : openList())}
+            rufnamen={licenseData?.rufnamen}
+            mode={practiceMode}
+          />
         ) : !loadError && scenarios.length === 0 ? (
           <div className="text-center py-12">
             <div className="animate-pulse text-[#a3a3a3]">Szenarien werden geladen...</div>
           </div>
+        ) : view === 'training' ? (
+          <ScenarioList
+            scenarios={scenarios}
+            apiScenarios={apiScenarios}
+            mode="training"
+            onSelect={(s) => startScenario(s, 'training')}
+            onCreate={() => openEditor()}
+            onDeleteLocal={removeLocalScenario}
+            onEditLocal={openEditor}
+            onApiScenariosChange={setApiScenarios}
+          />
         ) : (
           <ScenarioList
             scenarios={scenarios}
             apiScenarios={apiScenarios}
+            mode="guided"
             onSelect={startScenario}
             onCreate={() => openEditor()}
             onDeleteLocal={removeLocalScenario}

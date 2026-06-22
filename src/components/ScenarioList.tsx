@@ -12,6 +12,7 @@ interface Props {
   onDeleteLocal: (scenarioId: string) => void;
   onEditLocal: (scenario: Scenario) => void;
   onApiScenariosChange: (entries: ApiScenarioEntry[]) => void;
+  mode?: 'guided' | 'training';
 }
 
 interface FolderEntry {
@@ -41,7 +42,8 @@ function getScenarioFolder(scenario: Scenario): string {
 
 const COMMUNITY_FOLDER_ID = '__community__';
 
-export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCreate, onDeleteLocal, onEditLocal, onApiScenariosChange }: Props) {
+export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCreate, onDeleteLocal, onEditLocal, onApiScenariosChange, mode = 'guided' }: Props) {
+  const isTraining = mode === 'training';
   const [thankedIds, setThankedIds] = useState<Set<string>>(() => {
     const set = new Set<string>();
     apiScenarios.forEach(e => { if (hasThankd(e.shareId)) set.add(e.shareId); });
@@ -101,15 +103,21 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold mb-2">Trainings-Szenarien</h2>
-          <p className="text-[#a3a3a3]">Ordner auswählen und Szenario mit Karte oder Pfeil starten.</p>
+          <h2 className="text-2xl font-bold mb-2">{isTraining ? 'Training' : 'Übungs-Szenarien'}</h2>
+          <p className="text-[#a3a3a3]">
+            {isTraining
+              ? 'Nur der Inhalt der Meldung wird gezeigt – du formulierst und sprichst den Funkspruch selbst und siehst danach den korrekten Funkspruch.'
+              : 'Ordner auswählen und Szenario mit Karte oder Pfeil starten. Der Muster-Funkspruch wird angezeigt.'}
+          </p>
         </div>
-        <button
-          onClick={onCreate}
-          className="shrink-0 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg px-4 py-2 font-semibold"
-        >
-          Szenario erstellen
-        </button>
+        {!isTraining && (
+          <button
+            onClick={onCreate}
+            className="shrink-0 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg px-4 py-2 font-semibold"
+          >
+            Szenario erstellen
+          </button>
+        )}
       </div>
 
       <div className="grid md:grid-cols-[220px_1fr] gap-4 items-start">
