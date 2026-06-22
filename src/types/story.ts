@@ -29,6 +29,9 @@ export interface Action {
 export interface RadioCall {
   expectedPhrases: string[];
   hint: string;
+  /** Nur der Inhalt der Meldung (was zu melden ist) – für den Trainingsmodus,
+   *  in dem der fertige Funkspruch (hint) erst nach dem Versuch aufgedeckt wird. */
+  briefing?: string;
   onSuccess: string;
   onFailure: string;
   allowPartial?: boolean;
