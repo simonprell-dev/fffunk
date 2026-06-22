@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { type Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   Radio, MessagesSquare, Type, ListOrdered, Tag, ClipboardList,
   AlertTriangle, ShieldCheck, BookOpen, GraduationCap, type LucideIcon,
@@ -14,6 +15,44 @@ interface Props {
 const ICON_MAP: Record<string, LucideIcon> = {
   Radio, MessagesSquare, Type, ListOrdered, Tag, ClipboardList,
   AlertTriangle, ShieldCheck, BookOpen, GraduationCap,
+};
+
+// Explizite Dark-Theme-Renderer (kein Tailwind-Typography-Plugin im Projekt).
+const mdComponents: Components = {
+  h1: ({ children }) => <h2 className="text-xl font-bold text-white mt-6 mb-3">{children}</h2>,
+  h2: ({ children }) => <h2 className="text-xl font-bold text-white mt-6 mb-3 pb-1 border-b border-[#2a2a2a]">{children}</h2>,
+  h3: ({ children }) => <h3 className="text-lg font-bold text-white mt-5 mb-2">{children}</h3>,
+  h4: ({ children }) => <h4 className="text-base font-semibold text-[#e5e5e5] mt-4 mb-1">{children}</h4>,
+  p: ({ children }) => <p className="mb-3 leading-relaxed text-[#d4d4d4]">{children}</p>,
+  ul: ({ children }) => <ul className="list-disc pl-6 mb-3 space-y-1 text-[#d4d4d4] marker:text-[#dc2626]">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal pl-6 mb-3 space-y-1 text-[#d4d4d4] marker:text-[#dc2626]">{children}</ol>,
+  li: ({ children }) => <li className="leading-relaxed pl-1">{children}</li>,
+  strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+  em: ({ children }) => <em className="italic text-[#e5e5e5]">{children}</em>,
+  a: ({ href, children }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="text-[#dc2626] underline hover:text-[#ef4444]">{children}</a>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="border-l-4 border-[#dc2626] bg-[#222] rounded-r-lg px-4 py-2 my-3 text-[#cfcfcf] [&>p]:mb-0">{children}</blockquote>
+  ),
+  hr: () => <hr className="border-[#333] my-5" />,
+  table: ({ children }) => (
+    <div className="my-4 overflow-x-auto rounded-lg border border-[#333]">
+      <table className="w-full border-collapse text-sm">{children}</table>
+    </div>
+  ),
+  thead: ({ children }) => <thead>{children}</thead>,
+  th: ({ children }) => <th className="border border-[#333] bg-[#222] px-3 py-2 text-left font-semibold text-white">{children}</th>,
+  td: ({ children }) => <td className="border border-[#333] px-3 py-2 text-[#d4d4d4] align-top">{children}</td>,
+  pre: ({ children }) => (
+    <pre className="bg-[#0a0a0a] border border-[#333] rounded-lg p-3 my-3 overflow-x-auto text-sm text-[#e5e5e5] font-mono whitespace-pre">{children}</pre>
+  ),
+  code: ({ className, children }) => {
+    const text = String(children ?? '');
+    const isBlock = /language-/.test(className || '') || text.includes('\n');
+    if (isBlock) return <code className="font-mono text-sm text-[#e5e5e5]">{children}</code>;
+    return <code className="bg-[#0a0a0a] border border-[#333] px-1.5 py-0.5 rounded text-[0.85em] font-mono text-[#e8b4b4]">{children}</code>;
+  },
 };
 
 export default function LernbereichView({ rufnamen }: Props) {
@@ -66,13 +105,15 @@ export default function LernbereichView({ rufnamen }: Props) {
           </div>
         </aside>
 
-        <section className="bg-[#1a1a1a] border border-[#333] rounded-xl p-6 shadow-sm">
+        <section className="bg-[#1a1a1a] border border-[#333] rounded-xl p-6 shadow-sm min-w-0">
           <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#2a2a2a]">
             <span className="text-[#dc2626]"><ActiveIcon size={22} /></span>
             <h3 className="text-xl font-bold">{active.title}</h3>
           </div>
-          <div className="prose prose-invert max-w-none prose-headings:text-white prose-strong:text-white prose-a:text-[#dc2626] prose-table:text-sm">
-            <ReactMarkdown>{body}</ReactMarkdown>
+          <div className="max-w-none text-[#d4d4d4]">
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+              {body}
+            </ReactMarkdown>
           </div>
         </section>
       </div>
