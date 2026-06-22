@@ -16,6 +16,7 @@
       "builtin/funk/alarm_ausruecken.json",
       "builtin/funk/koordination_nachkraefte.json",
       "builtin/funk/lagemeldung_nachalarmierung.json",
+      "builtin/funk/mayday_atemschutznotfall.json",
       "builtin/funk/volluebung_einsatzablauf.json"
     ],
     "sonstige": []
