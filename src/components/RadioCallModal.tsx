@@ -13,59 +13,98 @@ interface Props {
   mode?: 'guided' | 'training';
 }
 
-type Status = 'idle' | 'requesting' | 'countdown' | 'ready' | 'recording' | 'done' | 'reveal';
+type Status = 'init' | 'ready' | 'recording' | 'done' | 'reveal';
 
 export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhrases, hint, feedbackFailure, feedbackSuccess, briefing, mode = 'guided' }: Props) {
   const isTraining = mode === 'training';
-  const [status, setStatus] = useState<Status>('idle');
-  const [countdown, setCountdown] = useState(3);
+  const [status, setStatus] = useState<Status>('init');
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [pressed, setPressed] = useState(false);
+  const [pressed, setPressed] = useState(false);   // Knopf gedrückt (Piepton oder Aufnahme)
+  const [beeping, setBeeping] = useState(false);    // kurzer Freigabe-Piepton läuft
   const [accepted, setAccepted] = useState(false);
 
-  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const recognitionRef = useRef<any>(null);
+  const pressedRef = useRef(false);
+  const beepCtxRef = useRef<AudioContext | null>(null);
+
+  const getSpeechRecognition = () =>
+    (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition ?? null;
+
+  // Mikrofon direkt beim Öffnen vorbereiten → kein "Funk beginnen"-Knopf nötig.
+  const prepareMic = async () => {
+    setError(null);
+    setStatus('init');
+    if (!getSpeechRecognition()) {
+      setError(!window.isSecureContext
+        ? 'Spracherkennung erfordert HTTPS. Bitte über die richtige URL öffnen.'
+        : 'Web Speech API nicht verfügbar. Bitte Google Chrome verwenden.');
+      return;
+    }
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setError('Mikrofon-Zugriff wird in diesem Browser nicht unterstützt. Bitte Chrome oder Edge verwenden.');
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
+      setStatus('ready');
+    } catch (e: any) {
+      if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') {
+        setError('Mikrofon-Zugriff verweigert. Bitte im Browser erlauben und erneut versuchen.');
+      } else if (e.name === 'NotFoundError') {
+        setError('Kein Mikrofon gefunden.');
+      } else {
+        setError('Mikrofon-Zugriff fehlgeschlagen: ' + (e?.message ?? e));
+      }
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
-      setStatus('idle');
-      setCountdown(3);
       setTranscript('');
       setError(null);
       setPressed(false);
+      setBeeping(false);
       setAccepted(false);
+      pressedRef.current = false;
+      prepareMic();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   useEffect(() => {
     return () => {
-      if (countdownRef.current) clearInterval(countdownRef.current);
-      if (recognitionRef.current) {
-        try { recognitionRef.current.stop(); } catch { /* ignore */ }
-      }
+      if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* ignore */ } }
+      if (beepCtxRef.current) { try { beepCtxRef.current.close(); } catch { /* ignore */ } }
     };
   }, []);
 
-  useEffect(() => {
-    if (status !== 'countdown') return;
-    let remaining = 3;
-    setCountdown(remaining);
-    countdownRef.current = setInterval(() => {
-      remaining--;
-      setCountdown(remaining);
-      if (remaining <= 0) {
-        clearInterval(countdownRef.current!);
-        setStatus('ready');
+  // Kurzer Freigabe-Piepton (wie beim Digitalfunk): erst piepen, dann sprechen.
+  const playBeep = () => new Promise<void>((resolve) => {
+    try {
+      if (!beepCtxRef.current) {
+        const Ctx = (window as any).AudioContext ?? (window as any).webkitAudioContext;
+        beepCtxRef.current = new Ctx();
       }
-    }, 1000);
-    return () => {
-      if (countdownRef.current) clearInterval(countdownRef.current);
-    };
-  }, [status]);
-
-  const getSpeechRecognition = () =>
-    (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition ?? null;
+      const ctx = beepCtxRef.current!;
+      if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+      const t0 = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, t0);
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.22, t0 + 0.01);
+      gain.gain.setValueAtTime(0.22, t0 + 0.10);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.14);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.15);
+      osc.onended = () => resolve();
+      setTimeout(resolve, 220); // Sicherheitsnetz
+    } catch { resolve(); }
+  });
 
   const normalizeSpeech = (value: string): string =>
     value
@@ -103,42 +142,6 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     return matches >= Math.min(relevantPhrases.length, 2);
   };
 
-  const handleStart = async () => {
-    setError(null);
-    setStatus('requesting');
-
-    if (!getSpeechRecognition()) {
-      setError(
-        !window.isSecureContext
-          ? 'Spracherkennung erfordert HTTPS. Bitte öffnen Sie die App über die richtige URL.'
-          : 'Web Speech API nicht verfügbar. Bitte Google Chrome verwenden.'
-      );
-      setStatus('idle');
-      return;
-    }
-
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setError('Mikrofon-Zugriff wird in diesem Browser nicht unterstützt. Bitte Chrome oder Edge verwenden.');
-      setStatus('idle');
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(t => t.stop());
-      setStatus('countdown');
-    } catch (e: any) {
-      if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') {
-        setError('Mikrofon-Zugriff verweigert. Bitte in den Browser-Einstellungen erlauben und Seite neu laden.');
-      } else if (e.name === 'NotFoundError') {
-        setError('Kein Mikrofon gefunden.');
-      } else {
-        setError('Mikrofon-Zugriff fehlgeschlagen: ' + e.message);
-      }
-      setStatus('idle');
-    }
-  };
-
   const startRecording = () => {
     if (recognitionRef.current) return; // already recording
     setStatus('recording');
@@ -161,11 +164,11 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       setTranscript(text);
       recognitionRef.current = null;
       setPressed(false);
+      pressedRef.current = false;
 
       const ok = isAcceptedTransmission(text);
 
       if (isTraining) {
-        // Im Training: nicht sofort weiter – erst Muster-Funkspruch aufdecken.
         setAccepted(ok);
         setError(null);
         setStatus('reveal');
@@ -190,6 +193,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       setError(msg);
       setStatus('ready');
       setPressed(false);
+      pressedRef.current = false;
       recognitionRef.current = null;
     };
 
@@ -200,6 +204,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       setError('Start fehlgeschlagen: ' + e.message);
       setStatus('ready');
       setPressed(false);
+      pressedRef.current = false;
     }
   };
 
@@ -212,17 +217,28 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     if (status === 'recording') setStatus('ready');
   };
 
-  // Unified pointer handler — works for mouse and touch, with pointer capture
-  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+  // Drücken → erst kurzer Piepton, danach beginnt die Aufnahme (wie beim Funkgerät).
+  const handlePointerDown = async (e: React.PointerEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (status !== 'ready' && status !== 'recording') return;
+    if (pressedRef.current) return;
     try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    pressedRef.current = true;
     setPressed(true);
-    startRecording();
+    setError(null);
+    setBeeping(true);
+    await playBeep();
+    setBeeping(false);
+    if (pressedRef.current) {
+      startRecording(); // nur sprechen, wenn der Knopf nach dem Piepton noch gehalten wird
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    pressedRef.current = false;
+    setPressed(false);
+    setBeeping(false);
     stopRecording();
   };
 
@@ -234,6 +250,9 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   };
 
   if (!isOpen) return null;
+
+  const pttLabel = beeping ? 'PIEP …' : pressed ? 'SPRECHEN …' : 'HALTEN ZUM SPRECHEN';
+  const pttSub = beeping ? 'gleich sprechen' : pressed ? 'Loslassen, wenn fertig' : 'Gedrückt halten – kurzer Piepton, dann sprechen';
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
@@ -265,29 +284,21 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
         )}
 
         <div className="text-center">
-          {status === 'idle' && (
-            <button
-              onClick={handleStart}
-              className="w-full py-4 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-xl font-semibold flex items-center justify-center gap-2"
-            >
-              <Mic size={24} />
-              Funk beginnen
-            </button>
-          )}
-
-          {status === 'requesting' && (
+          {status === 'init' && !error && (
             <div className="py-8 flex flex-col items-center gap-4">
               <div className="w-12 h-12 border-4 border-[#dc2626] border-t-transparent rounded-full animate-spin" />
-              <div className="text-[#a3a3a3]">Mikrofon-Zugriff wird angefragt…</div>
-              <div className="text-xs text-[#666]">Bitte erlauben Sie den Zugriff im Browser-Dialog.</div>
+              <div className="text-[#a3a3a3]">Mikrofon wird vorbereitet…</div>
+              <div className="text-xs text-[#666]">Bitte den Zugriff im Browser-Dialog erlauben.</div>
             </div>
           )}
 
-          {status === 'countdown' && (
-            <div className="py-8">
-              <div className="text-6xl font-bold text-[#dc2626] mb-2">{countdown}</div>
-              <div className="text-[#a3a3a3]">Bereit machen…</div>
-            </div>
+          {status === 'init' && error && (
+            <button
+              onClick={prepareMic}
+              className="w-full py-3 bg-[#262626] border border-[#444] hover:bg-[#333] text-white rounded-xl font-semibold"
+            >
+              Erneut versuchen
+            </button>
           )}
 
           {(status === 'ready' || status === 'recording') && (
@@ -315,19 +326,15 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
                   cursor: 'pointer',
                 }}
               >
-                <div className={`rounded-full p-4 ${pressed ? 'bg-red-900 animate-pulse' : 'bg-red-700'}`}>
+                <div className={`rounded-full p-4 ${beeping ? 'bg-amber-600 animate-pulse' : pressed ? 'bg-red-900 animate-pulse' : 'bg-red-700'}`}>
                   <Mic size={44} />
                 </div>
-                <span className="text-xl font-bold">
-                  {pressed ? 'SENDET…' : 'HALTEN ZUM SPRECHEN'}
-                </span>
-                <span className="text-sm opacity-70">
-                  {pressed ? 'Loslassen, wenn fertig' : 'Gedrückt halten und sprechen'}
-                </span>
+                <span className="text-xl font-bold">{pttLabel}</span>
+                <span className="text-sm opacity-70">{pttSub}</span>
               </button>
 
               <div className="mt-3 text-xs text-[#666] text-center">
-                Den Knopf gedrückt halten und sprechen · Loslassen zum Senden
+                Gedrückt halten · nach dem Piepton sprechen · Loslassen zum Senden
               </div>
             </div>
           )}
