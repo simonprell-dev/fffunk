@@ -1,14 +1,14 @@
 {
   "id": "trupp_auto_absichern",
-  "title": "Truppführer: Brandabsicherung und Bergung",
-  "description": "Truppführer-Übung: Anfunken, Angriffstrupp übernimmt Brandabsicherung, Fahrzeugsicherung und Bergungsvorbereitung. 4 Funk-Schritte.",
+  "title": "Truppführer: Brandabsicherung und Bergung am PKW",
+  "description": "Truppführer-Übung: Anfunken, Angriffstrupp übernimmt Brandabsicherung, Wegrollsicherung und Bergungsvorbereitung an einem PKW. Internes Befehls- und Meldungsschema. 4 Funk-Schritte.",
   "startingNodeId": "n_anfunken",
   "playerRole": "truppführer",
   "nodes": {
     "n_anfunken": {
       "id": "n_anfunken",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Gruppenführer für Angriffstrupp.\n\nBei einem PKW-Unfall übernimmt der Angriffstrupp Brandabsicherung und Bergungsvorbereitung. Der Gruppenführer funkt den Angriffstrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
+      "narrative": "**Gruppenführer:** Gruppenführer von Angriffstrupp.\n\nVerkehrsunfall in Neuhaus, ein PKW ist betroffen. Der Angriffstrupp soll Brandabsicherung, Wegrollsicherung und Bergungsvorbereitung übernehmen. Der Gruppenführer funkt den Angriffstrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
       "actions": [
         {
           "id": "radio_hoert",
@@ -19,10 +19,11 @@
               "hört"
             ],
             "hint": "Angriffstrupp hört.",
+            "briefing": "Anrufantwort im internen Trupp-Funk . eigener Trupp-Name . Bereitschaft signalisieren (\"hört\")",
             "onSuccess": "n_start",
             "onFailure": "n_anfunken_fail",
-            "feedbackSuccess": "✅ Anruf korrekt angenommen.",
-            "feedbackFailure": "❌ Antworten Sie knapp mit „Angriffstrupp hört.“"
+            "feedbackSuccess": "✅ Anruf korrekt angenommen. Der Trupp meldet sich knapp mit Rufname und „hört“.",
+            "feedbackFailure": "❌ Antworten Sie im internen Trupp-Funk knapp mit „Angriffstrupp hört.“"
           }
         }
       ]
@@ -30,7 +31,7 @@
     "n_anfunken_fail": {
       "id": "n_anfunken_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Angriffstrupp hört.\"*",
+      "narrative": "**Feedback:** Im internen Trupp-Funk antwortet der angesprochene Trupp kurz mit seinem taktischen Namen und „hört“.\n\nBeispiel: *„Angriffstrupp hört.“*",
       "actions": [
         {
           "id": "retry",
@@ -42,25 +43,25 @@
     "n_start": {
       "id": "n_start",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** PKW nach Auffahrunfall, Fahrer ausgestiegen, Fahrzeug steht auf abschüssiger Straße. Auftrag für den Angriffstrupp: Brandabsicherung aufbauen, Fahrzeug gegen Wegrollen sichern und Bergung vorbereiten.\n\nBestätigen Sie den Auftrag.",
+      "narrative": "**Gruppenführer:** PKW nach Auffahrunfall, Fahrer ist bereits ausgestiegen und unverletzt. Das Fahrzeug steht auf abschüssiger Straße. Auftrag für den Angriffstrupp: Brandschutz mit Schnellangriff und Pulverlöscher sicherstellen, Fahrzeug gegen Wegrollen sichern und Bergung vorbereiten.\n\nWiederholen Sie den Auftrag.",
       "actions": [
         {
           "id": "radio_auftrag",
-          "label": "📞 Auftrag bestätigen",
+          "label": "📞 Auftrag wiederholen",
           "radioCall": {
             "expectedPhrases": [
-              "Brandabsicherung",
-              "Wegrollen",
+              "Angriffstrupp",
               "Brandschutz",
+              "Wegrollen",
               "Bergung",
-              "abschüssig",
               "verstanden"
             ],
-            "hint": "Angriffstrupp verstanden, bauen Brandabsicherung auf, sichern den PKW gegen Wegrollen und bereiten die Bergung vor.",
+            "hint": "Angriffstrupp verstanden, stellen Brandschutz sicher, sichern den PKW gegen Wegrollen und bereiten die Bergung vor.",
+            "briefing": "Auftrag im Trupp-Funk zurückwiederholen . eigener Trupp-Name . Auftrag verstanden . drei Aufträge nennen: Brandschutz sicherstellen . Wegrollsicherung am PKW . Bergung vorbereiten",
             "onSuccess": "n_sichern",
             "onFailure": "n_start_fail",
-            "feedbackSuccess": "✅ Auftrag bestätigt.",
-            "feedbackFailure": "❌ Bestätigen Sie Brandabsicherung, Wegrollsicherung und Bergungsvorbereitung."
+            "feedbackSuccess": "✅ Auftrag korrekt zurückwiederholt. Der Trupp bestätigt Brandschutz, Wegrollsicherung und Bergungsvorbereitung.",
+            "feedbackFailure": "❌ Wiederholen Sie den Auftrag mit allen drei Teilen: Brandschutz, Wegrollsicherung und Bergungsvorbereitung."
           }
         }
       ]
@@ -68,7 +69,7 @@
     "n_start_fail": {
       "id": "n_start_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Beim Angriffstrupp sind Brandabsicherung, Eigenschutz, Wegrollsicherung und Bergungsvorbereitung wichtig.\n\nBeispiel: *„Bauen Brandabsicherung auf, sichern den PKW gegen Wegrollen und bereiten die Bergung vor.\"*",
+      "narrative": "**Feedback:** Der Trupp wiederholt den Auftrag mit den Kernpunkten Brandschutz, Wegrollsicherung und Bergungsvorbereitung.\n\nBeispiel: *„Angriffstrupp verstanden, stellen Brandschutz sicher, sichern den PKW gegen Wegrollen und bereiten die Bergung vor.“*",
       "actions": [
         {
           "id": "retry",
@@ -80,7 +81,7 @@
     "n_sichern": {
       "id": "n_sichern",
       "role": "truppführer",
-      "narrative": "Unterlegkeile sind gesetzt, Handbremse ist kontrolliert, Zündung ist aus. Pulverlöscher und Schnellangriff stehen für die Brandabsicherung bereit.\n\nMelden Sie den Stand der Sicherungsmaßnahmen.",
+      "narrative": "Unterlegkeile sind gesetzt, die Handbremse ist kontrolliert und die Zündung ist aus. Schnellangriff und Pulverlöscher stehen für die Brandabsicherung bereit.\n\nMelden Sie den Stand der Sicherungsmaßnahmen an den Gruppenführer.",
       "actions": [
         {
           "id": "radio_sicherung",
@@ -90,14 +91,15 @@
               "Unterlegkeile",
               "Handbremse",
               "Zündung aus",
-              "Pulverlöscher",
-              "Brandschutz"
+              "Brandschutz",
+              "bereit"
             ],
-            "hint": "Angriffstrupp an Gruppenführer: Unterlegkeile gesetzt, Handbremse kontrolliert, Zündung aus, Pulverlöscher und Schnellangriff zur Brandabsicherung bereit.",
+            "hint": "Angriffstrupp an Gruppenführer: Unterlegkeile gesetzt, Handbremse kontrolliert, Zündung aus, Schnellangriff und Pulverlöscher zur Brandabsicherung bereit.",
+            "briefing": "Zwischenmeldung an den Gruppenführer . Wegrollsicherung erledigt: Unterlegkeile gesetzt, Handbremse kontrolliert . Zündung aus . Brandschutz bereitgestellt (Schnellangriff und Pulverlöscher)",
             "onSuccess": "n_batterie",
             "onFailure": "n_sichern_fail",
             "feedbackSuccess": "✅ Sicherungsmaßnahmen vollständig gemeldet.",
-            "feedbackFailure": "❌ Nennen Sie Wegrollsicherung, Zündung aus und bereitgestellte Brandabsicherung."
+            "feedbackFailure": "❌ Nennen Sie die Wegrollsicherung (Unterlegkeile, Handbremse), die ausgeschaltete Zündung und die bereitgestellte Brandabsicherung."
           }
         }
       ]
@@ -105,7 +107,7 @@
     "n_sichern_fail": {
       "id": "n_sichern_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Eine Rückmeldung nennt konkrete Maßnahmen.\n\nBeispiel: *„Unterlegkeile gesetzt, Handbremse kontrolliert, Zündung aus, Brandabsicherung bereit.\"*",
+      "narrative": "**Feedback:** Eine Rückmeldung nennt die konkret durchgeführten Maßnahmen.\n\nBeispiel: *„Unterlegkeile gesetzt, Handbremse kontrolliert, Zündung aus, Brandschutz bereit.“*",
       "actions": [
         {
           "id": "retry",
@@ -126,15 +128,16 @@
             "expectedPhrases": [
               "Batterie",
               "abgeklemmt",
-              "gefahrfrei",
               "Fahrzeug gesichert",
-              "Brandschutz"
+              "Brandschutz",
+              "Bergung"
             ],
-            "hint": "Angriffstrupp an Gruppenführer: Batterie gefahrlos abgeklemmt, Fahrzeug gesichert, Brandabsicherung steht, Bergung vorbereitet.",
+            "hint": "Angriffstrupp an Gruppenführer: Batterie gefahrlos abgeklemmt, Fahrzeug gesichert, Brandschutz steht, Bergung mit Spreizer und Glasmanagement vorbereitet.",
+            "briefing": "Abschlussmeldung an den Gruppenführer . Batterie gefahrlos abgeklemmt . Fahrzeug gesichert . Brandschutz steht weiterhin . Bergung vorbereitet (Spreizer, Glasmanagement)",
             "onSuccess": "n_end",
             "onFailure": "n_batterie_fail",
             "feedbackSuccess": "✅ Durchführung klar gemeldet.",
-            "feedbackFailure": "❌ Melden Sie Batterie abgeklemmt, Fahrzeug gesichert, Brandabsicherung und Bergung vorbereitet."
+            "feedbackFailure": "❌ Melden Sie: Batterie abgeklemmt, Fahrzeug gesichert, Brandschutz steht, Bergung vorbereitet."
           }
         }
       ]
@@ -142,7 +145,7 @@
     "n_batterie_fail": {
       "id": "n_batterie_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Melden Sie nur durchgeführte Maßnahmen und den verbleibenden Schutz.\n\nBeispiel: *„Batterie gefahrlos abgeklemmt, Fahrzeug gesichert, Brandabsicherung steht, Bergung vorbereitet.\"*",
+      "narrative": "**Feedback:** Melden Sie die durchgeführten Maßnahmen und den weiter bestehenden Schutz.\n\nBeispiel: *„Batterie gefahrlos abgeklemmt, Fahrzeug gesichert, Brandschutz steht, Bergung vorbereitet.“*",
       "actions": [
         {
           "id": "retry",
@@ -154,7 +157,7 @@
     "n_end": {
       "id": "n_end",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Brandabsicherung und Bergungsvorbereitung verstanden. Angriffstrupp bleibt in Bereitstellung.\n\n**Übung abgeschlossen!**",
+      "narrative": "**Gruppenführer:** Brandabsicherung und Bergungsvorbereitung verstanden. Angriffstrupp bleibt am Fahrzeug in Bereitstellung.\n\n**Übung abgeschlossen!**",
       "actions": [
         {
           "id": "restart",

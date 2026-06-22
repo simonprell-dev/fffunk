@@ -1,28 +1,30 @@
 {
   "id": "trupp_verkehr_leiten",
-  "title": "Truppführer: Schlauchtrupp Verkehr Leiten",
-  "description": "Truppführer-Übung: Anfunken, einseitige Verkehrsführung, Sperrpunkt und Übergabe an Polizei. 4 Funk-Schritte.",
+  "title": "Truppführer: Schlauchtrupp Verkehr leiten",
+  "description": "Truppführer-Übung im Einsatzstellenfunk: Anfunken beantworten, einseitige Verkehrsführung am Sperrpunkt, Lage und Bedarf melden, Übergabe an die Polizei. 4 Funk-Schritte.",
   "startingNodeId": "n_anfunken",
   "playerRole": "truppführer",
   "nodes": {
     "n_anfunken": {
       "id": "n_anfunken",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Gruppenführer für Schlauchtrupp.\n\nNach einer Ölspur an der Kreuzung soll der Verkehr geregelt werden. Der Gruppenführer funkt den Schlauchtrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
+      "narrative": "**Gruppenführer:** „Schlauchtrupp von Gruppenführer – kommen.“\n\nNach einer Ölspur an der Kreuzung in Neuhaus soll der Verkehr geregelt werden. Der Gruppenführer ruft den Schlauchtrupp im Einsatzstellenfunk an.\n\nBeantworten Sie den Anruf formal korrekt.",
       "actions": [
         {
           "id": "radio_hoert",
           "label": "📞 Anruf beantworten",
           "radioCall": {
             "expectedPhrases": [
+              "hier",
               "Schlauchtrupp",
-              "hört"
+              "kommen"
             ],
-            "hint": "Schlauchtrupp hört.",
+            "hint": "Hier Schlauchtrupp – kommen.",
+            "briefing": "Anrufantwort an den Gruppenführer . eigener Trupp meldet sich . Sprecherlaubnis zurückgeben",
             "onSuccess": "n_start",
             "onFailure": "n_anfunken_fail",
-            "feedbackSuccess": "✅ Anruf korrekt angenommen.",
-            "feedbackFailure": "❌ Antworten Sie knapp mit „Schlauchtrupp hört.“"
+            "feedbackSuccess": "✅ Anrufantwort korrekt: „Hier“ zuerst, eigener Rufname, „kommen“.",
+            "feedbackFailure": "❌ Die Anrufantwort beginnt mit „Hier“ und dem eigenen Rufnamen und endet mit „kommen“ – also „Hier Schlauchtrupp – kommen.“ („Hört“ ist kein Betriebswort.)"
           }
         }
       ]
@@ -30,7 +32,7 @@
     "n_anfunken_fail": {
       "id": "n_anfunken_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Beim Anfunken antwortet der angesprochene Trupp kurz mit Rufname und „hört“.\n\nBeispiel: *„Schlauchtrupp hört.\"*",
+      "narrative": "**Feedback:** Die Anrufantwort beginnt mit dem Betriebswort „Hier“ und dem eigenen Rufnamen und endet mit „kommen“. „Hört“ ist kein BOS-Betriebswort.\n\nBeispiel: *„Hier Schlauchtrupp – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -42,24 +44,26 @@
     "n_start": {
       "id": "n_start",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Nach Ölspur an einer Kreuzung muss der Verkehr einseitig an der Einsatzstelle vorbeigeführt werden. Der Schlauchtrupp übernimmt den ersten Sperrpunkt.\n\nBestätigen Sie den Auftrag.",
+      "narrative": "**Gruppenführer:** „Schlauchtrupp – übernehmen Sie den ersten Sperrpunkt an der Kreuzung und leiten den Verkehr einseitig an der Einsatzstelle vorbei – kommen.“\n\nWiederholen Sie den Auftrag zur Bestätigung.",
       "actions": [
         {
           "id": "radio_auftrag",
           "label": "📞 Funk-Meldung sprechen",
           "radioCall": {
             "expectedPhrases": [
+              "Schlauchtrupp",
               "Sperrpunkt",
+              "Kreuzung",
               "Verkehr",
               "einseitig",
-              "verstanden",
-              "Kreuzung"
+              "kommen"
             ],
-            "hint": "Schlauchtrupp verstanden, übernehmen Sperrpunkt an der Kreuzung und leiten den Verkehr einseitig vorbei.",
+            "hint": "Hier Schlauchtrupp – verstanden – übernehmen ersten Sperrpunkt an der Kreuzung und leiten den Verkehr einseitig vorbei – kommen.",
+            "briefing": "Auftrag bestätigen und wiederholen . erster Sperrpunkt an der Kreuzung . Verkehr einseitig an der Einsatzstelle vorbei . eigener Trupp",
             "onSuccess": "n_status",
             "onFailure": "n_start_fail",
-            "feedbackSuccess": "✅ Auftrag bestätigt.",
-            "feedbackFailure": "❌ Nennen Sie Sperrpunkt, Kreuzung und einseitige Verkehrsleitung."
+            "feedbackSuccess": "✅ Auftrag bestätigt und korrekt wiederholt: Sperrpunkt, Ort und einseitige Verkehrsführung.",
+            "feedbackFailure": "❌ Wiederholen Sie den Auftrag mit Aufgabe (Sperrpunkt) und Ort (Kreuzung) und der einseitigen Verkehrsleitung – mit „kommen“ abschließen."
           }
         }
       ]
@@ -67,7 +71,7 @@
     "n_start_fail": {
       "id": "n_start_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Wiederholen Sie den Auftrag mit Aufgabe und Ort.\n\nBeispiel: *„Übernehmen Sperrpunkt an der Kreuzung und leiten den Verkehr einseitig vorbei.\"*",
+      "narrative": "**Feedback:** Wiederholen Sie den Auftrag mit Aufgabe und Ort und schließen Sie mit „kommen“ ab.\n\nBeispiel: *„Hier Schlauchtrupp – verstanden – übernehmen ersten Sperrpunkt an der Kreuzung und leiten den Verkehr einseitig vorbei – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -79,24 +83,26 @@
     "n_status": {
       "id": "n_status",
       "role": "truppführer",
-      "narrative": "Die Verkehrsleitung läuft. Ein Fahrzeugführer ignoriert die Zeichen, außerdem staut sich der Verkehr aus Richtung Schule.\n\nMelden Sie die Lage und fordern Sie Unterstützung für einen zweiten Sperrpunkt an.",
+      "narrative": "Die Verkehrsleitung läuft. Ein Fahrzeugführer missachtet die Zeichen, außerdem staut sich der Verkehr aus Richtung Schule zurück.\n\nFunken Sie den Gruppenführer an, melden Sie die Lage und fordern Sie Unterstützung für einen zweiten Sperrpunkt an.",
       "actions": [
         {
           "id": "radio_unterstuetzung",
           "label": "📞 Lage melden",
           "radioCall": {
             "expectedPhrases": [
+              "Schlauchtrupp",
               "Verkehr staut",
               "Richtung Schule",
               "zweiter Sperrpunkt",
               "Unterstützung",
-              "Fahrzeugführer"
+              "kommen"
             ],
-            "hint": "Schlauchtrupp an Gruppenführer: Verkehr staut sich aus Richtung Schule, ein Fahrzeugführer missachtet Zeichen. Benötigen Unterstützung für zweiten Sperrpunkt.",
+            "hint": "Gruppenführer von Schlauchtrupp – kommen. … Verkehr staut sich aus Richtung Schule zurück, ein Fahrzeugführer missachtet die Zeichen. Benötigen Unterstützung für zweiten Sperrpunkt – kommen.",
+            "briefing": "Anruf an den Gruppenführer . Lage: Verkehr staut aus Richtung Schule . ein Fahrzeugführer missachtet die Zeichen . Bedarf: Unterstützung für zweiten Sperrpunkt",
             "onSuccess": "n_polizei",
             "onFailure": "n_status_fail",
-            "feedbackSuccess": "✅ Lage und Bedarf klar gemeldet.",
-            "feedbackFailure": "❌ Melden Sie Stau/Lage und fordern Sie Unterstützung für einen zweiten Sperrpunkt an."
+            "feedbackSuccess": "✅ Lage und konkreter Bedarf klar gemeldet – Stau, missachtende Fahrzeugführer und Nachforderung zweiter Sperrpunkt.",
+            "feedbackFailure": "❌ Melden Sie die Lage (Stau aus Richtung Schule) und fordern Sie konkret Unterstützung für einen zweiten Sperrpunkt an – mit „kommen“ abschließen."
           }
         }
       ]
@@ -104,7 +110,7 @@
     "n_status_fail": {
       "id": "n_status_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Rückmeldungen müssen Lage und konkreten Bedarf enthalten.\n\nBeispiel: *„Verkehr staut sich aus Richtung Schule. Benötigen Unterstützung für zweiten Sperrpunkt.\"*",
+      "narrative": "**Feedback:** Rückmeldungen müssen Lage und konkreten Bedarf enthalten und mit „kommen“ enden.\n\nBeispiel: *„Verkehr staut sich aus Richtung Schule zurück. Benötigen Unterstützung für zweiten Sperrpunkt – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -116,24 +122,26 @@
     "n_polizei": {
       "id": "n_polizei",
       "role": "truppführer",
-      "narrative": "Die Polizei trifft ein und übernimmt die Verkehrsregelung. Der Schlauchtrupp bleibt bis zur vollständigen Übergabe am Sperrpunkt.\n\nMelden Sie die Übergabe.",
+      "narrative": "Die Polizei trifft ein und übernimmt die Verkehrsregelung. Der Schlauchtrupp bleibt bis zur vollständigen Übergabe am Sperrpunkt.\n\nMelden Sie die Übergabe an den Gruppenführer. Dies ist die letzte Übertragung des Gesprächs.",
       "actions": [
         {
           "id": "radio_uebergabe",
           "label": "📞 Übergabe melden",
           "radioCall": {
             "expectedPhrases": [
+              "Schlauchtrupp",
               "Polizei",
               "übernimmt",
               "Verkehrsregelung",
               "Sperrpunkt",
-              "Übergabe"
+              "Ende"
             ],
-            "hint": "Schlauchtrupp an Gruppenführer: Polizei ist am Sperrpunkt und übernimmt die Verkehrsregelung, Übergabe läuft.",
+            "hint": "Gruppenführer von Schlauchtrupp – kommen. … Polizei ist am Sperrpunkt und übernimmt die Verkehrsregelung, Übergabe läuft – Ende.",
+            "briefing": "Anruf an den Gruppenführer . Empfänger: Polizei am Sperrpunkt . Aufgabe: übernimmt die Verkehrsregelung . Status: Übergabe läuft . letzte Übertragung des Gesprächs",
             "onSuccess": "n_end",
             "onFailure": "n_polizei_fail",
-            "feedbackSuccess": "✅ Übergabe korrekt gemeldet.",
-            "feedbackFailure": "❌ Melden Sie, dass die Polizei am Sperrpunkt ist und die Verkehrsregelung übernimmt."
+            "feedbackSuccess": "✅ Übergabe korrekt gemeldet: Empfänger (Polizei), Aufgabe (Verkehrsregelung) und Status – Gespräch mit „Ende“ geschlossen.",
+            "feedbackFailure": "❌ Melden Sie, dass die Polizei am Sperrpunkt ist und die Verkehrsregelung übernimmt – als letzte Übertragung mit „Ende“ abschließen."
           }
         }
       ]
@@ -141,7 +149,7 @@
     "n_polizei_fail": {
       "id": "n_polizei_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Bei Übergabe nennen Sie Empfänger, Aufgabe und Status.\n\nBeispiel: *„Polizei ist am Sperrpunkt und übernimmt die Verkehrsregelung, Übergabe läuft.\"*",
+      "narrative": "**Feedback:** Bei der Übergabe nennen Sie Empfänger, Aufgabe und Status; die letzte Übertragung eines Gesprächs endet mit „Ende“.\n\nBeispiel: *„Polizei ist am Sperrpunkt und übernimmt die Verkehrsregelung, Übergabe läuft – Ende.“*",
       "actions": [
         {
           "id": "retry",
@@ -153,7 +161,7 @@
     "n_end": {
       "id": "n_end",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Übergabe verstanden. Trupp bleibt bis zur Freigabe einsatzbereit.\n\n**Übung abgeschlossen!**",
+      "narrative": "**Gruppenführer:** „Hier Gruppenführer – verstanden – Trupp bleibt bis zur Freigabe einsatzbereit – Ende.“\n\n**Übung abgeschlossen!**",
       "actions": [
         {
           "id": "restart",
