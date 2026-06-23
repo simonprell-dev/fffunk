@@ -21,3 +21,8 @@ android/app/src/main/res/xml/config.xml
 *.apk
 *.aab
 *.aar
+
+# Android signing – Secrets niemals einchecken
+android/keystore.properties
+*.jks
+*.keystore
