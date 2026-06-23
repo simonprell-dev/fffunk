@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Mic, ShieldAlert, ClipboardList, CheckCircle2, XCircle, RotateCcw, ArrowRight } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
+import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 
 interface Props {
   isOpen: boolean;
@@ -26,6 +28,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
 
   const recognitionRef = useRef<any>(null);
   const pressedRef = useRef(false);
+  const nativeRef = useRef(false);
   const beepCtxRef = useRef<AudioContext | null>(null);
 
   const getSpeechRecognition = () =>
@@ -35,6 +38,28 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   const prepareMic = async () => {
     setError(null);
     setStatus('init');
+
+    // ---- Native (Android/iOS): Geräte-Spracherkennung vorbereiten ----
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const avail = await SpeechRecognition.available();
+        if (!avail?.available) {
+          setError('Spracherkennung ist auf diesem Gerät nicht verfügbar.');
+          return;
+        }
+        const perm = await SpeechRecognition.requestPermissions();
+        if (perm?.speechRecognition !== 'granted') {
+          setError('Berechtigung für Spracherkennung/Mikrofon verweigert. Bitte in den App-Einstellungen erlauben.');
+          return;
+        }
+        setStatus('ready');
+      } catch (e: any) {
+        setError('Spracherkennung konnte nicht vorbereitet werden: ' + (e?.message ?? e));
+      }
+      return;
+    }
+
+    // ---- Web (Web Speech API) ----
     if (!getSpeechRecognition()) {
       setError(!window.isSecureContext
         ? 'Spracherkennung erfordert HTTPS. Bitte über die richtige URL öffnen.'
@@ -75,6 +100,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
 
   useEffect(() => {
     return () => {
+      if (Capacitor.isNativePlatform()) { try { SpeechRecognition.stop(); } catch { /* ignore */ } }
       if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* ignore */ } }
       if (beepCtxRef.current) { try { beepCtxRef.current.close(); } catch { /* ignore */ } }
     };
@@ -142,46 +168,77 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     return matches >= Math.min(relevantPhrases.length, 2);
   };
 
-  const startRecording = () => {
-    if (recognitionRef.current) return; // already recording
+  // Auswertung des erkannten Texts – gemeinsam für Web und nativ.
+  const processTranscript = (text: string) => {
+    setTranscript(text);
+    setPressed(false);
+    pressedRef.current = false;
+    recognitionRef.current = null;
+    nativeRef.current = false;
+
+    const ok = isAcceptedTransmission(text);
+
+    if (isTraining) {
+      setAccepted(ok);
+      setError(null);
+      setStatus('reveal');
+      return;
+    }
+
+    if (ok) {
+      setStatus('done');
+      onResult(true, text);
+    } else {
+      setError(feedbackFailure || `Nicht ganz richtig. Erwartet wird sinngemäß: ${hint}`);
+      setStatus('ready');
+    }
+  };
+
+  const startRecording = async () => {
     setStatus('recording');
     setError(null);
 
-    const SpeechRecognition = getSpeechRecognition();
-    if (!SpeechRecognition) {
+    // ---- Native: Geräte-Spracherkennung (Web Speech API gibt es in der WebView nicht) ----
+    if (Capacitor.isNativePlatform()) {
+      if (nativeRef.current) return;
+      nativeRef.current = true;
+      try {
+        const res: any = await SpeechRecognition.start({ language: 'de-DE', maxResults: 5, partialResults: false, popup: false });
+        const text = Array.isArray(res?.matches) ? (res.matches[0] ?? '') : '';
+        if (!text) {
+          nativeRef.current = false;
+          setError('Keine Sprache erkannt. Bitte erneut versuchen.');
+          setStatus('ready'); setPressed(false); pressedRef.current = false;
+          return;
+        }
+        processTranscript(text);
+      } catch (e: any) {
+        nativeRef.current = false;
+        const msg = String(e?.message ?? e);
+        setError(/denied|permission|not-allowed/i.test(msg)
+          ? 'Mikrofon-Zugriff verweigert.'
+          : 'Keine Sprache erkannt. Bitte erneut versuchen.');
+        setStatus('ready'); setPressed(false); pressedRef.current = false;
+      }
+      return;
+    }
+
+    // ---- Web (Web Speech API) ----
+    if (recognitionRef.current) return;
+    const SR = getSpeechRecognition();
+    if (!SR) {
       setError('Spracherkennung nicht verfügbar.');
       setStatus('ready');
       return;
     }
 
-    const recognizer = new SpeechRecognition();
+    const recognizer = new SR();
     recognizer.lang = 'de-DE';
     recognizer.continuous = false;
     recognizer.interimResults = false;
 
     recognizer.onresult = (event: any) => {
-      const text = event.results[0][0].transcript;
-      setTranscript(text);
-      recognitionRef.current = null;
-      setPressed(false);
-      pressedRef.current = false;
-
-      const ok = isAcceptedTransmission(text);
-
-      if (isTraining) {
-        setAccepted(ok);
-        setError(null);
-        setStatus('reveal');
-        return;
-      }
-
-      if (ok) {
-        setStatus('done');
-        onResult(true, text);
-      } else {
-        setError(feedbackFailure || `Nicht ganz richtig. Erwartet wird sinngemäß: ${hint}`);
-        setStatus('ready');
-      }
+      processTranscript(event.results[0][0].transcript);
     };
 
     recognizer.onerror = (e: any) => {
@@ -209,6 +266,11 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   };
 
   const stopRecording = () => {
+    if (Capacitor.isNativePlatform()) {
+      if (nativeRef.current) { SpeechRecognition.stop().catch(() => {}); }
+      setPressed(false);
+      return;
+    }
     if (recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch { /* ignore */ }
       recognitionRef.current = null;

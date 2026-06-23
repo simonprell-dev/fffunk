@@ -1,4 +1,5 @@
 import { Transcription } from '../types/story';
+import { apiUrl } from './api-base';
 
 export type RadioMode = 'tmo' | 'dmo' | 'dispatch' | 'clear';
 
@@ -168,7 +169,7 @@ export class AudioEngine {
 
     try {
       this.ttsAbortController = new AbortController();
-      const response = await fetch('/api/tts', {
+      const response = await fetch(apiUrl('/api/tts'), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ text: clean }),

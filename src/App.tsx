@@ -8,6 +8,7 @@ import ScenarioEditor from './components/ScenarioEditor';
 import LernbereichView from './components/LernbereichView';
 import { decodeSharePackage, deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
 import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community-api';
+import { apiUrl } from './lib/api-base';
 
 interface LicenseData {
   organizationName: string;
@@ -109,12 +110,12 @@ function App() {
 
   useEffect(() => {
     if (!licenseCode) { setLicenseData(null); setLicenseScenarios([]); return; }
-    fetch(`/api/license/${encodeURIComponent(licenseCode)}`)
+    fetch(apiUrl(`/api/license/${encodeURIComponent(licenseCode)}`))
       .then(r => r.ok ? r.json() : r.json().then(d => Promise.reject(d.error || 'Unbekannter Code')))
       .then(async (data: LicenseData) => {
         setLicenseData(data);
         setLicenseError(null);
-        const scenariosRes = await fetch(`/api/license/${encodeURIComponent(licenseCode)}/scenarios`);
+        const scenariosRes = await fetch(apiUrl(`/api/license/${encodeURIComponent(licenseCode)}/scenarios`));
         const assignedScenarios: Scenario[] = scenariosRes.ok ? await scenariosRes.json() : [];
         setLicenseScenarios(assignedScenarios.map(scenario => ({
           ...scenario,
@@ -346,6 +347,32 @@ function App() {
                         </button>
                       </div>
                       <p className="text-xs text-[#555] mt-1">Code von Ihrer Feuerwehr eingeben</p>
+                    </div>
+
+                    <div className="border-t border-[#2a2a2a] pt-4">
+                      <div className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider mb-2">Eigene Rufnamen</div>
+                      <p className="text-xs text-[#a3a3a3] mb-2">
+                        Eure echten Funkrufnamen in allen Szenarien – für <span className="text-[#e5e5e5] font-medium">10 €</span> richte ich euren Wehr-Code persönlich ein.
+                      </p>
+                      <a
+                        href="mailto:simon.prell@googlemail.com?subject=FFFunk%3A%20Eigene%20Rufnamen%20einrichten&body=Hallo%20Simon%2C%0A%0Aich%20m%C3%B6chte%20f%C3%BCr%20meine%20Feuerwehr%20die%20eigenen%20Funkrufnamen%20in%20FFFunk%20integrieren%20lassen%20(10%20%E2%82%AC).%0A%0AFeuerwehr%2FOrt%3A%20%0AGew%C3%BCnschte%20Rufnamen%3A%20%0A%0AViele%20Gr%C3%BC%C3%9Fe"
+                        className="block text-center text-xs bg-[#262626] border border-[#444] rounded px-2 py-2 hover:bg-[#333] text-[#e5e5e5]"
+                      >
+                        ✉️ Rufnamen anfragen (10 €)
+                      </a>
+                    </div>
+
+                    <div className="border-t border-[#2a2a2a] pt-4">
+                      <div className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider mb-2">Entwickler unterstützen</div>
+                      <p className="text-xs text-[#a3a3a3] mb-2">FFFunk ist kostenlos und werbefrei. Wenn es dir hilft, freue ich mich über ein Danke. 🚒</p>
+                      <a
+                        href="https://www.paypal.com/donate/?hosted_button_id=S9NDLBWM4BZ6G"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 text-sm bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded px-3 py-2 font-semibold"
+                      >
+                        <span aria-hidden>❤️</span> Danke sagen
+                      </a>
                     </div>
                   </div>
                 </div>

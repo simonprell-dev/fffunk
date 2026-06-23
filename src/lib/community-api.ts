@@ -1,21 +1,22 @@
 import { ApiScenarioEntry, Scenario } from '../types/story';
+import { apiUrl } from './api-base';
 
 const BASE = '/api/community/scenarios';
 
 export async function fetchCommunityScenarios(): Promise<ApiScenarioEntry[]> {
-  const res = await fetch(BASE);
+  const res = await fetch(apiUrl(BASE));
   if (!res.ok) return [];
   return res.json();
 }
 
 export async function fetchCommunityScenario(shareId: string): Promise<ApiScenarioEntry | null> {
-  const res = await fetch(`${BASE}/${shareId}`);
+  const res = await fetch(apiUrl(`${BASE}/${shareId}`));
   if (!res.ok) return null;
   return res.json();
 }
 
 export async function publishCommunityScenario(scenario: Scenario): Promise<{ shareId: string }> {
-  const res = await fetch(BASE, {
+  const res = await fetch(apiUrl(BASE), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ scenario }),
@@ -26,7 +27,7 @@ export async function publishCommunityScenario(scenario: Scenario): Promise<{ sh
 }
 
 export async function thankScenario(shareId: string): Promise<number> {
-  const res = await fetch(`${BASE}/${shareId}/thank`, { method: 'POST' });
+  const res = await fetch(apiUrl(`${BASE}/${shareId}/thank`), { method: 'POST' });
   const data = await res.json();
   return data.thankCount ?? 0;
 }
