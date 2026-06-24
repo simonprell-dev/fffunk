@@ -7,7 +7,7 @@ import { Capacitor } from '@capacitor/core';
  *   'https://fffunk-production.up.railway.app'
  * Leer lassen = relative Pfade (Web-Build / Server – funktioniert unverändert).
  */
-export const NATIVE_API_BASE: string = '';
+export const NATIVE_API_BASE: string = 'https://fffunk-production.up.railway.app';
 
 /** Baut die korrekte API-URL: relativ im Web, absolut in der nativen App. */
 export function apiUrl(path: string): string {
