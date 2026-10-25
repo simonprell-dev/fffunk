@@ -8,6 +8,7 @@ import {
   listAdminScenarios, getAdminScenario, createAdminScenario,
   updateAdminScenario, deleteAdminScenario, setScenarioLicenses, upsertAdminScenario,
   listTaxonomy, getTaxonomyItem, createTaxonomyItem, updateTaxonomyItem, deleteTaxonomyItem,
+  USAGE_EVENTS, getUsageStats,
 } from './license-db.mjs';
 import { listScenarios, getScenario as getCommunityScenario, isDbAvailable, deleteScenario } from './community-db.mjs';
 
@@ -619,6 +620,7 @@ function page(title, content, active = '') {
       <a href="/admin/scenarios" class="${active === 'scenarios' ? 'active' : ''}">Szenarien</a>
       <a href="/admin/taxonomy" class="${active === 'taxonomy' ? 'active' : ''}">Kategorien & Rollen</a>
       <a href="/admin/community" class="${active === 'community' ? 'active' : ''}">Community</a>
+      <a href="/admin/stats" class="${active === 'stats' ? 'active' : ''}">Statistik</a>
     </nav>
   </div>
   <form method="POST" action="/admin/logout" style="margin:0;">
@@ -711,6 +713,75 @@ async function dashboardPage() {
       <a href="/admin/community" class="btn btn-secondary">Community verwalten</a>
     </div>
   `, 'dashboard');
+}
+
+// ── Usage stats page ──────────────────────────────────────────────────────────
+
+async function statsPage() {
+  const days = 30;
+  const { totals, daily } = await getUsageStats(days);
+  const events = Object.keys(USAGE_EVENTS);
+  const byEvent = Object.fromEntries(totals.map(t => [t.event, t]));
+
+  const dayKeys = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(Date.now() - i * 86400000);
+    dayKeys.push(d.toISOString().slice(0, 10));
+  }
+  const grid = {};
+  for (const r of daily) (grid[r.day] ??= {})[r.event] = r.count;
+  const opensPerDay = dayKeys.map(d => grid[d]?.app_open ?? 0);
+  const maxOpens = Math.max(1, ...opensPerDay);
+
+  const bars = dayKeys.slice().reverse().map(d => {
+    const v = grid[d]?.app_open ?? 0;
+    const h = Math.round((v / maxOpens) * 100);
+    return `<div title="${esc(d)}: ${v}" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;">
+      <div style="height:${h}%;min-height:${v ? 2 : 0}px;background:#dc2626;border-radius:2px 2px 0 0;"></div>
+    </div>`;
+  }).join('');
+
+  const totalRows = events.map(e => {
+    const t = byEvent[e] ?? {};
+    return `<tr><td>${esc(USAGE_EVENTS[e])}</td>
+      <td style="text-align:right;">${t.last7 ?? 0}</td>
+      <td style="text-align:right;">${t.last30 ?? 0}</td>
+      <td style="text-align:right;">${t.total ?? 0}</td></tr>`;
+  }).join('');
+
+  const dayRows = dayKeys.filter(d => grid[d]).map(d => `<tr><td>${esc(d)}</td>${
+    events.map(e => `<td style="text-align:right;">${grid[d][e] ?? 0}</td>`).join('')
+  }</tr>`).join('');
+
+  return page('Statistik', `
+    <h2>Nutzungsstatistik</h2>
+    <p style="color:#a3a3a3;font-size:.85rem;margin-top:-.5rem;">
+      Anonyme Tageszähler – es werden weder IP-Adressen noch Geräte-IDs oder Cookies gespeichert,
+      nur Ereignis und Datum.
+    </p>
+    ${isLicenseDbAvailable() ? '' : '<div class="flash-err">Datenbank nicht verfügbar – es wird nichts gezählt.</div>'}
+    <div class="card" style="margin-bottom:1.5rem;">
+      <h3>App geöffnet – letzte ${days} Tage</h3>
+      <div style="display:flex;gap:2px;align-items:flex-end;height:120px;">${bars}</div>
+      <div style="display:flex;justify-content:space-between;color:#a3a3a3;font-size:.75rem;margin-top:.25rem;">
+        <span>${esc(dayKeys[days - 1])}</span><span>Max: ${maxOpens}</span><span>${esc(dayKeys[0])}</span>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:1.5rem;">
+      <h3>Summen</h3>
+      <table>
+        <thead><tr><th>Ereignis</th><th style="text-align:right;">7 Tage</th><th style="text-align:right;">30 Tage</th><th style="text-align:right;">Gesamt</th></tr></thead>
+        <tbody>${totalRows}</tbody>
+      </table>
+    </div>
+    <div class="card" style="overflow-x:auto;">
+      <h3>Pro Tag</h3>
+      ${dayRows ? `<table>
+        <thead><tr><th>Tag</th>${events.map(e => `<th style="text-align:right;">${esc(USAGE_EVENTS[e])}</th>`).join('')}</tr></thead>
+        <tbody>${dayRows}</tbody>
+      </table>` : '<p style="color:#a3a3a3;">Noch keine Daten.</p>'}
+    </div>
+  `, 'stats');
 }
 
 // ── License list page ─────────────────────────────────────────────────────────
@@ -1338,6 +1409,9 @@ export async function handleAdminRequest(req, res) {
 
   if (p === '/admin/dashboard' && m === 'GET')
     return sendHtml(res, 200, await dashboardPage());
+
+  if (p === '/admin/stats' && m === 'GET')
+    return sendHtml(res, 200, await statsPage());
 
   if (p === '/admin/licenses' && m === 'GET')
     return sendHtml(res, 200, await licensesPage(url.searchParams.get('msg') || ''));

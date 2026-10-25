@@ -378,3 +378,58 @@ async function migrateScenarioValue(client, kind, oldValue, newValue, newLabel =
     );
   }
 }
+
+// ── Anonyme Nutzungsstatistik ────────────────────────────────────────────────
+// Nur aggregierte Tageszähler pro Ereignis – keine IP, keine Geräte-ID, kein
+// Cookie. Damit entsteht kein Personenbezug (DSGVO) und es wird nichts auf dem
+// Endgerät gespeichert (TTDSG § 25), eine Einwilligung ist nicht nötig.
+
+export const USAGE_EVENTS = {
+  app_open: 'App geöffnet',
+  scenario_start: 'Szenario gestartet',
+  training_start: 'Training gestartet',
+  scenario_complete: 'Szenario abgeschlossen',
+  radio_ok: 'Funkspruch richtig',
+  radio_fail: 'Funkspruch falsch',
+  lern_open: 'Lernbereich geöffnet',
+};
+
+export async function initUsageStatsDb() {
+  if (!pool) return;
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS usage_daily (
+      day    DATE    NOT NULL,
+      event  TEXT    NOT NULL,
+      count  INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (day, event)
+    )
+  `);
+}
+
+export async function countUsageEvent(event) {
+  if (!pool || !Object.hasOwn(USAGE_EVENTS, event)) return false;
+  await pool.query(
+    `INSERT INTO usage_daily (day, event, count) VALUES (CURRENT_DATE, $1, 1)
+     ON CONFLICT (day, event) DO UPDATE SET count = usage_daily.count + 1`,
+    [event]
+  );
+  return true;
+}
+
+export async function getUsageStats(days = 30) {
+  if (!pool) return { totals: [], daily: [] };
+  const totals = await pool.query(
+    `SELECT event,
+            SUM(count)::int AS total,
+            SUM(count) FILTER (WHERE day >= CURRENT_DATE - 6)::int AS last7,
+            SUM(count) FILTER (WHERE day >= CURRENT_DATE - 29)::int AS last30
+       FROM usage_daily GROUP BY event`
+  );
+  const daily = await pool.query(
+    `SELECT to_char(day, 'YYYY-MM-DD') AS day, event, count
+       FROM usage_daily WHERE day >= CURRENT_DATE - ($1::int - 1)
+      ORDER BY day DESC`,
+    [days]
+  );
+  return { totals: totals.rows, daily: daily.rows };
+}

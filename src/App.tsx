@@ -10,6 +10,7 @@ import { decodeSharePackage, deleteLocalScenario, loadLocalScenarios, upsertLoca
 import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community-api';
 import { apiUrl } from './lib/api-base';
 import { CompactSetting, getCompactSetting, setCompactSetting } from './lib/display-mode';
+import { trackEvent } from './lib/usage-stats';
 
 interface LicenseData {
   organizationName: string;
@@ -241,8 +242,13 @@ function App() {
     window.history.replaceState(null, '', '#lernen');
   };
 
+  useEffect(() => {
+    if (view === 'lernen') trackEvent('lern_open');
+  }, [view]);
+
   const startScenario = (scenario: Scenario, scenarioMode: 'guided' | 'training' = 'guided') => {
     const eng = new StoryEngine(scenario);
+    trackEvent(scenarioMode === 'training' ? 'training_start' : 'scenario_start');
     setEngine(eng); setSelectedScenario(scenario); setPracticeMode(scenarioMode); setView('practice');
     window.history.replaceState(null, '', '#practice');
   };

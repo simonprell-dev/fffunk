@@ -7,6 +7,7 @@ import { ActionButtons } from './ActionButtons';
 import RadioCallModal from './RadioCallModal';
 import { applyRufnamen } from '../lib/rufnamen';
 import { RadioResponse, radioResponseFor, splitCall, splitLeadingResponse } from '../lib/radio-response';
+import { trackEvent } from '../lib/usage-stats';
 
 interface Props {
   scenario: Scenario;
@@ -31,6 +32,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
   const skipLeadingLineRef = useRef(false); // Sprecherzeile des nächsten Schritts wurde schon gesprochen
   const prevNarrativeRef = useRef('');      // vorheriger Schritt – dort kann die Gegenstelle gesprochen haben
   const lastNarrativeRef = useRef('');
+  const completionTrackedRef = useRef(false);
 
   const ruf = rufnamen ?? {};
   const narrative = useMemo(
@@ -109,6 +111,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
   const handleRadioResult = (success: boolean, _transcript: string) => {
     setRadioModalOpen(false);
     const action = pendingAction!;
+    trackEvent(success ? 'radio_ok' : 'radio_fail');
 
     if (mode === 'training') {
       // Im Training wurde der Muster-Funkspruch bereits im Modal aufgedeckt –
@@ -141,6 +144,15 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
       setFeedback(null);
     }, 1500);
   };
+
+  // Abschluss = Schritt ohne weitere Handlung außer „Beenden“
+  useEffect(() => {
+    const isEnd = currentNode.actions.every(a => a.nextNodeId === '__exit__' && !a.radioCall);
+    if (isEnd && !completionTrackedRef.current) {
+      completionTrackedRef.current = true;
+      trackEvent('scenario_complete');
+    }
+  }, [currentNode]);
 
   useEffect(() => {
     return () => {

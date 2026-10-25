@@ -5,7 +5,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { handleCommunityApiRequest } from './community-api.mjs';
 import { initDb } from './community-db.mjs';
-import { initLicenseDb, initAdminScenariosDb, getScenariosByLicenseCode } from './license-db.mjs';
+import { initLicenseDb, initAdminScenariosDb, initUsageStatsDb, countUsageEvent, getScenariosByLicenseCode } from './license-db.mjs';
 import { handleAdminRequest, handleLicenseLookup } from './admin-api.mjs';
 import { logPrConfig } from './community-pr-api.mjs';
 
@@ -157,6 +157,20 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.url?.startsWith('/api/stats/')) {
+    // POST /api/stats/:event – anonymer Zähler, es wird nichts außer Ereignis + Datum gespeichert
+    res.setHeader('access-control-allow-origin', '*');
+    res.setHeader('access-control-allow-methods', 'POST, OPTIONS');
+    if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+    if (req.method !== 'POST') { res.writeHead(405); res.end(); return; }
+    const event = req.url.slice('/api/stats/'.length).split('?')[0];
+    try {
+      await countUsageEvent(event);
+    } catch {}
+    res.writeHead(204); res.end();
+    return;
+  }
+
   if (req.url?.startsWith('/api/tts')) {
     await handleTtsRequest(req, res);
     return;
@@ -182,4 +196,5 @@ server.listen(PORT, async () => {
   await initDb();
   await initLicenseDb();
   await initAdminScenariosDb();
+  await initUsageStatsDb();
 });
