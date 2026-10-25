@@ -1,0 +1,316 @@
+{
+  "id": "verkehrsregelung_wechselseitig",
+  "title": "Verkehrsregelung: Wechselseitige Verkehrsführung",
+  "description": "Mittel: Mit zwei Posten den Verkehr an einer Unfallstelle wechselseitig regeln – Befugnis nach Art. 7a ZustGVerk, Absprache „letztes Fahrzeug“, Rettungswagen mit Sondersignal durchschleusen, Übergabe an die Polizei. 5 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "truppführer",
+  "nodes": {
+    "n_start": {
+      "id": "n_start",
+      "role": "truppführer",
+      "narrative": "Verkehrsunfall auf der Staatsstraße zwischen Neuhaus und Adelsdorf. Ein Fahrstreifen ist durch die Unfallfahrzeuge blockiert. Die Polizei ist noch auf Anfahrt.\n\nSie sind Truppführer des **Schlauchtrupps**. Ihr Posten ist das **Nordende** (Richtung Adelsdorf). Am **Südende** steht der **Wassertrupp** – wegen einer Kuppe ohne Sichtkontakt. Beide Posten haben ein Handfunkgerät.\n\n**Gruppenführer:** „Schlauchtrupp: Posten Nordende, Verkehr wechselseitig an der Unfallstelle vorbeiführen, Absprache mit dem Wassertrupp am Südende – kommen.“\n\nWiederholen Sie den Befehl.",
+      "actions": [
+        {
+          "id": "radio_start",
+          "label": "📞 Befehl wiederholen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Schlauchtrupp",
+              "verstanden",
+              "Nordende",
+              "wechselseitig",
+              "Wassertrupp",
+              "kommen"
+            ],
+            "hint": "Hier Schlauchtrupp – verstanden: Posten Nordende, Verkehr wechselseitig vorbeiführen, Absprache mit dem Wassertrupp am Südende – kommen.",
+            "briefing": "„hier Schlauchtrupp“ . „verstanden“ . Posten (Nordende) . Auftrag (Verkehr wechselseitig vorbeiführen) . Absprache mit Wassertrupp am Südende . „kommen“",
+            "onSuccess": "n_haltezeichen",
+            "onFailure": "n_start_fail",
+            "feedbackSuccess": "✅ Befehl korrekt wiederholt.",
+            "feedbackFailure": "❌ Wiederholen Sie: Posten Nordende, wechselseitig vorbeiführen, Absprache mit dem Wassertrupp."
+          }
+        }
+      ]
+    },
+    "n_start_fail": {
+      "id": "n_start_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Wechselseitiger Verkehr funktioniert nur, wenn **beide Posten** wissen, wer gerade fahren darf.\n\nBeispiel: *„Hier Schlauchtrupp – verstanden: Posten Nordende, Verkehr wechselseitig vorbeiführen, Absprache mit dem Wassertrupp am Südende – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_haltezeichen_x1": {
+      "id": "n_haltezeichen_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Auf der Fahrbahn sind Sie ungeschützt. Stehen Sie **am Fahrbahnrand** mit Fluchtweg, früh sichtbar, und halten Sie Blickkontakt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_haltezeichen"
+        }
+      ]
+    },
+    "n_haltezeichen_x2": {
+      "id": "n_haltezeichen_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Blenden gefährdet alle. Benutzen Sie den **Anhaltestab** oder eine Handlampe, die nicht blendet.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_haltezeichen"
+        }
+      ]
+    },
+    "n_haltezeichen": {
+      "id": "n_haltezeichen",
+      "role": "truppführer",
+      "narrative": "> In Bayern üben die **eingesetzten Feuerwehrkräfte** zur Sicherung der Einsatzstelle die Befugnisse der Polizei nach **§ 36 Abs. 1 StVO** aus (**Art. 7a ZustGVerk**). Ihre Zeichen sind für Verkehrsteilnehmer verbindlich.\n\nSie tragen Warnkleidung und haben einen Anhaltestab (Leuchtstab). Wie halten Sie den Verkehr an?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "✋ Vom Fahrbahnrand aus, früh sichtbar, Blickkontakt mit dem Fahrer, Anhaltestab deutlich quer bzw. senkrecht hoch – Fluchtweg im Rücken",
+          "nextNodeId": "n_freigabe"
+        },
+        {
+          "id": "opt1",
+          "label": "🚧 Mitten auf den Fahrstreifen stellen, dann muss jeder halten",
+          "nextNodeId": "n_haltezeichen_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔦 Mit der Taschenlampe ins Gesicht leuchten",
+          "nextNodeId": "n_haltezeichen_x2"
+        }
+      ]
+    },
+    "n_freigabe": {
+      "id": "n_freigabe",
+      "role": "truppführer",
+      "narrative": "Sie lassen den Verkehr Richtung Süden laufen. Das letzte Fahrzeug, das Sie durchlassen, ist ein **roter Kombi**; danach halten Sie an. Teilen Sie das dem Wassertrupp mit, damit er weiß, wann er seine Richtung freigeben kann.",
+      "actions": [
+        {
+          "id": "radio_freigabe",
+          "label": "📞 Freigabe an den Wassertrupp",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wassertrupp",
+              "Schlauchtrupp",
+              "Richtung Süden",
+              "letztes Fahrzeug",
+              "roter Kombi",
+              "kommen"
+            ],
+            "hint": "Wassertrupp von Schlauchtrupp – Verkehr Richtung Süden läuft, letztes Fahrzeug roter Kombi, danach gesperrt – kommen.",
+            "briefing": "Anruf: Wassertrupp von Schlauchtrupp . Fahrtrichtung, die gerade läuft (Richtung Süden) . „letztes Fahrzeug“ mit eindeutiger Beschreibung (roter Kombi) . danach gesperrt . „kommen“",
+            "onSuccess": "n_rtw",
+            "onFailure": "n_freigabe_fail",
+            "feedbackSuccess": "✅ Klare Übergabe mit „letztem Fahrzeug“ – so gibt es keinen Gegenverkehr in der Engstelle.",
+            "feedbackFailure": "❌ Melden Sie Fahrtrichtung, letztes Fahrzeug (roter Kombi) und dass danach gesperrt ist."
+          }
+        }
+      ]
+    },
+    "n_freigabe_fail": {
+      "id": "n_freigabe_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Die Gegenseite gibt **erst frei, wenn das „letzte Fahrzeug“ bei ihr angekommen ist**. Deshalb muss das letzte Fahrzeug eindeutig beschrieben werden (Farbe, Typ, ggf. Kennzeichen).\n\nBeispiel: *„Wassertrupp von Schlauchtrupp – Verkehr Richtung Süden läuft, letztes Fahrzeug roter Kombi, danach gesperrt – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_freigabe"
+        }
+      ]
+    },
+    "n_rtw_x1": {
+      "id": "n_rtw_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Dann trifft der RTW in der Engstelle auf Gegenverkehr. Erst den Gegenverkehr am anderen Posten **stoppen**, dann den RTW durchschleusen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_rtw"
+        }
+      ]
+    },
+    "n_rtw_x2": {
+      "id": "n_rtw_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Ein RTW mit Sondersignal hat **Vorrang** (§ 38 StVO). Schaffen Sie ihm sofort freie Bahn – über Absprache mit dem anderen Posten.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_rtw"
+        }
+      ]
+    },
+    "n_rtw": {
+      "id": "n_rtw",
+      "role": "truppführer",
+      "narrative": "**Wassertrupp:** „Hier Wassertrupp – roter Kombi durch, Verkehr Richtung Norden läuft – kommen.“\n\nPlötzlich hören Sie hinter sich ein **Martinshorn**: Ein **RTW mit Sondersignal** kommt von Norden und will nach Süden durch – gegen den gerade laufenden Verkehr.\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📞 Wassertrupp sofort anfunken: Verkehr Richtung Norden stoppen, RTW kommt von Norden durch",
+          "nextNodeId": "n_rtw_funk"
+        },
+        {
+          "id": "opt1",
+          "label": "🚑 RTW einfach in die Engstelle schicken",
+          "nextNodeId": "n_rtw_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "✋ RTW anhalten, bis die Richtung ohnehin wechselt",
+          "nextNodeId": "n_rtw_x2"
+        }
+      ]
+    },
+    "n_rtw_funk": {
+      "id": "n_rtw_funk",
+      "role": "truppführer",
+      "narrative": "Sprechen Sie den Wassertrupp kurz und eindeutig an.",
+      "actions": [
+        {
+          "id": "radio_rtw_funk",
+          "label": "📞 RTW durchschleusen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wassertrupp",
+              "Schlauchtrupp",
+              "sofort",
+              "Richtung Norden",
+              "stoppen",
+              "RTW",
+              "Sondersignal",
+              "kommen"
+            ],
+            "hint": "Wassertrupp von Schlauchtrupp – sofort Verkehr Richtung Norden stoppen, RTW mit Sondersignal kommt von Norden durch – kommen.",
+            "briefing": "Anruf: Wassertrupp von Schlauchtrupp . „sofort“ . Verkehr Richtung Norden stoppen . Grund: RTW mit Sondersignal von Norden . „kommen“",
+            "onSuccess": "n_kennzeichen",
+            "onFailure": "n_rtw_funk_fail",
+            "feedbackSuccess": "✅ RTW sicher durchgeschleust.",
+            "feedbackFailure": "❌ Fordern Sie den Wassertrupp auf, sofort Richtung Norden zu stoppen, weil ein RTW mit Sondersignal von Norden kommt."
+          }
+        }
+      ]
+    },
+    "n_rtw_funk_fail": {
+      "id": "n_rtw_funk_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Im Notfall zuerst die **Handlung** („sofort … stoppen“), dann der Grund. Den RTW lassen Sie erst fahren, wenn der Wassertrupp **bestätigt**, dass gestoppt ist.\n\nBeispiel: *„Wassertrupp von Schlauchtrupp – sofort Verkehr Richtung Norden stoppen, RTW mit Sondersignal kommt von Norden durch – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_rtw_funk"
+        }
+      ]
+    },
+    "n_kennzeichen": {
+      "id": "n_kennzeichen",
+      "role": "truppführer",
+      "narrative": "**Wassertrupp:** „Hier Wassertrupp – Richtung Norden gestoppt, letztes Fahrzeug weißer Transporter ist durch – kommen.“\n\nDer RTW passiert die Engstelle. Kurz danach fährt ein **schwarzer SUV** trotz Ihres Haltezeichens an Ihnen vorbei. Kennzeichen: **ERH – SK 47**.\n\nNicht hinterherlaufen! Warnen Sie den Wassertrupp und melden Sie den Verstoß. Buchstaben **buchstabieren**.",
+      "actions": [
+        {
+          "id": "radio_kennzeichen",
+          "label": "📞 Verstoß melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wassertrupp",
+              "Schlauchtrupp",
+              "schwarzer SUV",
+              "Haltezeichen",
+              "Samuel",
+              "Kaufmann",
+              "kommen"
+            ],
+            "hint": "Wassertrupp von Schlauchtrupp – Achtung: schwarzer SUV hat Haltezeichen missachtet, fährt Richtung Süden. Kennzeichen ich buchstabiere Emil Richard Heinrich – Samuel Kaufmann – vier sieben. Gruppenführer bitte mithören – kommen.",
+            "briefing": "Anruf: Wassertrupp von Schlauchtrupp . „Achtung“ . Fahrzeug und Verstoß (schwarzer SUV, Haltezeichen missachtet) . Fahrtrichtung (Süden) . Kennzeichen buchstabiert (Emil Richard Heinrich – Samuel Kaufmann – vier sieben) . „kommen“",
+            "onSuccess": "n_polizei",
+            "onFailure": "n_kennzeichen_fail",
+            "feedbackSuccess": "✅ Warnung und Verstoß mit buchstabiertem Kennzeichen gemeldet.",
+            "feedbackFailure": "❌ Warnen Sie den Wassertrupp, beschreiben Sie das Fahrzeug und buchstabieren Sie das Kennzeichen."
+          }
+        }
+      ]
+    },
+    "n_kennzeichen_fail": {
+      "id": "n_kennzeichen_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Zuerst die **Warnung** an den anderen Posten – dort kommt das Fahrzeug in den Gegenverkehr. Das Kennzeichen wird **buchstabiert**, damit es die Polizei verfolgen kann.\n\nBeispiel: *„Wassertrupp von Schlauchtrupp – Achtung: schwarzer SUV hat Haltezeichen missachtet, fährt Richtung Süden. Kennzeichen ich buchstabiere Emil Richard Heinrich – Samuel Kaufmann – vier sieben. Gruppenführer bitte mithören – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_kennzeichen"
+        }
+      ]
+    },
+    "n_polizei": {
+      "id": "n_polizei",
+      "role": "truppführer",
+      "narrative": "Die Polizei trifft ein und übernimmt Ihren Posten am Nordende. Sie haben dem Beamten den Verstoß übergeben.\n\nMelden Sie dem Gruppenführer die Übergabe. Es ist die letzte Meldung des Gesprächs.",
+      "actions": [
+        {
+          "id": "radio_polizei",
+          "label": "📞 Übergabe melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Schlauchtrupp",
+              "Polizei",
+              "übernommen",
+              "Nordende",
+              "Ende"
+            ],
+            "hint": "Gruppenführer von Schlauchtrupp – Polizei hat die Verkehrsregelung am Nordende übernommen, Verstoß übergeben, Schlauchtrupp kommt zum Fahrzeug – Ende.",
+            "briefing": "Anruf: Gruppenführer von Schlauchtrupp . Polizei hat die Verkehrsregelung am Nordende übernommen . Verstoß übergeben . Trupp kommt zum Fahrzeug . „Ende“",
+            "onSuccess": "n_end",
+            "onFailure": "n_polizei_fail",
+            "feedbackSuccess": "✅ Übergabe gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Polizei hat am Nordende übernommen, Verstoß übergeben, Trupp kommt zurück."
+          }
+        }
+      ]
+    },
+    "n_polizei_fail": {
+      "id": "n_polizei_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Den Posten verlassen Sie erst **nach der Übergabe** – und melden sich dann beim Gruppenführer zurück.\n\nBeispiel: *„Gruppenführer von Schlauchtrupp – Polizei hat die Verkehrsregelung am Nordende übernommen, Verstoß übergeben, Schlauchtrupp kommt zum Fahrzeug – Ende.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_polizei"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "truppführer",
+      "narrative": "Wechselseitige Verkehrsführung mit „letztem Fahrzeug“, RTW sicher durchgeschleust, Verstoß richtig gemeldet und an die Polizei übergeben.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

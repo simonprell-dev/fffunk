@@ -160,11 +160,15 @@ function App() {
 
     const loadScenarioFolders = async (): Promise<Scenario[]> => {
       const index = await loadJson<ScenarioFolderIndex>('/scenarios/index.json');
-      const builtinPaths = Object.values(index.builtin ?? {}).flat();
+      const builtinEntries = Object.entries(index.builtin ?? {})
+        .flatMap(([category, paths]) => paths.map(p => ({ category, p })));
       const communityPaths = Object.values(index.community ?? {}).flat();
 
       const builtin = await Promise.all(
-        builtinPaths.map(p => loadJson<Scenario>(p.startsWith('/') ? p : `/scenarios/${p}`))
+        builtinEntries.map(async ({ category, p }) => ({
+          ...(await loadJson<Scenario>(p.startsWith('/') ? p : `/scenarios/${p}`)),
+          category,
+        }))
       );
       const community = await Promise.all(
         communityPaths.map(p => loadJson<Scenario>(p.startsWith('/') ? p : `/scenarios/${p}`))

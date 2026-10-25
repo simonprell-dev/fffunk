@@ -1,33 +1,36 @@
 {
   "id": "lagemeldung_nachalarmierung",
   "title": "Lagemeldung und Nachforderung",
-  "description": "Mittel: Vollständige Lagemeldung im Wechselverkehr abgeben, Drehleiter nachfordern, Wasserversorgung melden und Menschenrettung abschließen. 4 Funk-Schritte.",
+  "description": "Mittel: Lagemeldung mit sofortiger Nachforderung (Drehleiter und Rettungsdienst) an die ILS, Folgemeldung zur Menschenrettung, „Feuer unter Kontrolle“ und „Feuer aus“. 4 Funk-Schritte.",
   "startingNodeId": "n_vor_ort",
   "playerRole": "gruppenführer_a",
   "nodes": {
     "n_vor_ort": {
       "id": "n_vor_ort",
       "role": "gruppenführer_a",
-      "narrative": "Sie sind als ersteintreffende Einheit mit **Florian Neuhaus 44/1** an der Einsatzstelle **Bergstraße 4, Neuhaus** eingetroffen. Sie haben bereits Status 4 (Ankunft an der Einsatzstelle) gedrückt.\n\n**Lage:** Freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Im Dachgeschoss ist eine Person sichtbar und ruft um Hilfe. Keine weiteren Kräfte vor Ort.\n\nGeben Sie der Leitstelle im Wechselverkehr eine **vollständige Lagemeldung** nach dem Schema Wo – Was – Menschenleben in Gefahr – eigene Maßnahmen – Nachforderung ab.",
+      "narrative": "Sie sind mit **Florian Neuhaus 44/1** als erste Einheit an der **Bergstraße 4 in Neuhaus** eingetroffen und haben **Status 4** gedrückt.\n\n**Lage:** Freistehendes Einfamilienhaus, **Dachgeschoss in Vollbrand**. Am Dachfenster ist **eine Person** zu sehen und ruft um Hilfe. Der Treppenraum ist stark verraucht. Keine weiteren Kräfte vor Ort.\n\nSie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab. Weil Menschenleben in Gefahr sind, fordern Sie **sofort** nach – nicht „Nachforderung folgt“.",
       "actions": [
         {
-          "id": "radio_lage",
-          "label": "📞 Lagemeldung sprechen",
+          "id": "radio_vor_ort",
+          "label": "📞 Lagemeldung mit Nachforderung",
           "radioCall": {
             "expectedPhrases": [
               "Florian Neuhaus",
+              "Bergstraße",
               "Einfamilienhaus",
               "Dachgeschoss",
-              "Vollbrand",
               "Person",
-              "Menschenrettung"
+              "Menschenrettung",
+              "Drehleiter",
+              "Rettungsdienst",
+              "kommen"
             ],
-            "briefing": "Leitstelle anrufen, eigener Rufname, Durchsage Lagemeldung . Wo: Bergstraße 4, Neuhaus . Was: freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand . Menschenleben in Gefahr: eine Person im Dachgeschoss, ruft um Hilfe . Eigene Maßnahmen: Menschenrettung eingeleitet, Brandbekämpfung über Tragbare Leiter / Innenangriff . Nachforderung ankündigen . mit kommen abschließen.",
-            "hint": "Leitstelle von Florian Neuhaus vier-vier/eins – Durchsage – kommen. Hier Florian Neuhaus vier-vier/eins, Lagemeldung: Einsatzstelle Bergstraße vier, Neuhaus, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand, eine Person im Dachgeschoss eingeschlossen und in Lebensgefahr; Menschenrettung eingeleitet, Brandbekämpfung läuft, Nachforderung folgt – kommen.",
-            "onSuccess": "n_drehleiter",
+            "hint": "Hier Florian Neuhaus 44/1 – Lagemeldung: Bergstraße 4, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Eine Person im Dachgeschoss, Menschenleben in Gefahr. Menschenrettung über den Innenangriff eingeleitet. Nachforderung: Drehleiter und Rettungsdienst – kommen.",
+            "briefing": "Eigener Rufname + „Lagemeldung“ . WO: Bergstraße 4, freistehendes Einfamilienhaus . WAS: Dachgeschoss in Vollbrand . MENSCHENLEBEN: eine Person im Dachgeschoss in Gefahr . MASSNAHMEN: Menschenrettung über Innenangriff eingeleitet . NACHFORDERUNG: Drehleiter + Rettungsdienst . „kommen“",
+            "onSuccess": "n_folge",
             "onFailure": "n_vor_ort_fail",
-            "feedbackSuccess": "✅ Vollständige Lagemeldung im Wechselverkehr übermittelt – Wo, Was, Menschenleben in Gefahr und eigene Maßnahmen sind enthalten.",
-            "feedbackFailure": "❌ Die Lagemeldung muss Objekt (Einfamilienhaus), Brandlage (Dachgeschoss in Vollbrand) und die Menschengefährdung (Person eingeschlossen) enthalten und mit \"kommen\" enden."
+            "feedbackSuccess": "✅ Lagemeldung vollständig – die Nachforderung kam sofort mit.",
+            "feedbackFailure": "❌ Lagemeldung nach Schema und die Nachforderung (Drehleiter, Rettungsdienst) gleich mitgeben."
           }
         }
       ]
@@ -35,7 +38,7 @@
     "n_vor_ort_fail": {
       "id": "n_vor_ort_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Eine vollständige Lagemeldung folgt dem Schema:\n1. **Wo** – Ort/Adresse (Bergstraße 4, Neuhaus)\n2. **Was** – Art und Umfang (Einfamilienhaus, Dachgeschoss in Vollbrand)\n3. **Menschenleben in Gefahr** – eine Person im Dachgeschoss eingeschlossen\n4. **Eigene Maßnahmen** – Menschenrettung eingeleitet, Brandbekämpfung\n5. **Nachforderung** – ankündigen\n\nBeispiel: *„Leitstelle von Florian Neuhaus vier-vier/eins – Durchsage – kommen. Hier Florian Neuhaus vier-vier/eins, Lagemeldung: Einsatzstelle Bergstraße vier, Neuhaus, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand, eine Person im Dachgeschoss eingeschlossen und in Lebensgefahr; Menschenrettung eingeleitet, Brandbekämpfung läuft, Nachforderung folgt – kommen.“*",
+      "narrative": "**Feedback:** Sind Menschenleben in Gefahr, gehört die **Nachforderung direkt in die erste Lagemeldung** – jede Minute Anfahrt zählt. Lieber früh nachfordern und später abbestellen.\n\nSchema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lagemeldung: Bergstraße 4, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Eine Person im Dachgeschoss, Menschenleben in Gefahr. Menschenrettung über den Innenangriff eingeleitet. Nachforderung: Drehleiter und Rettungsdienst – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -44,126 +47,126 @@
         }
       ]
     },
-    "n_drehleiter": {
-      "id": "n_drehleiter",
+    "n_folge": {
+      "id": "n_folge",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** „Hier Leitstelle, Lagemeldung verstanden. Welche Kräfte fordern Sie nach? – kommen.“\n\nFordern Sie für die Menschenrettung aus dem Dachgeschoss eine **Drehleiter** nach.",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden. Drehleiter Florian Neuhaus 33/1, RTW und Notarzt sind alarmiert – Ende.“\n\nDer Angriffstrupp hat die Person über den Treppenraum ins Freie gebracht. Sie hat eine Rauchgasvergiftung und wurde an den eingetroffenen Rettungsdienst übergeben. Die Drehleiter ist eingetroffen und unterstützt die Brandbekämpfung von außen.\n\nSetzen Sie eine **Folgemeldung** ab (Status 5 ist gedrückt, die Leitstelle hat Sie gerufen). Über Funk **keine Namen** von Betroffenen.",
       "actions": [
         {
-          "id": "radio_drehleiter",
-          "label": "📞 Funk-Meldung sprechen",
+          "id": "radio_folge",
+          "label": "📞 Folgemeldung sprechen",
           "radioCall": {
-            "briefing": "Eigener Rufname zuerst (Antwort) . Nachforderung: eine Drehleiter . Begründung: Menschenrettung, Person im Dachgeschoss eingeschlossen . Einsatzort/Anfahrt: Bergstraße 4, Neuhaus . mit kommen abschließen.",
             "expectedPhrases": [
               "Florian Neuhaus",
+              "Folgemeldung",
+              "Person gerettet",
+              "Rettungsdienst",
+              "Rauchgasvergiftung",
               "Drehleiter",
-              "nachfordern",
-              "Menschenrettung",
-              "Dachgeschoss",
-              "Bergstraße"
-            ],
-            "hint": "Hier Florian Neuhaus vier-vier/eins – Nachforderung: eine Drehleiter zur Menschenrettung, eine Person im Dachgeschoss eingeschlossen; Einsatzstelle Bergstraße vier, Neuhaus – kommen.",
-            "onSuccess": "n_wasserversorgung",
-            "onFailure": "n_drehleiter_fail",
-            "feedbackSuccess": "✅ Drehleiter mit Begründung und Einsatzort nachgefordert.",
-            "feedbackFailure": "❌ Fordern Sie die Drehleiter mit Begründung (Menschenrettung) und Einsatzort nach und schließen Sie mit \"kommen\"."
-          }
-        }
-      ]
-    },
-    "n_drehleiter_fail": {
-      "id": "n_drehleiter_fail",
-      "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Beginnen Sie die Antwort mit dem eigenen Rufnamen, nennen Sie das nachgeforderte Mittel (Drehleiter), die Begründung (Menschenrettung) und den Einsatzort.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins – Nachforderung: eine Drehleiter zur Menschenrettung, eine Person im Dachgeschoss eingeschlossen; Einsatzstelle Bergstraße vier, Neuhaus – kommen.“*",
-      "actions": [
-        {
-          "id": "retry",
-          "label": "🔄 Erneut versuchen",
-          "nextNodeId": "n_drehleiter"
-        }
-      ]
-    },
-    "n_wasserversorgung": {
-      "id": "n_wasserversorgung",
-      "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** „Hier Leitstelle, verstanden. Drehleiter Florian Neuhaus dreidrei/eins ist alarmiert. Geben Sie Ihre Wasserversorgung durch. – kommen.“\n\nMelden Sie, dass die **Wasserversorgung** sichergestellt ist, und nennen Sie die Entnahmestelle.",
-      "actions": [
-        {
-          "id": "radio_wasser",
-          "label": "📞 Funk-Meldung sprechen",
-          "radioCall": {
-            "briefing": "Eigener Rufname zuerst (Antwort) . Wasserversorgung sichergestellt . Entnahmestelle nennen: Überflurhydrant Bergstraße 2 . mit kommen abschließen.",
-            "expectedPhrases": [
-              "Florian Neuhaus",
-              "Wasserversorgung",
-              "sichergestellt",
-              "Hydrant",
-              "Bergstraße"
-            ],
-            "hint": "Hier Florian Neuhaus vier-vier/eins – Wasserversorgung sichergestellt über Überflurhydrant Bergstraße zwo – kommen.",
-            "onSuccess": "n_menschenrettung",
-            "onFailure": "n_wasserversorgung_fail",
-            "feedbackSuccess": "✅ Wasserversorgung korrekt gemeldet – Status und Entnahmestelle sind enthalten.",
-            "feedbackFailure": "❌ Melden Sie die sichergestellte Wasserversorgung mit Entnahmestelle und schließen Sie mit \"kommen\"."
-          }
-        }
-      ]
-    },
-    "n_wasserversorgung_fail": {
-      "id": "n_wasserversorgung_fail",
-      "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Beginnen Sie mit dem eigenen Rufnamen, melden Sie, dass die Wasserversorgung sichergestellt ist, und nennen Sie die Entnahmestelle.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins – Wasserversorgung sichergestellt über Überflurhydrant Bergstraße zwo – kommen.“*",
-      "actions": [
-        {
-          "id": "retry",
-          "label": "🔄 Erneut versuchen",
-          "nextNodeId": "n_wasserversorgung"
-        }
-      ]
-    },
-    "n_menschenrettung": {
-      "id": "n_menschenrettung",
-      "role": "gruppenführer_a",
-      "narrative": "Die Drehleiter ist eingetroffen. Mit ihrer Hilfe wurde die Person aus dem Dachgeschoss gerettet – sie ist unverletzt.\n\nMelden Sie der Leitstelle, dass die **Menschenrettung abgeschlossen** ist. Da Sie eine Quittung der Leitstelle erwarten, schließen Sie mit „kommen“ ab – die Leitstelle beendet das Gespräch.",
-      "actions": [
-        {
-          "id": "radio_gerettet",
-          "label": "📞 Funk-Meldung sprechen",
-          "radioCall": {
-            "briefing": "Leitstelle anrufen (eigener Rufname) oder Antwort mit eigenem Rufnamen zuerst . Menschenrettung abgeschlossen . eine Person gerettet, Zustand: unverletzt . Quittung der Leitstelle erwartet: mit kommen abschließen.",
-            "expectedPhrases": [
-              "Florian Neuhaus",
-              "Menschenrettung",
-              "abgeschlossen",
-              "Person",
-              "unverletzt",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus vier-vier/eins – Menschenrettung abgeschlossen, eine Person unverletzt gerettet – kommen.",
-            "onSuccess": "n_end",
-            "onFailure": "n_menschenrettung_fail",
-            "feedbackSuccess": "✅ Abschluss der Menschenrettung gemeldet – die Leitstelle quittiert und beendet das Gespräch.",
-            "feedbackFailure": "❌ Melden Sie den Abschluss der Menschenrettung und den Zustand der Person; schließen Sie mit \"kommen\", damit die Leitstelle quittieren kann."
+            "hint": "Hier Florian Neuhaus 44/1 – Folgemeldung Bergstraße 4: eine Person gerettet und mit Verdacht auf Rauchgasvergiftung an den Rettungsdienst übergeben. Brandbekämpfung innen mit einem Rohr und außen über die Drehleiter – kommen.",
+            "briefing": "Eigener Rufname + „Folgemeldung“ . Menschenrettung abgeschlossen: eine Person gerettet . Übergabe an den Rettungsdienst, Verdacht Rauchgasvergiftung . aktuelle Maßnahmen: innen ein Rohr, außen Drehleiter . keine Namen über Funk . „kommen“",
+            "onSuccess": "n_kontrolle",
+            "onFailure": "n_folge_fail",
+            "feedbackSuccess": "✅ Folgemeldung klar und ohne personenbezogene Daten.",
+            "feedbackFailure": "❌ Melden Sie: Person gerettet, an Rettungsdienst übergeben, aktuelle Maßnahmen – ohne Namen."
           }
         }
       ]
     },
-    "n_menschenrettung_fail": {
-      "id": "n_menschenrettung_fail",
+    "n_folge_fail": {
+      "id": "n_folge_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Melden Sie, dass die Menschenrettung abgeschlossen ist und in welchem Zustand die Person ist. Da dies die letzte Übertragung des Gesprächs ist, schließen Sie mit „Ende“ ab.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins – Menschenrettung abgeschlossen, eine Person unverletzt gerettet – Ende.“*",
+      "narrative": "**Feedback:** Eine **Folgemeldung** aktualisiert die Lage: Was hat sich geändert, was läuft gerade? Personenbezogene Daten (Namen, Geburtsdaten) gehören **nicht** in den Funk.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Folgemeldung Bergstraße 4: eine Person gerettet und mit Verdacht auf Rauchgasvergiftung an den Rettungsdienst übergeben. Brandbekämpfung innen mit einem Rohr und außen über die Drehleiter – kommen.“*",
       "actions": [
         {
           "id": "retry",
           "label": "🔄 Erneut versuchen",
-          "nextNodeId": "n_menschenrettung"
+          "nextNodeId": "n_folge"
+        }
+      ]
+    },
+    "n_kontrolle": {
+      "id": "n_kontrolle",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Verstanden – Ende.“\n\nNach einiger Zeit ist die Ausbreitung gestoppt: Der Brand kann sich nicht weiter ausbreiten, die Löscharbeiten laufen noch.\n\nMelden Sie der Leitstelle die Standardmeldung dafür.",
+      "actions": [
+        {
+          "id": "radio_kontrolle",
+          "label": "📞 „Feuer unter Kontrolle“ melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Bergstraße",
+              "Feuer unter Kontrolle",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Einsatz Bergstraße 4: Feuer unter Kontrolle – kommen.",
+            "briefing": "Eigener Rufname . Einsatzstelle (Bergstraße 4) . Standardmeldung „Feuer unter Kontrolle“ = keine weitere Ausbreitung, Löscharbeiten laufen noch . „kommen“",
+            "onSuccess": "n_aus",
+            "onFailure": "n_kontrolle_fail",
+            "feedbackSuccess": "✅ „Feuer unter Kontrolle“ korrekt gemeldet.",
+            "feedbackFailure": "❌ Die Standardmeldung lautet „Feuer unter Kontrolle“."
+          }
+        }
+      ]
+    },
+    "n_kontrolle_fail": {
+      "id": "n_kontrolle_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** **„Feuer unter Kontrolle“** heißt: keine weitere Ausbreitung, die Löscharbeiten laufen aber noch. **„Feuer aus“** folgt erst, wenn kein offenes Feuer mehr vorhanden ist.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Einsatz Bergstraße 4: Feuer unter Kontrolle – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_kontrolle"
+        }
+      ]
+    },
+    "n_aus": {
+      "id": "n_aus",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Verstanden – Ende.“\n\nDie Nachlöscharbeiten sind weit fortgeschritten, kein offenes Feuer mehr. Die **Polizei** ist vor Ort und übernimmt die Einsatzstelle zur **Brandursachenermittlung**, sobald Sie fertig sind.\n\nMelden Sie **„Feuer aus“** und die geplante Übergabe.",
+      "actions": [
+        {
+          "id": "radio_aus",
+          "label": "📞 „Feuer aus“ melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Feuer aus",
+              "Nachlöscharbeiten",
+              "Polizei",
+              "übergeben",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Einsatz Bergstraße 4: Feuer aus, Nachlöscharbeiten laufen. Einsatzstelle wird anschließend an die Polizei übergeben – kommen.",
+            "briefing": "Eigener Rufname . Einsatzstelle . „Feuer aus“ . Nachlöscharbeiten laufen . Übergabe der Einsatzstelle an die Polizei (Brandursachenermittlung) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_aus_fail",
+            "feedbackSuccess": "✅ „Feuer aus“ und die Übergabe an die Polizei gemeldet.",
+            "feedbackFailure": "❌ Melden Sie „Feuer aus“, die laufenden Nachlöscharbeiten und die Übergabe an die Polizei."
+          }
+        }
+      ]
+    },
+    "n_aus_fail": {
+      "id": "n_aus_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Nach **„Feuer aus“** folgen Nachlöscharbeiten und die **Übergabe der Einsatzstelle** (hier an die Polizei). Erst danach geht es zurück – auf dem Rückweg **Status 1**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Einsatz Bergstraße 4: Feuer aus, Nachlöscharbeiten laufen. Einsatzstelle wird anschließend an die Polizei übergeben – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_aus"
         }
       ]
     },
     "n_end": {
       "id": "n_end",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** „Hier Leitstelle, verstanden – Ende.“ Ausgezeichnete Arbeit! Brandbekämpfung weiter fortsetzen.\n\n**Übung abgeschlossen! 🎉**",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – Feuer aus, verstanden – Ende.“\n\nKomplette Meldekette nach Lagemeldung: sofortige Nachforderung, Folgemeldung, „Feuer unter Kontrolle“, „Feuer aus“.\n\n**Übung abgeschlossen! 🏆**",
       "actions": [
         {
           "id": "restart",

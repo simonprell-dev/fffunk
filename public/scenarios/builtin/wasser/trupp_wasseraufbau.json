@@ -1,17 +1,17 @@
 {
   "id": "trupp_wasseraufbau",
-  "title": "Truppführer: Wassertrupp Wasseraufbau",
-  "description": "Truppführer-Übung am Einsatz in Neuhaus: Anfunken durch den Gruppenführer, Wasserentnahme am Hydrant, B-Leitung zum Verteiler, Wasser marsch und Abschlussmeldung. 5 Funk-Schritte im internen Trupp-Verkehr.",
+  "title": "Truppführer: Wassertrupp Wasserversorgung",
+  "description": "Truppführer-Übung nach FwDV 3: Wasserversorgung vom Unterflurhydranten zum Fahrzeug aufbauen – Standrohr, Spülen, Systemtrenner, Wasser marsch auf Befehl des Maschinisten und Meldung an den Gruppenführer. 5 Funk-Schritte.",
   "startingNodeId": "n_anfunken",
   "playerRole": "truppführer",
   "nodes": {
     "n_anfunken": {
       "id": "n_anfunken",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Wassertrupp von Gruppenführer - kommen.\n\nFür den Löschangriff in Neuhaus wird eine Wasserversorgung aufgebaut. Der Gruppenführer ruft den Wassertrupp im internen Trupp-Verkehr an.\n\nNehmen Sie den Anruf korrekt an.",
+      "narrative": "**Gruppenführer:** „Wassertrupp von Gruppenführer – kommen.“\n\nScheunenbrand in Neuhaus. Der Angriffstrupp geht mit dem ersten Rohr vor und wird zunächst aus dem Löschwasserbehälter versorgt. Jetzt braucht es eine stabile Wasserversorgung.\n\nBeantworten Sie den Anruf.",
       "actions": [
         {
-          "id": "radio_hoert",
+          "id": "radio_anfunken",
           "label": "📞 Anruf beantworten",
           "radioCall": {
             "expectedPhrases": [
@@ -19,12 +19,12 @@
               "Wassertrupp",
               "kommen"
             ],
-            "hint": "Hier Wassertrupp - kommen.",
-            "briefing": "Anruf des Gruppenführers annehmen . eigener Rufname zuerst (Wassertrupp) . Sprecherlaubnis zurückgeben",
+            "hint": "Hier Wassertrupp – kommen.",
+            "briefing": "Antwort mit „hier“ . eigener Rufname (Wassertrupp) . „kommen“",
             "onSuccess": "n_start",
             "onFailure": "n_anfunken_fail",
-            "feedbackSuccess": "✅ Anruf korrekt angenommen: eigener Rufname zuerst, mit „kommen“ abgeschlossen.",
-            "feedbackFailure": "❌ Die Anrufantwort beginnt mit „hier“ und dem eigenen Rufnamen, danach „kommen“ (nicht „hört“). Beispiel: „Hier Wassertrupp - kommen.“"
+            "feedbackSuccess": "✅ Anruf formal korrekt beantwortet.",
+            "feedbackFailure": "❌ Antworten Sie mit „Hier Wassertrupp – kommen“."
           }
         }
       ]
@@ -32,7 +32,7 @@
     "n_anfunken_fail": {
       "id": "n_anfunken_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Die Anrufantwort beginnt mit dem Betriebswort „hier“, gefolgt vom eigenen Rufnamen, und endet mit „kommen“. „Hört“ ist kein BOS-Betriebswort.\n\nBeispiel: *„Hier Wassertrupp - kommen.“*",
+      "narrative": "**Feedback:** Die Antwort auf einen Anruf beginnt mit **„hier“**, dann folgt der eigene Rufname, Abschluss **„kommen“**. „Hört“ ist kein Betriebswort.\n\nBeispiel: *„Hier Wassertrupp – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -44,27 +44,27 @@
     "n_start": {
       "id": "n_start",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Wassertrupp zur Wasserentnahme. Hydrant an der Hofeinfahrt, Standrohr setzen, B-Leitung zum Verteiler vor die Scheune verlegen. Angriffstrupp wartet auf Wasser - kommen.\n\nWiederholen Sie den Auftrag zur Bestätigung.",
+      "narrative": "**Gruppenführer:** „Wassertrupp: Wasserversorgung vom Unterflurhydranten an der Hofeinfahrt zum Fahrzeug herstellen – kommen.“\n\n> Nach **FwDV 3** stellt der Wassertrupp die Wasserversorgung von der Wasserentnahmestelle zum Fahrzeug her. Die Leitung vom Fahrzeug zum Verteiler legt der Schlauchtrupp.\n\nWiederholen Sie den Befehl.",
       "actions": [
         {
-          "id": "radio_auftrag",
-          "label": "📞 Auftrag bestätigen",
+          "id": "radio_start",
+          "label": "📞 Befehl wiederholen",
           "radioCall": {
             "expectedPhrases": [
+              "Wassertrupp",
               "verstanden",
-              "Wasserentnahme",
+              "Wasserversorgung",
               "Hydrant",
               "Hofeinfahrt",
-              "B-Leitung",
-              "Verteiler",
+              "Fahrzeug",
               "kommen"
             ],
-            "hint": "Hier Wassertrupp - verstanden: Wasserentnahme am Hydrant Hofeinfahrt, B-Leitung zum Verteiler vor die Scheune - kommen.",
-            "briefing": "Auftrag wortgetreu wiederholen . Entnahmestelle: Hydrant an der Hofeinfahrt . Aufgabe: B-Leitung zum Verteiler vor die Scheune . Empfang bestätigen",
-            "onSuccess": "n_hydrant",
+            "hint": "Hier Wassertrupp – verstanden: Wasserversorgung vom Unterflurhydranten Hofeinfahrt zum Fahrzeug – kommen.",
+            "briefing": "„hier Wassertrupp“ . „verstanden“ . Auftrag: Wasserversorgung . von (Unterflurhydrant Hofeinfahrt) . nach (zum Fahrzeug) . „kommen“",
+            "onSuccess": "n_reihenfolge",
             "onFailure": "n_start_fail",
-            "feedbackSuccess": "✅ Auftrag korrekt wiederholt: Entnahmestelle und Ziel bestätigt.",
-            "feedbackFailure": "❌ Wiederholen Sie den Auftrag vollständig: Wasserentnahme am Hydrant Hofeinfahrt und B-Leitung zum Verteiler. Mit „verstanden“ und „kommen“."
+            "feedbackSuccess": "✅ Befehl korrekt wiederholt.",
+            "feedbackFailure": "❌ Wiederholen Sie Auftrag, Entnahmestelle und Ziel."
           }
         }
       ]
@@ -72,7 +72,7 @@
     "n_start_fail": {
       "id": "n_start_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Der Trupp wiederholt den Auftrag zur Kontrolle. Entnahmestelle und Ziel müssen genannt werden.\n\nBeispiel: *„Hier Wassertrupp - verstanden: Wasserentnahme am Hydrant Hofeinfahrt, B-Leitung zum Verteiler vor die Scheune - kommen.“*",
+      "narrative": "**Feedback:** Wiederholen Sie den Befehl in Stichworten: **was, von wo, wohin**.\n\nBeispiel: *„Hier Wassertrupp – verstanden: Wasserversorgung vom Unterflurhydranten Hofeinfahrt zum Fahrzeug – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -81,127 +81,174 @@
         }
       ]
     },
-    "n_hydrant": {
-      "id": "n_hydrant",
+    "n_reihenfolge_x1": {
+      "id": "n_reihenfolge_x1",
       "role": "truppführer",
-      "narrative": "Der Hydrant ist geöffnet, Standrohr und Systemtrenner sind gesetzt. Die B-Leitung wird gerade gefüllt.\n\nMelden Sie dem Gruppenführer den Zwischenstand.",
-      "actions": [
-        {
-          "id": "radio_zwischenstand",
-          "label": "📞 Zwischenstand melden",
-          "radioCall": {
-            "expectedPhrases": [
-              "Gruppenführer",
-              "Wassertrupp",
-              "Standrohr",
-              "Systemtrenner",
-              "Leitung",
-              "kommen"
-            ],
-            "hint": "Gruppenführer von Wassertrupp - Hydrant geöffnet, Standrohr und Systemtrenner gesetzt, Leitung wird gefüllt - kommen.",
-            "briefing": "Zwischenstand an Gruppenführer . Hydrant geöffnet . Standrohr und Systemtrenner gesetzt . B-Leitung wird gefüllt",
-            "onSuccess": "n_verteiler",
-            "onFailure": "n_hydrant_fail",
-            "feedbackSuccess": "✅ Zwischenstand verständlich gemeldet.",
-            "feedbackFailure": "❌ Melden Sie an den Gruppenführer: Hydrant geöffnet, Standrohr und Systemtrenner gesetzt, Leitung wird gefüllt - mit „kommen“."
-          }
-        }
-      ]
-    },
-    "n_hydrant_fail": {
-      "id": "n_hydrant_fail",
-      "role": "truppführer",
-      "narrative": "**Feedback:** Ein Zwischenstand beschreibt den aktuellen Zustand der Wasserentnahme und wird an den Gruppenführer gerichtet.\n\nBeispiel: *„Gruppenführer von Wassertrupp - Hydrant geöffnet, Standrohr und Systemtrenner gesetzt, Leitung wird gefüllt - kommen.“*",
+      "narrative": "**Nicht richtig.** Ein Unterflurhydrant wird erst geöffnet, wenn das **Standrohr** sitzt – sonst schießt das Wasser unkontrolliert aus dem Schacht.",
       "actions": [
         {
           "id": "retry",
-          "label": "🔄 Erneut versuchen",
-          "nextNodeId": "n_hydrant"
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_reihenfolge"
         }
       ]
     },
-    "n_verteiler": {
-      "id": "n_verteiler",
+    "n_reihenfolge_x2": {
+      "id": "n_reihenfolge_x2",
       "role": "truppführer",
-      "narrative": "Die B-Leitung liegt, der Verteiler vor der Scheune ist gesetzt. Der Angriffstrupp meldet am Rohr: bereit für Wasser.\n\nGeben Sie dem Maschinisten **Wasser marsch** durch.",
+      "narrative": "**Nicht richtig.** Der Hydrant wird vorher **gespült**, damit Sand und Steine nicht in die Pumpe gelangen. Zum Schutz des Trinkwassernetzes gehört außerdem ein **Systemtrenner** dazu.",
       "actions": [
         {
-          "id": "radio_wasser_marsch",
-          "label": "📞 Wasser marsch melden",
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_reihenfolge"
+        }
+      ]
+    },
+    "n_reihenfolge": {
+      "id": "n_reihenfolge",
+      "role": "truppführer",
+      "narrative": "Am Hydranten: Deckel ist frei, Hydrantenschlüssel und Standrohr liegen bereit. In welcher Reihenfolge arbeiten Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔧 Standrohr setzen → Hydrant kurz öffnen und spülen → schließen → Systemtrenner und B-Schlauch zum Fahrzeug anschließen",
+          "nextNodeId": "n_meldung_ma"
+        },
+        {
+          "id": "opt1",
+          "label": "🔧 Hydrant öffnen, dann Standrohr aufsetzen",
+          "nextNodeId": "n_reihenfolge_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔧 Standrohr setzen und sofort B-Leitung ohne Spülen anschließen",
+          "nextNodeId": "n_reihenfolge_x2"
+        }
+      ]
+    },
+    "n_meldung_ma": {
+      "id": "n_meldung_ma",
+      "role": "truppführer",
+      "narrative": "Standrohr gesetzt, Hydrant gespült, Systemtrenner und B-Leitung zum Fahrzeug angeschlossen. Der Hydrant ist wieder geschlossen.\n\nMelden Sie dem **Maschinisten**, dass die Leitung bereit ist.",
+      "actions": [
+        {
+          "id": "radio_meldung_ma",
+          "label": "📞 Meldung an den Maschinisten",
           "radioCall": {
             "expectedPhrases": [
               "Maschinist",
               "Wassertrupp",
-              "Verteiler",
+              "Standrohr",
+              "gespült",
+              "Systemtrenner",
               "B-Leitung",
-              "Wasser marsch",
               "kommen"
             ],
-            "hint": "Maschinist von Wassertrupp - B-Leitung steht, Verteiler gesetzt, Angriffstrupp bereit, Wasser marsch - kommen.",
-            "briefing": "Aufforderung an den Maschinisten . B-Leitung steht und Verteiler ist gesetzt . Angriffstrupp am Rohr bereit . Kommando: Wasser marsch",
-            "onSuccess": "n_druck",
-            "onFailure": "n_verteiler_fail",
-            "feedbackSuccess": "✅ Wasser marsch korrekt an den Maschinisten durchgegeben.",
-            "feedbackFailure": "❌ Rufen Sie den Maschinisten: B-Leitung steht, Verteiler gesetzt, Angriffstrupp bereit, Wasser marsch - mit „kommen“."
+            "hint": "Maschinist von Wassertrupp – Standrohr gesetzt, Hydrant gespült, Systemtrenner und B-Leitung zum Fahrzeug angeschlossen, bereit zum Öffnen – kommen.",
+            "briefing": "Anruf: Maschinist von Wassertrupp . Standrohr gesetzt . Hydrant gespült . Systemtrenner + B-Leitung angeschlossen . bereit zum Öffnen . „kommen“",
+            "onSuccess": "n_marsch",
+            "onFailure": "n_meldung_ma_fail",
+            "feedbackSuccess": "✅ Leitung bereit gemeldet – jetzt entscheidet der Maschinist.",
+            "feedbackFailure": "❌ Melden Sie: Standrohr, gespült, Systemtrenner und B-Leitung angeschlossen, bereit."
           }
         }
       ]
     },
-    "n_verteiler_fail": {
-      "id": "n_verteiler_fail",
+    "n_meldung_ma_fail": {
+      "id": "n_meldung_ma_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Das Kommando „Wasser marsch“ geht an den Maschinisten und muss klar und eindeutig sein.\n\nBeispiel: *„Maschinist von Wassertrupp - B-Leitung steht, Verteiler gesetzt, Angriffstrupp bereit, Wasser marsch - kommen.“*",
+      "narrative": "**Feedback:** Der **Maschinist** bedient die Pumpe und gibt deshalb das Kommando „Wasser marsch“ für die Zubringerleitung.\n\nBeispiel: *„Maschinist von Wassertrupp – Standrohr gesetzt, Hydrant gespült, Systemtrenner und B-Leitung zum Fahrzeug angeschlossen, bereit zum Öffnen – kommen.“*",
       "actions": [
         {
           "id": "retry",
           "label": "🔄 Erneut versuchen",
-          "nextNodeId": "n_verteiler"
+          "nextNodeId": "n_meldung_ma"
         }
       ]
     },
-    "n_druck": {
-      "id": "n_druck",
+    "n_marsch": {
+      "id": "n_marsch",
       "role": "truppführer",
-      "narrative": "Am Verteiler kommt Wasser an. Der Druck ist stabil, keine sichtbaren Undichtigkeiten.\n\nMelden Sie dem Gruppenführer den abgeschlossenen Wasseraufbau. Es ist die letzte Meldung dieses Gesprächs.",
+      "narrative": "**Maschinist:** „Hier Maschinist – Wassertrupp: Wasser marsch – kommen.“\n\nÖffnen Sie den Hydranten **langsam** (Druckstoß vermeiden) und bestätigen Sie.",
+      "actions": [
+        {
+          "id": "radio_marsch",
+          "label": "📞 Wasser marsch bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wassertrupp",
+              "verstanden",
+              "Wasser marsch",
+              "Hydrant",
+              "geöffnet",
+              "kommen"
+            ],
+            "hint": "Hier Wassertrupp – verstanden, Wasser marsch, Hydrant wird langsam geöffnet – kommen.",
+            "briefing": "„hier Wassertrupp“ . „verstanden“ . „Wasser marsch“ wiederholen . Hydrant wird langsam geöffnet . „kommen“",
+            "onSuccess": "n_fertig",
+            "onFailure": "n_marsch_fail",
+            "feedbackSuccess": "✅ Kommando bestätigt, Hydrant langsam geöffnet.",
+            "feedbackFailure": "❌ Bestätigen Sie „Wasser marsch“ und dass der Hydrant geöffnet wird."
+          }
+        }
+      ]
+    },
+    "n_marsch_fail": {
+      "id": "n_marsch_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Hydranten werden **langsam** geöffnet und geschlossen – ein schneller Druckstoß kann Leitungen und Armaturen beschädigen.\n\nBeispiel: *„Hier Wassertrupp – verstanden, Wasser marsch, Hydrant wird langsam geöffnet – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_marsch"
+        }
+      ]
+    },
+    "n_fertig": {
+      "id": "n_fertig",
+      "role": "truppführer",
+      "narrative": "Wasser kommt am Fahrzeug an, die Leitung ist dicht. Melden Sie dem **Gruppenführer**, dass die Wasserversorgung steht und der Trupp für den nächsten Auftrag bereit ist. Es ist die letzte Meldung des Gesprächs.",
       "actions": [
         {
           "id": "radio_fertig",
-          "label": "📞 Abschluss melden",
+          "label": "📞 Meldung an den Gruppenführer",
           "radioCall": {
             "expectedPhrases": [
               "Gruppenführer",
               "Wassertrupp",
-              "Wasser am Verteiler",
-              "Druck stabil",
-              "Wasseraufbau abgeschlossen",
+              "Wasserversorgung",
+              "steht",
+              "bereit",
               "Ende"
             ],
-            "hint": "Gruppenführer von Wassertrupp - Wasser am Verteiler, Druck stabil, keine Undichtigkeiten, Wasseraufbau abgeschlossen - Ende.",
-            "briefing": "Abschlussmeldung an Gruppenführer . Wasser kommt am Verteiler an . Druck stabil, keine Undichtigkeiten . Wasseraufbau abgeschlossen . letzte Übertragung: mit „Ende“ schließen",
+            "hint": "Gruppenführer von Wassertrupp – Wasserversorgung vom Hydranten Hofeinfahrt zum Fahrzeug steht, Leitung dicht, Wassertrupp bereit für weiteren Auftrag – Ende.",
+            "briefing": "Anruf: Gruppenführer von Wassertrupp . Wasserversorgung Hydrant → Fahrzeug steht . Leitung dicht . Trupp bereit für weiteren Auftrag (z. B. Sicherheitstrupp) . „Ende“",
             "onSuccess": "n_end",
-            "onFailure": "n_druck_fail",
-            "feedbackSuccess": "✅ Abschlussmeldung vollständig, Gespräch korrekt mit „Ende“ geschlossen.",
-            "feedbackFailure": "❌ Melden Sie an den Gruppenführer: Wasser am Verteiler, Druck stabil, Wasseraufbau abgeschlossen. Als letzte Übertragung mit „Ende“ abschließen."
+            "onFailure": "n_fertig_fail",
+            "feedbackSuccess": "✅ Auftrag abgeschlossen und Einsatzbereitschaft gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Wasserversorgung steht, Leitung dicht, Trupp bereit."
           }
         }
       ]
     },
-    "n_druck_fail": {
-      "id": "n_druck_fail",
+    "n_fertig_fail": {
+      "id": "n_fertig_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Die Abschlussmeldung enthält Ergebnis und Betriebszustand und schließt das Gespräch mit „Ende“ ab.\n\nBeispiel: *„Gruppenführer von Wassertrupp - Wasser am Verteiler, Druck stabil, keine Undichtigkeiten, Wasseraufbau abgeschlossen - Ende.“*",
+      "narrative": "**Feedback:** Nach dem Auftrag meldet sich der Trupp **beim Gruppenführer zurück** und bereit – häufig folgt der nächste Auftrag, z. B. als **Sicherheitstrupp** für den Atemschutzeinsatz.\n\nBeispiel: *„Gruppenführer von Wassertrupp – Wasserversorgung vom Hydranten Hofeinfahrt zum Fahrzeug steht, Leitung dicht, Wassertrupp bereit für weiteren Auftrag – Ende.“*",
       "actions": [
         {
           "id": "retry",
           "label": "🔄 Erneut versuchen",
-          "nextNodeId": "n_druck"
+          "nextNodeId": "n_fertig"
         }
       ]
     },
     "n_end": {
       "id": "n_end",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Verstanden, Wasseraufbau abgeschlossen. Angriffstrupp kann vorgehen - Ende.\n\n**Übung abgeschlossen!**",
+      "narrative": "Wasserversorgung nach FwDV 3 aufgebaut: richtige Reihenfolge am Hydranten, Wasser marsch auf Kommando des Maschinisten, Rückmeldung an den Gruppenführer.\n\n**Übung abgeschlossen! 🎉**",
       "actions": [
         {
           "id": "restart",

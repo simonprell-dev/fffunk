@@ -1,0 +1,332 @@
+{
+  "id": "atemschutzueberwachung",
+  "title": "Atemschutzüberwachung",
+  "description": "Mittel: Als Atemschutzüberwachung den Angriffstrupp registrieren, Druckkontrollen nach 1/3 und 2/3 der Einsatzzeit abfragen, Rückzugsdruck vorgeben, bei fehlender Antwort den Gruppenführer alarmieren und das Verlassen des Gefahrenbereichs dokumentieren. 6 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "atemschutzüberwachung",
+  "nodes": {
+    "n_start_x1": {
+      "id": "n_start_x1",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Nicht richtig.** Die Überwachung nach FwDV 7 registriert **wer** (Namen, Rufname), **wann** (Zeit beim Anschließen des Lungenautomaten), **womit** (Druck) und **wohin** (Auftrag). Nur so kann im Notfall gezielt gesucht werden.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "atemschutzüberwachung",
+      "narrative": "Kellerbrand in einem Mehrfamilienhaus in Neuhaus. Sie sind Maschinist auf **Florian Neuhaus 44/1** und übernehmen im Auftrag des Gruppenführers die **Atemschutzüberwachung** (FwDV 7) mit Überwachungstafel und Uhr.\n\nDer Angriffstrupp schließt gerade die Lungenautomaten an (Pressluftatmer, 300-bar-Flaschen). Erwartete Einsatzzeit: **30 Minuten**.\n\nWas tragen Sie auf der Tafel ein?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📋 Namen der Geräteträger, Funkrufname des Trupps, Uhrzeit beim Anschließen, Flaschendruck, Auftrag",
+          "nextNodeId": "n_anmeldung"
+        },
+        {
+          "id": "opt1",
+          "label": "📋 Nur die Uhrzeit – der Trupp weiß selbst, wie viel Luft er hat",
+          "nextNodeId": "n_start_x1"
+        }
+      ]
+    },
+    "n_anmeldung": {
+      "id": "n_anmeldung",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Angriffstrupp:** „Atemschutzüberwachung von Angriffstrupp – Angriffstrupp geht vor zur Brandbekämpfung in den Keller, Druck **300** und **290 bar** – kommen.“\n\nEs ist **14:05 Uhr**. Bestätigen Sie die Anmeldung. Dokumentiert wird der **niedrigste** Druck im Trupp.",
+      "actions": [
+        {
+          "id": "radio_anmeldung",
+          "label": "📞 Anmeldung bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Atemschutzüberwachung",
+              "verstanden",
+              "Angriffstrupp",
+              "Keller",
+              "290",
+              "Ende"
+            ],
+            "hint": "Hier Atemschutzüberwachung – verstanden: Angriffstrupp geht vor in den Keller, 290 bar, Zeit 14:05 – Ende.",
+            "briefing": "„hier Atemschutzüberwachung“ . „verstanden“ . kurz wiederholen: Trupp, Ziel (Keller), niedrigster Druck (290 bar), Uhrzeit . „Ende“",
+            "onSuccess": "n_drittel",
+            "onFailure": "n_anmeldung_fail",
+            "feedbackSuccess": "✅ Anmeldung quittiert und wiederholt – Ausgangsdruck ist dokumentiert.",
+            "feedbackFailure": "❌ Bestätigen Sie mit „verstanden“ und wiederholen Sie Trupp, Ziel, niedrigsten Druck und Uhrzeit."
+          }
+        }
+      ]
+    },
+    "n_anmeldung_fail": {
+      "id": "n_anmeldung_fail",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Feedback:** Durch die Wiederholung merkt der Trupp sofort, wenn ein falscher Druck notiert wurde. Maßgeblich ist der **niedrigste Druck** im Trupp.\n\nBeispiel: *„Hier Atemschutzüberwachung – verstanden: Angriffstrupp geht vor in den Keller, 290 bar, Zeit 14:05 – Ende.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anmeldung"
+        }
+      ]
+    },
+    "n_drittel": {
+      "id": "n_drittel",
+      "role": "atemschutzüberwachung",
+      "narrative": "Es ist **14:15 Uhr** – ein Drittel der erwarteten Einsatzzeit ist vorbei. Fragen Sie den Behälterdruck ab.",
+      "actions": [
+        {
+          "id": "radio_drittel",
+          "label": "📞 Erste Druckkontrolle",
+          "radioCall": {
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "Atemschutzüberwachung",
+              "Druck",
+              "kommen"
+            ],
+            "hint": "Angriffstrupp von Atemschutzüberwachung – erste Druckkontrolle, Frage Behälterdruck – kommen.",
+            "briefing": "Anruf: Angriffstrupp von Atemschutzüberwachung . Anlass: erste Druckkontrolle (1/3 der Einsatzzeit) . Frage Behälterdruck . „kommen“",
+            "onSuccess": "n_rueckzug",
+            "onFailure": "n_drittel_fail",
+            "feedbackSuccess": "✅ Druckkontrolle nach einem Drittel der Einsatzzeit abgefragt.",
+            "feedbackFailure": "❌ Rufen Sie den Angriffstrupp an und fragen Sie den Behälterdruck ab."
+          }
+        }
+      ]
+    },
+    "n_drittel_fail": {
+      "id": "n_drittel_fail",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Feedback:** Nach FwDV 7 erinnert die Überwachung den Trupp nach **1/3 und 2/3 der erwarteten Einsatzzeit** an die Druckkontrolle.\n\nBeispiel: *„Angriffstrupp von Atemschutzüberwachung – erste Druckkontrolle, Frage Behälterdruck – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_drittel"
+        }
+      ]
+    },
+    "n_rueckzug": {
+      "id": "n_rueckzug",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Angriffstrupp:** „Hier Angriffstrupp – Truppführer **230**, Truppmann **220 bar**, Brandraum im Keller erreicht – kommen.“\n\nNotieren Sie den Druck. Für den Hinweg hat der Trupp **70 bar** verbraucht (290 → 220). Faustregel: Für den Rückweg wird der **doppelte** Druck des Hinwegs eingeplant – also Rückzug spätestens bei **140 bar**. Geben Sie das durch.",
+      "actions": [
+        {
+          "id": "radio_rueckzug",
+          "label": "📞 Druck quittieren, Rückzugsdruck",
+          "radioCall": {
+            "expectedPhrases": [
+              "Atemschutzüberwachung",
+              "verstanden",
+              "220",
+              "Rückzug",
+              "140",
+              "Ende"
+            ],
+            "hint": "Hier Atemschutzüberwachung – verstanden: 220 bar, Brandraum erreicht. Rückzug spätestens bei 140 bar – Ende.",
+            "briefing": "„hier Atemschutzüberwachung“ . „verstanden“ . niedrigster Druck (220 bar) + Einsatzziel erreicht . Rückzugsdruck: 2 × 70 bar Verbrauch = spätestens bei 140 bar . „Ende“",
+            "onSuccess": "n_zweidrittel",
+            "onFailure": "n_rueckzug_fail",
+            "feedbackSuccess": "✅ Druck notiert und Rückzugsdruck richtig vorgegeben.",
+            "feedbackFailure": "❌ Quittieren Sie 220 bar und geben Sie den Rückzug spätestens bei 140 bar vor."
+          }
+        }
+      ]
+    },
+    "n_rueckzug_fail": {
+      "id": "n_rueckzug_fail",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Feedback:** Für den Rückweg wird der **doppelte Luftverbrauch des Hinwegs** eingeplant: 70 bar Hinweg → 140 bar Reserve. Unabhängig davon tritt der Trupp spätestens beim **Warnsignal** den Rückweg an.\n\nBeispiel: *„Hier Atemschutzüberwachung – verstanden: 220 bar, Brandraum erreicht. Rückzug spätestens bei 140 bar – Ende.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_rueckzug"
+        }
+      ]
+    },
+    "n_zweidrittel": {
+      "id": "n_zweidrittel",
+      "role": "atemschutzüberwachung",
+      "narrative": "Es ist **14:25 Uhr** – zwei Drittel der Einsatzzeit. Fragen Sie erneut den Druck ab.",
+      "actions": [
+        {
+          "id": "radio_zweidrittel",
+          "label": "📞 Zweite Druckkontrolle",
+          "radioCall": {
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "Atemschutzüberwachung",
+              "zweite Druckkontrolle",
+              "Druck",
+              "kommen"
+            ],
+            "hint": "Angriffstrupp von Atemschutzüberwachung – zweite Druckkontrolle, Frage Behälterdruck – kommen.",
+            "briefing": "Anruf: Angriffstrupp von Atemschutzüberwachung . zweite Druckkontrolle (2/3) . Frage Behälterdruck . „kommen“",
+            "onSuccess": "n_keine_antwort",
+            "onFailure": "n_zweidrittel_fail",
+            "feedbackSuccess": "✅ Zweite Druckkontrolle abgefragt.",
+            "feedbackFailure": "❌ Rufen Sie den Angriffstrupp an und fragen Sie den Druck ab."
+          }
+        }
+      ]
+    },
+    "n_zweidrittel_fail": {
+      "id": "n_zweidrittel_fail",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Feedback:** Die zweite Erinnerung kommt nach **2/3 der Einsatzzeit**.\n\nBeispiel: *„Angriffstrupp von Atemschutzüberwachung – zweite Druckkontrolle, Frage Behälterdruck – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_zweidrittel"
+        }
+      ]
+    },
+    "n_keine_antwort_x1": {
+      "id": "n_keine_antwort_x1",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Nicht richtig.** Ein Trupp, der sich nicht meldet, ist ein **möglicher Atemschutznotfall**. Der Einheitsführer muss **sofort** informiert werden – er entscheidet über den Einsatz des Sicherheitstrupps. Jede Minute zählt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_keine_antwort"
+        }
+      ]
+    },
+    "n_keine_antwort_x2": {
+      "id": "n_keine_antwort_x2",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Nicht richtig.** Die Atemschutzüberwachung bleibt an der Tafel und am Funk. Sie informieren den **Gruppenführer** – er setzt den Sicherheitstrupp ein.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_keine_antwort"
+        }
+      ]
+    },
+    "n_keine_antwort": {
+      "id": "n_keine_antwort",
+      "role": "atemschutzüberwachung",
+      "narrative": "… **Keine Antwort.** Sie rufen ein zweites Mal – wieder **keine Antwort**.\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📣 Sofort den Gruppenführer informieren",
+          "nextNodeId": "n_meldung_gf"
+        },
+        {
+          "id": "opt1",
+          "label": "⏳ Fünf Minuten warten und dann noch einmal rufen",
+          "nextNodeId": "n_keine_antwort_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚶 Selbst zum Kellerabgang gehen und nachsehen",
+          "nextNodeId": "n_keine_antwort_x2"
+        }
+      ]
+    },
+    "n_meldung_gf": {
+      "id": "n_meldung_gf",
+      "role": "atemschutzüberwachung",
+      "narrative": "Informieren Sie den Gruppenführer mit allen Angaben, die er für die Entscheidung braucht.",
+      "actions": [
+        {
+          "id": "radio_meldung_gf",
+          "label": "📞 Gruppenführer informieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Atemschutzüberwachung",
+              "Angriffstrupp",
+              "meldet sich nicht",
+              "220",
+              "Keller",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Atemschutzüberwachung – Angriffstrupp meldet sich nach zweimaligem Anruf nicht. Letzter Druck 220 bar um 14:15, Standort Brandraum Keller, Einsatzzeit 20 Minuten – kommen.",
+            "briefing": "Anruf: Gruppenführer von Atemschutzüberwachung . Angriffstrupp meldet sich nach zweimaligem Anruf nicht . letzter Druck (220 bar) mit Uhrzeit (14:15) . letzter Standort (Brandraum Keller) . bisherige Einsatzzeit (20 Minuten) . „kommen“",
+            "onSuccess": "n_rueckmeldung",
+            "onFailure": "n_meldung_gf_fail",
+            "feedbackSuccess": "✅ Alle entscheidenden Angaben weitergegeben – der Gruppenführer kann handeln.",
+            "feedbackFailure": "❌ Melden Sie: keine Antwort nach zwei Anrufen, letzter Druck mit Uhrzeit, letzter Standort, Einsatzzeit."
+          }
+        }
+      ]
+    },
+    "n_meldung_gf_fail": {
+      "id": "n_meldung_gf_fail",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Feedback:** Der Gruppenführer braucht: **was** (keine Antwort nach zwei Anrufen), **letzter Druck mit Uhrzeit**, **letzter Standort** und **Einsatzzeit**. Damit kann er den Sicherheitstrupp gezielt einsetzen.\n\nBeispiel: *„Gruppenführer von Atemschutzüberwachung – Angriffstrupp meldet sich nach zweimaligem Anruf nicht. Letzter Druck 220 bar um 14:15, Standort Brandraum Keller, Einsatzzeit 20 Minuten – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_meldung_gf"
+        }
+      ]
+    },
+    "n_rueckmeldung": {
+      "id": "n_rueckmeldung",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Gruppenführer:** „Verstanden – Sicherheitstrupp macht sich bereit.“\n\nKurz darauf meldet sich der Trupp:\n\n**Angriffstrupp:** „Atemschutzüberwachung von Angriffstrupp – Funk im Keller war gestört. Wir haben den Gefahrenbereich verlassen, Druck **150** und **140 bar** – kommen.“\n\nQuittieren Sie und dokumentieren Sie das Verlassen des Gefahrenbereichs.",
+      "actions": [
+        {
+          "id": "radio_rueckmeldung",
+          "label": "📞 Verlassen quittieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Atemschutzüberwachung",
+              "verstanden",
+              "Gefahrenbereich verlassen",
+              "140",
+              "Ende"
+            ],
+            "hint": "Hier Atemschutzüberwachung – verstanden: Angriffstrupp hat den Gefahrenbereich verlassen, 140 bar, Zeit 14:27 – Ende.",
+            "briefing": "„hier Atemschutzüberwachung“ . „verstanden“ . Angriffstrupp hat den Gefahrenbereich verlassen . niedrigster Druck (140 bar) + Uhrzeit . „Ende“ – danach den Gruppenführer informieren",
+            "onSuccess": "n_end",
+            "onFailure": "n_rueckmeldung_fail",
+            "feedbackSuccess": "✅ Verlassen des Gefahrenbereichs dokumentiert.",
+            "feedbackFailure": "❌ Quittieren Sie: Gefahrenbereich verlassen, 140 bar, Uhrzeit."
+          }
+        }
+      ]
+    },
+    "n_rueckmeldung_fail": {
+      "id": "n_rueckmeldung_fail",
+      "role": "atemschutzüberwachung",
+      "narrative": "**Feedback:** Erst wenn der Trupp den **Gefahrenbereich verlassen** hat, ist er aus der Überwachung entlassen. Danach informieren Sie den Gruppenführer, damit der Sicherheitstrupp nicht mehr vorgehen muss.\n\nBeispiel: *„Hier Atemschutzüberwachung – verstanden: Angriffstrupp hat den Gefahrenbereich verlassen, 140 bar, Zeit 14:27 – Ende.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_rueckmeldung"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "atemschutzüberwachung",
+      "narrative": "Sie informieren den Gruppenführer: Angriffstrupp ist wohlauf draußen. Der Sicherheitstrupp bleibt in Bereitstellung.\n\nAtemschutzüberwachung nach FwDV 7: Registrierung, Kontrollen nach 1/3 und 2/3, Rückzugsdruck, sofortige Meldung bei fehlender Antwort, Austragen beim Verlassen.\n\n> Ein Funkloch im Keller ist typisch. Abhilfe: rechtzeitig in **DMO** arbeiten, ggf. **Repeater** oder eine Funkbrücke einrichten.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

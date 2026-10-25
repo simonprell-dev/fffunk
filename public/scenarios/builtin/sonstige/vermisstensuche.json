@@ -1,0 +1,302 @@
+{
+  "id": "vermisstensuche",
+  "title": "Vermisstensuche im Gelände",
+  "description": "Mittel: Als Gruppenführer einer Suchgruppe einen Suchabschnitt übernehmen, in der Suchkette suchen, einen Fund richtig sichern und melden, die aufgefundene Person ohne Namen melden und die Vollzähligkeit zurückmelden. 5 Funk-Schritte.",
+  "startingNodeId": "n_ankunft",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_ankunft": {
+      "id": "n_ankunft",
+      "role": "gruppenführer_a",
+      "narrative": "Ein **78-jähriger, an Demenz erkrankter Mann** wird seit drei Stunden aus einem Seniorenheim in Neuhaus vermisst. Die **Polizei leitet die Suche**, die Feuerwehr unterstützt. Am Sammelplatz Sportplatz führt **Florian Neuhaus 11/1** den Feuerwehr-Abschnitt.\n\nSie treffen als Gruppenführer mit **Florian Neuhaus 44/1** und **1/8** am Sammelplatz ein. Melden Sie sich an und erfragen Sie den Auftrag.",
+      "actions": [
+        {
+          "id": "radio_ankunft",
+          "label": "📞 Anmelden und Auftrag erfragen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Sammelplatz",
+              "1/8",
+              "Auftrag",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – mit Gruppe 1/8 am Sammelplatz Sportplatz eingetroffen, Frage Suchauftrag – kommen.",
+            "briefing": "Anruf: Florian Neuhaus 11/1 von Florian Neuhaus 44/1 . eingetroffen am Sammelplatz Sportplatz . Stärke (1/8 = Gruppe) . Frage Suchauftrag . „kommen“",
+            "onSuccess": "n_auftrag",
+            "onFailure": "n_ankunft_fail",
+            "feedbackSuccess": "✅ Anmeldung mit Stärke – der Abschnitt weiß, mit wie vielen Kräften er planen kann.",
+            "feedbackFailure": "❌ Melden Sie Ankunft am Sammelplatz, Stärke 1/8 und fragen Sie den Auftrag ab."
+          }
+        }
+      ]
+    },
+    "n_ankunft_fail": {
+      "id": "n_ankunft_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bei Suchen zählt jede Person: Melden Sie sich mit **Stärke** (z. B. **1/8** = ein Führer, acht Mann) an.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – mit Gruppe 1/8 am Sammelplatz Sportplatz eingetroffen, Frage Suchauftrag – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_ankunft"
+        }
+      ]
+    },
+    "n_auftrag": {
+      "id": "n_auftrag",
+      "role": "gruppenführer_a",
+      "narrative": "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – Auftrag für Florian Neuhaus 44/1: **Suchabschnitt drei**, Waldstück nördlich des Sportplatzes zwischen Feldweg und Bachlauf bis zur Kreisstraße. Suchkette, Abstand höchstens fünf Meter. Gesucht: Mann, 78, graue Jacke, Gehstock. Fundstücke nicht verändern. Bei Auffinden **keine Namen** über Funk – kommen.“\n\nWiederholen Sie die wesentlichen Punkte.",
+      "actions": [
+        {
+          "id": "radio_auftrag",
+          "label": "📞 Auftrag wiederholen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "verstanden",
+              "Suchabschnitt drei",
+              "Feldweg",
+              "Bachlauf",
+              "Kreisstraße",
+              "Suchkette",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – verstanden: Suchabschnitt drei, Waldstück zwischen Feldweg und Bachlauf bis zur Kreisstraße, Suchkette mit höchstens fünf Metern Abstand, graue Jacke, Gehstock – beginnen mit der Suche – kommen.",
+            "briefing": "„hier“ + Rufname . „verstanden“ . Abschnitt und Grenzen (Suchabschnitt drei, Feldweg – Bachlauf – Kreisstraße) . Suchart (Suchkette, max. 5 m) . Merkmale (graue Jacke, Gehstock) . Beginn melden . „kommen“",
+            "onSuccess": "n_kette",
+            "onFailure": "n_auftrag_fail",
+            "feedbackSuccess": "✅ Auftrag mit Abschnittsgrenzen und Merkmalen wiederholt.",
+            "feedbackFailure": "❌ Wiederholen Sie Abschnitt, Grenzen, Suchkette mit Abstand und die Merkmale."
+          }
+        }
+      ]
+    },
+    "n_auftrag_fail": {
+      "id": "n_auftrag_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Die **Abschnittsgrenzen** sind das Wichtigste: Nur so überlappen sich die Abschnitte nicht und es bleiben keine Lücken.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: Suchabschnitt drei, Waldstück zwischen Feldweg und Bachlauf bis zur Kreisstraße, Suchkette mit höchstens fünf Metern Abstand, graue Jacke, Gehstock – beginnen mit der Suche – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_auftrag"
+        }
+      ]
+    },
+    "n_kette_x1": {
+      "id": "n_kette_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Einzeln Suchende lassen Lücken und können selbst verloren gehen. Eine **Suchkette** mit Sicht- und Rufkontakt deckt die Fläche lückenlos ab.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_kette"
+        }
+      ]
+    },
+    "n_kette_x2": {
+      "id": "n_kette_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Menschen mit Demenz reagieren oft nicht oder verstecken sich sogar. Lärm hilft nicht, sondern stört Suchhunde. Systematische Suche in der **Kette**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_kette"
+        }
+      ]
+    },
+    "n_kette": {
+      "id": "n_kette",
+      "role": "gruppenführer_a",
+      "narrative": "Sie stellen die Gruppe am Feldweg auf. Wie organisieren Sie die Suche?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🚶‍♂️🚶‍♀️ Suchkette mit gleichem Abstand und Sicht- und Rufkontakt, Gruppenführer dahinter, langsames Tempo, durchsuchte Grenzen mit Trassierband markieren",
+          "nextNodeId": "n_gegenstand"
+        },
+        {
+          "id": "opt1",
+          "label": "🏃 Alle verteilen sich einzeln, damit es schneller geht",
+          "nextNodeId": "n_kette_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📣 Mit Martinshorn durch den Wald fahren",
+          "nextNodeId": "n_kette_x2"
+        }
+      ]
+    },
+    "n_gegenstand_x1": {
+      "id": "n_gegenstand_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Fundstücke werden **nicht verändert** – sie sind eine Spur für die Polizei und für **Personenspürhunde** (Mantrailer). Markieren, Standort melden, liegen lassen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_gegenstand"
+        }
+      ]
+    },
+    "n_gegenstand": {
+      "id": "n_gegenstand",
+      "role": "gruppenführer_a",
+      "narrative": "Nach 20 Minuten findet ein Truppmann am Bachufer einen **Gehstock**.\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📍 Nicht berühren, Fundstelle markieren, Standort bestimmen und dem Abschnitt melden",
+          "nextNodeId": "n_fund_melden"
+        },
+        {
+          "id": "opt1",
+          "label": "🦯 Gehstock mitnehmen und am Sammelplatz abgeben",
+          "nextNodeId": "n_gegenstand_x1"
+        }
+      ]
+    },
+    "n_fund_melden": {
+      "id": "n_fund_melden",
+      "role": "gruppenführer_a",
+      "narrative": "Melden Sie den Fund mit eindeutigem Standort.",
+      "actions": [
+        {
+          "id": "radio_fund_melden",
+          "label": "📞 Fund melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Fund",
+              "Suchabschnitt drei",
+              "Gehstock",
+              "Bachufer",
+              "Holzbrücke",
+              "markiert",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Fund in Suchabschnitt drei: Gehstock am Bachufer, etwa zweihundert Meter nördlich der Holzbrücke. Fundstelle markiert und nicht verändert – kommen.",
+            "briefing": "Anruf: Florian Neuhaus 11/1 von Florian Neuhaus 44/1 . „Fund“ + Suchabschnitt . was (Gehstock) . wo – mit markantem Punkt oder Koordinaten (Bachufer, ca. 200 m nördlich der Holzbrücke) . markiert und nicht verändert . „kommen“",
+            "onSuccess": "n_person",
+            "onFailure": "n_fund_melden_fail",
+            "feedbackSuccess": "✅ Fund mit Standort gemeldet und gesichert.",
+            "feedbackFailure": "❌ Melden Sie: was gefunden, wo (mit markantem Punkt), markiert und nicht verändert."
+          }
+        }
+      ]
+    },
+    "n_fund_melden_fail": {
+      "id": "n_fund_melden_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Der Standort muss **für andere auffindbar** sein: markanter Punkt mit Entfernung und Richtung oder Koordinaten aus dem Funkgerät oder der App.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Fund in Suchabschnitt drei: Gehstock am Bachufer, etwa zweihundert Meter nördlich der Holzbrücke. Fundstelle markiert und nicht verändert – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_fund_melden"
+        }
+      ]
+    },
+    "n_person": {
+      "id": "n_person",
+      "role": "gruppenführer_a",
+      "narrative": "**Florian Neuhaus 11/1:** „Verstanden – Suche entlang des Bachlaufs verdichten – Ende.“\n\nFünfzig Meter bachabwärts finden Sie den Mann in einem Graben. Er ist **ansprechbar, stark unterkühlt** und kann nicht gehen. Ihre Gruppe beginnt mit der Erstversorgung (Rettungsdecke, Wärmeerhalt).\n\nMelden Sie das Auffinden – **ohne Namen** –, fordern Sie den Rettungsdienst an und nennen Sie eine Zufahrt.",
+      "actions": [
+        {
+          "id": "radio_person",
+          "label": "📞 Auffinden melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Person aufgefunden",
+              "unterkühlt",
+              "ansprechbar",
+              "Rettungsdienst",
+              "Zufahrt",
+              "Feldweg",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Person aufgefunden in Suchabschnitt drei, im Graben am Bachlauf, etwa fünfzig Meter unterhalb des Fundorts Gehstock. Ansprechbar, stark unterkühlt. Erstversorgung läuft, benötigen Rettungsdienst. Zufahrt über den Feldweg ab der Kreisstraße, Einweiser steht an der Kreisstraße – kommen.",
+            "briefing": "Anruf . „Person aufgefunden“ + Suchabschnitt (keine Namen!) . Fundort . Zustand (ansprechbar, stark unterkühlt) . Maßnahmen (Erstversorgung) . Nachforderung (Rettungsdienst) . Zufahrt + Einweiser . „kommen“",
+            "onSuccess": "n_vollzaehlig",
+            "onFailure": "n_person_fail",
+            "feedbackSuccess": "✅ Auffinden gemeldet: Zustand, Rettungsdienst, Zufahrt mit Einweiser – und kein Name im Funk.",
+            "feedbackFailure": "❌ Melden Sie: Person aufgefunden (ohne Namen), Fundort, Zustand, Rettungsdienst, Zufahrt mit Einweiser."
+          }
+        }
+      ]
+    },
+    "n_person_fail": {
+      "id": "n_person_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Über Funk hören viele mit (auch Scanner). **Keine Namen** der vermissten Person. Der Rettungsdienst braucht eine **befahrbare Zufahrt** und einen **Einweiser**.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Person aufgefunden in Suchabschnitt drei, im Graben am Bachlauf, etwa fünfzig Meter unterhalb des Fundorts Gehstock. Ansprechbar, stark unterkühlt. Erstversorgung läuft, benötigen Rettungsdienst. Zufahrt über den Feldweg ab der Kreisstraße, Einweiser steht an der Kreisstraße – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_person"
+        }
+      ]
+    },
+    "n_vollzaehlig": {
+      "id": "n_vollzaehlig",
+      "role": "gruppenführer_a",
+      "narrative": "Der Rettungsdienst hat den Mann übernommen.\n\n**Florian Neuhaus 11/1:** „Florian Neuhaus 11/1 an alle: Suche beendet, alle Suchgruppen zum Sammelplatz Sportplatz – Vollzähligkeit melden.“\n\nSie haben durchgezählt: alle 9 da. Melden Sie zurück.",
+      "actions": [
+        {
+          "id": "radio_vollzaehlig",
+          "label": "📞 Vollzähligkeit melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "verstanden",
+              "Rettungsdienst",
+              "vollzählig",
+              "1/8",
+              "Sammelplatz",
+              "Ende"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – verstanden: Person an den Rettungsdienst übergeben, Gruppe vollzählig 1/8, rücken zum Sammelplatz – Ende.",
+            "briefing": "„hier“ + Rufname . „verstanden“ . Person übergeben . Vollzähligkeit mit Stärke (1/8) . rücken zum Sammelplatz . „Ende“",
+            "onSuccess": "n_end",
+            "onFailure": "n_vollzaehlig_fail",
+            "feedbackSuccess": "✅ Vollzählig zurückgemeldet.",
+            "feedbackFailure": "❌ Melden Sie: übergeben, vollzählig 1/8, rücken zum Sammelplatz."
+          }
+        }
+      ]
+    },
+    "n_vollzaehlig_fail": {
+      "id": "n_vollzaehlig_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Nach jeder Suche wird die **Vollzähligkeit** gemeldet – im Gelände kann eine Einsatzkraft leicht selbst verloren gehen.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: Person an den Rettungsdienst übergeben, Gruppe vollzählig 1/8, rücken zum Sammelplatz – Ende.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_vollzaehlig"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "Suchabschnitt systematisch abgesucht, Fund gesichert, Person ohne Namen gemeldet, Rettungsdienst mit Zufahrt angefordert und vollzählig zurückgemeldet.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_ankunft"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

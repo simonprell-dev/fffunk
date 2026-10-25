@@ -1,41 +1,42 @@
 {
   "id": "koordination_nachkraefte",
   "title": "Koordination der Nachkräfte",
-  "description": "Mittel: Als Gruppenführer des ersteintreffenden Fahrzeugs nachrückende Kräfte per Funk einweisen - Anfahrtsweg mit Meldepunkt, Einsatzauftrag und Aufstellungsort der Drehleiter. 3 Funk-Schritte.",
+  "description": "Mittel: Als Gruppenführer des ersteintreffenden Fahrzeugs nachrückende Kräfte über Funk einweisen – Anfahrt mit Meldepunkt, Einsatzauftrag nach Befehlsschema und Auftrag für die Drehleiter. 3 Funk-Schritte.",
   "startingNodeId": "n_anfahrt_start",
   "playerRole": "gruppenführer_a",
   "nodes": {
     "n_anfahrt_start": {
       "id": "n_anfahrt_start",
       "role": "gruppenführer_a",
-      "narrative": "Sie sind Gruppenführer des ersteintreffenden **Florian Neuhaus vier-vier/eins** an der Einsatzstelle **Dorfstraße acht in Neuhaus**. Das nachgeforderte **Florian Adelsdorf vier-vier/eins** ist auf Anfahrt und fragt nach dem Weg.\n\n**Florian Adelsdorf 44/1:** „Florian Neuhaus vier-vier/eins von Florian Adelsdorf vier-vier/eins - Frage Anfahrtsweg zur Einsatzstelle - kommen.\"\n\nAntworten Sie und geben Sie die **Anfahrtsroute mit Meldepunkt** durch!",
+      "narrative": "Sie sind Gruppenführer des ersteintreffenden Fahrzeugs **Florian Neuhaus 44/1** und Einsatzleiter an der Einsatzstelle **Dorfstraße 8 in Neuhaus** (Scheunenbrand). Die ILS hat für den Einsatz eine **Einsatz-Sprechgruppe (TMO)** zugewiesen.\n\nDas nachgeforderte **Florian Adelsdorf 44/1** ist auf Anfahrt:\n\n**Florian Adelsdorf 44/1:** „Florian Neuhaus 44/1 von Florian Adelsdorf 44/1 – Frage Anfahrtsweg – kommen.“\n\nGeben Sie die **Anfahrt mit Meldepunkt** durch. Die Dorfstraße ist durch Schläuche und Fahrzeuge eng – nachrückende Kräfte sollen sich zuerst melden.",
       "actions": [
         {
-          "id": "radio_anfahrt",
-          "label": "📞 Funk-Meldung sprechen",
+          "id": "radio_anfahrt_start",
+          "label": "📞 Anfahrt durchgeben",
           "radioCall": {
             "expectedPhrases": [
+              "Florian Neuhaus",
               "Hauptstraße",
-              "Kirche links",
+              "Kirche",
               "Dorfstraße",
-              "Kreuzung Gartenweg",
+              "Gartenweg",
               "melden",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus vier-vier/eins - Anfahrt über Hauptstraße Neuhaus, an der Kirche links in die Dorfstraße, melden an der Kreuzung Dorfstraße/Gartenweg - kommen.",
-            "briefing": "Anrufantwort mit eigenem Rufnamen zuerst (Hier Florian Neuhaus 44/1) . Anfahrtsweg konkret: über die Hauptstraße Neuhaus . an der Kirche links in die Dorfstraße . Meldepunkt nennen: an der Kreuzung Dorfstraße/Gartenweg melden . Mit kommen abschließen",
+            "hint": "Hier Florian Neuhaus 44/1 – Anfahrt über die Hauptstraße, an der Kirche links in die Dorfstraße. Melden an der Kreuzung Dorfstraße / Gartenweg – kommen.",
+            "briefing": "„hier“ + eigener Rufname . Anfahrtsweg mit markanten Punkten (Hauptstraße, Kirche links, Dorfstraße) . Meldepunkt (Kreuzung Dorfstraße / Gartenweg) . „kommen“",
             "onSuccess": "n_weiterweisung",
-            "onFailure": "n_anfahrt_fail",
-            "feedbackSuccess": "✅ Anfahrtsroute mit Meldepunkt korrekt durchgegeben!",
-            "feedbackFailure": "❌ Antworten Sie mit eigenem Rufnamen zuerst und nennen Sie den genauen Anfahrtsweg mit Straßennamen sowie einem Meldepunkt - kommen."
+            "onFailure": "n_anfahrt_start_fail",
+            "feedbackSuccess": "✅ Anfahrtsweg mit markanten Punkten und klarem Meldepunkt durchgegeben.",
+            "feedbackFailure": "❌ Geben Sie den Anfahrtsweg mit markanten Punkten und einen eindeutigen Meldepunkt durch."
           }
         }
       ]
     },
-    "n_anfahrt_fail": {
-      "id": "n_anfahrt_fail",
+    "n_anfahrt_start_fail": {
+      "id": "n_anfahrt_start_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Beginnen Sie die Anrufantwort mit Ihrem eigenen Rufnamen und geben Sie den Anfahrtsweg mit konkreten Straßennamen und einem **Meldepunkt** durch.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins - Anfahrt über Hauptstraße Neuhaus, an der Kirche links in die Dorfstraße, melden an der Kreuzung Dorfstraße/Gartenweg - kommen.\"*",
+      "narrative": "**Feedback:** Nachrückende Kräfte brauchen eine **eindeutige Route** (markante Punkte wie Kirche, Kreuzungen) und einen **Meldepunkt**. So fahren sie sich nicht an der engen Einsatzstelle fest und Sie können sie gezielt einsetzen.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Anfahrt über die Hauptstraße, an der Kirche links in die Dorfstraße. Melden an der Kreuzung Dorfstraße / Gartenweg – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -47,26 +48,27 @@
     "n_weiterweisung": {
       "id": "n_weiterweisung",
       "role": "gruppenführer_a",
-      "narrative": "**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf vier-vier/eins - Kreuzung Dorfstraße/Gartenweg erreicht - Frage weiteren Auftrag - kommen.\"\n\nWeisen Sie Florian Adelsdorf zur Einsatzstelle ein und geben Sie den **Einsatzauftrag** (Aufbau der Wasserversorgung) durch!",
+      "narrative": "**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – Meldepunkt Kreuzung Dorfstraße / Gartenweg erreicht – Frage Auftrag – kommen.“\n\nGeben Sie den **Einsatzauftrag** nach Befehlsschema: **Einheit – Auftrag – Mittel – Ziel – Weg**. Die Gruppe soll die **Wasserversorgung** vom Hydranten am Gartenweg zur Einsatzstelle aufbauen.",
       "actions": [
         {
-          "id": "radio_einsatzauftrag",
-          "label": "📞 Funk-Meldung sprechen",
+          "id": "radio_weiterweisung",
+          "label": "📞 Einsatzauftrag geben",
           "radioCall": {
             "expectedPhrases": [
-              "weiterfahren",
-              "Dorfstraße acht",
-              "Auftrag",
+              "Florian Neuhaus",
+              "Florian Adelsdorf",
               "Wasserversorgung",
-              "Hydrant Gartenweg",
+              "Hydrant",
+              "Gartenweg",
+              "Dorfstraße",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus vier-vier/eins - weiterfahren zur Dorfstraße acht, Auftrag: Aufbau der Wasserversorgung über den Hydranten am Gartenweg - kommen.",
-            "briefing": "Anrufantwort mit eigenem Rufnamen zuerst . Zieladresse: weiterfahren zur Dorfstraße acht . konkreter Einsatzauftrag: Aufbau der Wasserversorgung . Wasserentnahmestelle benennen: Hydrant am Gartenweg . Mit kommen abschließen",
+            "hint": "Hier Florian Neuhaus 44/1 – Florian Adelsdorf 44/1: Aufbau der Wasserversorgung vom Hydranten Gartenweg zum Verteiler vor der Scheune Dorfstraße 8, Fahrzeug am Hydranten Gartenweg aufstellen – kommen.",
+            "briefing": "Einheit (Florian Adelsdorf 44/1) . Auftrag (Wasserversorgung aufbauen) . Mittel / Entnahmestelle (Hydrant Gartenweg) . Ziel (Verteiler vor der Scheune Dorfstraße 8) . Weg / Aufstellort (am Hydranten Gartenweg) . „kommen“",
             "onSuccess": "n_drehleiter",
             "onFailure": "n_weiterweisung_fail",
-            "feedbackSuccess": "✅ Florian Adelsdorf mit Zieladresse und Einsatzauftrag eingewiesen!",
-            "feedbackFailure": "❌ Weisen Sie das Fahrzeug mit Zieladresse und konkretem Einsatzauftrag (Wasserversorgung) ein - kommen."
+            "feedbackSuccess": "✅ Einsatzauftrag nach Befehlsschema erteilt.",
+            "feedbackFailure": "❌ Geben Sie den Auftrag nach Schema: Einheit – Auftrag – Mittel – Ziel – Weg."
           }
         }
       ]
@@ -74,7 +76,7 @@
     "n_weiterweisung_fail": {
       "id": "n_weiterweisung_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Weisen Sie das Fahrzeug mit Zieladresse und konkretem Einsatzauftrag ein.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins - weiterfahren zur Dorfstraße acht, Auftrag: Aufbau der Wasserversorgung über den Hydranten am Gartenweg - kommen.\"*",
+      "narrative": "**Feedback:** Ein Einsatzauftrag nach FwDV 3 / FwDV 100 nennt **Einheit – Auftrag – Mittel – Ziel – Weg**. Damit weiß die nachrückende Einheit genau, was sie wo und womit tun soll.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Florian Adelsdorf 44/1: Aufbau der Wasserversorgung vom Hydranten Gartenweg zum Verteiler vor der Scheune Dorfstraße 8, Fahrzeug am Hydranten Gartenweg aufstellen – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -86,27 +88,27 @@
     "n_drehleiter": {
       "id": "n_drehleiter",
       "role": "gruppenführer_a",
-      "narrative": "**Florian Neuhaus 33/1 (Drehleiter):** „Florian Neuhaus vier-vier/eins von Florian Neuhaus drei-drei/eins - kurz vor der Einsatzstelle - Frage Aufstellungsort - kommen.\"\n\nGeben Sie der Drehleiter die **Gebäudeseite** und die **freie Anfahrt** durch!",
+      "narrative": "**Florian Adelsdorf 44/1:** „Verstanden – Ende.“\n\nKurz darauf:\n\n**Florian Neuhaus 33/1 (Drehleiter):** „Florian Neuhaus 44/1 von Florian Neuhaus 33/1 – kurz vor der Einsatzstelle – Frage Auftrag und Aufstellung – kommen.“\n\nDas Wohnhaus neben der Scheune ist bedroht. Die **Nordseite** ist über den Gartenweg frei anfahrbar. Geben Sie der Drehleiter **Auftrag** und **Aufstellbereich** – die genaue Aufstellung legt der Maschinist der Drehleiter fest.",
       "actions": [
         {
-          "id": "radio_drehleiter_platz",
-          "label": "📞 Funk-Meldung sprechen",
+          "id": "radio_drehleiter",
+          "label": "📞 Auftrag Drehleiter geben",
           "radioCall": {
             "expectedPhrases": [
+              "Florian Neuhaus",
+              "Aufstellbereich",
               "Nordseite",
-              "Westseite",
-              "Südseite",
-              "Ostseite",
-              "Gebäude Dorfstraße acht",
-              "freie Anfahrt Gartenweg",
+              "Gartenweg",
+              "Riegelstellung",
+              "Wohnhaus",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus vier-vier/eins - aufstellen an der Nordseite des Gebäudes Dorfstraße acht, freie Anfahrt vom Gartenweg - kommen.",
-            "briefing": "Anrufantwort mit eigenem Rufnamen zuerst . Gebäudeseite zur Aufstellung benennen (z. B. Nordseite) . Bezug zum Gebäude/Adresse: Dorfstraße acht . freie Anfahrt angeben: vom Gartenweg . mit kommen abschließen, da die Drehleiter den Aufstellungsort anschließend bestätigt",
+            "hint": "Hier Florian Neuhaus 44/1 – Florian Neuhaus 33/1: Riegelstellung zum Schutz des Wohnhauses, Aufstellbereich Nordseite, Zufahrt über den Gartenweg ist frei – kommen.",
+            "briefing": "Einheit (Florian Neuhaus 33/1) . Auftrag (Riegelstellung zum Schutz des Wohnhauses) . Aufstellbereich (Nordseite) . Zufahrt (über den Gartenweg frei) . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_drehleiter_fail",
-            "feedbackSuccess": "✅ Drehleiter mit Aufstellungsort und freier Anfahrt korrekt eingewiesen!",
-            "feedbackFailure": "❌ Nennen Sie Gebäudeseite und freie Anfahrt für die Drehleiter."
+            "feedbackSuccess": "✅ Drehleiter mit Auftrag und Aufstellbereich eingewiesen.",
+            "feedbackFailure": "❌ Nennen Sie Auftrag (Schutz des Wohnhauses), Aufstellbereich (Nordseite) und die freie Zufahrt (Gartenweg)."
           }
         }
       ]
@@ -114,7 +116,7 @@
     "n_drehleiter_fail": {
       "id": "n_drehleiter_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Geben Sie der Drehleiter die Gebäudeseite und die freie Anfahrt durch.\n\nBeispiel: *„Hier Florian Neuhaus vier-vier/eins - aufstellen an der Nordseite des Gebäudes Dorfstraße acht, freie Anfahrt vom Gartenweg - kommen.\"*",
+      "narrative": "**Feedback:** Die Drehleiter braucht einen **klaren Auftrag** und den **Aufstellbereich mit Zufahrt**. Wo genau sie abgestützt wird, entscheidet ihr Maschinist anhand von Untergrund und Hindernissen.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Florian Neuhaus 33/1: Riegelstellung zum Schutz des Wohnhauses, Aufstellbereich Nordseite, Zufahrt über den Gartenweg ist frei – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -126,7 +128,7 @@
     "n_end": {
       "id": "n_end",
       "role": "gruppenführer_a",
-      "narrative": "**Florian Neuhaus 33/1:** „Hier Florian Neuhaus drei-drei/eins - verstanden, stelle an der Nordseite auf - Ende.\"\n\nAlle Kräfte sind eingewiesen und an der Einsatzstelle. Sehr gute Koordination!\n\n**Übung abgeschlossen! 🎉**",
+      "narrative": "**Florian Neuhaus 33/1:** „Hier Florian Neuhaus 33/1 – verstanden, Riegelstellung Nordseite – Ende.“\n\nAlle nachrückenden Kräfte sind gezielt eingewiesen: Meldepunkt, Auftrag nach Befehlsschema, Drehleiter mit Aufstellbereich.\n\n**Übung abgeschlossen! 🎉**",
       "actions": [
         {
           "id": "restart",

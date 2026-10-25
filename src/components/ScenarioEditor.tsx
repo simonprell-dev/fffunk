@@ -23,6 +23,7 @@ interface Props {
 const roleOptions: Array<{ value: PlayerRole; label: string }> = [
   { value: 'gruppenführer_a', label: 'Gruppenführer' },
   { value: 'truppführer', label: 'Truppführer' },
+  { value: 'truppmann', label: 'Truppmann' },
   { value: 'atemschutzüberwachung', label: 'Atemschutzüberwachung' },
   { value: 'einsatzleit', label: 'Einsatzleitung' },
 ];

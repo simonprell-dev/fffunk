@@ -1,0 +1,433 @@
+{
+  "id": "angriffstrupp_menschenrettung",
+  "title": "Angriffstrupp: Menschenrettung, Brandherd und Abluft",
+  "description": "Profi: Als Truppführer im verrauchten Wohnhaus eine vermisste Person suchen und retten, den Brandherd finden und bekämpfen und für die Überdruckbelüftung die Abluftöffnung schaffen. 8 Funk-Schritte.",
+  "startingNodeId": "n_befehl",
+  "playerRole": "truppführer",
+  "nodes": {
+    "n_befehl": {
+      "id": "n_befehl",
+      "role": "truppführer",
+      "narrative": "Zimmerbrand in einem zweigeschossigen Einfamilienhaus, Neuhaus, Lindenweg 3. Das Obergeschoss ist komplett verraucht. Die Mutter meldet: **Ihr Sohn (12) ist noch im Obergeschoss.**\n\nSie sind Truppführer des Angriffstrupps. Der Gruppenführer gibt den Befehl:\n\n**Gruppenführer:** „Angriffstrupp zur Menschenrettung mit dem ersten Rohr über den Treppenraum ins Obergeschoss – vor!“\n\nWiederholen Sie den Befehl (Einheit – Auftrag – Mittel – Ziel – Weg).",
+      "actions": [
+        {
+          "id": "radio_befehl",
+          "label": "📞 Befehl wiederholen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "Menschenrettung",
+              "ersten Rohr",
+              "Obergeschoss",
+              "Treppenraum"
+            ],
+            "hint": "Angriffstrupp zur Menschenrettung mit dem ersten Rohr über den Treppenraum ins Obergeschoss – verstanden.",
+            "briefing": "Einheit (Angriffstrupp) . Auftrag (Menschenrettung) . Mittel (erstes Rohr) . Ziel (Obergeschoss) . Weg (über den Treppenraum) . „verstanden“",
+            "onSuccess": "n_anmeldung",
+            "onFailure": "n_befehl_fail",
+            "feedbackSuccess": "✅ Befehl nach dem Schema Einheit – Auftrag – Mittel – Ziel – Weg wiederholt.",
+            "feedbackFailure": "❌ Wiederholen Sie den Befehl vollständig: Einheit, Auftrag, Mittel, Ziel, Weg."
+          }
+        }
+      ]
+    },
+    "n_befehl_fail": {
+      "id": "n_befehl_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Nach FwDV 3 hat der Befehl die Form **Einheit – Auftrag – Mittel – Ziel – Weg – „vor!“**. Der Truppführer wiederholt ihn, bevor der Trupp vorgeht.\n\nBeispiel: *„Angriffstrupp zur Menschenrettung mit dem ersten Rohr über den Treppenraum ins Obergeschoss – verstanden.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_befehl"
+        }
+      ]
+    },
+    "n_anmeldung": {
+      "id": "n_anmeldung",
+      "role": "truppführer",
+      "narrative": "Lungenautomaten sind angeschlossen, Flaschendruck **300** und **290 bar**. Melden Sie sich bei der Atemschutzüberwachung an.",
+      "actions": [
+        {
+          "id": "radio_anmeldung",
+          "label": "📞 Bei der Atemschutzüberwachung anmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Atemschutzüberwachung",
+              "Angriffstrupp",
+              "geht vor",
+              "Menschenrettung",
+              "Obergeschoss",
+              "bar",
+              "kommen"
+            ],
+            "hint": "Atemschutzüberwachung von Angriffstrupp – Angriffstrupp geht vor zur Menschenrettung ins Obergeschoss, Druck 300 und 290 bar – kommen.",
+            "briefing": "Anruf: Atemschutzüberwachung von Angriffstrupp . „geht vor“ . Auftrag und Ziel (Menschenrettung, Obergeschoss) . Druck beider Geräteträger in bar . „kommen“",
+            "onSuccess": "n_suche",
+            "onFailure": "n_anmeldung_fail",
+            "feedbackSuccess": "✅ Anmeldung bei der Atemschutzüberwachung vollständig.",
+            "feedbackFailure": "❌ Melden Sie: Angriffstrupp geht vor, Auftrag und Ziel, Druck beider Geräteträger."
+          }
+        }
+      ]
+    },
+    "n_anmeldung_fail": {
+      "id": "n_anmeldung_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Vor dem Vorgehen meldet sich der Trupp bei der **Atemschutzüberwachung** an: Auftrag, Ziel und Druck. Ohne Anmeldung kein Vorgehen.\n\nBeispiel: *„Atemschutzüberwachung von Angriffstrupp – Angriffstrupp geht vor zur Menschenrettung ins Obergeschoss, Druck 300 und 290 bar – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anmeldung"
+        }
+      ]
+    },
+    "n_suche_x1": {
+      "id": "n_suche_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Das Rohr ist **Schutz und Rückweg** zugleich. Ohne Rohr sind Sie einer Rauchdurchzündung schutzlos ausgeliefert und finden den Weg schwerer zurück.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_suche"
+        }
+      ]
+    },
+    "n_suche_x2": {
+      "id": "n_suche_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Unkontrolliertes Öffnen führt dem Brand Sauerstoff zu und kann eine **Rauchdurchzündung** auslösen. Ventilation nur **koordiniert und auf Befehl**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_suche"
+        }
+      ]
+    },
+    "n_suche": {
+      "id": "n_suche",
+      "role": "truppführer",
+      "narrative": "Am Treppenkopf im Obergeschoss: Sicht null, Hitze unter der Decke. Vor Ihnen ein Flur mit mehreren Türen.\n\nWie suchen Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🧭 Mit Rohr systematisch Raum für Raum an der Wand entlang (Rechts- oder Linksregel), Wärmebildkamera nutzen, durchsuchte Türen schließen und markieren",
+          "nextNodeId": "n_fund"
+        },
+        {
+          "id": "opt1",
+          "label": "🏃 Rohr am Treppenkopf liegen lassen, um schneller zu sein",
+          "nextNodeId": "n_suche_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🪟 Zuerst alle Fenster einschlagen, damit der Rauch abzieht",
+          "nextNodeId": "n_suche_x2"
+        }
+      ]
+    },
+    "n_fund": {
+      "id": "n_fund",
+      "role": "truppführer",
+      "narrative": "Im zweiten Raum rechts – einem Kinderzimmer – finden Sie den Jungen vor dem Bett am Boden. Er ist **bewusstlos**. Der Brand ist in diesem Raum nicht.\n\nMenschenrettung hat Vorrang. Melden Sie dem Gruppenführer den Fund und Ihr Vorgehen.",
+      "actions": [
+        {
+          "id": "radio_fund",
+          "label": "📞 Fund melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "Person gefunden",
+              "Kinderzimmer",
+              "bewusstlos",
+              "Treppenraum",
+              "ins Freie",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Angriffstrupp – Person gefunden, Obergeschoss Kinderzimmer, Kind bewusstlos. Bringen die Person über den Treppenraum ins Freie – kommen.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . „Person gefunden“ . Fundort (Obergeschoss, Kinderzimmer) . Zustand (bewusstlos) . Vorgehen: über den Treppenraum ins Freie . „kommen“",
+            "onSuccess": "n_wieder_vor",
+            "onFailure": "n_fund_fail",
+            "feedbackSuccess": "✅ Fund mit Ort, Zustand und Rettungsweg gemeldet – der Rettungsdienst steht bereit.",
+            "feedbackFailure": "❌ Melden Sie: Person gefunden, wo, Zustand, und dass Sie sie über den Treppenraum ins Freie bringen."
+          }
+        }
+      ]
+    },
+    "n_fund_fail": {
+      "id": "n_fund_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Der Gruppenführer braucht **Fundort, Zustand und Rettungsweg**, damit der Rettungsdienst am Ausgang bereitsteht und ggf. weitere Kräfte die Brandbekämpfung übernehmen.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – Person gefunden, Obergeschoss Kinderzimmer, Kind bewusstlos. Bringen die Person über den Treppenraum ins Freie – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_fund"
+        }
+      ]
+    },
+    "n_wieder_vor": {
+      "id": "n_wieder_vor",
+      "role": "truppführer",
+      "narrative": "Sie übergeben den Jungen vor der Haustür an den Rettungsdienst. Ihr Druck: **220** und **210 bar**. Ein Lüfter steht vor der Haustür bereit.\n\n**Gruppenführer:** „Angriffstrupp: zur Brandbekämpfung erneut ins Obergeschoss, Brandherd suchen. Melden, wenn eine Abluftöffnung im Brandraum möglich ist – vor!“\n\nBestätigen Sie und melden Sie den Druck.",
+      "actions": [
+        {
+          "id": "radio_wieder_vor",
+          "label": "📞 Bestätigen mit Druck",
+          "radioCall": {
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "verstanden",
+              "Brandbekämpfung",
+              "Obergeschoss",
+              "Abluftöffnung",
+              "bar"
+            ],
+            "hint": "Angriffstrupp zur Brandbekämpfung erneut ins Obergeschoss, Brandherd suchen, Abluftöffnung melden – verstanden, Druck 210 bar.",
+            "briefing": "Befehl wiederholen (Brandbekämpfung, Obergeschoss, Brandherd suchen, Abluftöffnung melden) . „verstanden“ . niedrigsten Druck nennen (210 bar)",
+            "onSuccess": "n_brandherd",
+            "onFailure": "n_wieder_vor_fail",
+            "feedbackSuccess": "✅ Befehl wiederholt und Druck mitgeteilt.",
+            "feedbackFailure": "❌ Wiederholen Sie den neuen Befehl und nennen Sie Ihren Druck."
+          }
+        }
+      ]
+    },
+    "n_wieder_vor_fail": {
+      "id": "n_wieder_vor_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Vor einem erneuten Vorgehen prüft der Gruppenführer, ob die **Luft reicht**. Nennen Sie deshalb den **niedrigsten Druck** im Trupp.\n\nBeispiel: *„Angriffstrupp zur Brandbekämpfung erneut ins Obergeschoss, Brandherd suchen, Abluftöffnung melden – verstanden, Druck 210 bar.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_wieder_vor"
+        }
+      ]
+    },
+    "n_brandherd": {
+      "id": "n_brandherd",
+      "role": "truppführer",
+      "narrative": "Mit der Wärmebildkamera finden Sie den Brandherd: **Schlafzimmer am Ende des Flurs**, eine brennende Matratze. Sie löschen mit kurzen Stößen. Das Fenster des Schlafzimmers führt zum Garten.\n\nMelden Sie Brandherd und mögliche Abluftöffnung.",
+      "actions": [
+        {
+          "id": "radio_brandherd",
+          "label": "📞 Brandherd melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "Brandherd",
+              "Schlafzimmer",
+              "Fenster",
+              "Abluftöffnung",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Angriffstrupp – Brandherd gefunden, Obergeschoss Schlafzimmer am Flurende, wird abgelöscht. Fenster zum Garten als Abluftöffnung möglich – kommen.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . Brandherd gefunden (OG, Schlafzimmer am Flurende) . Maßnahme (wird abgelöscht) . mögliche Abluftöffnung (Fenster zum Garten) . „kommen“",
+            "onSuccess": "n_abluft",
+            "onFailure": "n_brandherd_fail",
+            "feedbackSuccess": "✅ Brandherd und Abluftöffnung gemeldet.",
+            "feedbackFailure": "❌ Melden Sie Brandherd mit Ort und die mögliche Abluftöffnung im Brandraum."
+          }
+        }
+      ]
+    },
+    "n_brandherd_fail": {
+      "id": "n_brandherd_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Für eine **Überdruckbelüftung** soll die Abluftöffnung **im Brandraum** oder so nah wie möglich daran liegen – dann wird der Rauch auf kürzestem Weg ins Freie gedrückt.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – Brandherd gefunden, Obergeschoss Schlafzimmer am Flurende, wird abgelöscht. Fenster zum Garten als Abluftöffnung möglich – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_brandherd"
+        }
+      ]
+    },
+    "n_abluft_x1": {
+      "id": "n_abluft_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Ohne Abluftöffnung drückt der Lüfter Rauch und Brandgase **in andere Räume** – auch zu Ihnen. Zuerst die **Abluftöffnung**, dann den Lüfter.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_abluft"
+        }
+      ]
+    },
+    "n_abluft_x2": {
+      "id": "n_abluft_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Dann zieht der Rauch **quer durch das Gebäude** am Trupp vorbei. Die Abluft gehört in den **Brandraum**, die Türen zu anderen Räumen bleiben geschlossen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_abluft"
+        }
+      ]
+    },
+    "n_abluft": {
+      "id": "n_abluft",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** „Verstanden – Abluftöffnung schaffen und melden, danach geht der Lüfter in Betrieb.“\n\nIn welcher Reihenfolge läuft die Überdruckbelüftung?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🪟 Erst Abluftöffnung im Brandraum öffnen und melden – dann Lüfter an der Haustür starten",
+          "nextNodeId": "n_abluft_melden"
+        },
+        {
+          "id": "opt1",
+          "label": "🌀 Lüfter sofort starten, Fenster danach öffnen",
+          "nextNodeId": "n_abluft_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🪟 Ein Fenster im Treppenraum oben öffnen",
+          "nextNodeId": "n_abluft_x2"
+        }
+      ]
+    },
+    "n_abluft_melden": {
+      "id": "n_abluft_melden",
+      "role": "truppführer",
+      "narrative": "Sie öffnen das Schlafzimmerfenster vollständig, die Türen der anderen Räume sind geschlossen. Melden Sie.",
+      "actions": [
+        {
+          "id": "radio_abluft_melden",
+          "label": "📞 Abluftöffnung melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "Abluftöffnung",
+              "geschaffen",
+              "Lüfter",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Angriffstrupp – Abluftöffnung im Schlafzimmer geschaffen, andere Türen geschlossen, Lüfter kann in Betrieb gehen – kommen.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . Abluftöffnung im Brandraum geschaffen . andere Türen geschlossen . Freigabe: Lüfter kann in Betrieb gehen . „kommen“",
+            "onSuccess": "n_aus",
+            "onFailure": "n_abluft_melden_fail",
+            "feedbackSuccess": "✅ Abluftöffnung gemeldet – Freigabe für den Lüfter.",
+            "feedbackFailure": "❌ Melden Sie: Abluftöffnung geschaffen, Türen geschlossen, Lüfter kann starten."
+          }
+        }
+      ]
+    },
+    "n_abluft_melden_fail": {
+      "id": "n_abluft_melden_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Erst mit der Meldung **„Abluftöffnung geschaffen“** startet der Lüfter. Geschlossene Türen lenken den Luftstrom gezielt durch den Brandraum.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – Abluftöffnung im Schlafzimmer geschaffen, andere Türen geschlossen, Lüfter kann in Betrieb gehen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_abluft_melden"
+        }
+      ]
+    },
+    "n_aus": {
+      "id": "n_aus",
+      "role": "truppführer",
+      "narrative": "Der Lüfter läuft, der Rauch zieht durch das Schlafzimmerfenster ab, die Sicht wird besser. Die Matratze ist abgelöscht, die Wärmebildkamera zeigt keine Glutnester mehr. Ihr Druck: **150** und **140 bar**.\n\nMelden Sie das Ergebnis und dass Sie den Rückzug antreten.",
+      "actions": [
+        {
+          "id": "radio_aus",
+          "label": "📞 Ergebnis melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "Feuer aus",
+              "Wärmebildkamera",
+              "Rauch zieht ab",
+              "Rückzug",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Angriffstrupp – Feuer aus im Schlafzimmer, Nachkontrolle mit Wärmebildkamera ohne Befund, Rauch zieht ab. Treten Rückzug an, Druck 140 bar – kommen.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . „Feuer aus“ (Schlafzimmer) . Nachkontrolle mit Wärmebildkamera ohne Befund . Rauch zieht ab . „treten Rückzug an“ + niedrigster Druck . „kommen“",
+            "onSuccess": "n_abmeldung",
+            "onFailure": "n_aus_fail",
+            "feedbackSuccess": "✅ Ergebnis und Rückzug gemeldet.",
+            "feedbackFailure": "❌ Melden Sie Feuer aus, Nachkontrolle, Rauchabzug, Rückzug und Druck."
+          }
+        }
+      ]
+    },
+    "n_aus_fail": {
+      "id": "n_aus_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Melden Sie das **Ergebnis**, die **Nachkontrolle** und dass Sie den **Rückzug** antreten – mit Druck.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – Feuer aus im Schlafzimmer, Nachkontrolle mit Wärmebildkamera ohne Befund, Rauch zieht ab. Treten Rückzug an, Druck 140 bar – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_aus"
+        }
+      ]
+    },
+    "n_abmeldung": {
+      "id": "n_abmeldung",
+      "role": "truppführer",
+      "narrative": "Sie sind vor der Haustür. Melden Sie sich bei der Atemschutzüberwachung ab.",
+      "actions": [
+        {
+          "id": "radio_abmeldung",
+          "label": "📞 Bei der Überwachung abmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Atemschutzüberwachung",
+              "Angriffstrupp",
+              "Gefahrenbereich verlassen",
+              "bar",
+              "kommen"
+            ],
+            "hint": "Atemschutzüberwachung von Angriffstrupp – Angriffstrupp hat den Gefahrenbereich verlassen, Druck 140 bar – kommen.",
+            "briefing": "Anruf: Atemschutzüberwachung von Angriffstrupp . „Gefahrenbereich verlassen“ . niedrigster Druck . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_abmeldung_fail",
+            "feedbackSuccess": "✅ Bei der Atemschutzüberwachung abgemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Gefahrenbereich verlassen, Druck."
+          }
+        }
+      ]
+    },
+    "n_abmeldung_fail": {
+      "id": "n_abmeldung_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Ohne Abmeldung gilt der Trupp für die Überwachung weiterhin als **im Einsatz** – im Zweifel wird nach ihm gesucht.\n\nBeispiel: *„Atemschutzüberwachung von Angriffstrupp – Angriffstrupp hat den Gefahrenbereich verlassen, Druck 140 bar – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_abmeldung"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "truppführer",
+      "narrative": "**Atemschutzüberwachung:** „Hier Atemschutzüberwachung – verstanden, 140 bar – Ende.“\n\nMenschenrettung vor Brandbekämpfung, systematische Suche mit Rohr, Brandherd gefunden, Abluftöffnung vor dem Lüfter – vorbildlich.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_befehl"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

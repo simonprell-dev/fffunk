@@ -1,0 +1,325 @@
+{
+  "id": "hubschrauber_landeplatz",
+  "title": "Hubschrauber: Landeplatz absperren und einweisen",
+  "description": "Mittel: Für einen Rettungshubschrauber einen geeigneten Landeplatz wählen, absperren lassen, Landeplatzdaten an den Hubschrauber geben, richtig einweisen und sich dem Hubschrauber nur auf Zeichen der Crew nähern. 4 Funk-Schritte.",
+  "startingNodeId": "n_alarm",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_alarm": {
+      "id": "n_alarm",
+      "role": "gruppenführer_a",
+      "narrative": "Verkehrsunfall auf der Kreisstraße bei Neuhaus, ein Schwerverletzter. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Rettungshubschrauber **Christoph 27** ist alarmiert, Ankunft in etwa acht Minuten. Richten Sie einen Landeplatz ein, der Hubschrauber meldet sich bei Ihnen in der Einsatz-Sprechgruppe – kommen.“\n\nBestätigen Sie.",
+      "actions": [
+        {
+          "id": "radio_alarm",
+          "label": "📞 Bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "verstanden",
+              "Christoph 27",
+              "acht Minuten",
+              "Landeplatz",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – verstanden: Christoph 27 in etwa acht Minuten, richten Landeplatz ein – kommen.",
+            "briefing": "„hier“ + Rufname . „verstanden“ . wiederholen: Christoph 27, Ankunft in etwa 8 Minuten, Landeplatz einrichten . „kommen“",
+            "onSuccess": "n_platz",
+            "onFailure": "n_alarm_fail",
+            "feedbackSuccess": "✅ Auftrag bestätigt.",
+            "feedbackFailure": "❌ Bestätigen Sie mit „verstanden“ und wiederholen Sie Christoph 27, Ankunftszeit und Auftrag."
+          }
+        }
+      ]
+    },
+    "n_alarm_fail": {
+      "id": "n_alarm_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Wiederholen Sie die einsatzwichtigen Inhalte – Rufname des Hubschraubers, Zeit, Auftrag.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: Christoph 27 in etwa acht Minuten, richten Landeplatz ein – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_alarm"
+        }
+      ]
+    },
+    "n_platz_x1": {
+      "id": "n_platz_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Der Rotorabwind wirbelt Trümmerteile, Glas und Staub auf – die Einsatzkräfte an den Fahrzeugen werden gefährdet. Der Landeplatz soll **abseits der Arbeiten** liegen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_platz"
+        }
+      ]
+    },
+    "n_platz_x2": {
+      "id": "n_platz_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Zu klein und mit Hindernissen. Als Richtwert gilt am Tag eine **hindernisfreie Fläche von mindestens etwa 25 × 25 m** (besser mehr), dazu freie An- und Abflugwege.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_platz"
+        }
+      ]
+    },
+    "n_platz": {
+      "id": "n_platz",
+      "role": "gruppenführer_a",
+      "narrative": "Welchen Landeplatz wählen Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🌾 Wiese rund 100 m südlich der Unfallstelle: eben, etwa 40 × 40 m, keine Bäume, Stromleitung etwa 150 m entfernt",
+          "nextNodeId": "n_absperren"
+        },
+        {
+          "id": "opt1",
+          "label": "🛣️ Die Fahrbahn direkt neben den Unfallfahrzeugen",
+          "nextNodeId": "n_platz_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🌳 Kleiner Hof zwischen Bäumen, dafür nur 20 m entfernt",
+          "nextNodeId": "n_platz_x2"
+        }
+      ]
+    },
+    "n_absperren": {
+      "id": "n_absperren",
+      "role": "gruppenführer_a",
+      "narrative": "Geben Sie dem **Schlauchtrupp** den Befehl, den Landeplatz einzurichten. Ein Truppmann soll einweisen.",
+      "actions": [
+        {
+          "id": "radio_absperren",
+          "label": "📞 Befehl an den Schlauchtrupp",
+          "radioCall": {
+            "expectedPhrases": [
+              "Schlauchtrupp",
+              "Landeplatz",
+              "Wiese",
+              "absperren",
+              "lose Gegenstände",
+              "weist",
+              "kommen"
+            ],
+            "hint": "Schlauchtrupp von Gruppenführer – Landeplatz auf der Wiese südlich der Unfallstelle einrichten: großräumig absperren, lose Gegenstände entfernen, ein Truppmann weist den Hubschrauber ein – kommen.",
+            "briefing": "Anruf: Schlauchtrupp von Gruppenführer . Auftrag: Landeplatz einrichten . Ziel: Wiese südlich der Unfallstelle . Maßnahmen: großräumig absperren, lose Gegenstände entfernen . Einweiser bestimmen . „kommen“",
+            "onSuccess": "n_daten",
+            "onFailure": "n_absperren_fail",
+            "feedbackSuccess": "✅ Befehl vollständig: absperren, lose Teile weg, Einweiser.",
+            "feedbackFailure": "❌ Befehlen Sie: Landeplatz Wiese, absperren, lose Gegenstände entfernen, Einweiser."
+          }
+        }
+      ]
+    },
+    "n_absperren_fail": {
+      "id": "n_absperren_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Der Abwind kann lose Teile **mehrere Dutzend Meter** weit schleudern – auch Leitkegel, Planen und Decken gehören weg. Schaulustige und Fahrzeuge bleiben **außerhalb der Absperrung**.\n\nBeispiel: *„Schlauchtrupp von Gruppenführer – Landeplatz auf der Wiese südlich der Unfallstelle einrichten: großräumig absperren, lose Gegenstände entfernen, ein Truppmann weist den Hubschrauber ein – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_absperren"
+        }
+      ]
+    },
+    "n_daten": {
+      "id": "n_daten",
+      "role": "gruppenführer_a",
+      "narrative": "**Christoph 27:** „Florian Neuhaus 44/1 von Christoph 27 – im Anflug, Frage Landeplatz – kommen.“\n\nWind: schwach aus **West**. Geben Sie die Landeplatzdaten durch.",
+      "actions": [
+        {
+          "id": "radio_daten",
+          "label": "📞 Landeplatzdaten geben",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Landeplatz",
+              "Wiese",
+              "südlich",
+              "Hindernis",
+              "Stromleitung",
+              "Wind",
+              "West",
+              "Einweiser",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Landeplatz Wiese etwa 100 Meter südlich der Unfallstelle, östlich der Kreisstraße. Fläche eben, etwa 40 mal 40 Meter. Hindernis: Stromleitung etwa 150 Meter nördlich. Wind schwach aus West. Landeplatz abgesperrt, Einweiser in Warnkleidung – kommen.",
+            "briefing": "„hier“ + Rufname . Lage des Landeplatzes (Wiese ca. 100 m südlich, östlich der Straße) . Fläche und Untergrund . Hindernisse (Stromleitung ca. 150 m nördlich) . Wind (Richtung und Stärke) . abgesperrt, Einweiser in Warnkleidung . „kommen“",
+            "onSuccess": "n_einweiser",
+            "onFailure": "n_daten_fail",
+            "feedbackSuccess": "✅ Alle Landeplatzdaten übermittelt – besonders die Stromleitung.",
+            "feedbackFailure": "❌ Nennen Sie Lage, Fläche, Hindernisse (Stromleitung), Wind und dass abgesperrt und ein Einweiser da ist."
+          }
+        }
+      ]
+    },
+    "n_daten_fail": {
+      "id": "n_daten_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Für den Piloten zählen **Lage, Größe/Untergrund, Hindernisse** (vor allem **Leitungen** – aus der Luft kaum zu sehen) und **Wind**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Landeplatz Wiese etwa 100 Meter südlich der Unfallstelle, östlich der Kreisstraße. Fläche eben, etwa 40 mal 40 Meter. Hindernis: Stromleitung etwa 150 Meter nördlich. Wind schwach aus West. Landeplatz abgesperrt, Einweiser in Warnkleidung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_daten"
+        }
+      ]
+    },
+    "n_einweiser_x1": {
+      "id": "n_einweiser_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Der Einweiser steht **am Rand**, nicht im Landefeld. Winken verwirrt – die ruhige **Y-Haltung** zeigt: Hier landen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_einweiser"
+        }
+      ]
+    },
+    "n_einweiser_x2": {
+      "id": "n_einweiser_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Der Hubschrauber landet **gegen den Wind**. Steht der Einweiser mit dem **Rücken zum Wind**, fliegt der Pilot direkt auf ihn zu.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_einweiser"
+        }
+      ]
+    },
+    "n_einweiser": {
+      "id": "n_einweiser",
+      "role": "gruppenführer_a",
+      "narrative": "Der Hubschrauber ist in Sicht. Wie steht Ihr Einweiser?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🙆 Am Rand des Landeplatzes, **Rücken zum Wind**, beide Arme schräg nach oben (Y), Schutzbrille bzw. Visier, Blickkontakt zum Piloten, nicht bewegen",
+          "nextNodeId": "n_landung"
+        },
+        {
+          "id": "opt1",
+          "label": "👋 Mitten auf dem Platz und winkend",
+          "nextNodeId": "n_einweiser_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🌬️ Gesicht zum Wind",
+          "nextNodeId": "n_einweiser_x2"
+        }
+      ]
+    },
+    "n_landung_x1": {
+      "id": "n_landung_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Der **Heckrotor** ist kaum zu sehen und lebensgefährlich. Annähern **nur auf Zeichen der Crew** und **von vorne** im Sichtbereich des Piloten.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_landung"
+        }
+      ]
+    },
+    "n_landung_x2": {
+      "id": "n_landung_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Fahrzeuge nähern sich nur nach **Freigabe der Crew** und fahren nie unter der Rotorebene durch.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_landung"
+        }
+      ]
+    },
+    "n_landung": {
+      "id": "n_landung",
+      "role": "gruppenführer_a",
+      "narrative": "Christoph 27 ist gelandet, der Rotor dreht noch. Ihre Kräfte wollen mit der Trage zum Hubschrauber.\n\nWie gehen sie vor?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "✋ Warten, bis die Crew ein Zeichen gibt – dann nur von vorne im Sichtbereich des Piloten, gebückt, nie zum Heckrotor",
+          "nextNodeId": "n_abflug"
+        },
+        {
+          "id": "opt1",
+          "label": "🏃 Sofort von hinten zur Ladetür, das spart Zeit",
+          "nextNodeId": "n_landung_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚒 Mit dem Fahrzeug bis an den Hubschrauber fahren",
+          "nextNodeId": "n_landung_x2"
+        }
+      ]
+    },
+    "n_abflug": {
+      "id": "n_abflug",
+      "role": "gruppenführer_a",
+      "narrative": "Der Patient ist an Bord, die Crew bereitet den Abflug vor. Befehlen Sie dem Schlauchtrupp, was bis nach dem Abflug gilt.",
+      "actions": [
+        {
+          "id": "radio_abflug",
+          "label": "📞 Befehl zum Abflug",
+          "radioCall": {
+            "expectedPhrases": [
+              "Schlauchtrupp",
+              "Absperrung",
+              "halten",
+              "abgeflogen",
+              "lose Teile",
+              "kommen"
+            ],
+            "hint": "Schlauchtrupp von Gruppenführer – Absperrung halten, bis Christoph 27 abgeflogen ist. Danach Landeplatz auf lose Teile kontrollieren und Absperrung abbauen – kommen.",
+            "briefing": "Anruf: Schlauchtrupp von Gruppenführer . Absperrung halten bis zum Abflug . danach Landeplatz auf lose Teile kontrollieren . Absperrung abbauen . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_abflug_fail",
+            "feedbackSuccess": "✅ Absperrung bis zum Abflug gesichert.",
+            "feedbackFailure": "❌ Befehlen Sie: Absperrung halten bis zum Abflug, danach kontrollieren und abbauen."
+          }
+        }
+      ]
+    },
+    "n_abflug_fail": {
+      "id": "n_abflug_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Auch beim **Abflug** wirkt der Rotorabwind. Die Absperrung bleibt, bis der Hubschrauber **abgeflogen** ist.\n\nBeispiel: *„Schlauchtrupp von Gruppenführer – Absperrung halten, bis Christoph 27 abgeflogen ist. Danach Landeplatz auf lose Teile kontrollieren und Absperrung abbauen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_abflug"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Schlauchtrupp:** „Hier Schlauchtrupp – verstanden – Ende.“\n\nChristoph 27 hebt ab. Landeplatz richtig gewählt, abgesperrt, Hindernisse und Wind gemeldet, korrekt eingewiesen und sicher angenähert.\n\n**Übung abgeschlossen! 🚁**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_alarm"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

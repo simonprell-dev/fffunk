@@ -24,12 +24,14 @@ interface FolderEntry {
 function getRoleBadge(role: PlayerRole): { label: string; cls: string } {
   if (role.startsWith('gruppenführer')) return { label: 'Gruppenführer', cls: 'bg-red-900/40 text-red-300 border border-red-800' };
   if (role === 'truppführer') return { label: 'Truppführer', cls: 'bg-orange-900/40 text-orange-300 border border-orange-800' };
+  if (role === 'truppmann') return { label: 'Truppmann', cls: 'bg-amber-900/40 text-amber-300 border border-amber-800' };
   if (role === 'atemschutzüberwachung') return { label: 'Atemschutz', cls: 'bg-blue-900/40 text-blue-300 border border-blue-800' };
   if (role === 'einsatzleit') return { label: 'Leitstelle', cls: 'bg-purple-900/40 text-purple-300 border border-purple-800' };
   return { label: role, cls: 'bg-[#333] text-[#a3a3a3]' };
 }
 
 function getScenarioFolder(scenario: Scenario): string {
+  if (scenario.category) return scenario.category;
   if (scenario.community?.category) return scenario.community.category;
   const text = `${scenario.id} ${scenario.title} ${scenario.description}`.toLowerCase();
   if (text.includes('verkehr')) return 'verkehr';

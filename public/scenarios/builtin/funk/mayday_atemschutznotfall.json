@@ -1,14 +1,60 @@
 {
   "id": "mayday_atemschutznotfall",
-  "title": "Mayday: Atemschutznotfall im Innenangriff",
-  "description": "Profi: Als Truppführer des Angriffstrupps einen Atemschutznotfall melden — Mayday absetzen, Lage ergänzen, Funkstille bestätigen und Rettung melden. 5 Funk-Schritte.",
-  "startingNodeId": "n_mayday",
+  "title": "Mayday: Truppmann verschüttet",
+  "description": "Profi: Als Truppführer des Angriffstrupps einen Atemschutznotfall melden – Notruftaste und Mayday nach FwDV 7, Lage ergänzen, Anweisungen bestätigen und das Ende der Rettung melden. 4 Funk-Schritte.",
+  "startingNodeId": "n_start",
   "playerRole": "truppführer",
   "nodes": {
+    "n_start_x1": {
+      "id": "n_start_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Jede Sekunde ohne Notruf verzögert die Rettung. Nach **FwDV 7** setzt der Trupp in einer Notlage **sofort** Mayday ab – erst danach folgen eigene Rettungsversuche. Der Sicherheitstrupp braucht Zeit, bis er bei Ihnen ist.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start_x2": {
+      "id": "n_start_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Ein Trupp bleibt **zusammen**. Verlassen Sie den Truppmann, findet ihn im Rauch womöglich niemand mehr. Notruf über Funk, beim Truppmann bleiben.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "truppführer",
+      "narrative": "Sie sind Truppführer des Angriffstrupps von **Florian Neuhaus 44/1** im Innenangriff, Wohnungsbrand im **zweiten Obergeschoss**. Einsatzleiter ist **Florian Neuhaus 11/1**, gefunkt wird im Einsatzstellenfunk (DMO).\n\n**Lage:** Im Wohnzimmer bricht ein Teil der abgehängten Decke herunter. Ihr **Truppmann ist verschüttet und reagiert nicht**. Der Weg zurück zur Tür ist teilweise versperrt. Ihr Behälterdruck: **80 bar**.\n\nWas tun Sie zuerst?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🆘 Notruftaste am Funkgerät drücken und Mayday absetzen",
+          "nextNodeId": "n_mayday"
+        },
+        {
+          "id": "opt1",
+          "label": "🧱 Erst allein versuchen, den Truppmann freizulegen",
+          "nextNodeId": "n_start_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚪 Rückweg suchen und draußen Hilfe holen",
+          "nextNodeId": "n_start_x2"
+        }
+      ]
+    },
     "n_mayday": {
       "id": "n_mayday",
       "role": "truppführer",
-      "narrative": "Sie sind Truppführer des Angriffstrupps (Florian Neuhaus 44/1) im Innenangriff, Wohnungsbrand im zweiten Obergeschoss.\n\n**Lage:** Beim Vorgehen durch die verqualmte Wohnung bricht die Decke teilweise ein. Ihr Truppmann ist verschüttet und bewusstlos, der Rückweg ist versperrt. Ihr eigener Atemluftvorrat sinkt rapide.\n\nSetzen Sie sofort einen **Mayday-Notruf** nach FwDV 7 ab — Kennwort, eigener Rufname, Standort und Lage!",
+      "narrative": "Notruftaste ist gedrückt. Setzen Sie den **Mayday-Notruf** im Wortlaut der FwDV 7 ab: Kennwort – wer – wo – was – Abschluss.",
       "actions": [
         {
           "id": "radio_mayday",
@@ -18,17 +64,17 @@
               "Mayday",
               "Angriffstrupp",
               "zweites Obergeschoss",
+              "Wohnzimmer",
               "Truppmann",
-              "bewusstlos",
               "verschüttet",
               "kommen"
             ],
-            "hint": "Mayday, Mayday, Mayday — hier Angriffstrupp Florian Neuhaus 44/1 — zweites Obergeschoss, Brandwohnung, Wohnzimmer — Truppmann verschüttet und bewusstlos, Rückweg versperrt, Atemluftvorrat gering — Mayday, kommen!",
-            "briefing": "Kennwort dreimal: Mayday, Mayday, Mayday . hier + eigener Funkrufname (Angriffstrupp, Florian Neuhaus 44/1) . Standort möglichst genau (Geschoss, Raum) . Lage / Art des Notfalls (Truppmann verschüttet und bewusstlos, Rückweg versperrt) . Gesprächsabschluss: Mayday, kommen",
+            "hint": "Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 44/1 – zweites Obergeschoss, Brandwohnung, Wohnzimmer – Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt – Mayday, kommen!",
+            "briefing": "Kennwort dreimal: Mayday, Mayday, Mayday . „hier“ + eigener Funkrufname (Angriffstrupp Florian Neuhaus 44/1) . Standort so genau wie möglich (Geschoss, Wohnung, Raum) . Lage (Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt) . Abschluss: „Mayday, kommen“",
             "onSuccess": "n_lage",
             "onFailure": "n_mayday_fail",
-            "feedbackSuccess": "✅ Mayday korrekt nach FwDV 7 abgesetzt: Kennwort dreimal, Rufname, Standort, Lage, „Mayday, kommen“.",
-            "feedbackFailure": "❌ Ein Mayday enthält: Kennwort „Mayday“ dreimal, „hier“ + eigener Rufname, Standort, Lage (Notfallart) und Abschluss „Mayday, kommen“."
+            "feedbackSuccess": "✅ Mayday nach FwDV 7: Kennwort dreimal, Rufname, Standort, Lage, „Mayday, kommen“.",
+            "feedbackFailure": "❌ Mayday enthält: dreimal „Mayday“, „hier“ + Rufname, Standort, Lage und „Mayday, kommen“."
           }
         }
       ]
@@ -36,7 +82,7 @@
     "n_mayday_fail": {
       "id": "n_mayday_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Das Mayday-Verfahren nach FwDV 7, 7.6 hat eine feste Reihenfolge:\n1. Kennwort **„Mayday, Mayday, Mayday“**\n2. **„hier“ + eigener Funkrufname** (Angriffstrupp Florian Neuhaus 44/1)\n3. **Standort** möglichst genau (Geschoss, Raum)\n4. **Lage** — Art des Notfalls (verschütteter, bewusstloser Truppmann, Rückweg versperrt)\n5. Abschluss **„Mayday, kommen“**\n\nBeispiel: *„Mayday, Mayday, Mayday — hier Angriffstrupp Florian Neuhaus 44/1 — zweites Obergeschoss, Brandwohnung — Truppmann verschüttet und bewusstlos — Mayday, kommen!\"*",
+      "narrative": "**Feedback:** Der Mayday-Notruf hat nach **FwDV 7** eine feste Reihenfolge:\n1. **„Mayday, Mayday, Mayday“**\n2. **„hier“ + eigener Funkrufname**\n3. **Standort** – Geschoss, Wohnung, Raum\n4. **Lage** – Art des Notfalls\n5. **„Mayday, kommen“**\n\nMayday hat **Vorrang vor jedem anderen Funkverkehr**.\n\nBeispiel: *„Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 44/1 – zweites Obergeschoss, Brandwohnung, Wohnzimmer – Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt – Mayday, kommen!“*",
       "actions": [
         {
           "id": "retry",
@@ -48,26 +94,26 @@
     "n_lage": {
       "id": "n_lage",
       "role": "truppführer",
-      "narrative": "**Einsatzleitung:** Hier Florian Neuhaus 11/1, verstanden, Mayday aufgenommen. Frage genauen Standort und Atemluftvorrat — kommen!\n\nIhre erste Meldung war noch unvollständig. **Ergänzen Sie den genauen Standort und Ihren Atemluftvorrat** (Druckanzeige).",
+      "narrative": "**Einsatzleiter:** „Hier Florian Neuhaus 11/1 – Mayday verstanden. Sicherheitstrupp geht vor. Frage genauer Standort und Behälterdruck – kommen.“\n\nErgänzen Sie den **genauen Standort mit Anhaltspunkt** und Ihren **Behälterdruck**.",
       "actions": [
         {
-          "id": "radio_lage_ergaenzen",
-          "label": "📞 Standort und Atemluft sprechen",
+          "id": "radio_lage",
+          "label": "📞 Standort und Druck ergänzen",
           "radioCall": {
             "expectedPhrases": [
-              "Florian Neuhaus 44/1",
+              "Angriffstrupp",
               "zweites Obergeschoss",
               "Wohnzimmer",
-              "Atemluft",
+              "Fenster",
               "bar",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 — Standort zweites Obergeschoss, Wohnzimmer links neben dem Fenster — Atemluftvorrat noch sieben-null bar, fallend — kommen!",
-            "briefing": "Eigenen Rufnamen zuerst (hier Angriffstrupp Florian Neuhaus 44/1) . genauer Standort: Geschoss + Raum + Anhaltspunkt (zweites OG, Wohnzimmer, neben dem Fenster) . Atemluftvorrat als Druckanzeige in bar nennen, Tendenz (fallend) . mit „kommen“ abschließen",
-            "onSuccess": "n_funkstille",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – zweites Obergeschoss, Wohnzimmer, links neben dem Fenster zur Straße, Schlauchleitung führt zu uns – Behälterdruck 80 bar – kommen!",
+            "briefing": "„hier“ + Rufname . genauer Standort mit Anhaltspunkt (2. OG, Wohnzimmer, links neben dem Fenster zur Straße) . Hinweis für den Sicherheitstrupp: Schlauchleitung führt zu uns . Behälterdruck in bar . „kommen“",
+            "onSuccess": "n_anweisung",
             "onFailure": "n_lage_fail",
-            "feedbackSuccess": "✅ Standort präzisiert und Atemluftvorrat gemeldet — die Einsatzleitung kann die Rettung jetzt gezielt führen.",
-            "feedbackFailure": "❌ Nennen Sie zuerst Ihren Rufnamen, dann den genauen Standort (Geschoss + Raum) und Ihren Atemluftvorrat in bar, Abschluss „kommen“."
+            "feedbackSuccess": "✅ Standort präzisiert und Druck gemeldet – der Sicherheitstrupp kann gezielt vorgehen.",
+            "feedbackFailure": "❌ Nennen Sie Rufname, genauen Standort mit Anhaltspunkt und Behälterdruck in bar."
           }
         }
       ]
@@ -75,7 +121,7 @@
     "n_lage_fail": {
       "id": "n_lage_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Die Einsatzleitung braucht die rettungsrelevanten Angaben so genau wie möglich. Antworten Sie mit eigenem Rufnamen zuerst:\n1. **Genauer Standort** — Geschoss, Raum, ein Anhaltspunkt (z. B. „neben dem Fenster“)\n2. **Atemluftvorrat** — Druckanzeige in bar, mit Tendenz\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 — zweites Obergeschoss, Wohnzimmer neben dem Fenster — Atemluftvorrat noch sieben-null bar, fallend — kommen!\"*",
+      "narrative": "**Feedback:** Der Sicherheitstrupp braucht **Geschoss, Raum und einen Anhaltspunkt** (Fenster, Tür, Möbel) und den Hinweis, dass er der **Schlauchleitung** folgen kann. Der **Behälterdruck** zeigt, wie viel Zeit bleibt.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – zweites Obergeschoss, Wohnzimmer, links neben dem Fenster zur Straße, Schlauchleitung führt zu uns – Behälterdruck 80 bar – kommen!“*",
       "actions": [
         {
           "id": "retry",
@@ -84,69 +130,67 @@
         }
       ]
     },
-    "n_funkstille": {
-      "id": "n_funkstille",
+    "n_anweisung": {
+      "id": "n_anweisung",
       "role": "truppführer",
-      "narrative": "**Einsatzleitung:** Florian Neuhaus 11/1 an alle: Atemschutznotfall im zweiten Obergeschoss. Funkverkehr auf das Nötigste reduzieren, absolute Funkdisziplin halten. Sicherheitstrupp wird umgehend zu Ihnen vorgehen.\n\nDie Einsatzleitung hat Funkstille verfügt und den Sicherheitstrupp in Marsch gesetzt. **Bestätigen Sie die Durchsage** und halten Sie sich bereit.",
+      "narrative": "**Einsatzleiter:** „Florian Neuhaus 11/1 an alle: Atemschutznotfall im zweiten Obergeschoss. Funkverkehr nur noch für den Notfall. – Angriffstrupp: Bleiben Sie beim Truppmann, machen Sie sich mit der Lampe bemerkbar, Sicherheitstrupp in etwa zwei Minuten bei Ihnen – kommen.“\n\nBestätigen Sie die Anweisung kurz.",
       "actions": [
         {
-          "id": "radio_funkstille_bestaetigen",
-          "label": "📞 Bestätigung sprechen",
+          "id": "radio_anweisung",
+          "label": "📞 Anweisung bestätigen",
           "radioCall": {
             "expectedPhrases": [
-              "Florian Neuhaus 44/1",
+              "Angriffstrupp",
               "verstanden",
-              "Funkstille",
-              "Sicherheitstrupp",
-              "warten",
+              "bleibe beim Truppmann",
+              "Lampe",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 — verstanden, halten Funkstille, warten auf den Sicherheitstrupp — kommen!",
-            "briefing": "Eigenen Rufnamen zuerst (hier Angriffstrupp Florian Neuhaus 44/1) . „verstanden“ als Empfangsbestätigung . Funkstille / Funkdisziplin bestätigen . Bereitschaft melden: warten auf den Sicherheitstrupp . mit „kommen“ abschließen",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – verstanden, bleibe beim Truppmann, mache mich mit der Lampe bemerkbar – kommen.",
+            "briefing": "„hier“ + Rufname . „verstanden“ . Anweisung kurz wiederholen (bleibe beim Truppmann, mache mich mit der Lampe bemerkbar) . „kommen“ – danach Funkdisziplin",
             "onSuccess": "n_rettung",
-            "onFailure": "n_funkstille_fail",
-            "feedbackSuccess": "✅ Durchsage bestätigt — Sie halten Funkstille und warten auf den Sicherheitstrupp.",
-            "feedbackFailure": "❌ Bestätigen Sie mit Rufname und „verstanden“, dass Sie Funkstille halten und auf den Sicherheitstrupp warten."
+            "onFailure": "n_anweisung_fail",
+            "feedbackSuccess": "✅ Anweisung kurz bestätigt – Funk bleibt frei für die Rettung.",
+            "feedbackFailure": "❌ Bestätigen Sie mit Rufname, „verstanden“ und der kurzen Wiederholung der Anweisung."
           }
         }
       ]
     },
-    "n_funkstille_fail": {
-      "id": "n_funkstille_fail",
+    "n_anweisung_fail": {
+      "id": "n_anweisung_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Bei einem Atemschutznotfall ruht der übrige Funkverkehr (DV 810.3). Bestätigen Sie die Anordnung kurz und sachlich:\n1. Eigener **Rufname** zuerst\n2. **„verstanden“** als Empfangsbestätigung\n3. Sie **halten Funkstille** und **warten auf den Sicherheitstrupp**\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 — verstanden, halten Funkstille, warten auf den Sicherheitstrupp — kommen!\"*",
+      "narrative": "**Feedback:** Im Atemschutznotfall gilt **Funkdisziplin**: kurz bestätigen, Anweisung wiederholen, danach nur noch Wichtiges funken.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – verstanden, bleibe beim Truppmann, mache mich mit der Lampe bemerkbar – kommen.“*",
       "actions": [
         {
           "id": "retry",
           "label": "🔄 Erneut versuchen",
-          "nextNodeId": "n_funkstille"
+          "nextNodeId": "n_anweisung"
         }
       ]
     },
     "n_rettung": {
       "id": "n_rettung",
       "role": "truppführer",
-      "narrative": "Der Sicherheitstrupp hat Sie erreicht. Ihr Truppmann wurde befreit, an die Notluftversorgung angeschlossen und gemeinsam in den raucharmen Treppenraum gerettet. Beide Trupps sind in Sicherheit, der Notfall ist abgearbeitet.\n\nMelden Sie der Einsatzleitung, dass die **Rettung abgeschlossen** ist und der **Mayday und die Funkstille aufgehoben** werden können. Schließen Sie das Gespräch mit „Ende“ ab.",
+      "narrative": "Der Sicherheitstrupp erreicht Sie, legt den Truppmann frei, schließt ihn an die Notluftversorgung an und bringt ihn mit Ihnen in den raucharmen Treppenraum und ins Freie. Der Rettungsdienst übernimmt.\n\nMelden Sie dem Einsatzleiter: **Rettung abgeschlossen, Angriffstrupp vollständig im Freien**. Das Mayday hebt **der Einsatzleiter** auf – nicht Sie.",
       "actions": [
         {
-          "id": "radio_rettung_melden",
-          "label": "📞 Aufhebung sprechen",
+          "id": "radio_rettung",
+          "label": "📞 Rettung melden",
           "radioCall": {
             "expectedPhrases": [
-              "Florian Neuhaus 44/1",
+              "Angriffstrupp",
+              "Truppmann",
               "gerettet",
-              "Sicherheit",
-              "Mayday",
-              "aufgehoben",
-              "Funkstille",
-              "Ende"
+              "Rettungsdienst",
+              "im Freien",
+              "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 — Truppmann durch Sicherheitstrupp gerettet, beide Trupps im Treppenraum in Sicherheit — Mayday und Funkstille können aufgehoben werden — Ende.",
-            "briefing": "Eigenen Rufnamen zuerst (hier Angriffstrupp Florian Neuhaus 44/1) . Ergebnis: Truppmann durch Sicherheitstrupp gerettet, beide Trupps in Sicherheit (Treppenraum) . Mayday aufheben . Funkstille aufheben / Funkverkehr wieder frei . letzte Übertragung mit „Ende“ abschließen",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – Truppmann durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.",
+            "briefing": "„hier“ + Rufname . Truppmann durch den Sicherheitstrupp gerettet . an den Rettungsdienst übergeben . Angriffstrupp vollständig im Freien . „kommen“ – die Aufhebung spricht der Einsatzleiter",
             "onSuccess": "n_end",
             "onFailure": "n_rettung_fail",
-            "feedbackSuccess": "✅ Rettung gemeldet — Mayday und Funkstille aufgehoben, Gespräch mit „Ende“ abgeschlossen.",
-            "feedbackFailure": "❌ Melden Sie die erfolgte Rettung, dass beide Trupps in Sicherheit sind und Mayday sowie Funkstille aufgehoben werden — Abschluss mit „Ende“."
+            "feedbackSuccess": "✅ Rettung gemeldet – die Aufhebung des Mayday überlassen Sie dem Einsatzleiter.",
+            "feedbackFailure": "❌ Melden Sie: Truppmann gerettet, an den Rettungsdienst übergeben, Trupp vollständig im Freien."
           }
         }
       ]
@@ -154,7 +198,7 @@
     "n_rettung_fail": {
       "id": "n_rettung_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Die Aufhebung gibt die Einsatzleitung an alle bekannt — Sie liefern dafür die Meldung:\n1. Eigener **Rufname** zuerst\n2. **Rettung erfolgt** — Truppmann durch Sicherheitstrupp gerettet, beide Trupps in Sicherheit\n3. **Mayday und Funkstille aufheben**\n4. Letzte Übertragung mit **„Ende“**\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 — Truppmann durch Sicherheitstrupp gerettet, beide Trupps in Sicherheit — Mayday und Funkstille können aufgehoben werden — Ende.\"*",
+      "narrative": "**Feedback:** Sie melden das **Ergebnis**. Die **Aufhebung** von Mayday und Funkbeschränkung gibt der **Einsatzleiter** an alle durch – einzelne Funkstellen nehmen den normalen Funkverkehr nicht eigenmächtig wieder auf.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – Truppmann durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -166,12 +210,12 @@
     "n_end": {
       "id": "n_end",
       "role": "truppführer",
-      "narrative": "**Einsatzleitung:** Florian Neuhaus 11/1 an alle: Atemschutznotfall beendet, beide Trupps in Sicherheit, Funkverkehr wieder frei.\n\nVorbildlich abgewickelt — Mayday korrekt abgesetzt, Lage ergänzt, Funkdisziplin gehalten und die Aufhebung gemeldet.\n\n**Übung abgeschlossen! 🏆**",
+      "narrative": "**Einsatzleiter:** „Florian Neuhaus 11/1 an alle: Atemschutznotfall beendet, Funkverkehr wieder frei.“\n\nVorbildlich: sofort Notruftaste und Mayday, Lage ergänzt, Funkdisziplin gehalten, Rettung gemeldet. Nach dem Einsatz: Untersuchung durch den Rettungsdienst und Angebot der **PSNV** (Psychosoziale Notfallversorgung für Einsatzkräfte).\n\n**Übung abgeschlossen! 🏆**",
       "actions": [
         {
           "id": "restart",
           "label": "🔄 Noch einmal trainieren",
-          "nextNodeId": "n_mayday"
+          "nextNodeId": "n_start"
         },
         {
           "id": "exit",

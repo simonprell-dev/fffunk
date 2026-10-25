@@ -1,30 +1,30 @@
 {
   "id": "trupp_thl_kombi",
-  "title": "Truppführer: Angriffstrupp THL Kombi (Sturmschaden)",
-  "description": "Truppführer-Übung in Neuhaus: Anfunken, Absichern, Ausleuchten und Verkehr nach Sturmschaden, Bedarf melden, Abschluss. 5 Funk-Schritte im trupp-internen Befehls- und Meldungsschema.",
+  "title": "Truppführer: Sturmschaden – Absichern, Ausleuchten, Verkehr",
+  "description": "Truppführer-Übung in Neuhaus: Nach einem Sturm Einsatzstelle absichern, ausleuchten, Verkehr wechselseitig vorbeiführen, zweiten Posten anfordern und den Abschluss melden. 5 Funk-Schritte im Einsatzstellenfunk.",
   "startingNodeId": "n_anfunken",
   "playerRole": "truppführer",
   "nodes": {
     "n_anfunken": {
       "id": "n_anfunken",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** „Angriffstrupp von Gruppenführer – kommen.“\n\nNach einem Sturmschaden in Neuhaus muss eine Einsatzstelle abgesichert, ausgeleuchtet und der Verkehr geführt werden. Der Gruppenführer funkt den Angriffstrupp an.\n\nAntworten Sie korrekt auf den Anruf.",
+      "narrative": "**Gruppenführer:** „Schlauchtrupp von Gruppenführer – kommen.“\n\nNach einem Sturm liegt in Neuhaus auf der Ortsverbindungsstraße ein großer Ast quer über einer Fahrspur. Es ist Nacht.\n\nBeantworten Sie den Anruf.",
       "actions": [
         {
-          "id": "radio_hoert",
+          "id": "radio_anfunken",
           "label": "📞 Anruf beantworten",
           "radioCall": {
             "expectedPhrases": [
               "hier",
-              "Angriffstrupp",
+              "Schlauchtrupp",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp – kommen.",
-            "briefing": "Anrufantwort auf den Anruf des Gruppenführers . Eigener taktischer Name (Angriffstrupp) . Sprecherlaubnis zurückgeben",
+            "hint": "Hier Schlauchtrupp – kommen.",
+            "briefing": "Antwort mit „hier“ . eigener Rufname (Schlauchtrupp) . „kommen“",
             "onSuccess": "n_start",
             "onFailure": "n_anfunken_fail",
-            "feedbackSuccess": "✅ Anruf korrekt angenommen. Antwort beginnt mit „hier“ und endet mit „kommen“.",
-            "feedbackFailure": "❌ Antworten Sie knapp: „Hier Angriffstrupp – kommen.“ Die Anrufantwort beginnt mit „hier“, nicht mit „hört“."
+            "feedbackSuccess": "✅ Anruf formal korrekt beantwortet.",
+            "feedbackFailure": "❌ Antworten Sie mit „Hier Schlauchtrupp – kommen“."
           }
         }
       ]
@@ -32,7 +32,7 @@
     "n_anfunken_fail": {
       "id": "n_anfunken_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Die Anrufantwort beginnt mit dem Betriebswort „hier“, gefolgt vom eigenen (taktischen) Rufnamen, und endet mit „kommen“. „Hört“ ist kein BOS-Betriebswort.\n\nBeispiel: *„Hier Angriffstrupp – kommen.“*",
+      "narrative": "**Feedback:** Die Antwort auf einen Anruf beginnt mit **„hier“**, dann folgt der eigene Rufname, Abschluss **„kommen“**. „Hört“ ist kein Betriebswort.\n\nBeispiel: *„Hier Schlauchtrupp – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -44,13 +44,14 @@
     "n_start": {
       "id": "n_start",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** „Nach dem Sturm liegt ein Ast auf der Fahrbahn, ein PKW steht im Gefahrenbereich. Ihr Auftrag: Einsatzstelle absichern, ausleuchten und den Verkehr langsam vorbeiführen – kommen.“\n\nWiederholen Sie den Auftrag (Rückmeldung des Trupps) und bestätigen Sie.",
+      "narrative": "**Gruppenführer:** „Schlauchtrupp: Einsatzstelle in beide Richtungen absichern, Ast ausleuchten und Verkehr einspurig vorbeiführen. Den Ast zerkleinert der Angriffstrupp mit der Motorsäge – kommen.“\n\nWiederholen Sie den Befehl.",
       "actions": [
         {
-          "id": "radio_auftrag",
-          "label": "📞 Auftrag wiederholen",
+          "id": "radio_start",
+          "label": "📞 Befehl wiederholen",
           "radioCall": {
             "expectedPhrases": [
+              "Schlauchtrupp",
               "verstanden",
               "absichern",
               "ausleuchten",
@@ -58,12 +59,12 @@
               "vorbeiführen",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp – verstanden: Einsatzstelle absichern, ausleuchten und Verkehr langsam vorbeiführen – kommen.",
-            "briefing": "Auftrag bestätigen und zur Kontrolle wiederholen . Kernaufgaben: absichern . ausleuchten . Verkehr langsam vorbeiführen . mit Sprecherlaubnis abschließen",
-            "onSuccess": "n_absichern",
+            "hint": "Hier Schlauchtrupp – verstanden: Einsatzstelle in beide Richtungen absichern, ausleuchten, Verkehr einspurig vorbeiführen – kommen.",
+            "briefing": "„hier Schlauchtrupp“ . „verstanden“ . Auftrag wiederholen: absichern in beide Richtungen, ausleuchten, Verkehr einspurig vorbeiführen . „kommen“",
+            "onSuccess": "n_wie",
             "onFailure": "n_start_fail",
-            "feedbackSuccess": "✅ Kombiauftrag korrekt wiederholt und bestätigt.",
-            "feedbackFailure": "❌ Wiederholen Sie den Auftrag vollständig: absichern, ausleuchten und Verkehr vorbeiführen – mit „kommen“ abschließen."
+            "feedbackSuccess": "✅ Befehl korrekt wiederholt.",
+            "feedbackFailure": "❌ Wiederholen Sie: absichern, ausleuchten, Verkehr einspurig vorbeiführen."
           }
         }
       ]
@@ -71,7 +72,7 @@
     "n_start_fail": {
       "id": "n_start_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Im trupp-internen Befehlsschema wiederholt der Trupp den Auftrag zur Kontrolle. Bei mehreren Aufgaben werden alle Kernaufgaben genannt.\n\nBeispiel: *„Hier Angriffstrupp – verstanden: absichern, ausleuchten und Verkehr langsam vorbeiführen – kommen.“*",
+      "narrative": "**Feedback:** Der Truppführer wiederholt den Befehl in Stichworten (FwDV 3).\n\nBeispiel: *„Hier Schlauchtrupp – verstanden: Einsatzstelle in beide Richtungen absichern, ausleuchten, Verkehr einspurig vorbeiführen – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -80,29 +81,75 @@
         }
       ]
     },
+    "n_wie_x1": {
+      "id": "n_wie_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Bei Tempo 100 braucht ein Fahrer viel Weg, um zu reagieren. Die Vorwarnung muss **deutlich vor** der Einsatzstelle stehen. Richtwerte stehen im Merkblatt „Verkehrsabsicherung von Einsatzstellen der Feuerwehr“ der Staatlichen Feuerwehrschulen Bayern.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_wie"
+        }
+      ]
+    },
+    "n_wie_x2": {
+      "id": "n_wie_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** **Eigenschutz zuerst:** Erst die Absicherung gegen den fließenden Verkehr, dann ausleuchten und arbeiten.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_wie"
+        }
+      ]
+    },
+    "n_wie": {
+      "id": "n_wie",
+      "role": "truppführer",
+      "narrative": "Sie stellen die Absicherung auf. Die Strecke ist außerorts, Tempo 100 erlaubt, übersichtlich.\n\nWie sichern Sie ab?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔺 Warnkleidung, Faltsignale und Warnleuchten in beiden Richtungen deutlich vor der Einsatzstelle (außerorts mindestens ca. 100 m, besser mehr), Leitkegel zur Fahrstreifenverengung",
+          "nextNodeId": "n_absichern"
+        },
+        {
+          "id": "opt1",
+          "label": "🔺 Ein Leitkegel direkt am Ast reicht, das Blaulicht sieht man ja",
+          "nextNodeId": "n_wie_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔦 Erst ausleuchten, dann absichern",
+          "nextNodeId": "n_wie_x2"
+        }
+      ]
+    },
     "n_absichern": {
       "id": "n_absichern",
       "role": "truppführer",
-      "narrative": "Die Einsatzstelle ist mit Faltsignalen und Warnleuchten abgesichert. Ein Strahler leuchtet den Ast und den PKW aus.\n\nMelden Sie den Stand an den Gruppenführer.",
+      "narrative": "Die Absicherung steht in beiden Richtungen, ein Lichtmast leuchtet den Ast blendfrei für den Gegenverkehr aus.\n\nMelden Sie den Stand.",
       "actions": [
         {
-          "id": "radio_stand",
+          "id": "radio_absichern",
           "label": "📞 Stand melden",
           "radioCall": {
             "expectedPhrases": [
-              "Absicherung steht",
-              "Faltsignale",
-              "Warnleuchten",
-              "Strahler",
+              "Gruppenführer",
+              "Schlauchtrupp",
+              "Absicherung",
+              "beide Richtungen",
               "ausgeleuchtet",
               "kommen"
             ],
-            "hint": "Gruppenführer von Angriffstrupp – Absicherung steht mit Faltsignalen und Warnleuchten, Strahler gesetzt, Einsatzstelle ausgeleuchtet – kommen.",
-            "briefing": "Standmeldung an den Gruppenführer . Absicherung steht (Faltsignale und Warnleuchten) . Strahler gesetzt . Einsatzstelle ausgeleuchtet . Sprecherlaubnis übergeben",
+            "hint": "Gruppenführer von Schlauchtrupp – Absicherung in beide Richtungen mit Faltsignalen, Warnleuchten und Leitkegeln steht, Einsatzstelle blendfrei ausgeleuchtet – kommen.",
+            "briefing": "Anruf: Gruppenführer von Schlauchtrupp . Absicherung in beide Richtungen (Faltsignale, Warnleuchten, Leitkegel) . Ausleuchtung blendfrei . „kommen“",
             "onSuccess": "n_verkehr",
             "onFailure": "n_absichern_fail",
-            "feedbackSuccess": "✅ Standmeldung vollständig: Absicherungsmittel und Ausleuchtung genannt.",
-            "feedbackFailure": "❌ Melden Sie die Absicherungsmittel (Faltsignale, Warnleuchten) und die Ausleuchtung (Strahler) – mit „kommen“ abschließen."
+            "feedbackSuccess": "✅ Stand vollständig gemeldet.",
+            "feedbackFailure": "❌ Melden Sie Absicherung in beide Richtungen und die Ausleuchtung."
           }
         }
       ]
@@ -110,7 +157,7 @@
     "n_absichern_fail": {
       "id": "n_absichern_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Die Rückmeldung soll Material und Zustand enthalten und mit „kommen“ enden.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – Absicherung steht mit Faltsignalen und Warnleuchten, Strahler gesetzt – kommen.“*",
+      "narrative": "**Feedback:** Melden Sie, **was steht**: Absicherung (womit, in welche Richtungen) und Ausleuchtung. Beleuchtung darf den Verkehr nicht blenden.\n\nBeispiel: *„Gruppenführer von Schlauchtrupp – Absicherung in beide Richtungen mit Faltsignalen, Warnleuchten und Leitkegeln steht, Einsatzstelle blendfrei ausgeleuchtet – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -122,26 +169,27 @@
     "n_verkehr": {
       "id": "n_verkehr",
       "role": "truppführer",
-      "narrative": "Der Verkehr kann nur wechselweise (einspurig) an der Einsatzstelle vorbeigeführt werden. Ein zweiter Trupp zur Unterstützung ist noch nicht verfügbar.\n\nMelden Sie die Verkehrsführung und Ihren Bedarf an den Gruppenführer.",
+      "narrative": "Der Verkehr muss abwechselnd an der Einsatzstelle vorbei. Wegen einer Kuppe sehen Sie das andere Ende nicht. Zwei Personen reichen dafür nicht: Für **wechselseitigen Verkehr** braucht es an **jedem Ende einen Posten**, die sich über Funk abstimmen.\n\nMelden Sie die Lage und fordern Sie Unterstützung an.",
       "actions": [
         {
           "id": "radio_verkehr",
           "label": "📞 Bedarf melden",
           "radioCall": {
             "expectedPhrases": [
-              "Verkehr",
-              "wechselweise",
-              "vorbeiführen",
-              "zweiten Trupp",
-              "Unterstützung",
+              "Gruppenführer",
+              "Schlauchtrupp",
+              "wechselseitig",
+              "Posten",
+              "Kuppe",
+              "benötigen",
               "kommen"
             ],
-            "hint": "Gruppenführer von Angriffstrupp – Verkehr wird wechselweise vorbeigeführt, benötigen einen zweiten Trupp zur Unterstützung – kommen.",
-            "briefing": "Bedarfsmeldung an den Gruppenführer . Lage: Verkehr wird wechselweise (einspurig) vorbeigeführt . Bedarf klar benennen: zweiter Trupp zur Unterstützung . Sprecherlaubnis übergeben",
+            "hint": "Gruppenführer von Schlauchtrupp – Verkehr muss wechselseitig geführt werden, anderes Ende wegen Kuppe nicht einsehbar. Benötigen einen zweiten Posten mit Funkgerät am Südende – kommen.",
+            "briefing": "Anruf: Gruppenführer von Schlauchtrupp . Lage: Verkehr nur wechselseitig, Ende wegen Kuppe nicht einsehbar . Bedarf: zweiter Posten mit Funkgerät (Südende) . „kommen“",
             "onSuccess": "n_frei",
             "onFailure": "n_verkehr_fail",
-            "feedbackSuccess": "✅ Verkehrsführung und Bedarf klar gemeldet.",
-            "feedbackFailure": "❌ Melden Sie die wechselweise Verkehrsführung und den konkreten Bedarf (zweiter Trupp zur Unterstützung) – mit „kommen“ abschließen."
+            "feedbackSuccess": "✅ Lage und konkreter Bedarf gemeldet.",
+            "feedbackFailure": "❌ Melden Sie, warum Sie Unterstützung brauchen, und fordern Sie konkret einen zweiten Posten mit Funkgerät an."
           }
         }
       ]
@@ -149,7 +197,7 @@
     "n_verkehr_fail": {
       "id": "n_verkehr_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Bei Bedarfsmeldungen muss klar sein, was fehlt. Lage und Bedarf trennen, mit „kommen“ enden.\n\nBeispiel: *„Verkehr wird wechselweise vorbeigeführt, benötigen einen zweiten Trupp zur Unterstützung – kommen.“*",
+      "narrative": "**Feedback:** Fordern Sie **konkret** an: was, wie viel, wofür. Wechselseitige Verkehrsführung ohne Sichtkontakt geht nur mit **zwei Posten**, die sich über Funk abstimmen.\n\nBeispiel: *„Gruppenführer von Schlauchtrupp – Verkehr muss wechselseitig geführt werden, anderes Ende wegen Kuppe nicht einsehbar. Benötigen einen zweiten Posten mit Funkgerät am Südende – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -161,26 +209,26 @@
     "n_frei": {
       "id": "n_frei",
       "role": "truppführer",
-      "narrative": "Der Ast ist beseitigt, der PKW konnte wegfahren. Die Fahrbahn ist frei, die Absicherung kann zurückgebaut werden.\n\nMelden Sie den Abschluss an den Gruppenführer. Dies ist die letzte Übertragung dieses Gesprächs.",
+      "narrative": "Der Angriffstrupp hat den Ast mit **Schnittschutzausrüstung** zerkleinert und an den Fahrbahnrand gelegt, die Fahrbahn ist gekehrt. Die Straße ist frei.\n\nMelden Sie den Abschluss. Das ist die letzte Meldung dieses Gesprächs.",
       "actions": [
         {
-          "id": "radio_abschluss",
+          "id": "radio_frei",
           "label": "📞 Abschluss melden",
           "radioCall": {
             "expectedPhrases": [
-              "Ast beseitigt",
-              "PKW",
+              "Gruppenführer",
+              "Schlauchtrupp",
               "Fahrbahn frei",
               "Absicherung",
-              "zurückbauen",
+              "zurück",
               "Ende"
             ],
-            "hint": "Gruppenführer von Angriffstrupp – Ast beseitigt, PKW weggefahren, Fahrbahn frei, bauen Absicherung zurück – Ende.",
-            "briefing": "Abschlussmeldung an den Gruppenführer . Ergebnis: Ast beseitigt . PKW weggefahren . Fahrbahn frei . nächste Maßnahme: Absicherung zurückbauen . letzte Übertragung mit „Ende“ schließen",
+            "hint": "Gruppenführer von Schlauchtrupp – Fahrbahn frei, Verkehr läuft wieder in beide Richtungen, bauen die Absicherung von innen nach außen zurück – Ende.",
+            "briefing": "Anruf: Gruppenführer von Schlauchtrupp . Fahrbahn frei, Verkehr läuft wieder . Absicherung wird zurückgebaut (von innen nach außen) . „Ende“",
             "onSuccess": "n_end",
             "onFailure": "n_frei_fail",
-            "feedbackSuccess": "✅ Abschlussmeldung vollständig: Ergebnis und nächste Maßnahme genannt, Gespräch mit „Ende“ geschlossen.",
-            "feedbackFailure": "❌ Melden Sie Ast beseitigt, Fahrbahn frei und Rückbau der Absicherung – die letzte Übertragung endet mit „Ende“."
+            "feedbackSuccess": "✅ Abschluss gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Fahrbahn frei, Absicherung wird zurückgebaut, Abschluss „Ende“."
           }
         }
       ]
@@ -188,7 +236,7 @@
     "n_frei_fail": {
       "id": "n_frei_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Abschlussmeldungen nennen das Ergebnis und die nächste Maßnahme. Da kein weiterer Verkehr folgt, endet die Meldung mit „Ende“.\n\nBeispiel: *„Ast beseitigt, PKW weggefahren, Fahrbahn frei, bauen Absicherung zurück – Ende.“*",
+      "narrative": "**Feedback:** Die Absicherung wird in **umgekehrter Reihenfolge** abgebaut – von der Einsatzstelle nach außen –, damit der Schutz bis zuletzt besteht.\n\nBeispiel: *„Gruppenführer von Schlauchtrupp – Fahrbahn frei, Verkehr läuft wieder in beide Richtungen, bauen die Absicherung von innen nach außen zurück – Ende.“*",
       "actions": [
         {
           "id": "retry",
@@ -200,7 +248,7 @@
     "n_end": {
       "id": "n_end",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** „Verstanden, Ende.“ Nach dem Rückbau wieder am Fahrzeug Florian Neuhaus 44/1 sammeln.\n\n**Übung abgeschlossen!**",
+      "narrative": "Sicher abgesichert, ausgeleuchtet, zweiten Posten angefordert und sauber abgebaut.\n\n**Übung abgeschlossen! 🎉**",
       "actions": [
         {
           "id": "restart",

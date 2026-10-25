@@ -6,6 +6,7 @@ export type PlayerRole =
   | 'gruppenführer_e'
   | 'gruppenführer_f'
   | 'truppführer'
+  | 'truppmann'
   | 'atemschutzüberwachung'
   | 'einsatzleit';
 
@@ -46,6 +47,8 @@ export interface Scenario {
   startingNodeId: string;
   playerRole: PlayerRole;
   nodes: Record<string, StoryNode>;
+  /** Ordner der eingebauten Szenarien (Schlüssel aus public/scenarios/index.json). */
+  category?: string;
   community?: CommunityScenarioMeta;
 }
 

@@ -1,13 +1,18 @@
 {
   "builtin": {
-    "brand": [],
+    "brand": [
+      "builtin/brand/angriffstrupp_menschenrettung.json",
+      "builtin/brand/atemschutzueberwachung.json",
+      "builtin/brand/mayday_truppfuehrer_bewusstlos.json"
+    ],
     "thl": [
       "builtin/thl/trupp_auto_absichern.json"
     ],
     "verkehr": [
       "builtin/verkehr/trupp_thl_kombi.json",
       "builtin/verkehr/trupp_verkehr_absichern.json",
-      "builtin/verkehr/trupp_verkehr_leiten.json"
+      "builtin/verkehr/trupp_verkehr_leiten.json",
+      "builtin/verkehr/verkehrsregelung_wechselseitig.json"
     ],
     "wasser": [
       "builtin/wasser/trupp_wasseraufbau.json"
@@ -19,7 +24,10 @@
       "builtin/funk/mayday_atemschutznotfall.json",
       "builtin/funk/volluebung_einsatzablauf.json"
     ],
-    "sonstige": []
+    "sonstige": [
+      "builtin/sonstige/hubschrauber_landeplatz.json",
+      "builtin/sonstige/vermisstensuche.json"
+    ]
   },
   "community": {
     "brand": [],

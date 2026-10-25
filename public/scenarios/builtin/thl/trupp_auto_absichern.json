@@ -1,17 +1,17 @@
 {
   "id": "trupp_auto_absichern",
-  "title": "Truppführer: Brandabsicherung und Bergung am PKW",
-  "description": "Truppführer-Übung: Anfunken, Angriffstrupp übernimmt Brandabsicherung, Wegrollsicherung und Bergungsvorbereitung an einem PKW. Internes Befehls- und Meldungsschema. 4 Funk-Schritte.",
+  "title": "Truppführer: PKW sichern und Bergung vorbereiten",
+  "description": "Truppführer-Übung THL: Befehl wiederholen, verunfallten PKW gegen Wegrollen sichern, Antriebsart erkunden, auslaufende Betriebsmittel aufnehmen und das Fahrzeug für den Abschleppdienst vorbereiten. 4 Funk-Schritte.",
   "startingNodeId": "n_anfunken",
   "playerRole": "truppführer",
   "nodes": {
     "n_anfunken": {
       "id": "n_anfunken",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Angriffstrupp von Gruppenführer - kommen.\n\nVerkehrsunfall in Neuhaus, ein PKW ist betroffen. Der Angriffstrupp soll Brandabsicherung, Wegrollsicherung und Bergungsvorbereitung übernehmen. Der Gruppenführer funkt den Angriffstrupp am Einsatzstellenfunk an.\n\nAntworten Sie korrekt auf den Anruf.",
+      "narrative": "**Gruppenführer:** „Angriffstrupp von Gruppenführer – kommen.“\n\nVerkehrsunfall in Neuhaus. Der Maschinist hat die Einsatzstelle mit Blaulicht und Warnblinker gesichert, der Schlauchtrupp sichert gegen den fließenden Verkehr ab, der Brandschutz steht.\n\nBeantworten Sie den Anruf.",
       "actions": [
         {
-          "id": "radio_hoert",
+          "id": "radio_anfunken",
           "label": "📞 Anruf beantworten",
           "radioCall": {
             "expectedPhrases": [
@@ -19,12 +19,12 @@
               "Angriffstrupp",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp - kommen.",
-            "briefing": "Anrufantwort auf den Anruf des Gruppenführers . Eigener taktischer Name (Angriffstrupp) . Beginnt mit „hier“, endet mit „kommen“ . „hört“ ist kein BOS-Betriebswort.",
+            "hint": "Hier Angriffstrupp – kommen.",
+            "briefing": "Antwort mit „hier“ . eigener Rufname (Angriffstrupp) . „kommen“",
             "onSuccess": "n_start",
             "onFailure": "n_anfunken_fail",
-            "feedbackSuccess": "✅ Anruf korrekt angenommen. Antwort beginnt mit „hier“ und endet mit „kommen“.",
-            "feedbackFailure": "❌ Antworten Sie knapp: „Hier Angriffstrupp - kommen.“ Die Anrufantwort beginnt mit „hier“, nicht mit „hört“."
+            "feedbackSuccess": "✅ Anruf formal korrekt beantwortet.",
+            "feedbackFailure": "❌ Antworten Sie mit „Hier Angriffstrupp – kommen“."
           }
         }
       ]
@@ -32,7 +32,7 @@
     "n_anfunken_fail": {
       "id": "n_anfunken_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Die Anrufantwort beginnt mit dem Betriebswort „hier“, gefolgt vom eigenen (taktischen) Rufnamen, und endet mit „kommen“. „Hört“ ist kein BOS-Betriebswort.\n\nBeispiel: *„Hier Angriffstrupp - kommen.“*",
+      "narrative": "**Feedback:** Die Antwort auf einen Anruf beginnt mit **„hier“**, dann folgt der eigene Rufname, Abschluss **„kommen“**. „Hört“ ist kein Betriebswort.\n\nBeispiel: *„Hier Angriffstrupp – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -44,26 +44,26 @@
     "n_start": {
       "id": "n_start",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** PKW nach Auffahrunfall, Fahrer ist bereits ausgestiegen und unverletzt. Das Fahrzeug steht auf abschüssiger Straße. Auftrag für den Angriffstrupp: Brandschutz mit Schnellangriff und Pulverlöscher sicherstellen, Fahrzeug gegen Wegrollen sichern und Bergung vorbereiten - kommen.\n\nWiederholen Sie den Auftrag zur Bestätigung.",
+      "narrative": "**Gruppenführer:** „PKW nach Auffahrunfall, Fahrer ist ausgestiegen und unverletzt, niemand eingeklemmt. Das Fahrzeug steht auf abschüssiger Fahrbahn. Angriffstrupp: PKW gegen Wegrollen sichern, Zündung aus, Antriebsart feststellen – kommen.“\n\nWiederholen Sie den Befehl.",
       "actions": [
         {
-          "id": "radio_auftrag",
-          "label": "📞 Auftrag wiederholen",
+          "id": "radio_start",
+          "label": "📞 Befehl wiederholen",
           "radioCall": {
             "expectedPhrases": [
               "Angriffstrupp",
               "verstanden",
-              "Brandschutz",
               "Wegrollen",
-              "Bergung",
+              "Zündung aus",
+              "Antriebsart",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp - verstanden, stellen Brandschutz sicher, sichern den PKW gegen Wegrollen und bereiten die Bergung vor - kommen.",
-            "briefing": "Auftrag bestätigen und zur Kontrolle wiederholen . Eigener Rufname zuerst, Auftrag verstanden . drei Aufträge nennen: Brandschutz sicherstellen . Wegrollsicherung am PKW . Bergung vorbereiten . mit „kommen“ abschließen.",
+            "hint": "Hier Angriffstrupp – verstanden: PKW gegen Wegrollen sichern, Zündung aus, Antriebsart feststellen – kommen.",
+            "briefing": "„hier Angriffstrupp“ . „verstanden“ . Befehl in Stichworten wiederholen: PKW gegen Wegrollen sichern, Zündung aus, Antriebsart feststellen . „kommen“",
             "onSuccess": "n_sichern",
             "onFailure": "n_start_fail",
-            "feedbackSuccess": "✅ Auftrag korrekt zurückwiederholt. Der Trupp bestätigt Brandschutz, Wegrollsicherung und Bergungsvorbereitung.",
-            "feedbackFailure": "❌ Wiederholen Sie den Auftrag mit allen drei Teilen: Brandschutz, Wegrollsicherung und Bergungsvorbereitung - mit „kommen“ abschließen."
+            "feedbackSuccess": "✅ Befehl korrekt wiederholt.",
+            "feedbackFailure": "❌ Wiederholen Sie die drei Teilaufträge: gegen Wegrollen sichern, Zündung aus, Antriebsart feststellen."
           }
         }
       ]
@@ -71,7 +71,7 @@
     "n_start_fail": {
       "id": "n_start_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Der Trupp wiederholt den Auftrag mit den Kernpunkten Brandschutz, Wegrollsicherung und Bergungsvorbereitung und schließt mit „kommen“ ab.\n\nBeispiel: *„Hier Angriffstrupp - verstanden, stellen Brandschutz sicher, sichern den PKW gegen Wegrollen und bereiten die Bergung vor - kommen.“*",
+      "narrative": "**Feedback:** Nach **FwDV 3** wiederholt der Truppführer den Befehl. So erkennt der Gruppenführer sofort, ob er richtig verstanden wurde.\n\nBeispiel: *„Hier Angriffstrupp – verstanden: PKW gegen Wegrollen sichern, Zündung aus, Antriebsart feststellen – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -80,88 +80,136 @@
         }
       ]
     },
-    "n_sichern": {
-      "id": "n_sichern",
+    "n_sichern_x1": {
+      "id": "n_sichern_x1",
       "role": "truppführer",
-      "narrative": "Unterlegkeile sind gesetzt, die Handbremse ist kontrolliert und die Zündung ist aus. Schnellangriff und Pulverlöscher stehen für die Brandabsicherung bereit.\n\nMelden Sie den Stand der Sicherungsmaßnahmen an den Gruppenführer.",
-      "actions": [
-        {
-          "id": "radio_sicherung",
-          "label": "📞 Sicherung melden",
-          "radioCall": {
-            "expectedPhrases": [
-              "Unterlegkeile",
-              "Handbremse",
-              "Zündung aus",
-              "Brandschutz",
-              "bereit",
-              "kommen"
-            ],
-            "hint": "Gruppenführer von Angriffstrupp - Unterlegkeile gesetzt, Handbremse kontrolliert, Zündung aus, Schnellangriff und Pulverlöscher zur Brandabsicherung bereit - kommen.",
-            "briefing": "Zwischenmeldung an den Gruppenführer . Anruf (Gruppenführer von Angriffstrupp) . Wegrollsicherung erledigt: Unterlegkeile gesetzt, Handbremse kontrolliert . Zündung aus . Brandschutz bereitgestellt (Schnellangriff und Pulverlöscher) . mit „kommen“ abschließen.",
-            "onSuccess": "n_batterie",
-            "onFailure": "n_sichern_fail",
-            "feedbackSuccess": "✅ Sicherungsmaßnahmen vollständig gemeldet.",
-            "feedbackFailure": "❌ Nennen Sie die Wegrollsicherung (Unterlegkeile, Handbremse), die ausgeschaltete Zündung und die bereitgestellte Brandabsicherung - mit „kommen“ abschließen."
-          }
-        }
-      ]
-    },
-    "n_sichern_fail": {
-      "id": "n_sichern_fail",
-      "role": "truppführer",
-      "narrative": "**Feedback:** Eine Rückmeldung wird an den Gruppenführer gerichtet, nennt die konkret durchgeführten Maßnahmen und endet mit „kommen“.\n\nBeispiel: *„Gruppenführer von Angriffstrupp - Unterlegkeile gesetzt, Handbremse kontrolliert, Zündung aus, Brandschutz bereit - kommen.“*",
+      "narrative": "**Nicht richtig.** Batterie abklemmen ist **kein Standard** und nur nach Befehl sinnvoll: Elektrische Fenster und Sitze lassen sich dann nicht mehr bedienen. Bei Hybrid- oder Elektrofahrzeugen wird das Hochvoltsystem **nach Rettungskarte** abgeschaltet – nie an orangefarbenen Hochvoltleitungen arbeiten.",
       "actions": [
         {
           "id": "retry",
-          "label": "🔄 Erneut versuchen",
+          "label": "🔄 Zurück zur Entscheidung",
           "nextNodeId": "n_sichern"
         }
       ]
     },
-    "n_batterie": {
-      "id": "n_batterie",
+    "n_sichern_x2": {
+      "id": "n_sichern_x2",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Batterie abklemmen, wenn gefahrlos möglich. Danach Bergung mit Spreizer und Glasmanagement vorbereiten und Rückmeldung geben - kommen.\n\nMelden Sie die Durchführung. Dies ist die letzte Übertragung dieses Gesprächs.",
+      "narrative": "**Nicht richtig.** Bei **Keyless**-Systemen kann das Fahrzeug wieder starten, solange der Schlüssel in der Nähe ist. Schlüssel **mindestens 5 m** vom Fahrzeug entfernt ablegen.",
       "actions": [
         {
-          "id": "radio_batterie",
-          "label": "📞 Durchführung melden",
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_sichern"
+        }
+      ]
+    },
+    "n_sichern": {
+      "id": "n_sichern",
+      "role": "truppführer",
+      "narrative": "Am Fahrzeug: Der Motor läuft noch, es ist ein Fahrzeug mit Schlüssellos-System (Keyless). Am Heck sehen Sie kein „E“ im Kennzeichen, der Tankdeckel ist vorhanden.\n\nWie gehen Sie vor?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🛑 Unterlegkeile setzen, Feststellbremse, Wählhebel auf P / Gang, Zündung aus, Schlüssel mindestens 5 m vom Fahrzeug weg",
+          "nextNodeId": "n_meldung"
+        },
+        {
+          "id": "opt1",
+          "label": "🔧 Sofort die Batterie abklemmen",
+          "nextNodeId": "n_sichern_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔑 Zündung aus, Schlüssel im Fahrzeug lassen",
+          "nextNodeId": "n_sichern_x2"
+        }
+      ]
+    },
+    "n_meldung": {
+      "id": "n_meldung",
+      "role": "truppführer",
+      "narrative": "Unterlegkeile sitzen, Feststellbremse angezogen, Wählhebel auf P, Zündung aus, Schlüssel liegt beim Gruppenführer. Benzinfahrzeug. Unter dem Motor tropft **Kühlflüssigkeit**.\n\nMelden Sie dem Gruppenführer.",
+      "actions": [
+        {
+          "id": "radio_meldung",
+          "label": "📞 Meldung an den Gruppenführer",
           "radioCall": {
             "expectedPhrases": [
-              "Batterie",
-              "abgeklemmt",
-              "Fahrzeug gesichert",
-              "Brandschutz",
-              "Bergung",
-              "Ende"
+              "Gruppenführer",
+              "Angriffstrupp",
+              "gesichert",
+              "Unterlegkeile",
+              "Zündung aus",
+              "Benzin",
+              "Kühlflüssigkeit",
+              "kommen"
             ],
-            "hint": "Gruppenführer von Angriffstrupp - Batterie gefahrlos abgeklemmt, Fahrzeug gesichert, Brandschutz steht, Bergung mit Spreizer und Glasmanagement vorbereitet - Ende.",
-            "briefing": "Abschlussmeldung an den Gruppenführer . Anruf (Gruppenführer von Angriffstrupp) . Batterie gefahrlos abgeklemmt . Fahrzeug gesichert . Brandschutz steht weiterhin . Bergung vorbereitet (Spreizer, Glasmanagement) . letzte Übertragung mit „Ende“ schließen.",
-            "onSuccess": "n_end",
-            "onFailure": "n_batterie_fail",
-            "feedbackSuccess": "✅ Durchführung klar gemeldet und Gespräch mit „Ende“ geschlossen.",
-            "feedbackFailure": "❌ Melden Sie: Batterie abgeklemmt, Fahrzeug gesichert, Brandschutz steht, Bergung vorbereitet. Da dies die letzte Übertragung ist, mit „Ende“ abschließen."
+            "hint": "Gruppenführer von Angriffstrupp – PKW mit Unterlegkeilen und Feststellbremse gesichert, Zündung aus, Schlüssel außerhalb. Benzinfahrzeug, Kühlflüssigkeit läuft aus – kommen.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . Sicherung (Unterlegkeile, Feststellbremse) . Zündung aus, Schlüssel außerhalb . Antriebsart (Benzin) . Auffälligkeit (Kühlflüssigkeit läuft aus) . „kommen“",
+            "onSuccess": "n_bergung",
+            "onFailure": "n_meldung_fail",
+            "feedbackSuccess": "✅ Vollständige Meldung: Sicherung, Antriebsart und auslaufende Betriebsmittel.",
+            "feedbackFailure": "❌ Melden Sie Sicherung, Zündung/Schlüssel, Antriebsart und die auslaufende Kühlflüssigkeit."
           }
         }
       ]
     },
-    "n_batterie_fail": {
-      "id": "n_batterie_fail",
+    "n_meldung_fail": {
+      "id": "n_meldung_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Melden Sie die durchgeführten Maßnahmen und den weiter bestehenden Schutz. Da kein weiterer Verkehr folgt, endet die Meldung mit „Ende“.\n\nBeispiel: *„Gruppenführer von Angriffstrupp - Batterie gefahrlos abgeklemmt, Fahrzeug gesichert, Brandschutz steht, Bergung vorbereitet - Ende.“*",
+      "narrative": "**Feedback:** Eine Meldung beantwortet den Befehl **vollständig** und ergänzt neue Erkenntnisse – hier die auslaufende Kühlflüssigkeit.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – PKW mit Unterlegkeilen und Feststellbremse gesichert, Zündung aus, Schlüssel außerhalb. Benzinfahrzeug, Kühlflüssigkeit läuft aus – kommen.“*",
       "actions": [
         {
           "id": "retry",
           "label": "🔄 Erneut versuchen",
-          "nextNodeId": "n_batterie"
+          "nextNodeId": "n_meldung"
+        }
+      ]
+    },
+    "n_bergung": {
+      "id": "n_bergung",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** „Verstanden. Kühlflüssigkeit mit Bindemittel aufnehmen, Trümmerteile von der Fahrbahn räumen, Fahrzeug für den Abschleppdienst vorbereiten. Abschleppdienst ist verständigt – kommen.“\n\nNach getaner Arbeit melden Sie den Abschluss. Es ist die letzte Meldung in diesem Gespräch.",
+      "actions": [
+        {
+          "id": "radio_bergung",
+          "label": "📞 Abschluss melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "Bindemittel",
+              "Trümmerteile",
+              "Abschleppdienst",
+              "Ende"
+            ],
+            "hint": "Gruppenführer von Angriffstrupp – Kühlflüssigkeit mit Bindemittel aufgenommen, Trümmerteile geräumt, Fahrzeug für den Abschleppdienst vorbereitet – Ende.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . Bindemittel aufgebracht und aufgenommen . Trümmerteile geräumt . Fahrzeug bereit für den Abschleppdienst . letzte Übertragung: „Ende“",
+            "onSuccess": "n_end",
+            "onFailure": "n_bergung_fail",
+            "feedbackSuccess": "✅ Auftrag vollständig gemeldet und das Gespräch mit „Ende“ abgeschlossen.",
+            "feedbackFailure": "❌ Melden Sie Bindemittel, geräumte Trümmerteile und das vorbereitete Fahrzeug, Abschluss „Ende“."
+          }
+        }
+      ]
+    },
+    "n_bergung_fail": {
+      "id": "n_bergung_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Ist niemand eingeklemmt, ist **kein hydraulisches Rettungsgerät** nötig. „Bergung“ heißt hier: Betriebsmittel aufnehmen, Fahrbahn räumen, Fahrzeug an den Abschleppdienst übergeben.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – Kühlflüssigkeit mit Bindemittel aufgenommen, Trümmerteile geräumt, Fahrzeug für den Abschleppdienst vorbereitet – Ende.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_bergung"
         }
       ]
     },
     "n_end": {
       "id": "n_end",
       "role": "truppführer",
-      "narrative": "**Gruppenführer:** Verstanden, Brandabsicherung und Bergungsvorbereitung. Angriffstrupp bleibt am Fahrzeug in Bereitstellung - Ende.\n\n**Übung abgeschlossen!**",
+      "narrative": "Fahrzeug gesichert, Keyless und Antriebsart beachtet, Betriebsmittel aufgenommen und Bergung vorbereitet.\n\n**Übung abgeschlossen! 🎉**",
       "actions": [
         {
           "id": "restart",
