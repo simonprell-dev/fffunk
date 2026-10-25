@@ -21,6 +21,15 @@ body {
   min-height: 100vh;
 }
 
+/* Kompaktansicht (2,4"-Funkgerät): Tailwind rechnet in rem – kleinere Grundschrift
+   verkleinert Schrift und Abstände gleichmäßig. */
+html.compact {
+  font-size: 12.5px;
+}
+html.compact ::-webkit-scrollbar {
+  width: 4px;
+}
+
 #root {
   min-height: 100vh;
   display: flex;

@@ -38,6 +38,9 @@ export interface RadioCall {
   allowPartial?: boolean;
   feedbackSuccess?: string;
   feedbackFailure?: string;
+  /** Antwort der angefunkten Stelle nach Erfolg, bevor der nächste Schritt erscheint.
+   *  Fehlt sie, wird sie aus dem nächsten Schritt bzw. dem Anruf abgeleitet; "" = keine Antwort. */
+  response?: string;
 }
 
 export interface Scenario {

@@ -4,6 +4,10 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  // cactus-needle lädt Worker und WASM über import.meta.url → nicht vorbündeln.
+  optimizeDeps: {
+    exclude: ['cactus-needle'],
+  },
   build: {
     outDir: 'dist',
     sourcemap: true

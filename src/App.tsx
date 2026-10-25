@@ -9,6 +9,7 @@ import LernbereichView from './components/LernbereichView';
 import { decodeSharePackage, deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
 import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community-api';
 import { apiUrl } from './lib/api-base';
+import { CompactSetting, getCompactSetting, setCompactSetting } from './lib/display-mode';
 
 interface LicenseData {
   organizationName: string;
@@ -37,6 +38,7 @@ function App() {
     return localStorage.getItem('fffunk_radio_hiss_enabled') !== 'false';
   });
   const [showSettings, setShowSettings] = useState(false);
+  const [compactSetting, setCompactSettingState] = useState<CompactSetting>(() => getCompactSetting());
   const settingsRef = useRef<HTMLDivElement>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [licenseCode, setLicenseCode] = useState(() => localStorage.getItem('fffunk_license_code') || '');
@@ -262,15 +264,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#e5e5e5] font-sans">
-      <header className="bg-[#1a1a1a] border-b border-[#333] p-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
-          <a href="#scenarios" onClick={openList} className="flex items-center gap-2 min-w-0">
+      <header className="bg-[#1a1a1a] border-b border-[#333] p-4 compact:p-2">
+        <div className="max-w-3xl mx-auto flex items-center justify-between gap-4 compact:gap-2">
+          <a href="#scenarios" onClick={openList} className="flex items-center gap-2 min-w-0 shrink-0">
             <div className="w-8 h-8 bg-[#dc2626] rounded flex items-center justify-center font-bold text-white">F</div>
-            <h1 className="text-xl font-bold tracking-tight">FFFunk</h1>
-            <span className="text-xs text-[#a3a3a3] ml-1 hidden sm:inline">Feuerwehr-Funk-Trainer</span>
+            <h1 className="text-xl font-bold tracking-tight hidden min-[400px]:block compact:hidden">FFFunk</h1>
+            <span className="text-xs text-[#a3a3a3] ml-1 hidden sm:inline compact:hidden">Feuerwehr-Funk-Trainer</span>
           </a>
 
-          <nav className="flex items-center gap-3 text-sm">
+          <nav className="flex items-center gap-3 compact:gap-2 text-sm min-w-0">
             {view !== 'practice' && (
               <>
                 <a href="#scenarios" onClick={openList} className={navCls('list')}>Üben</a>
@@ -309,6 +311,22 @@ function App() {
                         onChange={e => setRadioHissEnabled(e.target.checked)}
                         className="accent-[#dc2626] w-4 h-4"
                       />
+                    </label>
+                    <label className="flex items-center justify-between gap-2">
+                      <span className="text-sm text-[#e5e5e5]">Kompaktansicht</span>
+                      <select
+                        value={compactSetting}
+                        onChange={e => {
+                          const v = e.target.value as CompactSetting;
+                          setCompactSetting(v);
+                          setCompactSettingState(v);
+                        }}
+                        className="bg-[#111] border border-[#444] rounded px-2 py-1 text-xs focus:outline-none focus:border-[#dc2626]"
+                      >
+                        <option value="auto">Automatisch</option>
+                        <option value="on">An (kleines Display)</option>
+                        <option value="off">Aus</option>
+                      </select>
                     </label>
                     <div className="border-t border-[#2a2a2a] pt-4">
                       <div className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider mb-2">Wehr-Code</div>
@@ -386,7 +404,7 @@ function App() {
         </div>
       </header>
 
-      <main className="flex-1 max-w-3xl mx-auto w-full p-4">
+      <main className="flex-1 max-w-3xl mx-auto w-full p-4 compact:p-2">
         {loadError && (
           <div className="bg-red-900/20 border border-red-700 text-red-200 p-4 rounded-lg mb-4">{loadError}</div>
         )}
@@ -440,7 +458,7 @@ function App() {
         )}
       </main>
 
-      <footer className="text-center p-4 text-xs text-[#a3a3a3]">
+      <footer className="text-center p-4 text-xs text-[#a3a3a3] compact:hidden">
         FFFunk · Community-Szenarien werden auf dem Server gespeichert.
       </footer>
     </div>

@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import plugin from 'tailwindcss/plugin'
 
 export default {
   content: [
@@ -34,5 +35,8 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // `compact:` greift in der Kompaktansicht (html.compact, siehe lib/display-mode.ts)
+    plugin(({ addVariant }) => addVariant('compact', 'html.compact &')),
+  ],
 } satisfies Config

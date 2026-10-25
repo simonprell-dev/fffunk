@@ -10,6 +10,8 @@ export class AudioEngine {
   private muted = false;
   private activeSources = new Set<AudioBufferSourceNode>();
   private ttsAbortController: AbortController | null = null;
+  // Wird bei jedem stop() erhöht – eine überholte Ausgabe bricht nach jedem await ab.
+  private generation = 0;
 
   setRadioMode(mode: RadioMode): void {
     this.radioMode = mode;
@@ -29,6 +31,7 @@ export class AudioEngine {
   }
 
   stop(): void {
+    this.generation++;
     window.speechSynthesis.cancel();
     this.ttsAbortController?.abort();
     this.ttsAbortController = null;
@@ -155,7 +158,9 @@ export class AudioEngine {
   }
 
   async speakRadio(text: string, lang: string = 'de-DE'): Promise<void> {
-    window.speechSynthesis.cancel();
+    // Laufende Ausgabe (auch eine noch ladende) beenden – es spricht immer nur der neueste Text.
+    this.stop();
+    const gen = this.generation;
 
     if (this.muted) return;
 
@@ -166,14 +171,15 @@ export class AudioEngine {
 
     let usedPiper = false;
     let noiseNode: AudioBufferSourceNode | null = null;
+    const controller = new AbortController();
 
     try {
-      this.ttsAbortController = new AbortController();
+      this.ttsAbortController = controller;
       const response = await fetch(apiUrl('/api/tts'), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ text: clean }),
-        signal: this.ttsAbortController.signal,
+        signal: controller.signal,
       });
 
       if (response.ok) {
@@ -181,21 +187,24 @@ export class AudioEngine {
         const arrayBuffer = await response.arrayBuffer();
         const ctx = this.getCtx();
         const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+        if (gen !== this.generation) return;
         noiseNode = this.radioHissEnabled ? this.playRadioHiss() : null;
         await this.playAudioBufferWithRadioFx(audioBuffer);
       }
     } catch {
       // network error, abort, or Piper unavailable — fall through to Web Speech
     } finally {
-      this.ttsAbortController = null;
+      if (this.ttsAbortController === controller) this.ttsAbortController = null;
     }
+
+    if (gen !== this.generation) return; // abgebrochen → nicht per Web Speech nachsprechen
 
     if (!usedPiper && !this.muted) {
       await this.speakWebSpeech(clean, lang);
     }
 
     if (noiseNode) { try { noiseNode.stop(); } catch { /* ignore */ } }
-    this.playPttClick('close');
+    if (gen === this.generation) this.playPttClick('close');
   }
 
   private playPttClick(type: 'open' | 'close'): void {
@@ -275,6 +284,9 @@ export class AudioEngine {
       bandpass.connect(shelf);
       shelf.connect(gain);
       gain.connect(ctx.destination);
+      // Rauschen mit registrieren, damit stop() es ebenfalls beendet.
+      this.activeSources.add(noise);
+      noise.onended = () => this.activeSources.delete(noise);
       noise.start();
       return noise;
     } catch {

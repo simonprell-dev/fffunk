@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Mic, ShieldAlert, ClipboardList, CheckCircle2, XCircle, RotateCcw, ArrowRight } from 'lucide-react';
 import { Capacitor } from '@capacitor/core';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
+import { WhistleRecorder, isWhistleSupported, loadWhistle, prefersWhistle, transcribeWithWhistle } from '../lib/whistle-stt';
 
 interface Props {
   isOpen: boolean;
@@ -16,6 +17,10 @@ interface Props {
 }
 
 type Status = 'init' | 'ready' | 'recording' | 'done' | 'reveal';
+type Engine = 'google' | 'whistle';
+
+// Einmal ausgefallene Google-Erkennung (z. B. kein Netz/Dienst) nicht bei jedem Funkspruch erneut versuchen.
+let googleUnavailable = false;
 
 export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhrases, hint, feedbackFailure, feedbackSuccess, briefing, mode = 'guided' }: Props) {
   const isTraining = mode === 'training';
@@ -25,26 +30,80 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   const [pressed, setPressed] = useState(false);   // Knopf gedrückt (Piepton oder Aufnahme)
   const [beeping, setBeeping] = useState(false);    // kurzer Freigabe-Piepton läuft
   const [accepted, setAccepted] = useState(false);
+  const [engine, setEngine] = useState<Engine>('google');
+  const [loadPercent, setLoadPercent] = useState<number | null>(null); // Whistle-Modell lädt
+  const [transcribing, setTranscribing] = useState(false);              // Whistle wertet aus
+  const [notice, setNotice] = useState<string | null>(null);
 
   const recognitionRef = useRef<any>(null);
   const pressedRef = useRef(false);
   const nativeRef = useRef(false);
   const beepCtxRef = useRef<AudioContext | null>(null);
+  const whistleRecRef = useRef<WhistleRecorder | null>(null);
+  const silentEndsRef = useRef(0); // Google-Erkennung ohne Ergebnis beendet (in Folge)
 
   const getSpeechRecognition = () =>
     (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition ?? null;
+
+  const requestMicAccess = async (): Promise<boolean> => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setError('Mikrofon-Zugriff wird in diesem Browser nicht unterstützt. Bitte Chrome oder Edge verwenden.');
+      return false;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
+      return true;
+    } catch (e: any) {
+      if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') {
+        setError('Mikrofon-Zugriff verweigert. Bitte im Browser erlauben und erneut versuchen.');
+      } else if (e.name === 'NotFoundError') {
+        setError('Kein Mikrofon gefunden.');
+      } else {
+        setError('Mikrofon-Zugriff fehlgeschlagen: ' + (e?.message ?? e));
+      }
+      return false;
+    }
+  };
+
+  // ---- Offline-Fallback: Whistle läuft lokal im Browser, ohne Google-Dienste ----
+  const prepareWhistle = async () => {
+    setEngine('whistle');
+    setStatus('init');
+    setError(null);
+    if (!isWhistleSupported()) {
+      setError('Offline-Spracherkennung wird in diesem Browser nicht unterstützt. Bitte Chrome verwenden.');
+      return;
+    }
+    if (!(await requestMicAccess())) return;
+    setLoadPercent(0);
+    try {
+      await loadWhistle(p => setLoadPercent(p));
+      setStatus('ready');
+    } catch (e: any) {
+      setError('Offline-Spracherkennung konnte nicht geladen werden: ' + (e?.message ?? e));
+    } finally {
+      setLoadPercent(null);
+    }
+  };
 
   // Mikrofon direkt beim Öffnen vorbereiten → kein "Funk beginnen"-Knopf nötig.
   const prepareMic = async () => {
     setError(null);
     setStatus('init');
+    setEngine('google');
+
+    if (prefersWhistle() || googleUnavailable) {
+      await prepareWhistle();
+      return;
+    }
 
     // ---- Native (Android/iOS): Geräte-Spracherkennung vorbereiten ----
     if (Capacitor.isNativePlatform()) {
       try {
         const avail = await SpeechRecognition.available();
         if (!avail?.available) {
-          setError('Spracherkennung ist auf diesem Gerät nicht verfügbar.');
+          await prepareWhistle(); // kein Google-Sprachdienst auf dem Gerät
           return;
         }
         const perm = await SpeechRecognition.requestPermissions();
@@ -61,39 +120,29 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
 
     // ---- Web (Web Speech API) ----
     if (!getSpeechRecognition()) {
-      setError(!window.isSecureContext
-        ? 'Spracherkennung erfordert HTTPS. Bitte über die richtige URL öffnen.'
-        : 'Web Speech API nicht verfügbar. Bitte Google Chrome verwenden.');
-      return;
-    }
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setError('Mikrofon-Zugriff wird in diesem Browser nicht unterstützt. Bitte Chrome oder Edge verwenden.');
-      return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(t => t.stop());
-      setStatus('ready');
-    } catch (e: any) {
-      if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') {
-        setError('Mikrofon-Zugriff verweigert. Bitte im Browser erlauben und erneut versuchen.');
-      } else if (e.name === 'NotFoundError') {
-        setError('Kein Mikrofon gefunden.');
-      } else {
-        setError('Mikrofon-Zugriff fehlgeschlagen: ' + (e?.message ?? e));
+      if (!window.isSecureContext) {
+        setError('Spracherkennung erfordert HTTPS. Bitte über die richtige URL öffnen.');
+        return;
       }
+      await prepareWhistle(); // z. B. Firefox oder Browser ohne Google-Spracherkennung
+      return;
     }
+    if (await requestMicAccess()) setStatus('ready');
   };
 
   useEffect(() => {
     if (isOpen) {
       setTranscript('');
       setError(null);
+      setNotice(null);
       setPressed(false);
       setBeeping(false);
       setAccepted(false);
+      setTranscribing(false);
       pressedRef.current = false;
       prepareMic();
+    } else {
+      whistleRecRef.current?.release();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -103,6 +152,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       if (Capacitor.isNativePlatform()) { try { SpeechRecognition.stop(); } catch { /* ignore */ } }
       if (recognitionRef.current) { try { recognitionRef.current.stop(); } catch { /* ignore */ } }
       if (beepCtxRef.current) { try { beepCtxRef.current.close(); } catch { /* ignore */ } }
+      whistleRecRef.current?.release();
     };
   }, []);
 
@@ -197,6 +247,17 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   const startRecording = async () => {
     setStatus('recording');
     setError(null);
+    setNotice(null);
+
+    // ---- Offline (Whistle): Audio aufnehmen, Auswertung beim Loslassen ----
+    if (engine === 'whistle') {
+      const rec = (whistleRecRef.current ??= new WhistleRecorder());
+      rec.start().catch((e: any) => {
+        setError('Mikrofon konnte nicht gestartet werden: ' + (e?.message ?? e));
+        setStatus('ready'); setPressed(false); pressedRef.current = false;
+      });
+      return;
+    }
 
     // ---- Native: Geräte-Spracherkennung (Web Speech API gibt es in der WebView nicht) ----
     if (Capacitor.isNativePlatform()) {
@@ -237,11 +298,42 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     recognizer.continuous = false;
     recognizer.interimResults = false;
 
+    let handled = false; // Ergebnis oder Fehler erhalten
+
+    const switchToWhistle = () => {
+      googleUnavailable = true;
+      recognitionRef.current = null;
+      setPressed(false);
+      pressedRef.current = false;
+      prepareWhistle().then(() =>
+        setNotice('Google-Spracherkennung nicht erreichbar – Offline-Erkennung ist jetzt aktiv. Bitte den Funkspruch wiederholen.'));
+    };
+
     recognizer.onresult = (event: any) => {
+      handled = true;
+      silentEndsRef.current = 0;
       processTranscript(event.results[0][0].transcript);
     };
 
+    // Ohne Google-Dienst endet die Erkennung oft still – ohne Ergebnis und ohne Fehler.
+    recognizer.onend = () => {
+      if (handled) return;
+      silentEndsRef.current++;
+      if (silentEndsRef.current >= 2) { switchToWhistle(); return; }
+      setError('Keine Sprache erkannt. Bitte erneut versuchen.');
+      setStatus('ready');
+      setPressed(false);
+      pressedRef.current = false;
+      recognitionRef.current = null;
+    };
+
     recognizer.onerror = (e: any) => {
+      handled = true;
+      // Google-Dienst nicht erreichbar/nicht vorhanden → auf Offline-Erkennung umschalten.
+      if (e.error === 'network' || e.error === 'service-not-allowed' || e.error === 'language-not-supported') {
+        switchToWhistle();
+        return;
+      }
       let msg = 'Spracherkennung fehlgeschlagen';
       if (e.error === 'not-allowed') msg = 'Mikrofon-Zugriff verweigert.';
       else if (e.error === 'no-speech') msg = 'Keine Sprache erkannt. Bitte lauter sprechen.';
@@ -265,7 +357,30 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     }
   };
 
-  const stopRecording = () => {
+  const stopRecording = async () => {
+    if (engine === 'whistle') {
+      setPressed(false);
+      const rec = whistleRecRef.current;
+      if (!rec) return;
+      setTranscribing(true);
+      try {
+        const audio = await rec.stop();
+        if (!audio) { setStatus('ready'); return; } // während des Pieptons losgelassen
+        const text = await transcribeWithWhistle(audio, expectedPhrases);
+        if (!text) {
+          setError('Keine Sprache erkannt. Bitte erneut versuchen.');
+          setStatus('ready');
+          return;
+        }
+        processTranscript(text);
+      } catch (e: any) {
+        setError('Offline-Spracherkennung fehlgeschlagen: ' + (e?.message ?? e));
+        setStatus('ready');
+      } finally {
+        setTranscribing(false);
+      }
+      return;
+    }
     if (Capacitor.isNativePlatform()) {
       if (nativeRef.current) { SpeechRecognition.stop().catch(() => {}); }
       setPressed(false);
@@ -283,7 +398,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   const handlePointerDown = async (e: React.PointerEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (status !== 'ready' && status !== 'recording') return;
-    if (pressedRef.current) return;
+    if (pressedRef.current || transcribing) return;
     try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* ignore */ }
     pressedRef.current = true;
     setPressed(true);
@@ -308,18 +423,19 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     if (recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch { /* ignore */ }
     }
+    whistleRecRef.current?.release();
     onClose();
   };
 
   if (!isOpen) return null;
 
-  const pttLabel = beeping ? 'PIEP …' : pressed ? 'SPRECHEN …' : 'HALTEN ZUM SPRECHEN';
-  const pttSub = beeping ? 'gleich sprechen' : pressed ? 'Loslassen, wenn fertig' : 'Gedrückt halten – kurzer Piepton, dann sprechen';
+  const pttLabel = transcribing ? 'WIRD AUSGEWERTET …' : beeping ? 'PIEP …' : pressed ? 'SPRECHEN …' : 'HALTEN ZUM SPRECHEN';
+  const pttSub = transcribing ? 'Offline-Spracherkennung läuft' : beeping ? 'gleich sprechen' : pressed ? 'Loslassen, wenn fertig' : 'Gedrückt halten – kurzer Piepton, dann sprechen';
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#1a1a1a] border border-[#333] rounded-2xl p-6 max-w-md w-full shadow-2xl">
-        <div className="flex items-center justify-between mb-6">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 compact:p-0 overflow-y-auto">
+      <div className="bg-[#1a1a1a] border border-[#333] rounded-2xl p-6 compact:p-2 compact:rounded-none compact:min-h-full compact:border-0 max-w-md w-full shadow-2xl m-auto">
+        <div className="flex items-center justify-between mb-6 compact:mb-2">
           <h3 className="text-lg font-bold flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
             {isTraining ? 'Funk-Training' : 'Funk-Gespräch'}
@@ -329,7 +445,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
 
         {status !== 'reveal' && (
           isTraining ? (
-            <div className="mb-6 p-4 bg-[#1f2a37] border border-[#2f4256] rounded-lg">
+            <div className="mb-6 p-4 compact:mb-2 compact:p-2 compact:text-sm bg-[#1f2a37] border border-[#2f4256] rounded-lg">
               <div className="text-sm text-[#9db4d0] mb-2 flex items-center gap-2">
                 <ClipboardList size={16} /> Melde sinngemäß folgenden Inhalt – formuliere den Funkspruch selbst:
               </div>
@@ -338,9 +454,9 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
               </div>
             </div>
           ) : (
-            <div className="mb-6 p-4 bg-[#262626] border border-[#444] rounded-lg">
-              <div className="text-sm text-[#a3a3a3] mb-1">Sprechen Sie diese Phrase:</div>
-              <div className="text-[#e5e5e5] italic text-center text-lg">„{hint}"</div>
+            <div className="mb-6 p-4 compact:mb-2 compact:p-2 bg-[#262626] border border-[#444] rounded-lg">
+              <div className="text-sm text-[#a3a3a3] mb-1 compact:hidden">Sprechen Sie diese Phrase:</div>
+              <div className="text-[#e5e5e5] italic text-center text-lg compact:text-sm">„{hint}"</div>
             </div>
           )
         )}
@@ -349,8 +465,17 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
           {status === 'init' && !error && (
             <div className="py-8 flex flex-col items-center gap-4">
               <div className="w-12 h-12 border-4 border-[#dc2626] border-t-transparent rounded-full animate-spin" />
-              <div className="text-[#a3a3a3]">Mikrofon wird vorbereitet…</div>
-              <div className="text-xs text-[#666]">Bitte den Zugriff im Browser-Dialog erlauben.</div>
+              {loadPercent !== null ? (
+                <>
+                  <div className="text-[#a3a3a3]">Offline-Spracherkennung wird geladen… {loadPercent} %</div>
+                  <div className="text-xs text-[#666]">Einmalig ca. 17 MB, danach im Browser gespeichert.</div>
+                </>
+              ) : (
+                <>
+                  <div className="text-[#a3a3a3]">Mikrofon wird vorbereitet…</div>
+                  <div className="text-xs text-[#666]">Bitte den Zugriff im Browser-Dialog erlauben.</div>
+                </>
+              )}
             </div>
           )}
 
@@ -379,25 +504,32 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
                 onPointerDown={handlePointerDown}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
-                className="w-full rounded-xl font-semibold flex flex-col items-center justify-center gap-3 transition-all duration-75 select-none touch-none text-white"
+                className="w-full min-h-[180px] compact:min-h-[120px] rounded-xl font-semibold flex flex-col items-center justify-center gap-3 compact:gap-1 transition-all duration-75 select-none touch-none text-white"
                 style={{
-                  minHeight: '180px',
                   backgroundColor: pressed ? '#7f1d1d' : '#dc2626',
                   transform: pressed ? 'scale(0.96)' : 'scale(1)',
                   boxShadow: pressed ? 'inset 0 4px 12px rgba(0,0,0,0.5)' : '0 4px 20px rgba(220,38,38,0.3)',
                   cursor: 'pointer',
                 }}
               >
-                <div className={`rounded-full p-4 ${beeping ? 'bg-amber-600 animate-pulse' : pressed ? 'bg-red-900 animate-pulse' : 'bg-red-700'}`}>
-                  <Mic size={44} />
+                <div className={`rounded-full p-4 compact:p-2 ${beeping ? 'bg-amber-600 animate-pulse' : pressed ? 'bg-red-900 animate-pulse' : 'bg-red-700'}`}>
+                  <Mic size={44} className="compact:w-7 compact:h-7" />
                 </div>
-                <span className="text-xl font-bold">{pttLabel}</span>
-                <span className="text-sm opacity-70">{pttSub}</span>
+                <span className="text-xl compact:text-base font-bold">{pttLabel}</span>
+                <span className="text-sm opacity-70 compact:hidden">{pttSub}</span>
               </button>
 
-              <div className="mt-3 text-xs text-[#666] text-center">
+              <div className="mt-3 text-xs text-[#666] text-center compact:hidden">
                 Gedrückt halten · nach dem Piepton sprechen · Loslassen zum Senden
               </div>
+              {engine === 'whistle' && (
+                <div className="mt-1 text-xs text-[#666] text-center">Offline-Spracherkennung aktiv</div>
+              )}
+              {notice && (
+                <div className="mt-3 p-3 text-sm text-amber-300 bg-amber-900/20 border border-amber-700 rounded-lg text-left">
+                  {notice}
+                </div>
+              )}
             </div>
           )}
 

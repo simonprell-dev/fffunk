@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Scenario, StoryNode, Action } from '../types/story';
+import { Scenario, StoryNode, Action, RadioCall } from '../types/story';
 import { StoryEngine } from '../lib/story-engine';
 import { AudioEngine } from '../lib/audio-engine';
 import NarrativePanel from './NarrativePanel';
 import { ActionButtons } from './ActionButtons';
 import RadioCallModal from './RadioCallModal';
 import { applyRufnamen } from '../lib/rufnamen';
+import { RadioResponse, radioResponseFor, splitLeadingResponse } from '../lib/radio-response';
 
 interface Props {
   scenario: Scenario;
@@ -23,8 +24,13 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
   const [feedback, setFeedback] = useState<{ success: boolean; message: string } | null>(null);
   const [score, setScore] = useState(engine.getProgress().score);
   const [muted, setMuted] = useState(audio.isMuted());
+  const [incoming, setIncoming] = useState<RadioResponse | null>(null); // Gegenstelle antwortet gerade
 
   const navigationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const responseSeqRef = useRef(0);       // erhöht → laufende Antwort-Sequenz verwerfen
+  const skipLeadingLineRef = useRef(false); // Sprecherzeile des nächsten Schritts wurde schon gesprochen
+  const prevNarrativeRef = useRef('');      // vorheriger Schritt – dort kann die Gegenstelle gesprochen haben
+  const lastNarrativeRef = useRef('');
 
   const ruf = rufnamen ?? {};
   const narrative = useMemo(
@@ -45,11 +51,42 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
   };
 
   const handleExit = () => {
+    responseSeqRef.current++;
     audio.stop();
     onExit();
   };
 
+  // Nach erfolgreichem Funkspruch: erst antwortet die angefunkte Stelle, dann kommt der nächste Schritt.
+  const advanceAfterCall = async (call: RadioCall, nextNodeId: string) => {
+    const seq = ++responseSeqRef.current;
+    const nextNode = engine.getScenario().nodes[nextNodeId];
+    const response = nextNode
+      ? radioResponseFor(
+          applyRufnamen(call.hint, ruf),
+          applyRufnamen(nextNode.narrative, ruf),
+          call.response,
+          `${prevNarrativeRef.current}\n${narrative}`, // letzter Sprecher: bevorzugt aus dem aktuellen Schritt
+        )
+      : null;
+
+    if (response) {
+      setIncoming(response);
+      const minDisplay = new Promise(r => setTimeout(r, 1200)); // auch stumm kurz lesbar
+      await Promise.all([audio.speakRadio(response.text).catch(() => {}), minDisplay]);
+    } else {
+      await new Promise(r => setTimeout(r, 800));
+    }
+    if (seq !== responseSeqRef.current) return;
+
+    skipLeadingLineRef.current = !!response?.fromNarrative;
+    setIncoming(null);
+    setFeedback(null);
+    engine.goTo(nextNodeId);
+    refreshNode();
+  };
+
   const handleAction = (action: Action) => {
+    audio.stop(); // Ansage des aktuellen Schritts nicht weiterlaufen lassen
     if (navigationTimerRef.current) {
       clearTimeout(navigationTimerRef.current);
       navigationTimerRef.current = null;
@@ -77,9 +114,8 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
       // Im Training wurde der Muster-Funkspruch bereits im Modal aufgedeckt –
       // unabhängig vom Treffer geht es zum nächsten Schritt weiter.
       if (success) engine.completeNode(10);
-      engine.goTo(action.radioCall!.onSuccess);
-      refreshNode();
       setFeedback(null);
+      advanceAfterCall(action.radioCall!, action.radioCall!.onSuccess);
       return;
     }
 
@@ -87,7 +123,10 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
 
     if (success) {
       engine.completeNode(10);
-      setFeedback({ success: true, message: 'Gut so! Einsatzleitstelle bestätigt.' });
+      setScore(engine.getProgress().score);
+      setFeedback({ success: true, message: 'Gut so!' });
+      advanceAfterCall(action.radioCall!, nextNodeId);
+      return;
     } else {
       setFeedback({
         success: false,
@@ -106,31 +145,41 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
   useEffect(() => {
     return () => {
       if (navigationTimerRef.current) clearTimeout(navigationTimerRef.current);
+      responseSeqRef.current++;
       audio.stop();
     };
   }, [audio]);
 
   useEffect(() => {
-    if (narrative) {
-      audio.speakRadio(narrative).catch(() => {});
+    if (lastNarrativeRef.current !== narrative) {
+      prevNarrativeRef.current = lastNarrativeRef.current;
+      lastNarrativeRef.current = narrative;
+    }
+    let text = narrative;
+    if (skipLeadingLineRef.current) {
+      skipLeadingLineRef.current = false;
+      text = splitLeadingResponse(narrative)?.rest ?? narrative;
+    }
+    if (text) {
+      audio.speakRadio(text).catch(() => {});
     }
   }, [currentNode.id, audio, narrative]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold">{scenario.title}</h2>
+    <div className="space-y-6 compact:space-y-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 compact:gap-1">
+        <div className="min-w-0 flex-1 basis-48 compact:basis-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-lg font-bold compact:text-sm compact:leading-tight">{scenario.title}</h2>
             {mode === 'training' && (
               <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#1f2a37] text-[#9db4d0] border border-[#2f4256]">
                 Trainingsmodus
               </span>
             )}
           </div>
-          <p className="text-xs text-[#a3a3a3]">{scenario.description}</p>
+          <p className="text-xs text-[#a3a3a3] hidden sm:block">{scenario.description}</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 compact:gap-2 shrink-0">
           <button
             onClick={toggleMute}
             title={muted ? 'Ton einschalten' : 'Stummschalten'}
@@ -150,8 +199,8 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
               </svg>
             )}
           </button>
-          <div className="text-sm font-mono text-[#dc2626]">Punkte: {score}</div>
-          <button onClick={handleExit} className="text-sm text-[#a3a3a3] hover:text-white px-3 py-1.5 rounded-lg bg-[#262626] border border-[#444]">
+          <div className="text-sm font-mono text-[#dc2626] whitespace-nowrap">Punkte: {score}</div>
+          <button onClick={handleExit} className="text-sm text-[#a3a3a3] hover:text-white px-3 py-1.5 rounded-lg bg-[#262626] border border-[#444] compact:hidden">
             Abbrechen
           </button>
         </div>
@@ -160,12 +209,21 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
       <NarrativePanel narrative={narrative} />
 
       {feedback && (
-        <div className={`p-4 rounded-lg border ${feedback.success ? 'bg-green-900/20 border-green-700 text-green-200' : 'bg-red-900/20 border-red-700 text-red-200'}`}>
+        <div className={`p-4 compact:p-2 compact:text-sm rounded-lg border ${feedback.success ? 'bg-green-900/20 border-green-700 text-green-200' : 'bg-red-900/20 border-red-700 text-red-200'}`}>
           {feedback.message}
         </div>
       )}
 
-      <ActionButtons actions={currentNode.actions} onSelect={handleAction} />
+      {incoming ? (
+        <div className="p-4 compact:p-2 compact:text-sm rounded-lg border bg-[#1f2a37] border-[#2f4256]">
+          <div className="text-sm text-[#9db4d0] mb-1 flex items-center gap-2">
+            <span className="animate-pulse">📻</span> {incoming.speaker} antwortet …
+          </div>
+          <div className="text-[#e5e5e5] italic">„{incoming.text}“</div>
+        </div>
+      ) : (
+        <ActionButtons actions={currentNode.actions} onSelect={handleAction} />
+      )}
 
       {radioModalOpen && pendingAction && (
         <RadioCallModal

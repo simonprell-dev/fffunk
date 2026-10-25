@@ -102,11 +102,11 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold mb-2">{isTraining ? 'Training' : 'Übungs-Szenarien'}</h2>
-          <p className="text-[#a3a3a3]">
+    <div className="space-y-5 compact:space-y-3">
+      <div className="flex flex-wrap items-start justify-between gap-4 compact:gap-2">
+        <div className="min-w-0 flex-1 basis-60 compact:basis-auto">
+          <h2 className="text-2xl font-bold mb-2 compact:text-lg compact:mb-0">{isTraining ? 'Training' : 'Übungs-Szenarien'}</h2>
+          <p className="text-[#a3a3a3] compact:hidden">
             {isTraining
               ? 'Nur der Inhalt der Meldung wird gezeigt – du formulierst und sprichst den Funkspruch selbst und siehst danach den korrekten Funkspruch.'
               : 'Ordner auswählen und Szenario mit Karte oder Pfeil starten. Der Muster-Funkspruch wird angezeigt.'}
@@ -115,17 +115,17 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
         {!isTraining && (
           <button
             onClick={onCreate}
-            className="shrink-0 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg px-4 py-2 font-semibold"
+            className="shrink-0 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-lg px-4 py-2 font-semibold compact:hidden"
           >
             Szenario erstellen
           </button>
         )}
       </div>
 
-      <div className="grid md:grid-cols-[220px_1fr] gap-4 items-start">
-        <aside className="bg-[#111] border border-[#333] rounded-lg p-2">
-          <div className="px-2 py-2 text-xs uppercase tracking-wide text-[#777]">Ordner</div>
-          <div className="space-y-1">
+      <div className="grid md:grid-cols-[220px_1fr] gap-4 compact:gap-2 items-start">
+        <aside className="bg-[#111] border border-[#333] rounded-lg p-2 compact:p-1">
+          <div className="px-2 py-2 text-xs uppercase tracking-wide text-[#777] compact:hidden">Ordner</div>
+          <div className="space-y-1 compact:space-y-0 compact:flex compact:flex-wrap compact:gap-1">
             {folders.map(folder => {
               const active = !isCommunityActive && folder.id === activeFolder?.id;
               const Icon = active ? FolderOpen : Folder;
@@ -133,7 +133,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                 <button
                   key={folder.id}
                   onClick={() => setActiveFolderId(folder.id)}
-                  className={`w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm ${
+                  className={`w-full compact:w-auto flex items-center justify-between gap-2 rounded-lg px-3 py-2 compact:px-2 compact:py-1 text-left text-sm ${
                     active
                       ? 'bg-[#dc2626] text-white'
                       : 'text-[#d4d4d4] hover:bg-[#262626]'
@@ -150,7 +150,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
             {apiScenarios.length > 0 && (
               <button
                 onClick={() => setActiveFolderId(COMMUNITY_FOLDER_ID)}
-                className={`w-full flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm ${
+                className={`w-full compact:w-auto flex items-center justify-between gap-2 rounded-lg px-3 py-2 compact:px-2 compact:py-1 text-left text-sm ${
                   isCommunityActive
                     ? 'bg-[#dc2626] text-white'
                     : 'text-[#d4d4d4] hover:bg-[#262626]'
@@ -173,7 +173,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                 <h3 className="text-lg font-semibold">Community</h3>
                 <p className="text-xs text-[#777]">{apiScenarios.length} Szenarien von der Community</p>
               </div>
-              <div className="grid gap-4">
+              <div className="grid gap-4 compact:gap-2">
                 {apiScenarios.map(entry => {
                   const badge = getRoleBadge(entry.scenario.playerRole);
                   const thanked = thankedIds.has(entry.shareId);
@@ -189,7 +189,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                           onSelect(entry.scenario);
                         }
                       }}
-                      className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4 hover:border-[#dc2626] hover:bg-[#262626] transition-colors cursor-pointer"
+                      className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4 compact:p-2 hover:border-[#dc2626] hover:bg-[#262626] transition-colors cursor-pointer"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
@@ -201,8 +201,8 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                               {getCategoryLabel(entry.category)}
                             </span>
                           </div>
-                          <h3 className="text-lg font-semibold text-[#e5e5e5]">{entry.title}</h3>
-                          <p className="text-sm text-[#a3a3a3] mt-1">{entry.description}</p>
+                          <h3 className="text-lg font-semibold text-[#e5e5e5] compact:text-base compact:leading-tight">{entry.title}</h3>
+                          <p className="text-sm text-[#a3a3a3] mt-1 compact:hidden">{entry.description}</p>
                           <div className="mt-2 text-xs text-[#666]">
                             von {entry.authorName}
                           </div>
@@ -230,7 +230,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                         </div>
                         <button
                           onClick={event => { event.stopPropagation(); onSelect(entry.scenario); }}
-                          className="text-[#dc2626] shrink-0 mt-1 p-2 rounded-lg hover:bg-[#331f1f]"
+                          className="text-[#dc2626] shrink-0 mt-1 p-2 compact:p-0 rounded-lg hover:bg-[#331f1f]"
                           aria-label={`${entry.title} starten`}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -245,12 +245,12 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
             <>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-lg font-semibold">{activeFolder?.label}</h3>
-                  <p className="text-xs text-[#777]">{activeFolder?.scenarios.length ?? 0} Szenarien in diesem Ordner</p>
+                  <h3 className="text-lg font-semibold compact:hidden">{activeFolder?.label}</h3>
+                  <p className="text-xs text-[#777] compact:hidden">{activeFolder?.scenarios.length ?? 0} Szenarien in diesem Ordner</p>
                 </div>
               </div>
 
-              <div className="grid gap-4">
+              <div className="grid gap-4 compact:gap-2">
                 {(activeFolder?.scenarios ?? []).map((scenario) => {
                   const badge = getRoleBadge(scenario.playerRole);
                   const radioTurns = Object.values(scenario.nodes).reduce(
@@ -271,7 +271,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                           onSelect(scenario);
                         }
                       }}
-                      className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4 hover:border-[#dc2626] hover:bg-[#262626] transition-colors cursor-pointer"
+                      className="bg-[#1a1a1a] border border-[#333] rounded-lg p-4 compact:p-2 hover:border-[#dc2626] hover:bg-[#262626] transition-colors cursor-pointer"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
@@ -279,7 +279,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badge.cls}`}>
                               {badge.label}
                             </span>
-                            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#333] text-[#d4d4d4] border border-[#444]">
+                            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#333] text-[#d4d4d4] border border-[#444] compact:hidden">
                               {getCategoryLabel(folder)}
                             </span>
                             {scenario.community?.source === 'local' && (
@@ -298,9 +298,9 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                               </span>
                             )}
                           </div>
-                          <h3 className="text-lg font-semibold text-[#e5e5e5]">{scenario.title}</h3>
-                          <p className="text-sm text-[#a3a3a3] mt-1">{scenario.description}</p>
-                          <div className="mt-2 text-xs text-[#666]">
+                          <h3 className="text-lg font-semibold text-[#e5e5e5] compact:text-base compact:leading-tight">{scenario.title}</h3>
+                          <p className="text-sm text-[#a3a3a3] mt-1 compact:hidden">{scenario.description}</p>
+                          <div className="mt-2 text-xs text-[#666] compact:hidden">
                             {radioTurns} Funk-Runden
                             {scenario.community?.authorName && ` · von ${scenario.community.authorName}`}
                           </div>
@@ -323,7 +323,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
                         </div>
                         <button
                           onClick={event => { event.stopPropagation(); onSelect(scenario); }}
-                          className="text-[#dc2626] shrink-0 mt-1 p-2 rounded-lg hover:bg-[#331f1f]"
+                          className="text-[#dc2626] shrink-0 mt-1 p-2 compact:p-0 rounded-lg hover:bg-[#331f1f]"
                           aria-label={`${scenario.title} starten`}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -338,7 +338,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
         </section>
       </div>
 
-      <div className="mt-8 p-4 bg-[#1a1a1a] border border-[#333] rounded-lg text-xs text-[#a3a3a3]">
+      <div className="mt-8 p-4 bg-[#1a1a1a] border border-[#333] rounded-lg text-xs text-[#a3a3a3] compact:hidden">
         <strong className="block mb-2 text-[#e5e5e5]">Hinweis zum Datenschutz:</strong>
         Alle Audiodaten bleiben lokal auf Ihrem Gerät. Lokale Szenarien bleiben spielbar, bis Sie sie löschen.
       </div>
