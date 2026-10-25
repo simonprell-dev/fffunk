@@ -3,6 +3,7 @@ import { Mic, ShieldAlert, ClipboardList, CheckCircle2, XCircle, RotateCcw, Arro
 import { Capacitor } from '@capacitor/core';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { WhistleRecorder, isWhistleSupported, loadWhistle, prefersWhistle, transcribeWithWhistle } from '../lib/whistle-stt';
+import type { CallSplit } from '../lib/radio-response';
 
 interface Props {
   isOpen: boolean;
@@ -14,16 +15,33 @@ interface Props {
   feedbackSuccess?: string;
   briefing?: string;
   mode?: 'guided' | 'training';
+  /** Anruf und Nachricht getrennt: erst anrufen, Antwort abwarten, dann sprechen. */
+  callSplit?: CallSplit | null;
+  /** Funk-Sprachausgabe für die Antwort der Gegenstelle. */
+  speak?: (text: string) => Promise<void>;
 }
 
 type Status = 'init' | 'ready' | 'recording' | 'done' | 'reveal';
+type Phase = 'call' | 'answer' | 'message';
 type Engine = 'google' | 'whistle';
 
 // Einmal ausgefallene Google-Erkennung (z. B. kein Netz/Dienst) nicht bei jedem Funkspruch erneut versuchen.
 let googleUnavailable = false;
 
-export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhrases, hint, feedbackFailure, feedbackSuccess, briefing, mode = 'guided' }: Props) {
+export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhrases, hint, feedbackFailure, feedbackSuccess, briefing, mode = 'guided', callSplit, speak }: Props) {
   const isTraining = mode === 'training';
+  const [phase, setPhase] = useState<Phase>(callSplit ? 'call' : 'message');
+
+  const normalizeName = (s: string) => s.toLowerCase().replace(/[^a-zäöüß0-9]+/g, ' ').trim();
+  // Anruf: Gegenstelle + eigener Name + „kommen“. Nachricht: ohne den Namen der Gegenstelle.
+  const activeExpected = !callSplit
+    ? expectedPhrases
+    : phase === 'call'
+      ? [callSplit.callee, callSplit.caller, 'kommen']
+      : expectedPhrases.filter(p =>
+          !(normalizeName(callSplit.callee).startsWith(normalizeName(p)) &&
+            !normalizeName(callSplit.caller).includes(normalizeName(p))));
+  const activeHint = !callSplit ? hint : phase === 'message' ? callSplit.message : callSplit.call;
   const [status, setStatus] = useState<Status>('init');
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -139,6 +157,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       setBeeping(false);
       setAccepted(false);
       setTranscribing(false);
+      setPhase(callSplit ? 'call' : 'message');
       pressedRef.current = false;
       prepareMic();
     } else {
@@ -212,7 +231,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   };
 
   const isAcceptedTransmission = (spokenText: string): boolean => {
-    const relevantPhrases = expectedPhrases.filter(phrase => normalizeSpeech(phrase).length > 0);
+    const relevantPhrases = activeExpected.filter(phrase => normalizeSpeech(phrase).length > 0);
     if (relevantPhrases.length === 0) return true;
     const matches = relevantPhrases.filter(phrase => phraseMatches(spokenText, phrase)).length;
     return matches >= Math.min(relevantPhrases.length, 2);
@@ -227,6 +246,31 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     nativeRef.current = false;
 
     const ok = isAcceptedTransmission(text);
+
+    // Anruf erkannt → Gegenstelle meldet sich, erst danach wird die Nachricht gesprochen.
+    if (phase === 'call' && callSplit) {
+      // Nachricht gleich mitgesprochen? Dann wurde nicht auf die Gegenstelle gewartet.
+      const wordCount = (s: string) => normalizeSpeech(s).split(' ').filter(Boolean).length;
+      if (ok && wordCount(text) > wordCount(callSplit.call) + 4) {
+        setError(`Erst nur anrufen und warten, bis sich ${callSplit.callee} meldet: „${callSplit.call}“`);
+        setStatus('ready');
+        return;
+      }
+      if (!ok) {
+        setError(`Anruf nicht erkannt. Erst nur anrufen: „${callSplit.call}“`);
+        setStatus('ready');
+        return;
+      }
+      setError(null);
+      setPhase('answer');
+      setStatus('ready');
+      const minDisplay = new Promise(r => setTimeout(r, 1200));
+      Promise.all([speak?.(callSplit.answer), minDisplay]).finally(() => {
+        setTranscript('');
+        setPhase('message');
+      });
+      return;
+    }
 
     if (isTraining) {
       setAccepted(ok);
@@ -366,7 +410,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       try {
         const audio = await rec.stop();
         if (!audio) { setStatus('ready'); return; } // während des Pieptons losgelassen
-        const text = await transcribeWithWhistle(audio, expectedPhrases);
+        const text = await transcribeWithWhistle(audio, activeExpected);
         if (!text) {
           setError('Keine Sprache erkannt. Bitte erneut versuchen.');
           setStatus('ready');
@@ -398,7 +442,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   const handlePointerDown = async (e: React.PointerEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (status !== 'ready' && status !== 'recording') return;
-    if (pressedRef.current || transcribing) return;
+    if (pressedRef.current || transcribing || phase === 'answer') return; // Gegenstelle spricht
     try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* ignore */ }
     pressedRef.current = true;
     setPressed(true);
@@ -429,8 +473,8 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
 
   if (!isOpen) return null;
 
-  const pttLabel = transcribing ? 'WIRD AUSGEWERTET …' : beeping ? 'PIEP …' : pressed ? 'SPRECHEN …' : 'HALTEN ZUM SPRECHEN';
-  const pttSub = transcribing ? 'Offline-Spracherkennung läuft' : beeping ? 'gleich sprechen' : pressed ? 'Loslassen, wenn fertig' : 'Gedrückt halten – kurzer Piepton, dann sprechen';
+  const pttLabel = phase === 'answer' ? 'GEGENSTELLE SPRICHT …' : transcribing ? 'WIRD AUSGEWERTET …' : beeping ? 'PIEP …' : pressed ? 'SPRECHEN …' : 'HALTEN ZUM SPRECHEN';
+  const pttSub = phase === 'answer' ? 'Bitte warten, bis die Gegenstelle fertig ist' : transcribing ? 'Offline-Spracherkennung läuft' : beeping ? 'gleich sprechen' : pressed ? 'Loslassen, wenn fertig' : 'Gedrückt halten – kurzer Piepton, dann sprechen';
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 compact:p-0 overflow-y-auto">
@@ -452,11 +496,18 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
               <div className="text-[#e5e5e5] whitespace-pre-line">
                 {briefing || 'Formuliere die passende Funkmeldung zur aktuellen Lage.'}
               </div>
+              {callSplit && phase === 'call' && (
+                <div className="mt-2 text-sm text-amber-300">
+                  Zuerst nur {callSplit.callee} anrufen und warten, bis sich die Gegenstelle meldet.
+                </div>
+              )}
             </div>
           ) : (
             <div className="mb-6 p-4 compact:mb-2 compact:p-2 bg-[#262626] border border-[#444] rounded-lg">
-              <div className="text-sm text-[#a3a3a3] mb-1 compact:hidden">Sprechen Sie diese Phrase:</div>
-              <div className="text-[#e5e5e5] italic text-center text-lg compact:text-sm">„{hint}"</div>
+              <div className="text-sm text-[#a3a3a3] mb-1 compact:hidden">
+                {!callSplit ? 'Sprechen Sie diese Phrase:' : phase === 'message' ? '2. Nachricht durchgeben:' : '1. Anrufen – dann auf Antwort warten:'}
+              </div>
+              <div className="text-[#e5e5e5] italic text-center text-lg compact:text-sm">„{activeHint}"</div>
             </div>
           )
         )}
@@ -499,14 +550,24 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
                 </div>
               )}
 
+              {phase === 'answer' && callSplit && (
+                <div className="mb-3 p-4 compact:p-2 rounded-lg border bg-[#1f2a37] border-[#2f4256] text-left">
+                  <div className="text-sm text-[#9db4d0] mb-1 flex items-center gap-2">
+                    <span className="animate-pulse">📻</span> {callSplit.callee} meldet sich …
+                  </div>
+                  <div className="text-[#e5e5e5] italic">„{callSplit.answer}“</div>
+                </div>
+              )}
+
               {/* PTT button — stays mounted during recording so pointer events fire correctly */}
               <button
+                disabled={phase === 'answer'}
                 onPointerDown={handlePointerDown}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
                 className="w-full min-h-[180px] compact:min-h-[120px] rounded-xl font-semibold flex flex-col items-center justify-center gap-3 compact:gap-1 transition-all duration-75 select-none touch-none text-white"
                 style={{
-                  backgroundColor: pressed ? '#7f1d1d' : '#dc2626',
+                  backgroundColor: phase === 'answer' ? '#3f3f46' : pressed ? '#7f1d1d' : '#dc2626',
                   transform: pressed ? 'scale(0.96)' : 'scale(1)',
                   boxShadow: pressed ? 'inset 0 4px 12px rgba(0,0,0,0.5)' : '0 4px 20px rgba(220,38,38,0.3)',
                   cursor: 'pointer',
@@ -553,7 +614,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
               <div className="mb-4">
                 <div className="text-sm text-[#a3a3a3] mb-2">Kernbegriffe:</div>
                 <div className="flex flex-wrap gap-2">
-                  {expectedPhrases.map(p => {
+                  {activeExpected.map(p => {
                     const hit = phraseMatches(transcript, p);
                     return (
                       <span

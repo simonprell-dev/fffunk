@@ -25,6 +25,39 @@ export function calleeFromHint(hint: string): string | null {
   return m[1].trim();
 }
 
+export interface CallSplit {
+  callee: string;
+  caller: string;
+  /** Erst nur anrufen: „Gruppenführer von Angriffstrupp – kommen.“ */
+  call: string;
+  /** Gegenstelle meldet sich: „Hier Gruppenführer – kommen.“ */
+  answer: string;
+  /** Danach die Nachricht: „Hier Angriffstrupp – Person gefunden … – kommen.“ */
+  message: string;
+}
+
+/**
+ * „X von Y – Nachricht – kommen“ wird in Anruf und Nachricht geteilt – man wartet,
+ * bis sich die Gegenstelle meldet. Reiner Anruf („X von Y – kommen“) bleibt ungeteilt,
+ * ebenso wenn das Szenario die Gegenstelle bewusst schweigen lässt.
+ */
+export function splitCall(hint: string, nextNarrative = ''): CallSplit | null {
+  const m = hint.match(/^\s*([^–\-:,]+?)\s+von\s+([^–\-:,]+?)\s*[–-]\s*([\s\S]+)$/);
+  if (!m || /^hier\b/i.test(m[1])) return null;
+  const rest = m[3].trim();
+  if (/^kommen\W*$/i.test(rest)) return null;
+  if (/keine antwort/i.test(nextNarrative.slice(0, 120))) return null;
+  const callee = m[1].trim();
+  const caller = m[2].trim();
+  return {
+    callee,
+    caller,
+    call: `${callee} von ${caller} – kommen.`,
+    answer: `Hier ${callee} – kommen.`,
+    message: `Hier ${caller} – ${rest}`,
+  };
+}
+
 // Letzte Stelle, die im aktuellen Schritt gesprochen hat (**Leitstelle:** „…“) – sie hat das Gespräch eröffnet.
 export function lastSpeaker(narrative: string): string | null {
   const speakers = [...narrative.matchAll(/\*\*([^*:\n]+):\*\*\s*[„"]/g)].map(m => m[1].trim());

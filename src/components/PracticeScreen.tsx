@@ -6,7 +6,7 @@ import NarrativePanel from './NarrativePanel';
 import { ActionButtons } from './ActionButtons';
 import RadioCallModal from './RadioCallModal';
 import { applyRufnamen } from '../lib/rufnamen';
-import { RadioResponse, radioResponseFor, splitLeadingResponse } from '../lib/radio-response';
+import { RadioResponse, radioResponseFor, splitCall, splitLeadingResponse } from '../lib/radio-response';
 
 interface Props {
   scenario: Scenario;
@@ -233,6 +233,11 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
           mode={mode}
           expectedPhrases={pendingAction.radioCall!.expectedPhrases}
           hint={applyRufnamen(pendingAction.radioCall!.hint, ruf)}
+          callSplit={splitCall(
+            applyRufnamen(pendingAction.radioCall!.hint, ruf),
+            applyRufnamen(engine.getScenario().nodes[pendingAction.radioCall!.onSuccess]?.narrative ?? '', ruf),
+          )}
+          speak={(text) => audio.speakRadio(text).catch(() => {})}
           briefing={applyRufnamen(pendingAction.radioCall!.briefing ?? '', ruf)}
           feedbackSuccess={applyRufnamen(pendingAction.radioCall!.feedbackSuccess ?? '', ruf)}
           feedbackFailure={applyRufnamen(pendingAction.radioCall!.feedbackFailure ?? '', ruf)}
