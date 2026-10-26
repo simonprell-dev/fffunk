@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { lernChapters } from '../lib/lern-content';
 import { applyRufnamen } from '../lib/rufnamen';
+import { AudioEngine } from '../lib/audio-engine';
+import FehlerFindenView from './FehlerFindenView';
 
 interface Props {
   rufnamen?: Record<string, string>;
@@ -56,6 +58,8 @@ const mdComponents: Components = {
 };
 
 export default function LernbereichView({ rufnamen }: Props) {
+  const [tab, setTab] = useState<'theorie' | 'fehler'>('theorie');
+  const [audio] = useState(() => new AudioEngine()); // Sprachausgabe für „Fehler finden“
   const [activeId, setActiveId] = useState<string>(lernChapters[0]?.id ?? '');
   const ruf = rufnamen ?? {};
   const active = lernChapters.find(c => c.id === activeId) ?? lernChapters[0];
@@ -67,18 +71,31 @@ export default function LernbereichView({ rufnamen }: Props) {
   const ActiveIcon = ICON_MAP[active.icon] ?? BookOpen;
   const body = applyRufnamen(active.body, ruf);
 
+  const tabCls = (t: typeof tab) =>
+    `flex-1 sm:flex-none px-4 py-2 compact:px-2 compact:py-1 rounded-lg text-sm font-semibold ${
+      tab === t ? 'bg-[#dc2626] text-white' : 'bg-[#262626] border border-[#444] text-[#d4d4d4] hover:bg-[#333]'
+    }`;
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 compact:space-y-2">
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 shrink-0 bg-[#dc2626] rounded-lg flex items-center justify-center text-white">
+        <div className="w-10 h-10 shrink-0 bg-[#dc2626] rounded-lg flex items-center justify-center text-white compact:hidden">
           <GraduationCap size={22} />
         </div>
         <div>
-          <h2 className="text-2xl font-bold">Lernbereich</h2>
-          <p className="text-[#a3a3a3]">Theorie zum Feuerwehr-Sprechfunk – vom ersten Funkspruch bis zum Mayday.</p>
+          <h2 className="text-2xl font-bold compact:text-lg">Lernbereich</h2>
+          <p className="text-[#a3a3a3] compact:hidden">Theorie zum Feuerwehr-Sprechfunk – vom ersten Funkspruch bis zum Mayday.</p>
         </div>
       </div>
 
+      <div className="flex gap-2">
+        <button onClick={() => setTab('theorie')} className={tabCls('theorie')}>📖 Theorie</button>
+        <button onClick={() => setTab('fehler')} className={tabCls('fehler')}>🔍 Fehler finden</button>
+      </div>
+
+      {tab === 'fehler' ? (
+        <FehlerFindenView audio={audio} rufnamen={rufnamen} />
+      ) : (
       <div className="grid md:grid-cols-[260px_1fr] gap-4 items-start">
         <aside className="bg-[#111] border border-[#333] rounded-lg p-2">
           <div className="px-2 py-2 text-xs uppercase tracking-wide text-[#777]">Kapitel</div>
@@ -117,6 +134,7 @@ export default function LernbereichView({ rufnamen }: Props) {
           </div>
         </section>
       </div>
+      )}
     </div>
   );
 }

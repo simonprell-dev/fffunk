@@ -1,0 +1,368 @@
+{
+  "id": "gefahrgut_un_nummer",
+  "title": "Gefahrgut: Warntafel richtig durchgeben",
+  "description": "Mittel: An einem verunfallten Tank-LKW nach der GAMS-Regel vorgehen – mit dem Wind anfahren, Warntafel aus sicherer Entfernung ablesen, Menschen aus dem Gefahrenbereich holen, absperren, Brandschutz befehlen und die Nummern Ziffer für Ziffer an die ILS melden und kontrollieren. 4 Funk-Schritte.",
+  "startingNodeId": "n_anfahrt",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_anfahrt_x1": {
+      "id": "n_anfahrt_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Von Osten fahren Sie **gegen den Wind** – also direkt in mögliche Dämpfe hinein. Der laufende Motor kann zudem eine **Zündquelle** sein. Bei Gefahrgut immer **mit dem Wind im Rücken** anfahren, auch wenn der Weg länger ist.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_anfahrt"
+        }
+      ]
+    },
+    "n_anfahrt_x2": {
+      "id": "n_anfahrt_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Direkt am LKW stehen Sie mitten im **Gefahrenbereich**: Dämpfe, Zündgefahr, Kontamination von Mannschaft und Fahrzeug. Halten Sie **großen Abstand** und erkunden Sie zuerst aus der Ferne.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_anfahrt"
+        }
+      ]
+    },
+    "n_anfahrt": {
+      "id": "n_anfahrt",
+      "role": "gruppenführer_a",
+      "narrative": "Alarm durch die ILS: **Verkehrsunfall mit LKW, Flüssigkeit läuft aus** – Kreisstraße nördlich von Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**, **Status 3** ist gedrückt.\n\nDie Kreisstraße verläuft von **West nach Ost**. Die Fahnen am Ortsrand zeigen: **Wind schwach aus West**. Sie können von Osten (kürzester Weg) oder über die Umgehung von Westen anfahren.\n\nWie fahren Sie an?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🌬️ Von **Westen** anfahren – **Wind im Rücken** –, mit großem Abstand anhalten, nicht in Senken, Status 4 drücken",
+          "nextNodeId": "n_gams"
+        },
+        {
+          "id": "opt1",
+          "label": "➡️ Von **Osten** – das ist der kürzeste Weg",
+          "nextNodeId": "n_anfahrt_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚒 Egal woher – Hauptsache direkt bis an den LKW",
+          "nextNodeId": "n_anfahrt_x2"
+        }
+      ]
+    },
+    "n_gams_x1": {
+      "id": "n_gams_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Solange Sie den Stoff nicht kennen, gehen Sie **nicht** in den Gefahrenbereich – auch nicht „nur kurz“. Die Warntafel lässt sich mit dem **Fernglas** aus sicherer Entfernung lesen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_gams"
+        }
+      ]
+    },
+    "n_gams_x2": {
+      "id": "n_gams_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Wegspülen **verteilt** den Stoff – in Graben, Kanal oder Gewässer. Manche Stoffe reagieren sogar gefährlich mit Wasser. Erst den **Stoff bestimmen**, dann Maßnahmen festlegen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_gams"
+        }
+      ]
+    },
+    "n_gams": {
+      "id": "n_gams",
+      "role": "gruppenführer_a",
+      "narrative": "Sie halten etwa **150 m westlich** des LKW. Zu sehen: ein **Tank-LKW** im Straßengraben, eine Lache auf der Fahrbahn.\n\n> **GAMS-Regel** für die Erstmaßnahmen bei Gefahrgut: **G**efahr erkennen – **A**bsperren – **M**enschenrettung durchführen – **S**pezialkräfte alarmieren.\n\nWas tun Sie zuerst?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔭 **Gefahr erkennen**: mit dem Fernglas aus sicherer Entfernung Warntafel, Gefahrzettel, Austritt und Personen erkunden",
+          "nextNodeId": "n_mensch"
+        },
+        {
+          "id": "opt1",
+          "label": "🏃 Zum LKW laufen und die Warntafel aus der Nähe lesen",
+          "nextNodeId": "n_gams_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "💦 Die Lache sofort mit Wasser wegspülen",
+          "nextNodeId": "n_gams_x2"
+        }
+      ]
+    },
+    "n_mensch_x1": {
+      "id": "n_mensch_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Der Fahrer **kann gehen** – dann rufen Sie ihn heraus, statt eigene Kräfte ungeschützt in den Gefahrenbereich zu schicken. Kann eine Person nicht selbst heraus, erfolgt die Rettung mit **geeigneter Schutzausrüstung** (mindestens Atemschutz) und so kurz wie möglich.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_mensch"
+        }
+      ]
+    },
+    "n_mensch_x2": {
+      "id": "n_mensch_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** **Menschenrettung** hat Vorrang und kann hier ohne Risiko erfolgen: Der Fahrer geht selbst heraus. Die GAMS-Regel ist keine starre Reihenfolge – Absperren und Menschenrettung laufen oft gleichzeitig.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_mensch"
+        }
+      ]
+    },
+    "n_mensch": {
+      "id": "n_mensch",
+      "role": "gruppenführer_a",
+      "narrative": "Durch das Fernglas lesen Sie die **orangefarbene Warntafel**: oben **33**, unten **1170**. Daneben ein Gefahrzettel mit **Flamme** (Klasse 3 – entzündbare Flüssigkeit). Aus einem Riss am Tank läuft Flüssigkeit.\n\n> **Warntafel lesen:** Oben steht die **Nummer zur Kennzeichnung der Gefahr** (z. B. **33** = leicht entzündbarer flüssiger Stoff), unten die **UN-Nummer** des Stoffes (z. B. **1170** = Ethanol, **1203** = Benzin). Die Bedeutung schlagen Sie nach (z. B. ERI-Cards, Gefahrgut-App, Nachschlagewerk im Fahrzeug).\n\nDer **Fahrer** steht etwa 10 m neben dem LKW und hält sich den Arm. Wie holen Sie ihn aus dem Gefahrenbereich?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📢 Mit Lautsprecher bzw. Zurufen und Handzeichen zu sich holen – er kommt auf der windzugewandten Seite (von Westen) heraus, bleibt bis zur Sichtung durch den Rettungsdienst bei Ihnen außerhalb der Absperrung",
+          "nextNodeId": "n_absperren"
+        },
+        {
+          "id": "opt1",
+          "label": "🏃 Ein Trupp ohne Schutzausrüstung läuft hin und holt ihn",
+          "nextNodeId": "n_mensch_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⏳ Warten, bis die Spezialkräfte da sind",
+          "nextNodeId": "n_mensch_x2"
+        }
+      ]
+    },
+    "n_absperren": {
+      "id": "n_absperren",
+      "role": "gruppenführer_a",
+      "narrative": "Der Fahrer steht bei Ihnen, er hat sich beim Unfall den Arm geprellt.\n\nGeben Sie dem **Schlauchtrupp** den Befehl zur Absperrung. Gängiger Faustwert für die Erstmaßnahmen (vgl. FwDV 500): **Gefahrenbereich zunächst mindestens 50 m** um die Austrittsstelle, die **Absperrung** deutlich weiter, häufig **100 m** – bei unklarer Lage, Gas oder Brand mehr.",
+      "actions": [
+        {
+          "id": "radio_absperren",
+          "label": "📞 Befehl zur Absperrung",
+          "radioCall": {
+            "expectedPhrases": [
+              "Schlauchtrupp",
+              "Gruppenführer",
+              "Absperrung",
+              "Gefahrenbereich",
+              "Zündquellen",
+              "kommen"
+            ],
+            "hint": "Schlauchtrupp von Gruppenführer – Schlauchtrupp zur Absperrung: Gefahrenbereich 50 Meter um den LKW, Absperrung 100 Meter auf der Kreisstraße in beide Richtungen, Verkehr anhalten, Zündquellen fernhalten, nicht in den Gefahrenbereich gehen – kommen.",
+            "briefing": "Anruf: Schlauchtrupp von Gruppenführer . Auftrag: Absperrung . Gefahrenbereich (50 m) und Absperrung (100 m, beide Richtungen) . Verkehr anhalten, Zündquellen fernhalten . nicht in den Gefahrenbereich . „kommen“",
+            "onSuccess": "n_brandschutz",
+            "onFailure": "n_absperren_fail",
+            "feedbackSuccess": "✅ Absperrung mit klaren Grenzen befohlen.",
+            "feedbackFailure": "❌ Befehlen Sie: Absperrung, Grenzen von Gefahrenbereich und Absperrung, Zündquellen fernhalten."
+          }
+        }
+      ]
+    },
+    "n_absperren_fail": {
+      "id": "n_absperren_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bei einer entzündbaren Flüssigkeit ist jede **Zündquelle** gefährlich: Motoren, Zigaretten, Funken. Die Absperrung hält Unbeteiligte und Verkehr fern. Der **Gefahrenbereich** wird nur mit geeigneter Schutzausrüstung und auf Befehl betreten.\n\nBeispiel: *„Schlauchtrupp von Gruppenführer – Schlauchtrupp zur Absperrung: Gefahrenbereich 50 Meter um den LKW, Absperrung 100 Meter auf der Kreisstraße in beide Richtungen, Verkehr anhalten, Zündquellen fernhalten, nicht in den Gefahrenbereich gehen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_absperren"
+        }
+      ]
+    },
+    "n_brandschutz": {
+      "id": "n_brandschutz",
+      "role": "gruppenführer_a",
+      "narrative": "**Schlauchtrupp:** „Hier Schlauchtrupp – verstanden – Ende.“\n\nNun zum **Brandschutz**. Stoff 1170 ist **Ethanol** – mit Wasser mischbar. Herkömmlicher Schaum wird von solchen Stoffen zerstört; nötig ist **alkoholbeständiges Schaummittel**. Befehlen Sie dem **Wassertrupp**, den Brandschutz außerhalb des Gefahrenbereichs vorzubereiten.",
+      "actions": [
+        {
+          "id": "radio_brandschutz",
+          "label": "📞 Befehl Brandschutz",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wassertrupp",
+              "Gruppenführer",
+              "Brandschutz",
+              "Schaum",
+              "außerhalb",
+              "Wind im Rücken",
+              "kommen"
+            ],
+            "hint": "Wassertrupp von Gruppenführer – Wassertrupp zur Sicherstellung des Brandschutzes mit Pulverlöscher und Schaumrohr, alkoholbeständiges Schaummittel, Stellung westlich außerhalb des Gefahrenbereichs mit dem Wind im Rücken – kommen.",
+            "briefing": "Anruf: Wassertrupp von Gruppenführer . Auftrag: Brandschutz sicherstellen . Mittel: Pulverlöscher, Schaumrohr, alkoholbeständiges Schaummittel . Stellung: westlich, außerhalb des Gefahrenbereichs, Wind im Rücken . „kommen“",
+            "onSuccess": "n_lage",
+            "onFailure": "n_brandschutz_fail",
+            "feedbackSuccess": "✅ Brandschutz befohlen – mit dem richtigen Löschmittel und sicherer Stellung.",
+            "feedbackFailure": "❌ Befehlen Sie: Wassertrupp, Brandschutz, Schaum, außerhalb des Gefahrenbereichs mit dem Wind im Rücken."
+          }
+        }
+      ]
+    },
+    "n_brandschutz_fail": {
+      "id": "n_brandschutz_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Der Brandschutz wird **außerhalb des Gefahrenbereichs** und **mit dem Wind im Rücken** bereitgestellt – nicht in der Lache. Bei wassermischbaren Flüssigkeiten wie Ethanol braucht es **alkoholbeständiges Schaummittel** (AR). Führt Ihr Fahrzeug keins mit, gehört das in die Nachforderung.\n\nBeispiel: *„Wassertrupp von Gruppenführer – Wassertrupp zur Sicherstellung des Brandschutzes mit Pulverlöscher und Schaumrohr, alkoholbeständiges Schaummittel, Stellung westlich außerhalb des Gefahrenbereichs mit dem Wind im Rücken – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_brandschutz"
+        }
+      ]
+    },
+    "n_lage": {
+      "id": "n_lage",
+      "role": "gruppenführer_a",
+      "narrative": "**Wassertrupp:** „Hier Wassertrupp – verstanden – Ende.“\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab. Die Nummern der Warntafel sprechen Sie **Ziffer für Ziffer** – erst die obere, dann die untere Zahl. Dazu: Wind, Absperrung und Nachforderung von Gefahrgut-/ABC-Kräften **nach Alarmplan Ihrer ILS**.",
+      "actions": [
+        {
+          "id": "radio_lage",
+          "label": "📞 Lagemeldung Gefahrgut",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Warntafel",
+              "drei drei",
+              "eins eins sieben null",
+              "Wind aus West",
+              "Absperrung",
+              "Nachforderung",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße nördlich Neuhaus, Tank-LKW verunfallt, Flüssigkeit läuft aus. Warntafel: Nummer zur Kennzeichnung der Gefahr drei – drei, UN-Nummer eins – eins – sieben – null. Fahrer aus dem Gefahrenbereich, leicht verletzt. Wind schwach aus West, Absperrung 100 Meter, Brandschutz sichergestellt. Nachforderung: Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei – kommen.",
+            "briefing": "Eigener Rufname + „Lagemeldung“ . WO: Kreisstraße nördlich Neuhaus . WAS: Tank-LKW, Flüssigkeit läuft aus . Warntafel Ziffer für Ziffer: oben drei – drei, unten eins – eins – sieben – null . MENSCHEN: Fahrer aus dem Gefahrenbereich, leicht verletzt . MASSNAHMEN: Wind aus West, Absperrung 100 m, Brandschutz . NACHFORDERUNG: Gefahrgutkräfte nach Alarmplan, Rettungsdienst, Polizei . „kommen“",
+            "onSuccess": "n_korr",
+            "onFailure": "n_lage_fail",
+            "feedbackSuccess": "✅ Lagemeldung mit Warntafel in Ziffern, Wind, Absperrung und Nachforderung.",
+            "feedbackFailure": "❌ Melden Sie Ort, Lage, Warntafel Ziffer für Ziffer (drei – drei / eins – eins – sieben – null), Personen, Wind, Absperrung und Nachforderung."
+          }
+        }
+      ]
+    },
+    "n_lage_fail": {
+      "id": "n_lage_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Zahlen werden im Funk **einzeln** gesprochen – „eins – eins – sieben – null“, nicht „elfhundertsiebzig“. Bei Gefahrgut ist das lebenswichtig: **Eine falsche Ziffer ist ein anderer Stoff.** Wind und Absperrung braucht die ILS, um Spezialkräfte richtig anfahren zu lassen und ggf. die Bevölkerung zu warnen.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße nördlich Neuhaus, Tank-LKW verunfallt, Flüssigkeit läuft aus. Warntafel: Nummer zur Kennzeichnung der Gefahr drei – drei, UN-Nummer eins – eins – sieben – null. Fahrer aus dem Gefahrenbereich, leicht verletzt. Wind schwach aus West, Absperrung 100 Meter, Brandschutz sichergestellt. Nachforderung: Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_korr_x1": {
+      "id": "n_korr_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Eine andere UN-Nummer bezeichnet einen **anderen Stoff** – mit anderen Gefahren, anderer Schutzausrüstung und anderen Löschmitteln. Die Wiederholung der ILS ist genau dafür da, solche Fehler zu finden. Korrigieren Sie **sofort**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_korr"
+        }
+      ]
+    },
+    "n_korr_x2": {
+      "id": "n_korr_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Bis dahin plant die ILS mit dem **falschen Stoff**, und die anrückenden Kräfte bereiten sich falsch vor. Ein Fehler in der Wiederholung wird **sofort** richtiggestellt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_korr"
+        }
+      ]
+    },
+    "n_korr": {
+      "id": "n_korr",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden. Ich wiederhole: Warntafel drei – drei, UN-Nummer eins – eins – sieben – **eins**, Wind aus West, Absperrung 100 Meter. Gefahrgutkräfte, Rettungsdienst und Polizei werden alarmiert – kommen.“\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "☝️ Sofort korrigieren und die UN-Nummer noch einmal Ziffer für Ziffer durchgeben",
+          "nextNodeId": "n_korrektur"
+        },
+        {
+          "id": "opt1",
+          "label": "👍 „Verstanden – Ende“ – eine Ziffer ist nicht so wichtig",
+          "nextNodeId": "n_korr_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⏳ Nichts sagen – die Spezialkräfte lesen die Tafel ohnehin selbst ab",
+          "nextNodeId": "n_korr_x2"
+        }
+      ]
+    },
+    "n_korrektur": {
+      "id": "n_korrektur",
+      "role": "gruppenführer_a",
+      "narrative": "Geben Sie die UN-Nummer erneut durch – mit **„ich wiederhole“** und Ziffer für Ziffer.",
+      "actions": [
+        {
+          "id": "radio_korrektur",
+          "label": "📞 UN-Nummer richtigstellen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "ich wiederhole",
+              "UN-Nummer",
+              "eins eins sieben null",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – ich wiederhole: UN-Nummer eins – eins – sieben – null. Nummer zur Kennzeichnung der Gefahr drei – drei – kommen.",
+            "briefing": "„hier“ + Rufname . „ich wiederhole“ . UN-Nummer Ziffer für Ziffer: eins – eins – sieben – null . zur Sicherheit auch die obere Zahl: drei – drei . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_korrektur_fail",
+            "feedbackSuccess": "✅ UN-Nummer klar richtiggestellt.",
+            "feedbackFailure": "❌ Sagen Sie „ich wiederhole“ und geben Sie die UN-Nummer Ziffer für Ziffer durch: eins – eins – sieben – null."
+          }
+        }
+      ]
+    },
+    "n_korrektur_fail": {
+      "id": "n_korrektur_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Mit **„ich wiederhole“** geben Sie Ihre eigene Nachricht noch einmal durch. Sprechen Sie langsam und **Ziffer für Ziffer** – „null“ am Ende ist deutlich von „eins“ zu unterscheiden.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – ich wiederhole: UN-Nummer eins – eins – sieben – null. Nummer zur Kennzeichnung der Gefahr drei – drei – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_korrektur"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden: UN-Nummer eins – eins – sieben – null, Ethanol. Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei sind alarmiert – Ende.“\n\nMit dem Wind angefahren, Gefahr aus der Ferne erkannt, Fahrer herausgeholt, abgesperrt, Brandschutz mit dem richtigen Schaummittel befohlen und die Warntafel Ziffer für Ziffer gemeldet – inklusive Kontrolle der Wiederholung.\n\n> **Merke:** **GAMS** – Gefahr erkennen, Absperren, Menschenrettung, Spezialkräfte. Anfahren **mit dem Wind im Rücken**, Warntafel per **Fernglas**, Nummern **Ziffer für Ziffer** – und die Wiederholung der ILS immer prüfen.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anfahrt"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

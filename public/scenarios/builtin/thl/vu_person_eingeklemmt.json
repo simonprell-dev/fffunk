@@ -1,0 +1,371 @@
+{
+  "id": "vu_person_eingeklemmt",
+  "title": "Verkehrsunfall: Person eingeklemmt",
+  "description": "Mittel: Als Gruppenführer an einem PKW-Unfall die Einsatzstelle absichern, den Brandschutz befehlen, mit begründeter Nachforderung (Notarzt, hydraulisches Rettungsgerät) an die ILS melden, vor dem Schneiden stabilisieren, die Rettungsöffnung mit dem Notarzt abstimmen und die Befreiung zurückmelden. 4 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_start_x1": {
+      "id": "n_start_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Das Ausrücken wird **nicht gesprochen**, sondern mit **Status 3** (Einsatzauftrag übernommen) gesendet. Ein Sprechfunkanruf belegt die Sprechgruppe der ILS unnötig.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start_x2": {
+      "id": "n_start_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** **Status 4** heißt „Ankunft an der Einsatzstelle“. Beim Ausrücken gilt **Status 3**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "gruppenführer_a",
+      "narrative": "Alarm durch die ILS: **Verkehrsunfall, PKW gegen Baum, eine Person verletzt** – Kreisstraße zwischen Neuhaus und Adelsdorf. Alarmiert sind **Florian Neuhaus 44/1** und ein RTW.\n\nSie sind Gruppenführer auf **Florian Neuhaus 44/1**. Ihr Löschfahrzeug führt **kein hydraulisches Rettungsgerät** mit – das hat in Ihrem Bereich der **Rüstwagen** (Alarmplan der ILS).\n\nDie Besatzung sitzt auf. Was tun Sie beim Ausrücken?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "⌨️ Status 3 drücken",
+          "nextNodeId": "n_ankunft"
+        },
+        {
+          "id": "opt1",
+          "label": "📞 Leitstelle anrufen und „rücken aus mit 1/8“ melden",
+          "nextNodeId": "n_start_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⌨️ Status 4 drücken",
+          "nextNodeId": "n_start_x2"
+        }
+      ]
+    },
+    "n_ankunft_x1": {
+      "id": "n_ankunft_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Dann blockiert das LF den **Arbeitsraum** rund um den PKW, den Sie für Geräteablage, Rettungsdienst und Rettungsöffnung brauchen – und schützt niemanden vor dem fließenden Verkehr. Das Fahrzeug steht mit **Abstand** und schräg als **Schutz** vor der Einsatzstelle.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_ankunft"
+        }
+      ]
+    },
+    "n_ankunft_x2": {
+      "id": "n_ankunft_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Zuerst **Status 4** und **Eigenschutz/Absicherung** – eine ungesicherte Einsatzstelle auf der Straße gefährdet Ihre Mannschaft. Die Lagemeldung folgt nach der **Erkundung**, wenn Sie wissen, was los ist.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_ankunft"
+        }
+      ]
+    },
+    "n_ankunft": {
+      "id": "n_ankunft",
+      "role": "gruppenführer_a",
+      "narrative": "Sie erreichen die Unfallstelle: Ein Kompaktwagen ist frontal gegen einen Straßenbaum geprallt, die Front ist stark eingedrückt, aus dem Motorraum dampft es leicht. Es herrscht Verkehr in beiden Richtungen.\n\nWie gehen Sie vor?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "⌨️ Status 4 drücken. LF auf der Seite des anfahrenden Verkehrs mit Abstand schräg als Schutz vor die Unfallstelle stellen (Blaulicht, Warnblinker, Umfeldbeleuchtung), Arbeitsraum um den PKW frei lassen, Verkehr mit Warndreieck/Leitkegeln warnen – alle in Warnkleidung",
+          "nextNodeId": "n_befehl"
+        },
+        {
+          "id": "opt1",
+          "label": "🚒 Direkt neben dem Unfall-PKW halten – kurze Wege für die Geräte",
+          "nextNodeId": "n_ankunft_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📞 Erst die Lagemeldung absetzen, dann aussteigen und absichern",
+          "nextNodeId": "n_ankunft_x2"
+        }
+      ]
+    },
+    "n_befehl": {
+      "id": "n_befehl",
+      "role": "gruppenführer_a",
+      "narrative": "Erkundung: Der Fahrer (etwa 40 Jahre) ist **ansprechbar** und klagt über starke Schmerzen in den Beinen. Seine Beine sind im eingedrückten Fußraum **eingeklemmt**, die Fahrertür klemmt. Kein Feuer, aber unter dem Motorraum tropft Flüssigkeit. Der **Angriffstrupp** hat über das Seitenfenster Kontakt zum Fahrer aufgenommen und betreut ihn (Erstversorgung, Kopf stabilisieren).\n\nDer **Wassertrupp** steht am Heck des LF. Geben Sie ihm über Funk den Befehl, den **Brandschutz** sicherzustellen.",
+      "actions": [
+        {
+          "id": "radio_befehl",
+          "label": "📞 Befehl an den Wassertrupp",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wassertrupp",
+              "Gruppenführer",
+              "Brandschutz",
+              "Pulverlöscher",
+              "Schnellangriff",
+              "Unfallfahrzeug",
+              "kommen"
+            ],
+            "hint": "Wassertrupp von Gruppenführer – Wassertrupp zur Sicherstellung des Brandschutzes mit Pulverlöscher und Schnellangriff zum Unfallfahrzeug, Stellung seitlich an der Fahrzeugfront außerhalb des Arbeitsraums – kommen.",
+            "briefing": "Anruf: Wassertrupp von Gruppenführer . Einheit (Wassertrupp) . Auftrag (Brandschutz sicherstellen) . Mittel (Pulverlöscher, Schnellangriff) . Ziel (Unfallfahrzeug) . Weg/Stellung (seitlich an der Front, außerhalb des Arbeitsraums) . „kommen“",
+            "onSuccess": "n_lage",
+            "onFailure": "n_befehl_fail",
+            "feedbackSuccess": "✅ Brandschutz befohlen – mit Einheit, Auftrag, Mittel und Ziel.",
+            "feedbackFailure": "❌ Befehlen Sie: Wassertrupp, Brandschutz sicherstellen, mit Pulverlöscher und Schnellangriff, zum Unfallfahrzeug."
+          }
+        }
+      ]
+    },
+    "n_befehl_fail": {
+      "id": "n_befehl_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bei jedem Verkehrsunfall mit eingeklemmter Person wird der **Brandschutz sichergestellt**, bevor mit Rettungsgerät gearbeitet wird – auslaufende Betriebsstoffe und heiße Motorteile können sich entzünden. Befehl nach FwDV 3: **Einheit – Auftrag – Mittel – Ziel – Weg**.\n\nBeispiel: *„Wassertrupp von Gruppenführer – Wassertrupp zur Sicherstellung des Brandschutzes mit Pulverlöscher und Schnellangriff zum Unfallfahrzeug, Stellung seitlich an der Fahrzeugfront außerhalb des Arbeitsraums – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_befehl"
+        }
+      ]
+    },
+    "n_lage": {
+      "id": "n_lage",
+      "role": "gruppenführer_a",
+      "narrative": "Der Wassertrupp hat den Brandschutz übernommen. Sie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab: Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung. Denken Sie an die Lücken: Ein **Notarzt** ist bisher nicht alarmiert, und Ihr LF hat **kein hydraulisches Rettungsgerät**.",
+      "actions": [
+        {
+          "id": "radio_lage",
+          "label": "📞 Lagemeldung mit Nachforderung",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Kreisstraße",
+              "eingeklemmt",
+              "ansprechbar",
+              "Brandschutz",
+              "Notarzt",
+              "Rettungsgerät",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße zwischen Neuhaus und Adelsdorf, PKW gegen Baum. Eine Person im Fahrzeug eingeklemmt, ansprechbar. Einsatzstelle abgesichert, Brandschutz sichergestellt, Erstversorgung läuft. Nachforderung: Notarzt und hydraulisches Rettungsgerät, Rüstwagen nach Alarmplan – kommen.",
+            "briefing": "Eigener Rufname + „Lagemeldung“ . WO: Kreisstraße zwischen Neuhaus und Adelsdorf . WAS: PKW gegen Baum . MENSCHENLEBEN: eine Person eingeklemmt, ansprechbar . MASSNAHMEN: abgesichert, Brandschutz, Erstversorgung . NACHFORDERUNG: Notarzt + hydraulisches Rettungsgerät (Rüstwagen nach Alarmplan) . „kommen“",
+            "onSuccess": "n_stabil",
+            "onFailure": "n_lage_fail",
+            "feedbackSuccess": "✅ Lagemeldung vollständig – die Nachforderung ist konkret und begründet.",
+            "feedbackFailure": "❌ Melden Sie Ort, Unfallart, eingeklemmte ansprechbare Person, Ihre Maßnahmen und fordern Sie Notarzt und hydraulisches Rettungsgerät nach."
+          }
+        }
+      ]
+    },
+    "n_lage_fail": {
+      "id": "n_lage_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bei einer **eingeklemmten Person** gehört die Nachforderung **sofort** in die erste Lagemeldung: Die Befreiung ist ohne hydraulisches Rettungsgerät nicht möglich, und eine technische Rettung wird in aller Regel **notärztlich begleitet**. Nennen Sie **was** und **wofür** – die ILS alarmiert dann nach ihrem Alarmplan (z. B. Rüstwagen, HLF der Nachbarwehr).\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße zwischen Neuhaus und Adelsdorf, PKW gegen Baum. Eine Person im Fahrzeug eingeklemmt, ansprechbar. Einsatzstelle abgesichert, Brandschutz sichergestellt, Erstversorgung läuft. Nachforderung: Notarzt und hydraulisches Rettungsgerät, Rüstwagen nach Alarmplan – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_stabil_x1": {
+      "id": "n_stabil_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Ohne **Stabilisierung** bewegt sich das Fahrzeug beim Spreizen und Schneiden – das belastet die Wirbelsäule des Patienten und gefährdet die Retter. Erst stabilisieren, dann Gerät einsetzen. Die Schmerzbehandlung übernimmt der Rettungsdienst.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_stabil"
+        }
+      ]
+    },
+    "n_stabil_x2": {
+      "id": "n_stabil_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Ein Trugschluss: Airbags können auch **nach dem Abklemmen noch eine gewisse Zeit auslösen** (Energiereserve im Steuergerät). Deshalb gilt immer: nicht im Entfaltungsbereich nicht ausgelöster Airbags arbeiten (gängige Faustregel **30 / 60 / 90 cm** für Seiten-, Fahrer-, Beifahrerairbag), nicht in Gasgeneratoren schneiden. Die Batterie wird nur abgeklemmt, wenn sie gut erreichbar ist – vorher ggf. elektrische Sitz- oder Fensterverstellung nutzen. Bei Hybrid- oder Elektrofahrzeugen nach **Rettungsdatenblatt** vorgehen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_stabil"
+        }
+      ]
+    },
+    "n_stabil": {
+      "id": "n_stabil",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden. Notarzt und Rüstwagen sind alarmiert, Polizei ist verständigt – Ende.“\n\nDer Rüstwagen trifft ein, kurz danach der RTW. Die Rüstwagenbesatzung baut das Rettungsgerät auf.\n\nWas muss passieren, **bevor** gespreizt oder geschnitten wird?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔧 Fahrzeug stabilisieren (unterbauen, Keile/Stützen), Zündung aus und Schlüssel aus dem Nahbereich, Antriebsart prüfen (Rettungsdatenblatt), Glasmanagement, Abstand zu nicht ausgelösten Airbags",
+          "nextNodeId": "n_oeffnung"
+        },
+        {
+          "id": "opt1",
+          "label": "✂️ Sofort die Fahrertür aufspreizen – der Patient hat Schmerzen",
+          "nextNodeId": "n_stabil_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔋 Batterie abklemmen – dann sind alle Airbags sicher",
+          "nextNodeId": "n_stabil_x2"
+        }
+      ]
+    },
+    "n_oeffnung_x1": {
+      "id": "n_oeffnung_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Es gibt **keine Standardöffnung**. Welche Öffnung richtig ist, hängt vom **Zustand des Patienten**, von der Einklemmung und vom Fahrzeug ab – und wird mit dem **Notarzt** abgestimmt. Manchmal reicht eine große Seitenöffnung, manchmal ist das Dach der beste Weg.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_oeffnung"
+        }
+      ]
+    },
+    "n_oeffnung_x2": {
+      "id": "n_oeffnung_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** **Ansprechbar heißt nicht unverletzt.** Der Fahrer ist eingeklemmt und hat Beinverletzungen, eine Wirbelsäulenverletzung ist nicht ausgeschlossen. Die Rettung erfolgt **patientengerecht** – abgestimmt mit dem Notarzt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_oeffnung"
+        }
+      ]
+    },
+    "n_oeffnung": {
+      "id": "n_oeffnung",
+      "role": "gruppenführer_a",
+      "narrative": "Das Fahrzeug ist stabilisiert, die Scheiben sind kontrolliert entfernt. Der **Notarzt** ist eingetroffen und hat den Fahrer durch das Seitenfenster untersucht.\n\nWie legen Sie die **Rettungsöffnung** fest?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🩺 Gemeinsam mit dem Notarzt: Zustand und Dringlichkeit des Patienten bestimmen, ob schonend oder zeitkritisch gerettet wird – danach wird die Rettungsöffnung festgelegt",
+          "nextNodeId": "n_innen"
+        },
+        {
+          "id": "opt1",
+          "label": "✂️ Dach abnehmen – das ist immer der Standard",
+          "nextNodeId": "n_oeffnung_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚪 Den Fahrer selbst aussteigen lassen, er ist ja ansprechbar",
+          "nextNodeId": "n_oeffnung_x2"
+        }
+      ]
+    },
+    "n_innen": {
+      "id": "n_innen",
+      "role": "gruppenführer_a",
+      "narrative": "**Notarzt:** „Patient ist kreislaufstabil, Verdacht auf Oberschenkelbruch. Wir retten schonend – große Seitenöffnung auf der Fahrerseite, dann über das Rettungsbrett.“\n\nDie Rüstwagenbesatzung entfernt Fahrertür und B-Säule. Ihr **Angriffstrupp** betreut den Fahrer weiter von innen. Weil das Aggregat laut ist, informieren Sie ihn über das Handfunkgerät.",
+      "actions": [
+        {
+          "id": "radio_innen",
+          "label": "📞 Angriffstrupp informieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "Gruppenführer",
+              "Fahrerseite",
+              "B-Säule",
+              "Schutzdecke",
+              "Kopf",
+              "kommen"
+            ],
+            "hint": "Angriffstrupp von Gruppenführer – Rettungsöffnung Fahrerseite, Tür und B-Säule werden entfernt. Patient mit Schutzdecke abdecken, Kopf weiter stabilisieren, Patienten über jeden Arbeitsschritt informieren – kommen.",
+            "briefing": "Anruf: Angriffstrupp von Gruppenführer . geplante Rettungsöffnung (Fahrerseite, Tür und B-Säule) . Auftrag: Patient mit Schutzdecke abdecken, Kopf stabilisieren, Patienten informieren . „kommen“",
+            "onSuccess": "n_meldung",
+            "onFailure": "n_innen_fail",
+            "feedbackSuccess": "✅ Innere Betreuung informiert – der Patient ist beim Schneiden geschützt.",
+            "feedbackFailure": "❌ Sagen Sie dem Angriffstrupp, welche Öffnung geschaffen wird, und dass er den Patienten mit der Schutzdecke abdeckt und den Kopf stabilisiert."
+          }
+        }
+      ]
+    },
+    "n_innen_fail": {
+      "id": "n_innen_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Die **innere Betreuung** muss wissen, wo geschnitten wird: Sie schützt den Patienten mit einer **Schutzdecke** vor Splittern und Kanten, hält den **Kopf** stabil und **erklärt** dem Patienten jeden Schritt – das nimmt Angst und verhindert Bewegungen.\n\nBeispiel: *„Angriffstrupp von Gruppenführer – Rettungsöffnung Fahrerseite, Tür und B-Säule werden entfernt. Patient mit Schutzdecke abdecken, Kopf weiter stabilisieren, Patienten über jeden Arbeitsschritt informieren – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_innen"
+        }
+      ]
+    },
+    "n_meldung": {
+      "id": "n_meldung",
+      "role": "gruppenführer_a",
+      "narrative": "Nach etwa 25 Minuten ist der Fahrer schonend über die Seitenöffnung auf dem Rettungsbrett befreit und an Notarzt und Rettungsdienst übergeben. Er wird mit dem RTW abtransportiert. Die Polizei nimmt den Unfall auf.\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Folgemeldung** ab.",
+      "actions": [
+        {
+          "id": "radio_meldung",
+          "label": "📞 Folgemeldung sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Folgemeldung",
+              "Person befreit",
+              "Rettungsdienst",
+              "übergeben",
+              "keine weitere Nachforderung",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Folgemeldung Kreisstraße: Person befreit und an den Rettungsdienst übergeben. Polizei vor Ort, Brandschutz bleibt bis zur Bergung des Fahrzeugs. Keine weitere Nachforderung – kommen.",
+            "briefing": "Eigener Rufname + „Folgemeldung“ . Ergebnis: Person befreit und an den Rettungsdienst übergeben . Lage: Polizei vor Ort, Brandschutz bis zur Bergung . „keine weitere Nachforderung“ . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_meldung_fail",
+            "feedbackSuccess": "✅ Folgemeldung klar und vollständig.",
+            "feedbackFailure": "❌ Melden Sie: Person befreit, an den Rettungsdienst übergeben, was noch läuft und dass keine weitere Nachforderung besteht."
+          }
+        }
+      ]
+    },
+    "n_meldung_fail": {
+      "id": "n_meldung_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Die **Folgemeldung** sagt der ILS, dass die Menschenrettung abgeschlossen ist – damit kann sie z. B. weitere Kräfte freigeben. Auch „keine weitere Nachforderung“ wird ausdrücklich gesagt.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Folgemeldung Kreisstraße: Person befreit und an den Rettungsdienst übergeben. Polizei vor Ort, Brandschutz bleibt bis zur Bergung des Fahrzeugs. Keine weitere Nachforderung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_meldung"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden – Ende.“\n\nSauber geführt: Status per Taste, Einsatzstelle abgesichert, Brandschutz befohlen, Notarzt und Rettungsgerät sofort begründet nachgefordert, erst stabilisiert, Rettungsöffnung mit dem Notarzt abgestimmt und die Befreiung zurückgemeldet.\n\n> **Merke:** Bei eingeklemmten Personen gilt: **Sicherheit – Stabilisieren – Zugang – Befreien** – und die Rettung richtet sich nach dem **Patienten**, nicht nach dem Werkzeug.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

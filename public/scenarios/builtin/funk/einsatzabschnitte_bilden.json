@@ -1,0 +1,364 @@
+{
+  "id": "einsatzabschnitte_bilden",
+  "title": "Einsatzleitung: Einsatzabschnitte bilden",
+  "description": "Profi: Als Einsatzleiter bei einem Brand auf einem landwirtschaftlichen Anwesen Einsatzabschnitte bilden, per Sammelruf bekanntgeben, Abschnittsaufträge erteilen, Rückmeldungen quittieren und eine Lagemeldung mit Führungsstruktur an die ILS geben. 5 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "einsatzleit",
+  "nodes": {
+    "n_start_x1": {
+      "id": "n_start_x1",
+      "role": "einsatzleit",
+      "narrative": "**Nicht richtig.** Ein Führer kann nur eine begrenzte Zahl Einheiten sicher führen (**Führungsspanne** etwa 2 bis 5). Wer jeden Trupp selbst führt, ist überlastet und blockiert den Funk. Mit **Einsatzabschnitten** führen Sie nur noch die Abschnittsleiter.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start_x2": {
+      "id": "n_start_x2",
+      "role": "einsatzleit",
+      "narrative": "**Nicht richtig.** Ohne klare **Führungsstruktur** fehlt die Abstimmung – z. B. wer das Wasser bekommt. Bilden Sie **Einsatzabschnitte** mit eindeutigen Aufgaben und Abschnittsleitern.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "einsatzleit",
+      "narrative": "Brand auf einem landwirtschaftlichen Anwesen, **Hofstelle Am Mühlbach 2** bei Neuhaus. Sie sind Einsatzleiter auf **Florian Neuhaus 11/1**.\n\n**Lage:** Eine **Scheune** mit Heu und Stroh steht in **Vollbrand**. Nur wenige Meter daneben das **Wohnhaus**, auf der anderen Seite ein **Stall** mit Rindern. Der Landwirt meldet: **alle Bewohner draußen**. Der Hydrant am Hof liefert nur wenig Wasser, ein **Löschteich** liegt etwa **400 m** entfernt.\n\nAn der Einsatzstelle: **Florian Neuhaus 44/1** (LF), **Florian Neuhaus 33/1** (Drehleiter), **Florian Adelsdorf 44/1** (LF). Gefunkt wird in der von der ILS zugewiesenen Einsatz-Sprechgruppe.\n\nWie führen Sie die Einsatzstelle?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🗂️ Zwei Einsatzabschnitte mit je einem Abschnittsleiter: **Brandbekämpfung** (Florian Neuhaus 44/1, Drehleiter unterstellt) und **Wasserversorgung** (Florian Adelsdorf 44/1) – Sie führen die Abschnittsleiter",
+          "nextNodeId": "n_sammel"
+        },
+        {
+          "id": "opt1",
+          "label": "📡 Alle Trupps direkt vom ELW aus über Funk führen",
+          "nextNodeId": "n_start_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚒 Jedes Fahrzeug arbeitet für sich, Absprachen untereinander",
+          "nextNodeId": "n_start_x2"
+        }
+      ]
+    },
+    "n_sammel": {
+      "id": "n_sammel",
+      "role": "einsatzleit",
+      "narrative": "Geben Sie die Abschnittsbildung per **Sammelruf** an alle bekannt. Die Abschnittsleiter sollen sich melden.",
+      "actions": [
+        {
+          "id": "radio_sammel",
+          "label": "📞 Sammelruf an alle",
+          "radioCall": {
+            "expectedPhrases": [
+              "an alle",
+              "Einsatzabschnitte",
+              "Brandbekämpfung",
+              "Florian Neuhaus",
+              "Wasserversorgung",
+              "Florian Adelsdorf",
+              "kommen"
+            ],
+            "hint": "An alle von Florian Neuhaus 11/1 – Einsatzstelle wird in zwei Einsatzabschnitte geteilt. Abschnitt Brandbekämpfung: Florian Neuhaus 44/1, Drehleiter Florian Neuhaus 33/1 ist unterstellt. Abschnitt Wasserversorgung: Florian Adelsdorf 44/1. Abschnittsleiter melden sich – kommen.",
+            "briefing": "„An alle von“ + eigener Rufname . „zwei Einsatzabschnitte“ . Abschnitt Brandbekämpfung: Florian Neuhaus 44/1, Drehleiter unterstellt . Abschnitt Wasserversorgung: Florian Adelsdorf 44/1 . Abschnittsleiter melden sich . „kommen“",
+            "onSuccess": "n_prio",
+            "onFailure": "n_sammel_fail",
+            "feedbackSuccess": "✅ Führungsstruktur für alle klar bekanntgegeben.",
+            "feedbackFailure": "❌ Geben Sie an alle durch: zwei Einsatzabschnitte – Brandbekämpfung (Florian Neuhaus 44/1 mit Drehleiter) und Wasserversorgung (Florian Adelsdorf 44/1)."
+          }
+        }
+      ]
+    },
+    "n_sammel_fail": {
+      "id": "n_sammel_fail",
+      "role": "einsatzleit",
+      "narrative": "**Feedback:** Ein **Sammelruf** erreicht alle Einheiten gleichzeitig. Jede Einheit muss wissen, **zu welchem Abschnitt** sie gehört und **wer ihr Abschnittsleiter** ist.\n\nBeispiel: *„An alle von Florian Neuhaus 11/1 – Einsatzstelle wird in zwei Einsatzabschnitte geteilt. Abschnitt Brandbekämpfung: Florian Neuhaus 44/1, Drehleiter Florian Neuhaus 33/1 ist unterstellt. Abschnitt Wasserversorgung: Florian Adelsdorf 44/1. Abschnittsleiter melden sich – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_sammel"
+        }
+      ]
+    },
+    "n_prio_x1": {
+      "id": "n_prio_x1",
+      "role": "einsatzleit",
+      "narrative": "**Nicht richtig.** Die Scheune ist verloren, Innenangriff in eine brennende Heuscheune ist zudem lebensgefährlich (Einsturz). Schwerpunkt ist, die **Ausbreitung** auf Wohnhaus und Stall zu **verhindern**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_prio"
+        }
+      ]
+    },
+    "n_prio_x2": {
+      "id": "n_prio_x2",
+      "role": "einsatzleit",
+      "narrative": "**Nicht richtig.** Tiere zu retten ist wichtig – aber das **Wohnhaus** droht unmittelbar in Brand zu geraten. Der Abschnittsleiter setzt seine Kräfte für **Riegelstellung** und, wo gefahrlos möglich, das Räumen des Stalls ein.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_prio"
+        }
+      ]
+    },
+    "n_prio": {
+      "id": "n_prio",
+      "role": "einsatzleit",
+      "narrative": "**Florian Neuhaus 44/1:** „Hier Florian Neuhaus 44/1 – verstanden, übernehme Abschnitt Brandbekämpfung – Frage Auftrag – kommen.“\n\n**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – verstanden, Abschnitt Wasserversorgung – kommen.“\n\nDie Scheune ist nicht mehr zu retten. Was ist der **Schwerpunkt** für den Abschnitt Brandbekämpfung?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🛡️ Ausbreitung verhindern: Riegelstellung zum Wohnhaus und zum Stall, Scheune von außen ablöschen",
+          "nextNodeId": "n_auftrag1"
+        },
+        {
+          "id": "opt1",
+          "label": "🔥 Mit allen Rohren in die Scheune, um das Heu zu löschen",
+          "nextNodeId": "n_prio_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🐄 Erst alle Kräfte zur Tierrettung, das Wohnhaus später",
+          "nextNodeId": "n_prio_x2"
+        }
+      ]
+    },
+    "n_auftrag1": {
+      "id": "n_auftrag1",
+      "role": "einsatzleit",
+      "narrative": "Geben Sie dem Abschnittsleiter Brandbekämpfung seinen Auftrag – er hat Sie gerade gerufen.",
+      "actions": [
+        {
+          "id": "radio_auftrag1",
+          "label": "📞 Auftrag Abschnitt Brandbekämpfung",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Riegelstellung",
+              "Wohnhaus",
+              "Stall",
+              "Drehleiter",
+              "Scheune",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 11/1 – Florian Neuhaus 44/1: Abschnitt Brandbekämpfung – Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, soweit gefahrlos möglich. Scheune von außen ablöschen – kommen.",
+            "briefing": "„hier“ + eigener Rufname . Einheit (Florian Neuhaus 44/1) . Abschnitt (Brandbekämpfung) . Schwerpunkt: Riegelstellung Wohnhaus (mit Drehleiter) und Stall . Stall räumen, soweit gefahrlos . Scheune von außen ablöschen . „kommen“",
+            "onSuccess": "n_auftrag2",
+            "onFailure": "n_auftrag1_fail",
+            "feedbackSuccess": "✅ Abschnittsauftrag mit klarem Schwerpunkt erteilt.",
+            "feedbackFailure": "❌ Nennen Sie: Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, Scheune von außen ablöschen."
+          }
+        }
+      ]
+    },
+    "n_auftrag1_fail": {
+      "id": "n_auftrag1_fail",
+      "role": "einsatzleit",
+      "narrative": "**Feedback:** Als Einsatzleiter geben Sie dem Abschnitt **Auftrag und Schwerpunkt** – wie er die Trupps einsetzt, entscheidet der **Abschnittsleiter**.\n\nBeispiel: *„Hier Florian Neuhaus 11/1 – Florian Neuhaus 44/1: Abschnitt Brandbekämpfung – Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, soweit gefahrlos möglich. Scheune von außen ablöschen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_auftrag1"
+        }
+      ]
+    },
+    "n_auftrag2": {
+      "id": "n_auftrag2",
+      "role": "einsatzleit",
+      "narrative": "**Florian Neuhaus 44/1:** „Hier Florian Neuhaus 44/1 – verstanden: Riegelstellung Wohnhaus mit Drehleiter und Stall, Stall räumen, Scheune von außen – Ende.“\n\nRufen Sie jetzt den Abschnittsleiter **Wasserversorgung** und geben Sie seinen Auftrag: Löschwasserentnahme am **Löschteich**, Förderleitung zum Verteiler vor der Scheune, Wasser für den Abschnitt Brandbekämpfung.",
+      "actions": [
+        {
+          "id": "radio_auftrag2",
+          "label": "📞 Auftrag Abschnitt Wasserversorgung",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Adelsdorf",
+              "Florian Neuhaus",
+              "Wasserversorgung",
+              "Löschteich",
+              "Förderleitung",
+              "Verteiler",
+              "kommen"
+            ],
+            "hint": "Florian Adelsdorf 44/1 von Florian Neuhaus 11/1 – Abschnitt Wasserversorgung: Löschwasserentnahme am Löschteich, Förderleitung zum Verteiler vor der Scheune, Wasser für den Abschnitt Brandbekämpfung – kommen.",
+            "briefing": "Anruf: Florian Adelsdorf 44/1 von Florian Neuhaus 11/1 . Abschnitt Wasserversorgung . Entnahmestelle (Löschteich) . Förderleitung zum Verteiler vor der Scheune . Zweck: Wasser für den Abschnitt Brandbekämpfung . „kommen“",
+            "onSuccess": "n_quittung",
+            "onFailure": "n_auftrag2_fail",
+            "feedbackSuccess": "✅ Abschnitt Wasserversorgung hat einen klaren Auftrag.",
+            "feedbackFailure": "❌ Geben Sie den Auftrag: Löschteich, Förderleitung zum Verteiler vor der Scheune, Wasser für die Brandbekämpfung."
+          }
+        }
+      ]
+    },
+    "n_auftrag2_fail": {
+      "id": "n_auftrag2_fail",
+      "role": "einsatzleit",
+      "narrative": "**Feedback:** Bei langer Wegstrecke braucht die Wasserversorgung einen **eigenen Abschnitt** mit klarer Entnahmestelle, Ziel (Verteiler) und Zweck.\n\nBeispiel: *„Florian Adelsdorf 44/1 von Florian Neuhaus 11/1 – Abschnitt Wasserversorgung: Löschwasserentnahme am Löschteich, Förderleitung zum Verteiler vor der Scheune, Wasser für den Abschnitt Brandbekämpfung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_auftrag2"
+        }
+      ]
+    },
+    "n_quittung": {
+      "id": "n_quittung",
+      "role": "einsatzleit",
+      "narrative": "**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – verstanden: Wasserversorgung vom Löschteich zum Verteiler vor der Scheune – Ende.“\n\nZwanzig Minuten später:\n\n**Florian Neuhaus 44/1:** „Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Rückmeldung Abschnitt Brandbekämpfung: Riegelstellung steht, Übergreifen auf Wohnhaus und Stall verhindert. Stall geräumt, alle Tiere draußen. Wasserversorgung vom Löschteich steht – kommen.“\n\nQuittieren Sie die Rückmeldung mit den wesentlichen Punkten.",
+      "actions": [
+        {
+          "id": "radio_quittung",
+          "label": "📞 Rückmeldung quittieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "verstanden",
+              "Riegelstellung",
+              "Wohnhaus",
+              "Stall geräumt",
+              "Ende"
+            ],
+            "hint": "Hier Florian Neuhaus 11/1 – verstanden: Riegelstellung steht, Wohnhaus und Stall geschützt, Stall geräumt – Ende.",
+            "briefing": "„hier“ + eigener Rufname . „verstanden“ . Kernpunkte wiederholen (Riegelstellung steht, Wohnhaus und Stall geschützt, Stall geräumt) . „Ende“",
+            "onSuccess": "n_lage",
+            "onFailure": "n_quittung_fail",
+            "feedbackSuccess": "✅ Rückmeldung quittiert – Sie haben den Überblick.",
+            "feedbackFailure": "❌ Quittieren Sie mit „verstanden“ und den Kernpunkten: Riegelstellung steht, Wohnhaus und Stall geschützt, Stall geräumt."
+          }
+        }
+      ]
+    },
+    "n_quittung_fail": {
+      "id": "n_quittung_fail",
+      "role": "einsatzleit",
+      "narrative": "**Feedback:** Durch das kurze Wiederholen der Kernpunkte merkt der Abschnittsleiter, ob seine Meldung richtig angekommen ist. Mit **„Ende“** ist das Gespräch abgeschlossen.\n\nBeispiel: *„Hier Florian Neuhaus 11/1 – verstanden: Riegelstellung steht, Wohnhaus und Stall geschützt, Stall geräumt – Ende.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_quittung"
+        }
+      ]
+    },
+    "n_lage_x1": {
+      "id": "n_lage_x1",
+      "role": "einsatzleit",
+      "narrative": "**Nicht richtig.** Die Verbindung zur ILS hält die **Einsatzleitung**. Meldet jeder selbst, bekommt die ILS ein lückenhaftes, widersprüchliches Bild – und der Funk wird überlastet.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_lage_x2": {
+      "id": "n_lage_x2",
+      "role": "einsatzleit",
+      "narrative": "**Nicht richtig.** Die ILS muss **frühzeitig** wissen, wie die Lage ist und was gebraucht wird – Anfahrtswege kosten Zeit. Nachforderungen **sofort** melden.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_lage": {
+      "id": "n_lage",
+      "role": "einsatzleit",
+      "narrative": "Die Lage ist stabil, die Scheune brennt kontrolliert ab. Für die lang dauernden Löscharbeiten wollen Sie **ein weiteres Löschfahrzeug** zur Ablösung der Wasserförderung nachfordern. Die ILS braucht eine Lagemeldung.\n\nWer meldet was an die ILS?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📋 Sie als Einsatzleiter: Wo · Was · Menschenleben · Maßnahmen inkl. Einsatzabschnitte mit Abschnittsleitern · Nachforderung",
+          "nextNodeId": "n_ils"
+        },
+        {
+          "id": "opt1",
+          "label": "📻 Jeder Abschnittsleiter meldet seinen Abschnitt selbst an die ILS",
+          "nextNodeId": "n_lage_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⏳ Lagemeldung erst nach „Feuer aus“",
+          "nextNodeId": "n_lage_x2"
+        }
+      ]
+    },
+    "n_ils": {
+      "id": "n_ils",
+      "role": "einsatzleit",
+      "narrative": "Sie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 11/1 von Leitstelle – kommen.“\n\nGeben Sie die Lagemeldung mit Führungsstruktur und Nachforderung.",
+      "actions": [
+        {
+          "id": "radio_ils",
+          "label": "📞 Lagemeldung an die ILS",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Lagemeldung",
+              "Scheune",
+              "keine Personen",
+              "Einsatzabschnitte",
+              "Nachforderung",
+              "Löschfahrzeug",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 11/1 – Lagemeldung: Hofstelle Am Mühlbach 2, Scheune in Vollbrand, keine Personen in Gefahr, Tiere gerettet. Wohnhaus und Stall durch Riegelstellung geschützt. Zwei Einsatzabschnitte: Brandbekämpfung unter Florian Neuhaus 44/1, Wasserversorgung vom Löschteich unter Florian Adelsdorf 44/1. Nachforderung: ein weiteres Löschfahrzeug zur Ablösung der Wasserförderung – kommen.",
+            "briefing": "„hier“ + Rufname . „Lagemeldung“ . WO: Hofstelle Am Mühlbach 2 . WAS: Scheune in Vollbrand . MENSCHENLEBEN: keine Personen in Gefahr, Tiere gerettet . MASSNAHMEN: Riegelstellung Wohnhaus und Stall, zwei Einsatzabschnitte mit Abschnittsleitern . NACHFORDERUNG: ein weiteres Löschfahrzeug . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_ils_fail",
+            "feedbackSuccess": "✅ Vollständige Lagemeldung mit Führungsstruktur und konkreter Nachforderung.",
+            "feedbackFailure": "❌ Lagemeldung nach Schema – mit den beiden Einsatzabschnitten und der Nachforderung eines Löschfahrzeugs."
+          }
+        }
+      ]
+    },
+    "n_ils_fail": {
+      "id": "n_ils_fail",
+      "role": "einsatzleit",
+      "narrative": "**Feedback:** Schema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**. Bei größeren Lagen gehört die **Führungsstruktur** (Einsatzabschnitte, Abschnittsleiter) zu den Maßnahmen – so weiß die ILS, wohin sie nachrückende Kräfte schickt.\n\nBeispiel: *„Hier Florian Neuhaus 11/1 – Lagemeldung: Hofstelle Am Mühlbach 2, Scheune in Vollbrand, keine Personen in Gefahr, Tiere gerettet. Wohnhaus und Stall durch Riegelstellung geschützt. Zwei Einsatzabschnitte: Brandbekämpfung unter Florian Neuhaus 44/1, Wasserversorgung vom Löschteich unter Florian Adelsdorf 44/1. Nachforderung: ein weiteres Löschfahrzeug zur Ablösung der Wasserförderung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_ils"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "einsatzleit",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden, ein weiteres Löschfahrzeug wird alarmiert und meldet sich bei Ihnen – Ende.“\n\nSie haben die Einsatzstelle in Abschnitte gegliedert, die Struktur per Sammelruf bekanntgegeben, klare Abschnittsaufträge erteilt, Rückmeldungen quittiert und die ILS vollständig informiert.\n\n> **Merke:** Einsatzabschnitte werden nach **Raum** (z. B. Nord/Süd) oder **Aufgabe** (z. B. Wasserversorgung) gebildet. Jeder Abschnitt hat **einen Abschnittsleiter**, der Einsatzleiter führt nur noch diese (**Führungsspanne** etwa 2 bis 5). Die Verbindung zur ILS hält die Einsatzleitung.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

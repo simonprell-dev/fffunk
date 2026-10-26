@@ -3,10 +3,12 @@
     "brand": [
       "builtin/brand/angriffstrupp_menschenrettung.json",
       "builtin/brand/atemschutzueberwachung.json",
+      "builtin/brand/bma_taeuschungsalarm.json",
       "builtin/brand/mayday_truppfuehrer_bewusstlos.json"
     ],
     "thl": [
-      "builtin/thl/trupp_auto_absichern.json"
+      "builtin/thl/trupp_auto_absichern.json",
+      "builtin/thl/vu_person_eingeklemmt.json"
     ],
     "verkehr": [
       "builtin/verkehr/trupp_thl_kombi.json",
@@ -15,17 +17,25 @@
       "builtin/verkehr/verkehrsregelung_wechselseitig.json"
     ],
     "wasser": [
-      "builtin/wasser/trupp_wasseraufbau.json"
+      "builtin/wasser/trupp_wasseraufbau.json",
+      "builtin/wasser/wasserfoerderung_lange_wegstrecke.json"
     ],
     "funk": [
       "builtin/funk/alarm_ausruecken.json",
+      "builtin/funk/buchstabieren_din5009.json",
+      "builtin/funk/einsatzabschnitte_bilden.json",
+      "builtin/funk/funkdisziplin_mayday_fremd.json",
       "builtin/funk/koordination_nachkraefte.json",
       "builtin/funk/lagemeldung_nachalarmierung.json",
       "builtin/funk/mayday_atemschutznotfall.json",
+      "builtin/funk/verbindung_schlecht_dmo.json",
       "builtin/funk/volluebung_einsatzablauf.json"
     ],
     "sonstige": [
+      "builtin/sonstige/gefahrgut_un_nummer.json",
       "builtin/sonstige/hubschrauber_landeplatz.json",
+      "builtin/sonstige/manv_erstmeldung.json",
+      "builtin/sonstige/unwetter_einsatzserie.json",
       "builtin/sonstige/vermisstensuche.json"
     ]
   },

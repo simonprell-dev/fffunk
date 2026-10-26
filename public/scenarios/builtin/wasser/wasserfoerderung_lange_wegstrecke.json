@@ -1,0 +1,370 @@
+{
+  "id": "wasserfoerderung_lange_wegstrecke",
+  "title": "Wasserförderung über lange Wegstrecke",
+  "description": "Mittel: Als Maschinist der Verstärkerpumpe in einer Förderstrecke vom Weiher zum Brandobjekt „Wasser marsch“ weitergeben, die Kette in der richtigen Reihenfolge anfahren, Schieber langsam bedienen, den Eingangsdruck halten, bei einem Schlauchplatzer „Wasser halt“ geben und nach dem Schlauchtausch wieder anfahren. 5 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "truppführer",
+  "nodes": {
+    "n_start": {
+      "id": "n_start",
+      "role": "truppführer",
+      "narrative": "Scheunenbrand auf einem Aussiedlerhof bei Neuhaus. Hydranten gibt es dort nicht. Löschwasser kommt aus einem **Weiher rund 900 m entfernt** – über eine **Förderstrecke** aus B-Schläuchen in **geschlossener Schaltreihe** (Pumpe speist direkt in Pumpe).\n\nDie Kette: **Wasserentnahme** (Pumpe am Weiher, saugt aus dem offenen Gewässer) → **Verstärkerpumpe 1** (Tragkraftspritze etwa auf halber Strecke) → **Einspeisung** (Maschinist von Florian Neuhaus 44/1 am Brandobjekt). Die Pumpen funken im Einsatzstellenfunk unter diesen **funktionalen Rufnamen**.\n\nSie sind **Maschinist der Verstärkerpumpe 1**. Ihre Pumpe läuft im Leerlauf, Eingang und Ausgang sind angeschlossen, der Druckabgang ist zu. Der Einsatzleiter hat festgelegt: Die Einspeisung fordert das Wasser an, angefahren wird **von der Wasserentnahme aus**.\n\n**Einspeisung:** „Verstärkerpumpe 1 von Einspeisung – Einspeisung betriebsbereit, **Wasser marsch** – kommen.“\n\nBestätigen Sie und kündigen Sie an, dass Sie den Befehl an die Wasserentnahme weitergeben.",
+      "actions": [
+        {
+          "id": "radio_start",
+          "label": "📞 Wasser marsch bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Verstärkerpumpe 1",
+              "verstanden",
+              "Wasser marsch",
+              "Wasserentnahme",
+              "kommen"
+            ],
+            "hint": "Hier Verstärkerpumpe 1 – verstanden: Wasser marsch, gebe weiter an Wasserentnahme – kommen.",
+            "briefing": "„hier Verstärkerpumpe 1“ . „verstanden“ . „Wasser marsch“ wiederholen . „gebe weiter an Wasserentnahme“ . „kommen“",
+            "onSuccess": "n_reihenfolge",
+            "onFailure": "n_start_fail",
+            "feedbackSuccess": "✅ Befehl bestätigt – die Einspeisung weiß, dass die Kette anläuft.",
+            "feedbackFailure": "❌ Bestätigen Sie mit „verstanden“, wiederholen Sie „Wasser marsch“ und sagen Sie, dass Sie an die Wasserentnahme weitergeben."
+          }
+        }
+      ]
+    },
+    "n_start_fail": {
+      "id": "n_start_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** In einer Förderstrecke läuft jeder Befehl **Pumpe für Pumpe** durch. Wer weitergibt, bestätigt zuerst und sagt, an wen er weitergibt – dann weiß der Absender, dass der Befehl unterwegs ist.\n\nBeispiel: *„Hier Verstärkerpumpe 1 – verstanden: Wasser marsch, gebe weiter an Wasserentnahme – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_reihenfolge_x1": {
+      "id": "n_reihenfolge_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Solange in der Leitung noch Luft ist und kein Wasser ankommt, kann eine Verstärkerpumpe nichts fördern – sie läuft **trocken** bzw. saugt den Zubringerschlauch leer. Zudem prallt die Wassersäule beim Füllen mit voller Wucht auf – **Druckstöße**. Angefahren wird **von der Entnahme zur Einspeisung**, Abschnitt für Abschnitt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_reihenfolge"
+        }
+      ]
+    },
+    "n_reihenfolge_x2": {
+      "id": "n_reihenfolge_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Eine Verstärkerpumpe kann das Wasser nicht über 450 m Schlauch ansaugen: Ein B-Druckschlauch ist nicht saugfest und wird bei Unterdruck flachgezogen. Das Wasser muss von der **Wasserentnahme** in die Leitung **gedrückt** werden.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_reihenfolge"
+        }
+      ]
+    },
+    "n_reihenfolge": {
+      "id": "n_reihenfolge",
+      "role": "truppführer",
+      "narrative": "**Einspeisung:** „Verstanden – Ende.“\n\nIn welcher Reihenfolge wird die Förderstrecke angefahren?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "➡️ Die Wasserentnahme fördert zuerst und füllt die Leitung langsam. Die Verstärkerpumpe gibt erst weiter, wenn bei ihr Wasser mit Eingangsdruck ankommt – dann weiter bis zur Einspeisung",
+          "nextNodeId": "n_marsch"
+        },
+        {
+          "id": "opt1",
+          "label": "⚡ Alle Pumpen gleichzeitig Vollgas, dann geht es am schnellsten",
+          "nextNodeId": "n_reihenfolge_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔄 Zuerst die Verstärkerpumpe aufdrehen, damit sie das Wasser vom Weiher ansaugt",
+          "nextNodeId": "n_reihenfolge_x2"
+        }
+      ]
+    },
+    "n_marsch": {
+      "id": "n_marsch",
+      "role": "truppführer",
+      "narrative": "Geben Sie „Wasser marsch“ an die Wasserentnahme weiter und melden Sie, dass Ihre Pumpe bereit ist.",
+      "actions": [
+        {
+          "id": "radio_marsch",
+          "label": "📞 Wasser marsch weitergeben",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wasserentnahme",
+              "Verstärkerpumpe 1",
+              "betriebsbereit",
+              "Wasser marsch",
+              "kommen"
+            ],
+            "hint": "Wasserentnahme von Verstärkerpumpe 1 – Verstärkerpumpe 1 betriebsbereit, Einspeisung fordert Wasser marsch – kommen.",
+            "briefing": "Anruf: Wasserentnahme von Verstärkerpumpe 1 . eigene Pumpe betriebsbereit . „Einspeisung fordert Wasser marsch“ . „kommen“",
+            "onSuccess": "n_schieber",
+            "onFailure": "n_marsch_fail",
+            "feedbackSuccess": "✅ „Wasser marsch“ sauber an die Wasserentnahme weitergegeben.",
+            "feedbackFailure": "❌ Rufen Sie die Wasserentnahme an: Verstärkerpumpe 1 betriebsbereit, Wasser marsch."
+          }
+        }
+      ]
+    },
+    "n_marsch_fail": {
+      "id": "n_marsch_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Die Wasserentnahme fährt erst an, wenn sie weiß, dass die **nächste Pumpe bereit** ist. Kurz: wer ruft, wer ist bereit, was wird gefordert.\n\nBeispiel: *„Wasserentnahme von Verstärkerpumpe 1 – Verstärkerpumpe 1 betriebsbereit, Einspeisung fordert Wasser marsch – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_marsch"
+        }
+      ]
+    },
+    "n_schieber_x1": {
+      "id": "n_schieber_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Schnelles Öffnen oder Schließen erzeugt **Druckstöße** in der Leitung. Die können Schläuche und Kupplungen platzen lassen und Pumpen beschädigen – über Hunderte Meter Schlauch schaukelt sich das auf. Schieber und Druckabgänge **immer langsam** bedienen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_schieber"
+        }
+      ]
+    },
+    "n_schieber_x2": {
+      "id": "n_schieber_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** „Wasser marsch“ ist bereits angefordert. Kommt bei Ihnen Wasser mit Druck an, geben Sie es **ohne Verzögerung** – aber langsam – weiter. Die Einspeisung wartet darauf.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_schieber"
+        }
+      ]
+    },
+    "n_schieber": {
+      "id": "n_schieber",
+      "role": "truppführer",
+      "narrative": "**Wasserentnahme:** „Hier Wasserentnahme – verstanden, Wasser marsch – Ende.“\n\nNach einigen Minuten kommt das Wasser bei Ihnen an: Der Eingangsschlauch wird prall, das **Eingangsmanometer** steigt auf **etwa 3 bar**.\n\nWie geben Sie das Wasser weiter?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🐢 Druckabgang **langsam** öffnen, Gas allmählich erhöhen und dabei das Eingangsmanometer im Blick behalten",
+          "nextNodeId": "n_eingang"
+        },
+        {
+          "id": "opt1",
+          "label": "💨 Druckabgang schlagartig ganz aufreißen und gleich Vollgas",
+          "nextNodeId": "n_schieber_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⏳ Abwarten, bis die Einspeisung erneut nachfragt",
+          "nextNodeId": "n_schieber_x2"
+        }
+      ]
+    },
+    "n_eingang_x1": {
+      "id": "n_eingang_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Mehr Gas an der Verstärkerpumpe zieht den Eingangsdruck **noch weiter herunter**. Die Pumpe kann nur weitergeben, was von hinten nachkommt. Das Problem lösen Sie **im Gespräch** mit der vorgeschalteten Pumpe.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_eingang"
+        }
+      ]
+    },
+    "n_eingang_x2": {
+      "id": "n_eingang_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Dann bricht vorne plötzlich die Wasserversorgung zusammen – womöglich steht ein Trupp im Innenangriff ohne Wasser. In der Förderstrecke **kein Alleingang**: Änderungen werden abgesprochen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_eingang"
+        }
+      ]
+    },
+    "n_eingang": {
+      "id": "n_eingang",
+      "role": "truppführer",
+      "narrative": "Das Wasser läuft bis zur Einspeisung durch. Dort werden jetzt weitere Rohre geöffnet. Bei Ihnen fällt der **Eingangsdruck auf 1,2 bar** und sinkt weiter.\n\n> **Faustwert** (Ihre Ausbildungsunterlagen gelten): Der Eingangsdruck an einer Verstärkerpumpe sollte **nicht unter etwa 1,5 bar** fallen – sonst droht, dass der Zubringerschlauch zusammengezogen wird und die Pumpe Luft bzw. Dampf zieht (Kavitation).\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📞 Gas nicht weiter erhöhen, ggf. etwas zurücknehmen und die Wasserentnahme anfunken: Eingangsdruck zu niedrig, Ausgangsdruck erhöhen",
+          "nextNodeId": "n_druck"
+        },
+        {
+          "id": "opt1",
+          "label": "🔥 Mehr Gas geben, damit vorne genug ankommt",
+          "nextNodeId": "n_eingang_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔒 Druckabgang ohne Meldung zudrehen, bis der Druck wieder passt",
+          "nextNodeId": "n_eingang_x2"
+        }
+      ]
+    },
+    "n_druck": {
+      "id": "n_druck",
+      "role": "truppführer",
+      "narrative": "Funken Sie die Wasserentnahme an.",
+      "actions": [
+        {
+          "id": "radio_druck",
+          "label": "📞 Eingangsdruck melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wasserentnahme",
+              "Verstärkerpumpe 1",
+              "Eingangsdruck",
+              "1,2 bar",
+              "Ausgangsdruck erhöhen",
+              "kommen"
+            ],
+            "hint": "Wasserentnahme von Verstärkerpumpe 1 – Eingangsdruck sinkt auf 1,2 bar, Ausgangsdruck erhöhen – kommen.",
+            "briefing": "Anruf: Wasserentnahme von Verstärkerpumpe 1 . Problem: Eingangsdruck sinkt auf 1,2 bar . Forderung: Ausgangsdruck erhöhen . „kommen“",
+            "onSuccess": "n_platzer",
+            "onFailure": "n_druck_fail",
+            "feedbackSuccess": "✅ Klare Meldung mit Messwert und Forderung – kein Alleingang.",
+            "feedbackFailure": "❌ Melden Sie den Eingangsdruck (1,2 bar) und fordern Sie, den Ausgangsdruck zu erhöhen."
+          }
+        }
+      ]
+    },
+    "n_druck_fail": {
+      "id": "n_druck_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Der Maschinist an der Wasserentnahme sieht Ihren Eingangsdruck nicht. Er braucht den **Messwert** und eine **klare Forderung**. Reicht auch das nicht, muss die Einspeisung weniger abnehmen oder der Einsatzleiter eine weitere Leitung bzw. Pumpe einplanen.\n\nBeispiel: *„Wasserentnahme von Verstärkerpumpe 1 – Eingangsdruck sinkt auf 1,2 bar, Ausgangsdruck erhöhen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_druck"
+        }
+      ]
+    },
+    "n_platzer": {
+      "id": "n_platzer",
+      "role": "truppführer",
+      "narrative": "**Wasserentnahme:** „Hier Wasserentnahme – verstanden, erhöhe Ausgangsdruck – Ende.“\n\nIhr Eingangsdruck steigt wieder auf **etwa 2 bar** – die Strecke läuft. Eine Viertelstunde später: Etwa 100 m hinter Ihrer Pumpe, **zwischen Ihnen und der Einspeisung**, platzt ein B-Schlauch. Ihr Ausgangsdruck bricht ein, Wasser schießt über den Feldweg.\n\nSie nehmen Gas zurück und schließen Ihren Druckabgang **langsam**. Geben Sie „Wasser halt“ an alle Pumpen der Strecke – mit Ort und Grund.",
+      "actions": [
+        {
+          "id": "radio_platzer",
+          "label": "📞 Wasser halt geben",
+          "radioCall": {
+            "expectedPhrases": [
+              "An alle",
+              "Verstärkerpumpe 1",
+              "Wasser halt",
+              "Schlauchplatzer",
+              "Einspeisung",
+              "kommen"
+            ],
+            "hint": "An alle von Verstärkerpumpe 1 – Wasser halt! Schlauchplatzer etwa 100 Meter hinter Verstärkerpumpe 1 Richtung Einspeisung. Wasserentnahme Druck zurücknehmen, Leitung gefüllt halten – kommen.",
+            "briefing": "Sammelruf: An alle von Verstärkerpumpe 1 . „Wasser halt“ . Ort und Grund (Schlauchplatzer ca. 100 m hinter Verstärkerpumpe 1 Richtung Einspeisung) . Wasserentnahme: Druck zurücknehmen, Leitung gefüllt halten . „kommen“",
+            "onSuccess": "n_tausch",
+            "onFailure": "n_platzer_fail",
+            "feedbackSuccess": "✅ „Wasser halt“ mit Ort und Grund an alle Pumpen gegeben.",
+            "feedbackFailure": "❌ Sammelruf an alle: „Wasser halt“, Ort des Schlauchplatzers, Wasserentnahme Druck zurücknehmen.",
+            "response": "Hier Wasserentnahme – verstanden, Wasser halt – Ende."
+          }
+        }
+      ]
+    },
+    "n_platzer_fail": {
+      "id": "n_platzer_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Ein Schlauchplatzer betrifft die **ganze Strecke**: Die Einspeisung muss wissen, dass vorerst kein Wasser kommt (sie versorgt aus dem Tank weiter), die Wasserentnahme nimmt den Druck zurück. Die Leitung bleibt **gefüllt** – das spart beim Wiederanfahren viel Zeit.\n\nBeispiel: *„An alle von Verstärkerpumpe 1 – Wasser halt! Schlauchplatzer etwa 100 Meter hinter Verstärkerpumpe 1 Richtung Einspeisung. Wasserentnahme Druck zurücknehmen, Leitung gefüllt halten – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_platzer"
+        }
+      ]
+    },
+    "n_tausch": {
+      "id": "n_tausch",
+      "role": "truppführer",
+      "narrative": "**Einspeisung:** „Hier Einspeisung – verstanden, Wasser halt. Versorgen den Angriff aus dem Tank, Wasser reicht noch etwa fünf Minuten – Ende.“\n\nDie Schlauchtrupps der Förderstrecke tauschen den geplatzten B-Schlauch gegen einen aus der Schlauchreserve. Sie sehen selbst nach: Beide Kupplungen sind fest verbunden, der neue Schlauch liegt ohne Knick.\n\n> Der neue Schlauch ist **leer**. Wenn Sie den Druckabgang wieder öffnen, füllen Sie ihn **langsam** – sonst schlägt die Wassersäule an der Einspeisung als Druckstoß an.",
+      "actions": [
+        {
+          "id": "weiter",
+          "label": "➡️ Wieder anfahren",
+          "nextNodeId": "n_wieder"
+        }
+      ]
+    },
+    "n_wieder": {
+      "id": "n_wieder",
+      "role": "truppführer",
+      "narrative": "Fordern Sie bei der Wasserentnahme wieder Wasser an. Die Einspeisung hört im Einsatzstellenfunk mit.",
+      "actions": [
+        {
+          "id": "radio_wieder",
+          "label": "📞 Wieder Wasser marsch",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wasserentnahme",
+              "Verstärkerpumpe 1",
+              "Schlauch getauscht",
+              "Wasser marsch",
+              "Druck",
+              "kommen"
+            ],
+            "hint": "Wasserentnahme von Verstärkerpumpe 1 – Schlauch getauscht, Wasser marsch, Druck langsam wieder erhöhen – kommen.",
+            "briefing": "Anruf: Wasserentnahme von Verstärkerpumpe 1 . „Schlauch getauscht“ . „Wasser marsch“ . Druck langsam wieder erhöhen . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_wieder_fail",
+            "feedbackSuccess": "✅ Strecke nach dem Schlauchtausch wieder angefahren.",
+            "feedbackFailure": "❌ Melden Sie „Schlauch getauscht“ und fordern Sie „Wasser marsch“ mit langsamer Druckerhöhung."
+          }
+        }
+      ]
+    },
+    "n_wieder_fail": {
+      "id": "n_wieder_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Nach dem Tausch wird die Strecke wie beim ersten Mal angefahren: **von hinten nach vorne, langsam**. Erst „Schlauch getauscht“ melden, dann „Wasser marsch“.\n\nBeispiel: *„Wasserentnahme von Verstärkerpumpe 1 – Schlauch getauscht, Wasser marsch, Druck langsam wieder erhöhen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_wieder"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "truppführer",
+      "narrative": "**Wasserentnahme:** „Hier Wasserentnahme – verstanden, Wasser marsch – Ende.“\n\nSie öffnen Ihren Druckabgang langsam, der neue Schlauch füllt sich. Kurz darauf:\n\n**Einspeisung:** „Verstärkerpumpe 1 von Einspeisung – Wasser kommt an, Eingangsdruck stabil – Ende.“\n\nSie haben die Förderstrecke sicher betrieben: Befehle Pumpe für Pumpe weitergegeben, von der Entnahme zur Einspeisung angefahren, Schieber langsam bedient, Eingangsdruck gehalten und bei der Störung „Wasser halt“ an alle gegeben.\n\n> **Merke:** In der Förderstrecke hängt jede Pumpe von der vorherigen ab. **Langsam schalten, Eingangsdruck im Blick (Faustwert ca. 1,5 bar), Änderungen immer per Funk absprechen.**\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

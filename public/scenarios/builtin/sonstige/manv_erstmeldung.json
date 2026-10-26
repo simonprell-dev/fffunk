@@ -1,0 +1,326 @@
+{
+  "id": "manv_erstmeldung",
+  "title": "MANV: Erstmeldung als ersteintreffende Einheit",
+  "description": "Profi: Als Gruppenführer der ersteintreffenden Einheit an einem Busunfall mit vielen Verletzten den Überblick gewinnen statt sofort zu behandeln, die Erstmeldung mit „MANV“ und geschätzter Patientenzahl absetzen, nach MANV-Konzept nachfordern, Zufahrt und Bereitstellungsraum festlegen und die Sichtung durch den Rettungsdienst unterstützen. 4 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_start_x1": {
+      "id": "n_start_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Verständlich, aber falsch: Wenn sich der Führer der ersteintreffenden Einheit in die Behandlung eines Einzelnen bindet, **fehlt der Überblick** – und die Nachforderung für alle anderen kommt zu spät. Bei vielen Verletzten rettet die **schnelle, richtige Meldung** die meisten Leben. Ein Truppmann kann die Frau kurz betreuen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start_x2": {
+      "id": "n_start_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Der Bus liegt auf der Seite, Diesel läuft aus – ohne Sicherung und Brandschutz gefährden Sie Ihre Kräfte. Und unkoordiniert verlieren Sie den Überblick. **Erst erkunden, Eigenschutz, melden** – dann gezielt einsetzen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "gruppenführer_a",
+      "narrative": "Alarm: **„THL – Verkehrsunfall mit Bus – Staatsstraße Neuhaus – Adelsdorf“**. Sie sind Gruppenführer auf **Florian Neuhaus 44/1** (1/8) und treffen als **erste Einheit** ein – der Rettungsdienst ist noch nicht da. Sie haben **Status 4** gedrückt.\n\nEin **Reisebus** ist von der Fahrbahn abgekommen und liegt **auf der Seite im Straßengraben**. Mehrere Menschen laufen blutend auf der Straße umher, einige sitzen oder liegen am Rand, aus dem Bus hört man Hilferufe. Es riecht nach Diesel.\n\nEin Fahrgast zieht Sie am Arm: „Helfen Sie meiner Frau, sie blutet am Kopf!“\n\nWas tun Sie als Gruppenführer **zuerst**?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "👀 Kurz erkunden: einmal um die Einsatzstelle, Gefahren erfassen, Zahl der Verletzten grob schätzen – dann sofort melden",
+          "nextNodeId": "n_aufstellung"
+        },
+        {
+          "id": "opt1",
+          "label": "🩹 Sich selbst um die Frau kümmern – sie braucht jetzt Hilfe",
+          "nextNodeId": "n_start_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🏃 Die ganze Gruppe sofort in den Bus schicken, um alle herauszuholen",
+          "nextNodeId": "n_start_x2"
+        }
+      ]
+    },
+    "n_aufstellung_x1": {
+      "id": "n_aufstellung_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Dann stehen Sie mitten in der einzigen Zufahrt. Bei einem MANV kommen **viele Rettungsmittel** – sie brauchen eine **freie An- und Abfahrt**. Die Raumordnung legen Sie **von Anfang an** fest, nachträglich umparken kostet Zeit.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_aufstellung"
+        }
+      ]
+    },
+    "n_aufstellung_x2": {
+      "id": "n_aufstellung_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Der Rettungsdienst kommt erst in einigen Minuten. Bis dahin parken Ersthelfer und Schaulustige die Straße zu. **Absicherung, freie Zufahrt und Brandschutz** sind von Anfang an Aufgabe der ersteintreffenden Feuerwehr.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_aufstellung"
+        }
+      ]
+    },
+    "n_aufstellung": {
+      "id": "n_aufstellung",
+      "role": "gruppenführer_a",
+      "narrative": "Ihre Erkundung (etwa eine Minute): **ca. 25 Insassen**, davon etwa 15 gehfähig. Mehrere liegen am Straßenrand, **mindestens zwei Personen sind im Bus eingeklemmt**. Am Tank läuft Diesel aus, der Bus wirkt instabil. Die Fahrbahn ist durch Glas und Gepäck teilweise blockiert.\n\nWie ordnen Sie die Einsatzstelle?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🚒 Fahrzeug **vor** der Unfallstelle als Absicherung (in Anfahrtsrichtung Neuhaus), Fahrbahn auf der anderen Seite **als Zufahrt für Rettungsmittel freihalten**, Brandschutz sicherstellen, Bus gegen Bewegung sichern",
+          "nextNodeId": "n_erstmeldung"
+        },
+        {
+          "id": "opt1",
+          "label": "🚒 Fahrzeug direkt neben den Bus stellen, damit alles Material nah ist",
+          "nextNodeId": "n_aufstellung_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🅿️ Erst einmal nichts festlegen – das macht später der Rettungsdienst",
+          "nextNodeId": "n_aufstellung_x2"
+        }
+      ]
+    },
+    "n_erstmeldung": {
+      "id": "n_erstmeldung",
+      "role": "gruppenführer_a",
+      "narrative": "Sie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Sprechwunsch – kommen.“\n\nSetzen Sie die **Erstmeldung** ab. Nennen Sie ausdrücklich **„MANV“** und die **geschätzte** Zahl der Verletzten („ca.“) – genaue Zahlen gibt es erst nach der Sichtung. Dazu Gefahren und eingeklemmte Personen. Die Nachforderung geben Sie gleich danach.",
+      "actions": [
+        {
+          "id": "radio_erstmeldung",
+          "label": "📞 Erstmeldung MANV",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "MANV",
+              "Reisebus",
+              "ca. 25",
+              "Verletzte",
+              "eingeklemmt",
+              "Diesel",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Erstmeldung MANV: Staatsstraße Neuhaus – Adelsdorf, Reisebus auf der Seite im Graben. Ca. 25 Verletzte, davon mindestens zwei im Bus eingeklemmt. Diesel läuft aus, Bus instabil. Einsatzstelle wird abgesichert, Brandschutz wird aufgebaut. Nachforderung folgt sofort – kommen.",
+            "briefing": "„hier“ + Rufname + „Erstmeldung MANV“ . WO: Staatsstraße Neuhaus – Adelsdorf . WAS: Reisebus auf der Seite im Graben . MENSCHENLEBEN: ca. 25 Verletzte, mind. 2 eingeklemmt . Gefahren: Diesel läuft aus, Bus instabil . Maßnahmen: Absicherung, Brandschutz . „Nachforderung folgt sofort“ . „kommen“",
+            "onSuccess": "n_nachforderung",
+            "onFailure": "n_erstmeldung_fail",
+            "feedbackSuccess": "✅ Erstmeldung mit „MANV“ und geschätzter Patientenzahl – die ILS kann das MANV-Konzept auslösen.",
+            "feedbackFailure": "❌ Melden Sie: MANV, Ort, Reisebus, ca. 25 Verletzte, Eingeklemmte, Gefahr durch Diesel."
+          }
+        }
+      ]
+    },
+    "n_erstmeldung_fail": {
+      "id": "n_erstmeldung_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Das Stichwort **„MANV“** (Massenanfall von Verletzten) und eine **geschätzte Patientenzahl** sind die wichtigsten Informationen: Damit löst die ILS ihr **MANV-Konzept** aus und alarmiert Rettungsmittel in großer Zahl. Schätzen ist richtig – „ca.“ sagen, nicht minutenlang zählen.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Erstmeldung MANV: Staatsstraße Neuhaus – Adelsdorf, Reisebus auf der Seite im Graben. Ca. 25 Verletzte, davon mindestens zwei im Bus eingeklemmt. Diesel läuft aus, Bus instabil. Einsatzstelle wird abgesichert, Brandschutz wird aufgebaut. Nachforderung folgt sofort – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_erstmeldung"
+        }
+      ]
+    },
+    "n_nachforderung": {
+      "id": "n_nachforderung",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden, MANV, ca. 25 Verletzte. Frage Nachforderung und Anfahrt – kommen.“\n\nFordern Sie nach: **Rettungsdienst nach dem MANV-Alarmplan Ihrer ILS** einschließlich **Leitendem Notarzt** und **Organisatorischem Leiter Rettungsdienst**, für die Eingeklemmten **technische Rettung** (Rüstwagen, weitere Feuerwehr). Nennen Sie die **Zufahrt** und schlagen Sie einen **Bereitstellungsraum** vor: den Parkplatz an der Mühle, etwa 300 m Richtung Neuhaus.",
+      "actions": [
+        {
+          "id": "radio_nachforderung",
+          "label": "📞 Nachforderung und Zufahrt",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Leitender Notarzt",
+              "Organisatorischer Leiter",
+              "Rüstwagen",
+              "Zufahrt",
+              "Bereitstellungsraum",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Nachforderung: Rettungsdienst nach MANV-Alarmplan, dazu Leitender Notarzt und Organisatorischer Leiter Rettungsdienst. Für zwei Eingeklemmte Rüstwagen und Florian Adelsdorf 44/1. Zufahrt nur von Neuhaus her, Bereitstellungsraum Parkplatz an der Mühle – kommen.",
+            "briefing": "„hier“ + Rufname . Nachforderung: Rettungsdienst nach MANV-Alarmplan, Leitender Notarzt, Organisatorischer Leiter Rettungsdienst . technische Rettung: Rüstwagen + weitere Feuerwehr (Florian Adelsdorf 44/1) . Zufahrt (von Neuhaus her) . Bereitstellungsraum (Parkplatz an der Mühle) . „kommen“",
+            "onSuccess": "n_sichtung",
+            "onFailure": "n_nachforderung_fail",
+            "feedbackSuccess": "✅ Nachforderung nach MANV-Konzept mit Zufahrt und Bereitstellungsraum.",
+            "feedbackFailure": "❌ Fordern Sie Rettungsdienst nach MANV-Alarmplan mit LNA und OrgL, Rüstwagen nach und nennen Sie Zufahrt und Bereitstellungsraum."
+          }
+        }
+      ]
+    },
+    "n_nachforderung_fail": {
+      "id": "n_nachforderung_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Bei einem MANV braucht der Rettungsdienst eine eigene **Führung**: **Leitender Notarzt (LNA)** und **Organisatorischer Leiter Rettungsdienst (OrgL)**. Welche Kräfte bei welchem Stichwort kommen, steht im **Alarmplan Ihrer ILS**. Die vielen Rettungsmittel sammeln sich im **Bereitstellungsraum** und werden von dort gezielt an die Einsatzstelle geholt – so bleibt die Zufahrt frei.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Nachforderung: Rettungsdienst nach MANV-Alarmplan, dazu Leitender Notarzt und Organisatorischer Leiter Rettungsdienst. Für zwei Eingeklemmte Rüstwagen und Florian Adelsdorf 44/1. Zufahrt nur von Neuhaus her, Bereitstellungsraum Parkplatz an der Mühle – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_nachforderung"
+        }
+      ]
+    },
+    "n_sichtung_x1": {
+      "id": "n_sichtung_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Die **Sichtung** (Einteilung nach Behandlungsdringlichkeit) ist Aufgabe des **Rettungsdienstes bzw. des Notarztes**. Manche Regionen sehen eine **Vorsichtung** durch geschulte Kräfte nach einem festen Schema vor – dann nur nach diesem Konzept und mit Ausbildung. Ohne beides unterstützen Sie: sammeln, betreuen, zählen, Erste Hilfe.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_sichtung"
+        }
+      ]
+    },
+    "n_sichtung_x2": {
+      "id": "n_sichtung_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Patienten werden bei einem MANV **gezielt** auf Kliniken verteilt – sonst ist das nächste Krankenhaus überfüllt und Patienten fehlen in der Übersicht. Den Transport koordiniert der Rettungsdienst (OrgL/LNA). Ihr Fahrzeug wird außerdem für die technische Rettung gebraucht.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_sichtung"
+        }
+      ]
+    },
+    "n_sichtung": {
+      "id": "n_sichtung",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden. MANV-Alarmierung läuft, LNA und OrgL sind alarmiert, Rüstwagen und Florian Adelsdorf 44/1 kommen. Bereitstellungsraum Parkplatz an der Mühle – Ende.“\n\nBis der Rettungsdienst in größerer Zahl da ist, vergehen noch Minuten. Der erste **RTW** trifft ein. Wie setzen Sie Ihre Gruppe ein?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🤝 Gehfähige Verletzte an eine Sammelstelle abseits der Straße führen und betreuen lassen, Liegende ansprechen, Zahl und Lage notieren, Erste Hilfe nach Ausbildung – die **Sichtung** macht der Rettungsdienst, Sie unterstützen ihn",
+          "nextNodeId": "n_zufahrt"
+        },
+        {
+          "id": "opt1",
+          "label": "🏷️ Selbst alle Verletzten mit Anhängekarten in Rot, Gelb und Grün einteilen",
+          "nextNodeId": "n_sichtung_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚒 Leichtverletzte ins Feuerwehrfahrzeug setzen und selbst ins Krankenhaus bringen",
+          "nextNodeId": "n_sichtung_x2"
+        }
+      ]
+    },
+    "n_zufahrt": {
+      "id": "n_zufahrt",
+      "role": "gruppenführer_a",
+      "narrative": "> **Sichtungskategorien** (vereinfacht, die Einteilung trifft der Rettungsdienst): **Rot** – akute Lebensgefahr, sofortige Behandlung. **Gelb** – schwer verletzt, Behandlung dringend, aber aufschiebbar. **Grün** – leicht verletzt, spätere Behandlung. Je nach Konzept gibt es weitere Kategorien.\n\nAn der Einsatzstelle halten schon die ersten **Privatautos** von Ersthelfern und Schaulustigen. Geben Sie dem **Schlauchtrupp** den Befehl, die Zufahrt freizuhalten und die Rettungsmittel einzuweisen.",
+      "actions": [
+        {
+          "id": "radio_zufahrt",
+          "label": "📞 Befehl Zufahrt freihalten",
+          "radioCall": {
+            "expectedPhrases": [
+              "Schlauchtrupp",
+              "Gruppenführer",
+              "Zufahrt",
+              "freihalten",
+              "Rettungsmittel",
+              "einweisen",
+              "Bereitstellungsraum",
+              "kommen"
+            ],
+            "hint": "Schlauchtrupp von Gruppenführer – Zufahrt von Neuhaus her freihalten, keine Fahrzeuge an der Unfallstelle abstellen lassen. Rettungsmittel einweisen, alle weiteren in den Bereitstellungsraum Parkplatz an der Mühle – kommen.",
+            "briefing": "Anruf: Schlauchtrupp von Gruppenführer . Auftrag: Zufahrt von Neuhaus her freihalten . keine Fahrzeuge an der Unfallstelle abstellen lassen . Rettungsmittel einweisen . alle weiteren in den Bereitstellungsraum (Parkplatz an der Mühle) . „kommen“",
+            "onSuccess": "n_folge",
+            "onFailure": "n_zufahrt_fail",
+            "feedbackSuccess": "✅ Zufahrt gesichert – die Rettungsmittel kommen durch.",
+            "feedbackFailure": "❌ Befehlen Sie: Zufahrt freihalten, keine Fahrzeuge abstellen lassen, Rettungsmittel einweisen, weitere in den Bereitstellungsraum."
+          }
+        }
+      ]
+    },
+    "n_zufahrt_fail": {
+      "id": "n_zufahrt_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Die häufigste Panne bei Großschadenslagen: **zugeparkte Zufahrten**. Ein Trupp, der die Zufahrt freihält und einweist, ist von Anfang an gut eingesetzt.\n\nBeispiel: *„Schlauchtrupp von Gruppenführer – Zufahrt von Neuhaus her freihalten, keine Fahrzeuge an der Unfallstelle abstellen lassen. Rettungsmittel einweisen, alle weiteren in den Bereitstellungsraum Parkplatz an der Mühle – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_zufahrt"
+        }
+      ]
+    },
+    "n_folge": {
+      "id": "n_folge",
+      "role": "gruppenführer_a",
+      "narrative": "**Schlauchtrupp:** „Hier Schlauchtrupp – verstanden – Ende.“\n\nInzwischen sind ein Notarzt und mehrere RTW eingetroffen, die **Sichtung durch den Rettungsdienst läuft**. Der Bus ist gesichert, ein Schnellangriff steht, der ausgelaufene Diesel ist abgestreut. Die gehfähigen Verletzten werden an der Sammelstelle am Feldweg betreut. Der Rüstwagen ist da, die **technische Rettung der zwei Eingeklemmten** hat begonnen.\n\nDie Leitstelle ruft Sie:\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Frage Lage – kommen.“\n\nGeben Sie eine kurze **Folgemeldung**.",
+      "actions": [
+        {
+          "id": "radio_folge",
+          "label": "📞 Folgemeldung",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Folgemeldung",
+              "Sichtung",
+              "Rettungsdienst",
+              "Sammelstelle",
+              "technische Rettung",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Folgemeldung: Sichtung durch den Rettungsdienst läuft. Gehfähige Verletzte an der Sammelstelle am Feldweg betreut. Bus gesichert, Brandschutz steht, technische Rettung der zwei Eingeklemmten läuft. Zufahrt frei – kommen.",
+            "briefing": "„hier“ + Rufname + „Folgemeldung“ . Sichtung durch den Rettungsdienst läuft . Gehfähige an der Sammelstelle (Feldweg) . Bus gesichert, Brandschutz steht . technische Rettung der 2 Eingeklemmten läuft . Zufahrt frei . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_folge_fail",
+            "feedbackSuccess": "✅ Folgemeldung kurz und vollständig – ohne Namen, ohne medizinische Details.",
+            "feedbackFailure": "❌ Melden Sie: Sichtung läuft, Sammelstelle, Bus gesichert, technische Rettung läuft, Zufahrt frei."
+          }
+        }
+      ]
+    },
+    "n_folge_fail": {
+      "id": "n_folge_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** In die Folgemeldung der Feuerwehr gehört, was **Sie** verantworten: Sicherung, Brandschutz, technische Rettung, Zufahrt. Patientenzahlen nach Sichtungskategorien meldet der **Rettungsdienst** (LNA/OrgL) – keine Namen und keine Diagnosen über Funk.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Folgemeldung: Sichtung durch den Rettungsdienst läuft. Gehfähige Verletzte an der Sammelstelle am Feldweg betreut. Bus gesichert, Brandschutz steht, technische Rettung der zwei Eingeklemmten läuft. Zufahrt frei – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_folge"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Verstanden – Ende.“\n\nKurz darauf treffen **LNA und OrgL** ein. Sie stimmen sich mit ihnen ab: Der Rettungsdienst führt die Patientenversorgung, Sie führen Sicherung und technische Rettung.\n\nSie haben als ersteintreffende Einheit richtig gehandelt: erst Überblick statt Einzelbehandlung, Raumordnung mit freier Zufahrt, Erstmeldung mit „MANV“ und geschätzter Patientenzahl, Nachforderung nach dem Alarmplan der ILS, Sichtung durch den Rettungsdienst unterstützt.\n\n> **Merke:** Beim MANV gilt für die erste Einheit: **Erkunden – Eigenschutz – Melden – Ordnen.** Die erste Meldung mit „MANV“ und „ca.“-Zahl entscheidet, wie schnell genug Hilfe kommt.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

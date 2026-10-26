@@ -1,0 +1,284 @@
+{
+  "id": "funkdisziplin_mayday_fremd",
+  "title": "Funkdisziplin: Fremder Mayday – Funkstille halten",
+  "description": "Mittel: Als Truppführer des Wassertrupps bei einem Mayday eines anderen Trupps sofort Funkstille halten, nur auf Aufforderung der Einsatzleitung sprechen, einen Auftrag bestätigen und die eigene Routinemeldung erst nach Freigabe des Funkverkehrs absetzen. 3 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "truppführer",
+  "nodes": {
+    "n_start_x1": {
+      "id": "n_start_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Ein Mayday hat die **höchste Vorrangstufe**. Jede andere Sendung kann die Antwort der Einsatzleitung oder eine Rückmeldung des Trupps **überdecken**. Ab jetzt nur noch Notfallverkehr.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start_x2": {
+      "id": "n_start_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Das Mayday quittiert die **Einsatzleitung** bzw. die zuständige Führungskraft oder Atemschutzüberwachung. Zusätzliche Quittungen anderer Stellen blockieren den Kanal und stiften Verwirrung.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start_x3": {
+      "id": "n_start_x3",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Der Wassertrupp ist **nicht unter Atemschutz** und hat keinen Auftrag. Gerettet wird durch den **Sicherheitstrupp auf Befehl** – kein eigenmächtiges Vorgehen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "truppführer",
+      "narrative": "Brand in einer Lagerhalle am Ortsrand von Neuhaus. Einsatzleiter ist **Florian Neuhaus 11/1**. Im Innenangriff ist unter anderem der **Angriffstrupp von Florian Adelsdorf 44/1**. Alle Trupps an der Einsatzstelle funken in derselben Sprechgruppe.\n\nSie sind **Truppführer des Wassertrupps** von Florian Neuhaus 44/1 und haben an der **Nordseite** der Halle die Wasserversorgung vom Hydranten zum Verteiler aufgebaut. Gerade wollen Sie das Ihrem Gruppenführer melden – da hören Sie:\n\n**Angriffstrupp Florian Adelsdorf 44/1:** „Mayday, Mayday, Mayday – hier Angriffstrupp Florian Adelsdorf 44/1 – Halle, Erdgeschoss, hinterer Bereich – Orientierung verloren, Atemluft 90 bar – Mayday, kommen!“\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔇 Sofort Funkstille: eigene Meldung zurückstellen, Sprechtaste nicht drücken, aufmerksam mithören",
+          "nextNodeId": "n_kamerad"
+        },
+        {
+          "id": "opt1",
+          "label": "⚡ Schnell noch die eigene Meldung absetzen – dauert nur fünf Sekunden",
+          "nextNodeId": "n_start_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📞 Das Mayday selbst mit „verstanden“ bestätigen, damit der Trupp weiß, dass er gehört wurde",
+          "nextNodeId": "n_start_x2"
+        },
+        {
+          "id": "opt3",
+          "label": "🏃 Mit dem Wassertrupp in die Halle laufen und suchen",
+          "nextNodeId": "n_start_x3"
+        }
+      ]
+    },
+    "n_kamerad_x1": {
+      "id": "n_kamerad_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Die Wasserversorgung **steht bereits** – daran ändert die Meldung nichts. Sie kann warten. Funkverkehr während eines Mayday nur, wenn er dem **Notfall** dient oder die Einsatzleitung ausdrücklich fragt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_kamerad"
+        }
+      ]
+    },
+    "n_kamerad_x2": {
+      "id": "n_kamerad_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Die ILS hat mit der internen Lage an der Einsatzstelle nichts zu tun, und auch ein Sprechwunsch stört jetzt nur. **Funkstille** heißt: warten, bis die Einsatzleitung den Funkverkehr wieder freigibt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_kamerad"
+        }
+      ]
+    },
+    "n_kamerad": {
+      "id": "n_kamerad",
+      "role": "truppführer",
+      "narrative": "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – Mayday verstanden. Sicherheitstrupp geht vor. – An alle: Atemschutznotfall, Funkverkehr nur noch für den Notfall.“\n\nIhr Truppmann stößt Sie an: „Sollen wir nicht trotzdem melden, dass das Wasser steht? Der Gruppenführer wartet doch darauf.“\n\nWas antworten Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "✋ „Nein. Funkstille – die Meldung ist jetzt nicht notfallrelevant. Wir hören mit und sprechen nur, wenn wir angesprochen werden.“",
+          "nextNodeId": "n_aufforderung"
+        },
+        {
+          "id": "opt1",
+          "label": "📞 „Ja, ganz kurz – Wasser ist wichtig für den Sicherheitstrupp.“",
+          "nextNodeId": "n_kamerad_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 „Wir drücken Status 5, dann ruft uns die ILS zurück.“",
+          "nextNodeId": "n_kamerad_x2"
+        }
+      ]
+    },
+    "n_aufforderung": {
+      "id": "n_aufforderung",
+      "role": "truppführer",
+      "narrative": "Der Sicherheitstrupp geht über den Haupteingang Süd vor.\n\n**Florian Neuhaus 11/1:** „Florian Neuhaus 11/1 an alle: Frage – wer steht an der Nordseite der Halle? Ist dort ein Zugang offen – kommen.“\n\nSie stehen an der Nordseite: Das **Rolltor Nord** ist geschlossen, die **Schlupftür** daneben ist **offen**. Jetzt sind **Sie gefragt** – antworten Sie kurz.",
+      "actions": [
+        {
+          "id": "radio_aufforderung",
+          "label": "📞 Auf Aufforderung antworten",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wassertrupp",
+              "Nordseite",
+              "Rolltor",
+              "geschlossen",
+              "Schlupftür",
+              "offen",
+              "kommen"
+            ],
+            "hint": "Hier Wassertrupp Florian Neuhaus 44/1 – stehe an der Nordseite. Rolltor Nord geschlossen, Schlupftür daneben offen – kommen.",
+            "briefing": "„hier“ + Trupp und Rufname (Wassertrupp Florian Neuhaus 44/1) . Standort (Nordseite) . nur die erfragte Information: Rolltor Nord geschlossen, Schlupftür daneben offen . „kommen“",
+            "onSuccess": "n_auftrag",
+            "onFailure": "n_aufforderung_fail",
+            "feedbackSuccess": "✅ Auf Aufforderung gesprochen – kurz, nur die erfragte Information.",
+            "feedbackFailure": "❌ Melden Sie Ihren Standort und den Zustand der Zugänge an der Nordseite."
+          }
+        }
+      ]
+    },
+    "n_aufforderung_fail": {
+      "id": "n_aufforderung_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Während eines Mayday sprechen Sie nur, wenn die Einsatzleitung **fragt** – und dann **nur das Erfragte**. Ihre Wasserversorgungs-Meldung gehört nicht hinein.\n\nBeispiel: *„Hier Wassertrupp Florian Neuhaus 44/1 – stehe an der Nordseite. Rolltor Nord geschlossen, Schlupftür daneben offen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_aufforderung"
+        }
+      ]
+    },
+    "n_auftrag": {
+      "id": "n_auftrag",
+      "role": "truppführer",
+      "narrative": "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – verstanden. Wassertrupp Florian Neuhaus 44/1: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.“\n\nBestätigen Sie den Auftrag.",
+      "actions": [
+        {
+          "id": "radio_auftrag",
+          "label": "📞 Auftrag bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Wassertrupp",
+              "verstanden",
+              "Schlupftür",
+              "offen halten",
+              "Lampe",
+              "nicht vorgehen",
+              "kommen"
+            ],
+            "hint": "Hier Wassertrupp Florian Neuhaus 44/1 – verstanden: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.",
+            "briefing": "„hier“ + Trupp und Rufname . „verstanden“ . Auftrag wiederholen (Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen) . „kommen“",
+            "onSuccess": "n_ende",
+            "onFailure": "n_auftrag_fail",
+            "feedbackSuccess": "✅ Auftrag kurz und vollständig bestätigt.",
+            "feedbackFailure": "❌ Bestätigen Sie mit „verstanden“ und wiederholen Sie den Auftrag."
+          }
+        }
+      ]
+    },
+    "n_auftrag_fail": {
+      "id": "n_auftrag_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Ein Auftrag der Einsatzleitung wird auch im Notfall **kurz bestätigt** – sonst weiß sie nicht, ob er angekommen ist. Danach wieder Funkstille.\n\nBeispiel: *„Hier Wassertrupp Florian Neuhaus 44/1 – verstanden: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_auftrag"
+        }
+      ]
+    },
+    "n_ende_x1": {
+      "id": "n_ende_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Die **Aufhebung** von Mayday und Funkbeschränkung gibt die **Einsatzleitung** an alle durch. Einzelne Funkstellen nehmen den normalen Funkverkehr **nicht eigenmächtig** wieder auf.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_ende"
+        }
+      ]
+    },
+    "n_ende": {
+      "id": "n_ende",
+      "role": "truppführer",
+      "narrative": "Sie halten die Schlupftür offen und leuchten hinein. Nach einigen Minuten taucht der Lichtkegel des Sicherheitstrupps auf: Er bringt den Angriffstrupp Florian Adelsdorf 44/1 **durch die Schlupftür Nord** ins Freie. Beide Geräteträger gehen selbstständig, der Rettungsdienst übernimmt.\n\n**Sicherheitstrupp:** „Florian Neuhaus 11/1 von Sicherheitstrupp – Angriffstrupp Florian Adelsdorf 44/1 über Schlupftür Nord im Freien, an Rettungsdienst übergeben – kommen.“\n\n**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – verstanden – Ende.“\n\nDer Trupp ist gerettet. Dürfen Sie jetzt Ihre Meldung zur Wasserversorgung absetzen?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "⏳ Nein – erst, wenn die Einsatzleitung den Atemschutznotfall beendet und den Funkverkehr ausdrücklich freigibt",
+          "nextNodeId": "n_routine"
+        },
+        {
+          "id": "opt1",
+          "label": "✅ Ja – der Trupp ist draußen, also ist der Notfall vorbei",
+          "nextNodeId": "n_ende_x1"
+        }
+      ]
+    },
+    "n_routine": {
+      "id": "n_routine",
+      "role": "truppführer",
+      "narrative": "**Florian Neuhaus 11/1:** „Florian Neuhaus 11/1 an alle: Atemschutznotfall beendet, Funkverkehr wieder frei.“\n\nJetzt setzen Sie Ihre zurückgestellte Meldung an den Gruppenführer ab.",
+      "actions": [
+        {
+          "id": "radio_routine",
+          "label": "📞 Routinemeldung absetzen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Wassertrupp",
+              "Wasserversorgung",
+              "Hydrant",
+              "Verteiler",
+              "steht",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Wassertrupp – Wasserversorgung vom Hydranten Nordseite zum Verteiler steht – kommen.",
+            "briefing": "Anruf: Gruppenführer von Wassertrupp . Wasserversorgung vom Hydranten (Nordseite) zum Verteiler steht . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_routine_fail",
+            "feedbackSuccess": "✅ Routinemeldung nach der Freigabe – genau richtig.",
+            "feedbackFailure": "❌ Melden Sie: Wasserversorgung vom Hydranten Nordseite zum Verteiler steht."
+          }
+        }
+      ]
+    },
+    "n_routine_fail": {
+      "id": "n_routine_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Nach der Freigabe läuft der normale Funkverkehr wieder. Zurückgestellte Meldungen werden jetzt **kurz** nachgeholt.\n\nBeispiel: *„Gruppenführer von Wassertrupp – Wasserversorgung vom Hydranten Nordseite zum Verteiler steht – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_routine"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "truppführer",
+      "narrative": "Sie haben die Funkdisziplin gehalten: sofort Funkstille beim fremden Mayday, nur auf Aufforderung gesprochen, Auftrag bestätigt und die Routinemeldung erst nach der Freigabe abgesetzt.\n\n> **Merke:** Ein **Mayday** unterbricht jeden anderen Funkverkehr. Wer nicht betroffen ist, **schweigt und hört mit** – gesprochen wird nur auf Aufforderung oder wenn man eine **notfallrelevante** Beobachtung hat. Den Funkverkehr gibt allein die **Einsatzleitung** wieder frei.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

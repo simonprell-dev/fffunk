@@ -1,0 +1,373 @@
+{
+  "id": "verbindung_schlecht_dmo",
+  "title": "Schlechte Verbindung: wiederholen und auf DMO wechseln",
+  "description": "Mittel: Als Truppführer im zweiten Untergeschoss einer Tiefgarage mit abreißendem Funk umgehen – auf „wiederholen Sie“ richtig antworten, Standort wechseln, in die vorgegebene DMO-Sprechgruppe wechseln und die Grenzen von DMO kennen. 5 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "truppführer",
+  "nodes": {
+    "n_start": {
+      "id": "n_start",
+      "role": "truppführer",
+      "narrative": "PKW-Brand im **zweiten Untergeschoss** einer Tiefgarage unter einer Wohnanlage in Neuhaus. Sie sind **Truppführer des Angriffstrupps** von Florian Neuhaus 44/1 und gehen unter Atemschutz mit dem ersten Rohr über die Zufahrtsrampe vor.\n\nGefunkt wird zunächst im **Netzbetrieb (TMO)** in der Einsatz-Sprechgruppe. Der Gruppenführer hat vor dem Vorgehen festgelegt: **Bricht der Funk ab, wechseln Trupp, Gruppenführer und Atemschutzüberwachung in die vorgegebene DMO-Sprechgruppe** (sie ist auf Ihrem Funkzettel eingetragen).\n\nSie haben den brennenden PKW erreicht und löschen. Melden Sie das dem Gruppenführer.",
+      "actions": [
+        {
+          "id": "radio_start",
+          "label": "📞 Lage melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "zweiten Untergeschoss",
+              "Brandbekämpfung",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Angriffstrupp – PKW im zweiten Untergeschoss erreicht, Brandbekämpfung läuft, starke Verrauchung – kommen.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . Ziel erreicht (PKW im zweiten Untergeschoss) . Brandbekämpfung läuft . Lage (starke Verrauchung) . „kommen“",
+            "onSuccess": "n_bruch",
+            "onFailure": "n_start_fail",
+            "feedbackSuccess": "✅ Meldung abgesetzt – aber kommt sie auch an?",
+            "feedbackFailure": "❌ Melden Sie: PKW im zweiten Untergeschoss erreicht, Brandbekämpfung läuft, starke Verrauchung."
+          }
+        }
+      ]
+    },
+    "n_start_fail": {
+      "id": "n_start_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Melden Sie das **Erreichen des Ziels** und die Lage, damit der Gruppenführer weiß, dass der Trupp arbeitet.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – PKW im zweiten Untergeschoss erreicht, Brandbekämpfung läuft, starke Verrauchung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_bruch_x1": {
+      "id": "n_bruch_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Lautes Schreien übersteuert das Mikrofon, schnelles Sprechen verschluckt Silben. Bei schlechter Verbindung: **langsamer, deutlicher, kürzer** – und **Denken – Drücken – Sprechen**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_bruch"
+        }
+      ]
+    },
+    "n_bruch_x2": {
+      "id": "n_bruch_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Ein Gruppenführer, der nur Bruchstücke hört, weiß nicht, ob der Trupp arbeitet oder in Not ist. Auf **„wiederholen Sie“** antworten Sie mit **„ich wiederhole“**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_bruch"
+        }
+      ]
+    },
+    "n_bruch": {
+      "id": "n_bruch",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** „… Angriffs… … zweiten … *(Rauschen)* … wiederholen Sie – kommen.“\n\nDie Antwort des Gruppenführers kam noch an – Ihre Nachricht bei ihm aber nur in Bruchstücken. Was tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔁 Mit „ich wiederhole“ die Meldung noch einmal kurz, langsam und deutlich sprechen – Sprechtaste erst drücken, kurz warten, dann sprechen",
+          "nextNodeId": "n_wiederhole"
+        },
+        {
+          "id": "opt1",
+          "label": "📢 Lauter ins Funkgerät schreien und schneller sprechen",
+          "nextNodeId": "n_bruch_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🤷 Nichts mehr sagen – er hat ja „zweiten“ gehört, das reicht",
+          "nextNodeId": "n_bruch_x2"
+        }
+      ]
+    },
+    "n_wiederhole": {
+      "id": "n_wiederhole",
+      "role": "truppführer",
+      "narrative": "Wiederholen Sie die Meldung – kurz und deutlich.",
+      "actions": [
+        {
+          "id": "radio_wiederhole",
+          "label": "📞 Meldung wiederholen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "ich wiederhole",
+              "Untergeschoss",
+              "Brandbekämpfung",
+              "kommen"
+            ],
+            "hint": "Hier Angriffstrupp – ich wiederhole: PKW im zweiten Untergeschoss erreicht, Brandbekämpfung läuft – kommen.",
+            "briefing": "„hier Angriffstrupp“ . „ich wiederhole“ . Kern der Meldung, möglichst kurz (PKW im zweiten Untergeschoss erreicht, Brandbekämpfung läuft) . „kommen“",
+            "onSuccess": "n_weg",
+            "onFailure": "n_wiederhole_fail",
+            "feedbackSuccess": "✅ Mit „ich wiederhole“ und gekürzt wiederholt.",
+            "feedbackFailure": "❌ Sagen Sie „ich wiederhole“ und sprechen Sie den Kern der Meldung noch einmal."
+          }
+        }
+      ]
+    },
+    "n_wiederhole_fail": {
+      "id": "n_wiederhole_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** **„ich wiederhole“** zeigt, dass Sie die eigene Meldung erneut senden. Bei schlechter Verbindung die Meldung auf das **Wesentliche kürzen**.\n\nBeispiel: *„Hier Angriffstrupp – ich wiederhole: PKW im zweiten Untergeschoss erreicht, Brandbekämpfung läuft – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_wiederhole"
+        }
+      ]
+    },
+    "n_weg_x1": {
+      "id": "n_weg_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Ein Atemschutztrupp **trennt sich nie**. Wenn Sie den Standort wechseln, dann **gemeinsam** und an der Schlauchleitung.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_weg"
+        }
+      ]
+    },
+    "n_weg_x2": {
+      "id": "n_weg_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** In einer **nicht vorgegebenen** Sprechgruppe hört Sie niemand – weder Gruppenführer noch Atemschutzüberwachung. Gewechselt wird nur in die **vorgegebene** Sprechgruppe und **abgesprochen**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_weg"
+        }
+      ]
+    },
+    "n_weg_x3": {
+      "id": "n_weg_x3",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Ohne Funkverbindung kann die Atemschutzüberwachung Sie nicht erreichen und ein Notruf käme nicht an. Stellen Sie die Verbindung wieder her – in vielen Ausbildungsunterlagen gilt: **ohne Funkverbindung Rückzug**. Es gilt die Vorgabe Ihres Gruppenführers.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_weg"
+        }
+      ]
+    },
+    "n_weg": {
+      "id": "n_weg",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** „… verst… … *(Rauschen)* …“\n\nWieder nur Bruchstücke. Zwischen Ihnen und dem Netz liegen zwei Betondecken – in der Tiefgarage ist der **Netzbetrieb (TMO)** kaum zu erreichen. Der Truppmann hat den PKW inzwischen weitgehend abgelöscht.\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🧭 Als Trupp gemeinsam an der Schlauchleitung zurück Richtung Rampe, bis die Verbindung steht – dann den vorgegebenen Wechsel auf DMO ansprechen",
+          "nextNodeId": "n_dmo"
+        },
+        {
+          "id": "opt1",
+          "label": "🚶 Der Truppmann löscht allein weiter, Sie gehen zum Funken zur Rampe",
+          "nextNodeId": "n_weg_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📻 Einfach irgendeine freie DMO-Gruppe am Gerät wählen",
+          "nextNodeId": "n_weg_x2"
+        },
+        {
+          "id": "opt3",
+          "label": "🔇 Ohne Funk weiterarbeiten, bis die Flasche leer ist",
+          "nextNodeId": "n_weg_x3"
+        }
+      ]
+    },
+    "n_dmo": {
+      "id": "n_dmo",
+      "role": "truppführer",
+      "narrative": "Am Fuß der Zufahrtsrampe ist die Verbindung schwach, aber verständlich. Melden Sie das Funkproblem und schlagen Sie den vorgegebenen Wechsel auf DMO vor.",
+      "actions": [
+        {
+          "id": "radio_dmo",
+          "label": "📞 Wechsel auf DMO ansprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "TMO",
+              "nicht möglich",
+              "DMO",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Angriffstrupp – im zweiten Untergeschoss Funk in TMO nicht möglich. Stehen am Fuß der Rampe, PKW weitgehend abgelöscht. Schlage Wechsel in die vorgegebene DMO-Sprechgruppe vor – kommen.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . Problem: Funk in TMO im zweiten Untergeschoss nicht möglich . Standort (Fuß der Rampe) + kurzer Stand (PKW weitgehend abgelöscht) . Vorschlag: Wechsel in die vorgegebene DMO-Sprechgruppe . „kommen“",
+            "onSuccess": "n_bestaetigen",
+            "onFailure": "n_dmo_fail",
+            "feedbackSuccess": "✅ Problem, Standort und Lösung in einer kurzen Meldung.",
+            "feedbackFailure": "❌ Melden Sie: Funk in TMO nicht möglich, Standort, kurzer Stand – und schlagen Sie den Wechsel in die vorgegebene DMO-Sprechgruppe vor."
+          }
+        }
+      ]
+    },
+    "n_dmo_fail": {
+      "id": "n_dmo_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Im **DMO (Direktbetrieb)** funken die Geräte direkt miteinander, **ohne Netz** – im Keller oder in der Tiefgarage oft die bessere Wahl. Gewechselt wird **abgesprochen**, damit alle gleichzeitig in derselben Gruppe sind.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – im zweiten Untergeschoss Funk in TMO nicht möglich. Stehen am Fuß der Rampe, PKW weitgehend abgelöscht. Schlage Wechsel in die vorgegebene DMO-Sprechgruppe vor – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_dmo"
+        }
+      ]
+    },
+    "n_bestaetigen": {
+      "id": "n_bestaetigen",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** „Hier Gruppenführer – verstanden. Angriffstrupp, Gruppenführer und Atemschutzüberwachung wechseln jetzt in die vorgegebene DMO-Sprechgruppe. Dort melden – kommen.“\n\nBestätigen Sie kurz.",
+      "actions": [
+        {
+          "id": "radio_bestaetigen",
+          "label": "📞 Wechsel bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "verstanden",
+              "Wechsel",
+              "DMO",
+              "kommen"
+            ],
+            "hint": "Hier Angriffstrupp – verstanden: Wechsel in die vorgegebene DMO-Sprechgruppe, melden uns dort – kommen.",
+            "briefing": "„hier Angriffstrupp“ . „verstanden“ . Wechsel in die vorgegebene DMO-Sprechgruppe . „melden uns dort“ . „kommen“",
+            "onSuccess": "n_repeater",
+            "onFailure": "n_bestaetigen_fail",
+            "feedbackSuccess": "✅ Wechsel bestätigt – alle Beteiligten wechseln gleichzeitig.",
+            "feedbackFailure": "❌ Bestätigen Sie mit „verstanden“ und wiederholen Sie den Wechsel in die vorgegebene DMO-Sprechgruppe."
+          }
+        }
+      ]
+    },
+    "n_bestaetigen_fail": {
+      "id": "n_bestaetigen_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Erst wenn alle den Wechsel **bestätigt** haben, wird umgeschaltet. Sonst funkt der Trupp in einer Gruppe, in der niemand mehr zuhört.\n\nBeispiel: *„Hier Angriffstrupp – verstanden: Wechsel in die vorgegebene DMO-Sprechgruppe, melden uns dort – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_bestaetigen"
+        }
+      ]
+    },
+    "n_repeater_x1": {
+      "id": "n_repeater_x1",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Im DMO gibt es **keine Basisstationen** – die Geräte funken **direkt**. Reichweite hängt von Abstand und Hindernissen (Betondecken) ab.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_repeater"
+        }
+      ]
+    },
+    "n_repeater_x2": {
+      "id": "n_repeater_x2",
+      "role": "truppführer",
+      "narrative": "**Nicht richtig.** Im DMO ist die ILS **nicht** verbunden – dafür bräuchte es ein **Gateway** ins Netz. Die Verbindung zur ILS hält der Gruppenführer bzw. das Fahrzeug im **TMO**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_repeater"
+        }
+      ]
+    },
+    "n_repeater": {
+      "id": "n_repeater",
+      "role": "truppführer",
+      "narrative": "Sie schalten in die DMO-Sprechgruppe und melden sich dort beim Gruppenführer – die Verbindung zur Rampe ist klar. Sie gehen zurück zum PKW, um nachzulöschen.\n\n**Gruppenführer:** „Hier Gruppenführer – im Untergeschoss höre ich Sie in DMO nur schwach. Gehe näher an die Rampe – Ende.“\n\nWarum ist DMO auch nicht grenzenlos – und was hilft dann?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📶 DMO reicht nur von Gerät zu Gerät, Beton dämpft stark. Hilfe: Gruppenführer geht näher heran, ggf. ein Gerät als DMO-Repeater an der Rampe (wenn vorhanden und örtlich so geregelt)",
+          "nextNodeId": "n_feuer"
+        },
+        {
+          "id": "opt1",
+          "label": "🗼 DMO nutzt besonders starke Basisstationen – das Problem kann nur am Gerät liegen",
+          "nextNodeId": "n_repeater_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📞 In DMO hört die ILS automatisch mit und kann vermitteln",
+          "nextNodeId": "n_repeater_x2"
+        }
+      ]
+    },
+    "n_feuer": {
+      "id": "n_feuer",
+      "role": "truppführer",
+      "narrative": "Der Gruppenführer steht jetzt an der Rampe, die Verbindung in DMO ist gut. Der PKW ist abgelöscht, die Nachkontrolle mit der Wärmebildkamera zeigt keine Glutnester mehr. Ihr Druck: **170** und **160 bar**. Melden Sie in der DMO-Sprechgruppe.",
+      "actions": [
+        {
+          "id": "radio_feuer",
+          "label": "📞 „Feuer aus“ melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "Feuer aus",
+              "Wärmebildkamera",
+              "160",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Angriffstrupp – Feuer aus, PKW im zweiten Untergeschoss abgelöscht, Nachkontrolle mit Wärmebildkamera ohne Befund. Druck 160 bar – kommen.",
+            "briefing": "Anruf: Gruppenführer von Angriffstrupp . „Feuer aus“ (PKW, zweites Untergeschoss) . Nachkontrolle mit Wärmebildkamera ohne Befund . niedrigster Druck (160 bar) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_feuer_fail",
+            "feedbackSuccess": "✅ Ergebnis gemeldet – die Verbindung steht.",
+            "feedbackFailure": "❌ Melden Sie: Feuer aus, Nachkontrolle ohne Befund, Druck 160 bar."
+          }
+        }
+      ]
+    },
+    "n_feuer_fail": {
+      "id": "n_feuer_fail",
+      "role": "truppführer",
+      "narrative": "**Feedback:** Melden Sie **Ergebnis, Nachkontrolle und Druck**. Der Gruppenführer entscheidet dann über Rauchabzug und Rückzug.\n\nBeispiel: *„Gruppenführer von Angriffstrupp – Feuer aus, PKW im zweiten Untergeschoss abgelöscht, Nachkontrolle mit Wärmebildkamera ohne Befund. Druck 160 bar – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_feuer"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "truppführer",
+      "narrative": "**Gruppenführer:** „Hier Gruppenführer – verstanden. Angriffstrupp zurück zur Rampe, Lüfter wird in Stellung gebracht – kommen.“\n\nBei abreißender Verbindung richtig gehandelt: „ich wiederhole“, gemeinsamer Standortwechsel, abgesprochener Wechsel in die vorgegebene DMO-Sprechgruppe.\n\n> **Merke:** **TMO** (Netzbetrieb) braucht Empfang einer Basisstation – in Tiefgaragen und Kellern oft nicht vorhanden. **DMO** (Direktbetrieb) funkt von Gerät zu Gerät, ist aber ebenfalls durch Abstand und Beton begrenzt. Abhilfe: näher heran, Standort wechseln, ggf. **DMO-Repeater**. Welche DMO-Sprechgruppe gilt, legt die Führungskraft bzw. Ihre ILS fest – nie eigenmächtig wählen.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

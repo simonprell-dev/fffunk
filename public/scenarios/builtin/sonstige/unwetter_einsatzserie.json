@@ -1,0 +1,367 @@
+{
+  "id": "unwetter_einsatzserie",
+  "title": "Unwetter: Einsatzserie über die ILS",
+  "description": "Einsteiger: Bei einer Sturmlage nacheinander Einsätze der ILS über Sprechfunk übernehmen, Aufträge quittieren und wiederholen, Status 3/4/1 per Taste senden, eine Gefahr für Personen vorrangig melden und die überlastete Sprechgruppe nur für das Nötige nutzen. 4 Funk-Schritte.",
+  "startingNodeId": "n_auftrag1",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_auftrag1": {
+      "id": "n_auftrag1",
+      "role": "gruppenführer_a",
+      "narrative": "Ein **Sturmtief** zieht über den Landkreis. Bei der ILS gehen Dutzende Notrufe ein, die Sprechgruppe ist dauernd belegt. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**, die Gruppe ist im Gerätehaus besetzt (**Status 2**).\n\n> Bei Unwetterlagen vergibt die ILS Einsätze oft nacheinander per Sprechfunk an bereitstehende Fahrzeuge. Wie genau das läuft (Sprechfunk, Fax, Einsatzmonitor, örtliche Einsatzleitung), regelt **Ihre ILS** bzw. der Landkreis.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Einsatzauftrag: **Baum auf Fahrbahn**, Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz. Fahrbahn komplett blockiert, keine Personen betroffen – kommen.“\n\nQuittieren Sie den Auftrag und wiederholen Sie die wichtigen Punkte.",
+      "actions": [
+        {
+          "id": "radio_auftrag1",
+          "label": "📞 Auftrag quittieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "verstanden",
+              "Baum",
+              "Kreisstraße",
+              "Waldparkplatz",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – verstanden: Baum auf Fahrbahn, Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz – kommen.",
+            "briefing": "„hier“ + eigener Rufname . „verstanden“ . Einsatzart (Baum auf Fahrbahn) . Ort (Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz) . „kommen“",
+            "onSuccess": "n_ausruecken",
+            "onFailure": "n_auftrag1_fail",
+            "feedbackSuccess": "✅ Auftrag quittiert und Ort wiederholt.",
+            "feedbackFailure": "❌ Quittieren Sie mit „verstanden“ und wiederholen Sie Einsatzart und Ort."
+          }
+        }
+      ]
+    },
+    "n_auftrag1_fail": {
+      "id": "n_auftrag1_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Gerade bei vielen Einsätzen gleichzeitig ist die **Wiederholung** wichtig: So merkt die ILS sofort, wenn Sie den falschen Ort verstanden haben. Kurz – nur Einsatzart und Ort.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: Baum auf Fahrbahn, Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_auftrag1"
+        }
+      ]
+    },
+    "n_ausruecken_x1": {
+      "id": "n_ausruecken_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Das Ausrücken wird mit **Status 3** gedrückt, nicht gesprochen. Bei einer Unwetterlage ist jedes unnötige Gespräch eines zu viel – andere warten auf die Sprechgruppe.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_ausruecken"
+        }
+      ]
+    },
+    "n_ausruecken_x2": {
+      "id": "n_ausruecken_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Die ILS muss sehen, dass Sie den Auftrag **übernommen** haben und unterwegs sind. Das geht mit **Status 3** – ohne ein Wort zu sprechen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_ausruecken"
+        }
+      ]
+    },
+    "n_ausruecken": {
+      "id": "n_ausruecken",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Verstanden – Ende.“\n\nSie rücken aus. Was senden Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "⌨️ Status 3 drücken",
+          "nextNodeId": "n_baum_fertig"
+        },
+        {
+          "id": "opt1",
+          "label": "📞 Leitstelle anrufen: „Florian Neuhaus 44/1 rückt aus“",
+          "nextNodeId": "n_ausruecken_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⌨️ Gar nichts – die ILS hat Ihnen den Einsatz ja selbst gegeben",
+          "nextNodeId": "n_ausruecken_x2"
+        }
+      ]
+    },
+    "n_baum_fertig_x1": {
+      "id": "n_baum_fertig_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Bei überlasteter Sprechgruppe ist ein ausführlicher Bericht unnötig. **Status 1** sagt der ILS: Einsatz erledigt, Fahrzeug frei für den nächsten Auftrag. Ob Ihre ILS zusätzlich eine **kurze** Sprechfunkmeldung („Einsatzstelle abgearbeitet“) erwartet, regelt sie selbst.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_baum_fertig"
+        }
+      ]
+    },
+    "n_baum_fertig_x2": {
+      "id": "n_baum_fertig_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** **Status 2** heißt „einsatzbereit auf Wache“. Sie stehen aber noch an der Kreisstraße und sind **über Funk** einsatzbereit – also **Status 1**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_baum_fertig"
+        }
+      ]
+    },
+    "n_baum_fertig": {
+      "id": "n_baum_fertig",
+      "role": "gruppenführer_a",
+      "narrative": "An der Einsatzstelle drücken Sie **Status 4**. Der Baum wird mit der Motorsäge zerkleinert und von der Fahrbahn geräumt, die Straße ist wieder frei.\n\nDie ILS hat keine besondere Rückmeldung verlangt. Wie melden Sie, dass Sie wieder frei sind?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "⌨️ Status 1 drücken – einsatzbereit über Funk",
+          "nextNodeId": "n_auftrag2"
+        },
+        {
+          "id": "opt1",
+          "label": "📞 Leitstelle anrufen und ausführlich berichten, wie der Baum beseitigt wurde",
+          "nextNodeId": "n_baum_fertig_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⌨️ Status 2 drücken",
+          "nextNodeId": "n_baum_fertig_x2"
+        }
+      ]
+    },
+    "n_auftrag2": {
+      "id": "n_auftrag2",
+      "role": "gruppenführer_a",
+      "narrative": "Kaum ist Status 1 gesendet, kommt der nächste Auftrag:\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – nächster Einsatz: **Keller unter Wasser**, Neuhaus, **Lindenweg 7**. Wasser etwa 30 Zentimeter hoch, Bewohner wohlauf, Heizung im Keller – kommen.“\n\nQuittieren und wiederholen Sie.",
+      "actions": [
+        {
+          "id": "radio_auftrag2",
+          "label": "📞 Zweiten Auftrag quittieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "verstanden",
+              "Keller",
+              "Lindenweg 7",
+              "Heizung",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – verstanden: Keller unter Wasser, Lindenweg 7, Heizung im Keller – kommen.",
+            "briefing": "„hier“ + eigener Rufname . „verstanden“ . Einsatzart (Keller unter Wasser) . Ort (Lindenweg 7) . wichtiger Hinweis (Heizung im Keller) . „kommen“",
+            "onSuccess": "n_unterwegs",
+            "onFailure": "n_auftrag2_fail",
+            "feedbackSuccess": "✅ Zweiter Auftrag quittiert – mit dem Hinweis auf die Heizung.",
+            "feedbackFailure": "❌ Quittieren Sie mit „verstanden“: Keller unter Wasser, Lindenweg 7, Heizung im Keller."
+          }
+        }
+      ]
+    },
+    "n_auftrag2_fail": {
+      "id": "n_auftrag2_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Wiederholen Sie neben Einsatzart und Ort auch **Hinweise auf Gefahren** – hier die Heizung (Strom, ggf. Öl oder Gas im Keller). Einen überfluteten Keller erst betreten, wenn die Gefahr durch Strom geklärt ist.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: Keller unter Wasser, Lindenweg 7, Heizung im Keller – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_auftrag2"
+        }
+      ]
+    },
+    "n_unterwegs_x1": {
+      "id": "n_unterwegs_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** **Gefahr für Personen geht vor Sachschaden.** Ein voller Keller kann ein paar Minuten warten, herabfallende Ziegel über wartenden Kindern nicht. Sie greifen ein – und informieren die ILS, damit sie den Keller ggf. neu disponieren kann.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_unterwegs"
+        }
+      ]
+    },
+    "n_unterwegs_x2": {
+      "id": "n_unterwegs_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Ohne Meldung glaubt die ILS, Sie seien auf dem Weg zum Lindenweg. Sie weiß nichts von der neuen Gefahrenstelle und kann weder eine Drehleiter schicken noch den Keller umplanen. Eine **kurze** Meldung ist hier **nötig**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_unterwegs"
+        }
+      ]
+    },
+    "n_unterwegs": {
+      "id": "n_unterwegs",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Verstanden – Ende.“\n\nSie drücken **Status 3** und fahren los. Auf der Hauptstraße sehen Sie: Vom Dach des Hauses **Hauptstraße 3** reißt der Sturm **Dachziegel** ab. Sie fallen auf den Gehweg – direkt an der **Bushaltestelle**, an der mehrere Schulkinder warten.\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🛑 Anhalten, Personen aus dem Gefahrenbereich holen, Gehweg absperren und mit **Status 5** die ILS informieren",
+          "nextNodeId": "n_meldung"
+        },
+        {
+          "id": "opt1",
+          "label": "🚒 Weiterfahren – Ihr Auftrag ist der Keller im Lindenweg",
+          "nextNodeId": "n_unterwegs_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔇 Eingreifen, aber die ILS nicht informieren – die hat genug zu tun",
+          "nextNodeId": "n_unterwegs_x2"
+        }
+      ]
+    },
+    "n_meldung": {
+      "id": "n_meldung",
+      "role": "gruppenführer_a",
+      "narrative": "Ihre Gruppe hat die Kinder in Sicherheit gebracht und sperrt den Gehweg großräumig ab. Ziegel fallen weiter – zum Sichern des Daches brauchen Sie eine **Drehleiter**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Sprechwunsch – kommen.“\n\nMelden Sie kurz nach Schema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung** – und dass der Keller warten muss.",
+      "actions": [
+        {
+          "id": "radio_meldung",
+          "label": "📞 Neue Gefahrenstelle melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Hauptstraße 3",
+              "Dachziegel",
+              "Bushaltestelle",
+              "abgesperrt",
+              "Drehleiter",
+              "Lindenweg",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – auf Anfahrt Lindenweg angehalten: Hauptstraße 3, Sturm reißt Dachziegel ab, Gefahr für Personen an der Bushaltestelle. Personen in Sicherheit, Gehweg abgesperrt. Nachforderung: Drehleiter zum Sichern des Daches. Lindenweg 7 übernehmen wir anschließend – kommen.",
+            "briefing": "„hier“ + Rufname . WO: Hauptstraße 3 . WAS: Dachziegel fallen . MENSCHENLEBEN: Gefahr für Personen an der Bushaltestelle, jetzt in Sicherheit . MASSNAHMEN: Gehweg abgesperrt . NACHFORDERUNG: Drehleiter . Hinweis: Lindenweg 7 anschließend . „kommen“",
+            "onSuccess": "n_disziplin",
+            "onFailure": "n_meldung_fail",
+            "feedbackSuccess": "✅ Kurze, vollständige Meldung – die ILS kann neu disponieren.",
+            "feedbackFailure": "❌ Melden Sie: Hauptstraße 3, Dachziegel, Gefahr an der Bushaltestelle, abgesperrt, Drehleiter, Lindenweg 7 später."
+          }
+        }
+      ]
+    },
+    "n_meldung_fail": {
+      "id": "n_meldung_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Auch bei voller Sprechgruppe gehört eine **neue Gefahr für Personen** gemeldet – kurz und nach Schema. Der Hinweis auf den wartenden Keller hilft der ILS beim Priorisieren.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – auf Anfahrt Lindenweg angehalten: Hauptstraße 3, Sturm reißt Dachziegel ab, Gefahr für Personen an der Bushaltestelle. Personen in Sicherheit, Gehweg abgesperrt. Nachforderung: Drehleiter zum Sichern des Daches. Lindenweg 7 übernehmen wir anschließend – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_meldung"
+        }
+      ]
+    },
+    "n_disziplin_x1": {
+      "id": "n_disziplin_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Wenn das jedes Fahrzeug macht, ist die Sprechgruppe dicht – und ein Notfall kommt nicht durch. Die ILS hat **ausdrücklich** um Funkdisziplin gebeten. Organisatorisches gehört nicht in die Sprechgruppe der ILS.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_disziplin"
+        }
+      ]
+    },
+    "n_disziplin_x2": {
+      "id": "n_disziplin_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Der **priorisierte Sprechwunsch (Status 0)** ist für Notfälle und Gefahr im Verzug – nicht für Fragen. Die Verwendung ist regional geregelt; Missbrauch blockiert die echten Notfälle.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_disziplin"
+        }
+      ]
+    },
+    "n_disziplin": {
+      "id": "n_disziplin",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden. Einsatz Hauptstraße 3 ist angelegt, Drehleiter **Florian Neuhaus 33/1** kommt. Lindenweg 7 bleibt bei Ihnen – Ende.“\n\nKurz darauf eine Durchsage: **„Leitstelle an alle: Sprechgruppe überlastet. Nur noch dringende Gespräche, Einsatzende mit Status 1 – Ende.“**\n\nDie Drehleiter sichert das Dach, Sie fahren zum Lindenweg und pumpen den Keller aus. Ein Kamerad schlägt vor, die ILS zu fragen, **wie viele Einsätze im Ort noch offen** sind und ob es **Verpflegung** gibt.\n\nWie entscheiden Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🤫 Nicht fragen. Sie melden sich nur, wenn Sie etwas Dringendes haben oder gerufen werden; Verpflegung klärt die örtliche Führung",
+          "nextNodeId": "n_abgearbeitet"
+        },
+        {
+          "id": "opt1",
+          "label": "📞 Kurz nachfragen – dauert ja nur ein paar Sekunden",
+          "nextNodeId": "n_disziplin_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⌨️ Status 0 drücken, dann werden Sie schneller drangenommen",
+          "nextNodeId": "n_disziplin_x2"
+        }
+      ]
+    },
+    "n_abgearbeitet": {
+      "id": "n_abgearbeitet",
+      "role": "gruppenführer_a",
+      "narrative": "Der Keller ist ausgepumpt, die Bewohner kümmern sich um den Rest. Bevor Sie Status 1 drücken, ruft Sie die ILS:\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Frage Stand Lindenweg 7 – kommen.“\n\nAntworten Sie **so kurz wie möglich**.",
+      "actions": [
+        {
+          "id": "radio_abgearbeitet",
+          "label": "📞 Kurz zurückmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Lindenweg 7",
+              "abgearbeitet",
+              "einsatzbereit",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Lindenweg 7 Einsatzstelle abgearbeitet, wieder einsatzbereit – kommen.",
+            "briefing": "„hier“ + Rufname . Ort (Lindenweg 7) . „Einsatzstelle abgearbeitet“ . „wieder einsatzbereit“ . „kommen“ – danach Status 1 drücken",
+            "onSuccess": "n_end",
+            "onFailure": "n_abgearbeitet_fail",
+            "feedbackSuccess": "✅ Kurz und eindeutig: abgearbeitet und einsatzbereit.",
+            "feedbackFailure": "❌ Melden Sie in einem Satz: Lindenweg 7 abgearbeitet, wieder einsatzbereit."
+          }
+        }
+      ]
+    },
+    "n_abgearbeitet_fail": {
+      "id": "n_abgearbeitet_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Mehr braucht die ILS in dieser Lage nicht: **Ort – abgearbeitet – einsatzbereit**. Details (Wasserstand, Dauer) gehören in den Einsatzbericht, nicht in die überlastete Sprechgruppe.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lindenweg 7 Einsatzstelle abgearbeitet, wieder einsatzbereit – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_abgearbeitet"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Verstanden – Ende.“\n\nSie drücken **Status 1** – und warten auf den nächsten Auftrag.\n\nSie haben die Einsatzserie diszipliniert abgearbeitet: Aufträge quittiert und wiederholt, Status 3/4/1 gedrückt statt gesprochen, die Gefahr für Personen vorgezogen und gemeldet, unnötige Gespräche vermieden.\n\n> **Merke:** Bei Unwetter gilt: **Personen vor Sachwerten, Status statt Sprechfunk, so kurz wie möglich.** Wie Ihre ILS Einsatzserien abwickelt, legt sie selbst fest.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_auftrag1"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

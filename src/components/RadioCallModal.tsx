@@ -32,15 +32,6 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   const isTraining = mode === 'training';
   const [phase, setPhase] = useState<Phase>(callSplit ? 'call' : 'message');
 
-  const normalizeName = (s: string) => s.toLowerCase().replace(/[^a-zäöüß0-9]+/g, ' ').trim();
-  // Anruf: Gegenstelle + eigener Name + „kommen“. Nachricht: ohne den Namen der Gegenstelle.
-  const activeExpected = !callSplit
-    ? expectedPhrases
-    : phase === 'call'
-      ? [callSplit.callee, callSplit.caller, 'kommen']
-      : expectedPhrases.filter(p =>
-          !(normalizeName(callSplit.callee).startsWith(normalizeName(p)) &&
-            !normalizeName(callSplit.caller).includes(normalizeName(p))));
   const activeHint = !callSplit ? hint : phase === 'message' ? callSplit.message : callSplit.call;
   const [status, setStatus] = useState<Status>('init');
   const [transcript, setTranscript] = useState('');
@@ -205,7 +196,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     value
       .toLowerCase()
       .replace(/\b(eins|eine|ein)\b/g, '1')
-      .replace(/\bzwei\b/g, '2')
+      .replace(/\b(zwei|zwo)\b/g, '2') // „zwo“ = Funk-Aussprache
       .replace(/\bdrei\b/g, '3')
       .replace(/\bvier\b/g, '4')
       .replace(/\b(fuenf|fünf)\b/g, '5')
@@ -229,6 +220,14 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     if (expectedWords.length <= 1) return spoken.split(' ').includes(expected);
     return expectedWords.every(word => spoken.split(' ').includes(word));
   };
+
+  // Anruf: Gegenstelle + eigener Name + „kommen“. Nachricht: nur Begriffe, die im Spruch selbst vorkommen
+  // (die Rufnamen wurden schon beim Anruf genannt).
+  const activeExpected = !callSplit
+    ? expectedPhrases
+    : phase === 'call'
+      ? [callSplit.callee, callSplit.caller, 'kommen']
+      : expectedPhrases.filter(p => phraseMatches(callSplit.message, p));
 
   const isAcceptedTransmission = (spokenText: string): boolean => {
     const relevantPhrases = activeExpected.filter(phrase => normalizeSpeech(phrase).length > 0);

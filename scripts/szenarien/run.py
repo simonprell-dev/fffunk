@@ -6,13 +6,13 @@ gleichen Logik wie RadioCallModal.tsx erfuellt."""
 import json, os, re, sys, unicodedata
 
 sys.path.insert(0, os.path.dirname(__file__))
-import gen_funk, gen_trupp, gen_neu
+import gen_funk, gen_trupp, gen_neu, gen_erw_a, gen_erw_b, gen_erw_c
 from gen_lib import REPO
 
 
 def norm(v):
     v = v.lower()
-    for pat, r in [(r'\b(eins|eine|ein)\b', '1'), (r'\bzwei\b', '2'), (r'\bdrei\b', '3'),
+    for pat, r in [(r'\b(eins|eine|ein)\b', '1'), (r'\b(zwei|zwo)\b', '2'), (r'\bdrei\b', '3'),
                    (r'\bvier\b', '4'), (r'\b(fuenf|fünf)\b', '5'), (r'\bsechs\b', '6'),
                    (r'\bsieben\b', '7'), (r'\bacht\b', '8'), (r'\bneun\b', '9'), (r'\bnull\b', '0')]:
         v = re.sub(pat, r, v)
@@ -37,7 +37,7 @@ with open(idx_path, encoding="utf-8") as f:
     idx = json.load(f)
 builtin = {k: [] for k in ["brand", "thl", "verkehr", "wasser", "funk", "sonstige"]}
 problems = 0
-for mod in (gen_funk, gen_trupp, gen_neu):
+for mod in (gen_funk, gen_trupp, gen_neu, gen_erw_a, gen_erw_b, gen_erw_c):
     for folder, s in mod.OUT:
         builtin[folder].append(s.save(folder))
         for n in s.d["nodes"].values():

@@ -21,7 +21,7 @@ export function splitLeadingResponse(narrative: string): { speaker: string; text
 // „Gruppenführer von Angriffstrupp – …“ → „Gruppenführer“
 export function calleeFromHint(hint: string): string | null {
   const m = hint.match(/^\s*([^–\-:,]+?)\s+von\s+[^–\-:,]+?\s*[–-]/);
-  if (!m || /^hier\b/i.test(m[1])) return null;
+  if (!m || /^(hier|an alle)\b/i.test(m[1])) return null;
   return m[1].trim();
 }
 
@@ -32,7 +32,7 @@ export interface CallSplit {
   call: string;
   /** Gegenstelle meldet sich: „Hier Gruppenführer – kommen.“ */
   answer: string;
-  /** Danach die Nachricht: „Hier Angriffstrupp – Person gefunden … – kommen.“ */
+  /** Danach die Nachricht (Spruch): „Person gefunden … – kommen.“ */
   message: string;
 }
 
@@ -43,7 +43,7 @@ export interface CallSplit {
  */
 export function splitCall(hint: string, nextNarrative = ''): CallSplit | null {
   const m = hint.match(/^\s*([^–\-:,]+?)\s+von\s+([^–\-:,]+?)\s*[–-]\s*([\s\S]+)$/);
-  if (!m || /^hier\b/i.test(m[1])) return null;
+  if (!m || /^(hier|an alle)\b/i.test(m[1])) return null; // Antwort bzw. Sammelruf
   const rest = m[3].trim();
   if (/^kommen\W*$/i.test(rest)) return null;
   if (/keine antwort/i.test(nextNarrative.slice(0, 120))) return null;
@@ -54,7 +54,7 @@ export function splitCall(hint: string, nextNarrative = ''): CallSplit | null {
     caller,
     call: `${callee} von ${caller} – kommen.`,
     answer: `Hier ${callee} – kommen.`,
-    message: `Hier ${caller} – ${rest}`,
+    message: rest.charAt(0).toUpperCase() + rest.slice(1),
   };
 }
 
@@ -78,8 +78,10 @@ function sameStation(a: string, b: string): boolean {
  */
 export function radioResponseFor(hint: string, nextNarrative: string, explicit?: string, currentNarrative = ''): RadioResponse | null {
   if (explicit !== undefined) {
+    // Sprecher aus „Hier Wasserentnahme – …“ ableiten, sonst aus dem Anruf
+    const named = explicit.match(/^\s*hier\s+([^–\-:,]+?)\s*[–\-:,]/i)?.[1];
     return explicit.trim()
-      ? { speaker: calleeFromHint(hint) ?? 'Gegenstelle', text: explicit.trim(), fromNarrative: false }
+      ? { speaker: named ?? calleeFromHint(hint) ?? 'Gegenstelle', text: explicit.trim(), fromNarrative: false }
       : null;
   }
   // Szenario lässt die Gegenstelle bewusst schweigen (z. B. Atemschutznotfall).

@@ -1,0 +1,332 @@
+{
+  "id": "bma_taeuschungsalarm",
+  "title": "Brandmeldeanlage: Erkundung und Täuschungsalarm",
+  "description": "Einsteiger: Einen Alarm der Brandmeldeanlage richtig abarbeiten – Feuerwehr-Anlaufstelle mit FAT/FBF und Schlüsseldepot, Erkundung mit Laufkarte und Atemschutzbereitschaft, Ursache quittieren, Anlage geordnet an den Betreiber übergeben und den Täuschungsalarm an die ILS melden. 3 Funk-Schritte.",
+  "startingNodeId": "n_anfahrt",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_anfahrt_x1": {
+      "id": "n_anfahrt_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Sie wissen noch nicht, **welcher Melder** ausgelöst hat. Das zeigt Ihnen das **FAT an der Feuerwehr-Anlaufstelle** – dort liegen auch Schlüssel und Laufkarten. Ohne diese Informationen suchen Sie im Gebäude herum.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_anfahrt"
+        }
+      ]
+    },
+    "n_anfahrt_x2": {
+      "id": "n_anfahrt_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Für genau diesen Fall gibt es das **Feuerwehr-Schlüsseldepot**: Die Feuerwehr kommt ohne den Betreiber ins Gebäude. Warten kostet Zeit, die bei einem echten Brand fehlt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_anfahrt"
+        }
+      ]
+    },
+    "n_anfahrt": {
+      "id": "n_anfahrt",
+      "role": "gruppenführer_a",
+      "narrative": "Alarm durch die ILS: **Brandmeldeanlage** – Druckerei, Industriestraße 7, Gewerbegebiet Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**, **Status 3** ist gedrückt.\n\n> Eine **Brandmeldeanlage (BMA)** meldet über eine Übertragungseinrichtung automatisch an die ILS. Jeder BMA-Alarm wird behandelt wie ein Brand – bis die Erkundung etwas anderes zeigt.\n\nWohin fahren Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🚨 Zur **Feuerwehr-Anlaufstelle** (gekennzeichnet durch die **Blitzleuchte**) – dort sind Feuerwehr-Schlüsseldepot (FSD), Feuerwehr-Anzeigetableau (FAT) und Feuerwehr-Bedienfeld (FBF). Status 4 drücken.",
+          "nextNodeId": "n_fat"
+        },
+        {
+          "id": "opt1",
+          "label": "🏭 Zur Hallenseite, auf der es vermutlich brennt",
+          "nextNodeId": "n_anfahrt_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🅿️ Am Werkstor warten, bis der Betreiber kommt",
+          "nextNodeId": "n_anfahrt_x2"
+        }
+      ]
+    },
+    "n_fat_x1": {
+      "id": "n_fat_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** **Nie vor der Erkundung zurückstellen!** Damit löschen Sie die Anzeige, welcher Melder ausgelöst hat – und bei einem echten Brand verlieren Sie Zeit und Informationen. Zurückgestellt wird erst, wenn die Ursache geklärt ist.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_fat"
+        }
+      ]
+    },
+    "n_fat_x2": {
+      "id": "n_fat_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Die **Laufkarte** zeigt den Weg von der Anlaufstelle zum ausgelösten Melder und wo genau er sitzt – auch versteckte Melder in Zwischendecken oder Doppelböden. Ohne Laufkarte sucht der Trupp im Zweifel lange.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_fat"
+        }
+      ]
+    },
+    "n_fat": {
+      "id": "n_fat",
+      "role": "gruppenführer_a",
+      "narrative": "An der Anlaufstelle blinkt die Blitzleuchte, das FSD ist entriegelt. Das **FAT** zeigt: **Meldergruppe 14, Melder 3 – Papierlager, 1. Obergeschoss**.\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🗝️ Objektschlüssel aus dem FSD und die **Laufkarte** der Meldergruppe 14 entnehmen, Anlage **nicht** zurückstellen, Erkundung zum Melder einleiten",
+          "nextNodeId": "n_trupp"
+        },
+        {
+          "id": "opt1",
+          "label": "🔄 Am FBF sofort „BMZ rückstellen“ drücken – ist meistens sowieso nichts",
+          "nextNodeId": "n_fat_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🗺️ Ohne Laufkarte los – das Gebäude ist ja übersichtlich",
+          "nextNodeId": "n_fat_x2"
+        }
+      ]
+    },
+    "n_trupp_x1": {
+      "id": "n_trupp_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Erkundet wird **nie allein**, sondern als **Trupp**. Und weil es tatsächlich brennen kann, geht der Trupp in **Atemschutzbereitschaft** – sonst muss er bei Rauch umkehren und es geht wertvolle Zeit verloren.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_trupp"
+        }
+      ]
+    },
+    "n_trupp_x2": {
+      "id": "n_trupp_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Die Erkundung ist **Aufgabe der Feuerwehr**. Ortskundige Mitarbeiter sind als Auskunft wertvoll, aber Sie schicken sie nicht allein in einen möglicherweise verrauchten Bereich.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_trupp"
+        }
+      ]
+    },
+    "n_trupp": {
+      "id": "n_trupp",
+      "role": "gruppenführer_a",
+      "narrative": "Sie haben Schlüssel und Laufkarte. Wen schicken Sie wie zur Erkundung?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🧯 Den **Angriffstrupp** mit angelegtem Atemschutzgerät (Maske griffbereit), Feuerlöscher, Wärmebildkamera, Handfunkgerät, Laufkarte und Schlüssel – der Wassertrupp rüstet sich als Sicherheitstrupp aus, der Maschinist bereitet die Wasserversorgung vor",
+          "nextNodeId": "n_befehl"
+        },
+        {
+          "id": "opt1",
+          "label": "🚶 Einen einzelnen Feuerwehrmann ohne Atemschutz – geht schneller",
+          "nextNodeId": "n_trupp_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🧑‍🔧 Den Mitarbeiter der Druckerei allein nachsehen lassen",
+          "nextNodeId": "n_trupp_x2"
+        }
+      ]
+    },
+    "n_befehl": {
+      "id": "n_befehl",
+      "role": "gruppenführer_a",
+      "narrative": "Geben Sie dem Angriffstrupp über Funk den Befehl zur Erkundung. Laut Laufkarte führt der Weg über das **Treppenhaus Ost**.",
+      "actions": [
+        {
+          "id": "radio_befehl",
+          "label": "📞 Befehl zur Erkundung",
+          "radioCall": {
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "Gruppenführer",
+              "Erkundung",
+              "Laufkarte",
+              "Meldergruppe",
+              "Obergeschoss",
+              "Treppenhaus",
+              "kommen"
+            ],
+            "hint": "Angriffstrupp von Gruppenführer – Angriffstrupp zur Erkundung mit Laufkarte Meldergruppe 14, Atemschutz angelegt, mit Feuerlöscher und Wärmebildkamera zum Melder im Papierlager, erstes Obergeschoss, über das Treppenhaus Ost – kommen.",
+            "briefing": "Anruf: Angriffstrupp von Gruppenführer . Einheit (Angriffstrupp) . Auftrag (Erkundung, Laufkarte Meldergruppe 14) . Mittel (Atemschutz angelegt, Feuerlöscher, Wärmebildkamera) . Ziel (Melder im Papierlager, 1. OG) . Weg (Treppenhaus Ost) . „kommen“",
+            "onSuccess": "n_ursache",
+            "onFailure": "n_befehl_fail",
+            "feedbackSuccess": "✅ Erkundungsbefehl vollständig – der Trupp weiß, wohin und womit.",
+            "feedbackFailure": "❌ Befehlen Sie: Angriffstrupp, Erkundung mit Laufkarte, Atemschutz, Ziel Papierlager 1. Obergeschoss, Weg Treppenhaus Ost."
+          }
+        }
+      ]
+    },
+    "n_befehl_fail": {
+      "id": "n_befehl_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Auch der Erkundungsbefehl folgt FwDV 3: **Einheit – Auftrag – Mittel – Ziel – Weg**. Ziel und Weg stehen auf der **Laufkarte**.\n\nBeispiel: *„Angriffstrupp von Gruppenführer – Angriffstrupp zur Erkundung mit Laufkarte Meldergruppe 14, Atemschutz angelegt, mit Feuerlöscher und Wärmebildkamera zum Melder im Papierlager, erstes Obergeschoss, über das Treppenhaus Ost – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_befehl"
+        }
+      ]
+    },
+    "n_ursache": {
+      "id": "n_ursache",
+      "role": "gruppenführer_a",
+      "narrative": "**Angriffstrupp:** „Hier Angriffstrupp – verstanden – Ende.“\n\nWenige Minuten später:\n\n**Angriffstrupp:** „Gruppenführer von Angriffstrupp – am Melder im Papierlager: kein Feuer, kein Rauch, Wärmebildkamera ohne Befund. Im Raum liegt viel Staub, Handwerker haben mit einem Trennschleifer einen Wanddurchbruch gemacht – kommen.“\n\nQuittieren Sie und geben Sie den nächsten Auftrag: **angrenzende Räume kontrollieren**, dann mit dem Vorarbeiter zur Anlaufstelle.",
+      "actions": [
+        {
+          "id": "radio_ursache",
+          "label": "📞 Ursache quittieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "verstanden",
+              "kein Feuer",
+              "Staub",
+              "angrenzende Räume",
+              "kontrollieren",
+              "kommen"
+            ],
+            "hint": "Hier Gruppenführer – verstanden: kein Feuer, Auslösung durch Staub von Bauarbeiten. Angriffstrupp: angrenzende Räume kontrollieren, dann mit dem Vorarbeiter zur Anlaufstelle – kommen.",
+            "briefing": "„hier Gruppenführer“ . „verstanden“ + Kern wiederholen (kein Feuer, Staub von Bauarbeiten) . neuer Auftrag: angrenzende Räume kontrollieren, dann mit dem Vorarbeiter zur Anlaufstelle . „kommen“",
+            "onSuccess": "n_rueck",
+            "onFailure": "n_ursache_fail",
+            "feedbackSuccess": "✅ Ursache quittiert und Nachkontrolle befohlen.",
+            "feedbackFailure": "❌ Quittieren Sie „kein Feuer, Staub“ und befehlen Sie die Kontrolle der angrenzenden Räume."
+          }
+        }
+      ]
+    },
+    "n_ursache_fail": {
+      "id": "n_ursache_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Eine plausible Ursache ist gut – aber **kontrollieren Sie auch die Umgebung**: Ein Trennschleifer erzeugt Funken, ein Glimmbrand im Nachbarraum oder in einer Zwischendecke ist möglich.\n\nBeispiel: *„Hier Gruppenführer – verstanden: kein Feuer, Auslösung durch Staub von Bauarbeiten. Angriffstrupp: angrenzende Räume kontrollieren, dann mit dem Vorarbeiter zur Anlaufstelle – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_ursache"
+        }
+      ]
+    },
+    "n_rueck_x1": {
+      "id": "n_rueck_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Eingriffe in die Anlage oder Abschaltungen sind **Sache des Betreibers** (mit seiner Fachfirma) und nur mit **Ersatzmaßnahmen**, z. B. einer Brandwache. Die Feuerwehr macht einen Bereich nicht eigenmächtig „blind“.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_rueck"
+        }
+      ]
+    },
+    "n_rueck_x2": {
+      "id": "n_rueck_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Solange die Anlage nicht zurückgestellt ist, kann in der Regel **kein neuer Alarm** an die ILS übertragen werden – das Objekt wäre ungeschützt. Außerdem gehört der Schlüssel zurück ins FSD und die Einsatzstelle wird **ausdrücklich übergeben**. Wer genau zurückstellt, regelt Ihre örtliche Vorgabe.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_rueck"
+        }
+      ]
+    },
+    "n_rueck": {
+      "id": "n_rueck",
+      "role": "gruppenführer_a",
+      "narrative": "Der Angriffstrupp meldet: angrenzende Räume ohne Befund. Der **Betreiber** (Haustechniker der Druckerei) ist eingetroffen.\n\nWie schließen Sie ab?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📋 Ursache mit dem Betreiber besprechen, Anlage nach örtlicher Regelung zurückstellen und prüfen, dass sie in Ruhe bleibt, Schlüssel zurück ins FSD und verschließen, Einsatzstelle an den Betreiber übergeben – Staubarbeiten künftig nur nach Absprache mit ihm",
+          "nextNodeId": "n_ils"
+        },
+        {
+          "id": "opt1",
+          "label": "🧻 Den Melder mit einer Tüte abkleben, damit er nicht noch einmal auslöst",
+          "nextNodeId": "n_rueck_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚒 Einfach abrücken – der Betreiber stellt die Anlage schon zurück",
+          "nextNodeId": "n_rueck_x2"
+        }
+      ]
+    },
+    "n_ils": {
+      "id": "n_ils",
+      "role": "gruppenführer_a",
+      "narrative": "> **Täuschungsalarm oder Fehlalarm?** „Fehlalarm“ wird oft als **Oberbegriff** für jeden Alarm ohne Schadenfeuer benutzt. Ein **Täuschungsalarm** liegt vor, wenn ein Melder auf eine **brandähnliche Kenngröße** reagiert hat – Staub, Wasserdampf, Abgase. Die Anlage hat also funktioniert, wurde aber „getäuscht“. Davon unterscheidet man z. B. einen **technischen Defekt** oder eine **böswillige Auslösung**. Welche Begriffe Ihre ILS in der Rückmeldung erwartet, regelt sie selbst.\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Rückmeldung** ab.",
+      "actions": [
+        {
+          "id": "radio_ils",
+          "label": "📞 Rückmeldung an die ILS",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Brandmeldeanlage",
+              "Täuschungsalarm",
+              "kein Feuer",
+              "Betreiber",
+              "übergeben",
+              "geräumt",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Rückmeldung Brandmeldeanlage Druckerei Industriestraße 7: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer. Anlage zurückgestellt und an den Betreiber übergeben. Einsatzstelle wird geräumt – kommen.",
+            "briefing": "Eigener Rufname + „Rückmeldung“ . Objekt (BMA Druckerei, Industriestraße 7) . Ergebnis: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer . Anlage zurückgestellt und an den Betreiber übergeben . „Einsatzstelle wird geräumt“ . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_ils_fail",
+            "feedbackSuccess": "✅ Rückmeldung klar: Ursache, kein Feuer, Übergabe, Einsatzende.",
+            "feedbackFailure": "❌ Melden Sie: Täuschungsalarm mit Ursache, kein Feuer, Anlage an den Betreiber übergeben, Einsatzstelle wird geräumt."
+          }
+        }
+      ]
+    },
+    "n_ils_fail": {
+      "id": "n_ils_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Die ILS braucht: **Objekt**, **Ergebnis mit Ursache** (Täuschungsalarm durch Staub, kein Feuer), **Übergabe an den Betreiber** und dass Sie die **Einsatzstelle räumen**. Danach folgt auf der Rückfahrt **Status 1**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Rückmeldung Brandmeldeanlage Druckerei Industriestraße 7: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer. Anlage zurückgestellt und an den Betreiber übergeben. Einsatzstelle wird geräumt – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_ils"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden, Täuschungsalarm – Ende.“\n\nSie drücken **Status 1** und rücken ein. Feuerwehr-Anlaufstelle angefahren, Laufkarte genutzt, mit Atemschutzbereitschaft erkundet, erst nach Klärung zurückgestellt und geordnet übergeben.\n\n> **Merke:** Jeder BMA-Alarm ist ein Brand, bis die Erkundung das Gegenteil zeigt. **Erst erkunden – dann zurückstellen – dann übergeben.**\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anfahrt"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

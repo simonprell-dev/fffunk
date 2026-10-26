@@ -1,0 +1,362 @@
+{
+  "id": "buchstabieren_din5009",
+  "title": "Buchstabieren: Kennzeichen und Namen durchgeben",
+  "description": "Einsteiger: Nach einer Unfallflucht der ILS das Kennzeichen und eine Firmenaufschrift buchstabiert durchgeben, auf „wiederholen Sie alles nach …“ richtig reagieren und Zahlen einzeln sprechen. 5 Funk-Schritte.",
+  "startingNodeId": "n_start",
+  "playerRole": "gruppenführer_a",
+  "nodes": {
+    "n_start_x1": {
+      "id": "n_start_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Das internationale NATO-Alphabet ist im deutschen BOS-Funk **nicht üblich**. Verwendet wird das **deutsche Buchstabieralphabet** – entscheidend ist, dass Sender und Empfänger **dieselbe Tafel** benutzen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start_x2": {
+      "id": "n_start_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Einzelne Buchstaben klingen im Funk zum Verwechseln ähnlich (**D/T, B/P, E/D, M/N**). Deshalb wird mit einer **Buchstabiertafel** buchstabiert.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_start"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "gruppenführer_a",
+      "narrative": "Verkehrsunfall auf der Kreisstraße zwischen Neuhaus und Adelsdorf. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**. Ein Kastenwagen hat einen geparkten PKW gestreift, aus dem PKW läuft etwas Öl aus. **Niemand ist verletzt.** Der Verursacher ist **weitergefahren**.\n\nEin Zeuge hat sich notiert: weißer Kastenwagen, Aufschrift **„Bäckerei Pfab“**, Kennzeichen **ERH – DA 47**, Unfallzeit **14:32 Uhr**.\n\nDas wollen Sie der ILS durchgeben. Wie geben Sie die Buchstaben durch?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔤 Mit „ich buchstabiere“ ankündigen und jeden Buchstaben mit dem Wort der Buchstabiertafel sprechen: Emil – Richard – Heinrich …",
+          "nextNodeId": "n_lage"
+        },
+        {
+          "id": "opt1",
+          "label": "✈️ Mit dem NATO-Alphabet: Echo – Romeo – Hotel …",
+          "nextNodeId": "n_start_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🔡 Einfach die Buchstaben sprechen: „E – R – H – D – A“",
+          "nextNodeId": "n_start_x2"
+        }
+      ]
+    },
+    "n_lage": {
+      "id": "n_lage",
+      "role": "gruppenführer_a",
+      "narrative": "Die Einsatzstelle ist abgesichert, das Öl wird mit Bindemittel aufgenommen. Sie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie eine kurze **Lagemeldung** und fordern Sie die **Polizei** wegen der Unfallflucht nach. Kennzeichen und Fahrzeug folgen gleich.",
+      "actions": [
+        {
+          "id": "radio_lage",
+          "label": "📞 Lagemeldung mit Nachforderung Polizei",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Lagemeldung",
+              "Kreisstraße",
+              "keine Verletzten",
+              "geflüchtet",
+              "Polizei",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße zwischen Neuhaus und Adelsdorf, ein geparkter PKW angefahren, keine Verletzten, Verursacher geflüchtet. Einsatzstelle abgesichert, Öl wird abgebunden. Nachforderung: Polizei – kommen.",
+            "briefing": "„hier“ + Rufname . „Lagemeldung“ . WO: Kreisstraße Neuhaus – Adelsdorf . WAS: geparkter PKW angefahren, Verursacher geflüchtet . MENSCHENLEBEN: keine Verletzten . MASSNAHMEN: abgesichert, Öl wird abgebunden . NACHFORDERUNG: Polizei . „kommen“",
+            "onSuccess": "n_kennzeichen",
+            "onFailure": "n_lage_fail",
+            "feedbackSuccess": "✅ Lagemeldung vollständig – die Polizei wird verständigt.",
+            "feedbackFailure": "❌ Melden Sie Ort, was passiert ist, dass niemand verletzt ist, Ihre Maßnahmen und fordern Sie die Polizei nach."
+          }
+        }
+      ]
+    },
+    "n_lage_fail": {
+      "id": "n_lage_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Auch bei einem kleinen Einsatz gilt das Schema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**. Die Unfallflucht ist Sache der **Polizei** – sie wird über die ILS verständigt.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße zwischen Neuhaus und Adelsdorf, ein geparkter PKW angefahren, keine Verletzten, Verursacher geflüchtet. Einsatzstelle abgesichert, Öl wird abgebunden. Nachforderung: Polizei – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_kennzeichen": {
+      "id": "n_kennzeichen",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden, Polizei wird verständigt. Frage Kennzeichen des flüchtigen Fahrzeugs – kommen.“\n\nKennzeichen: **ERH – DA 47**. Kündigen Sie das Buchstabieren an und sprechen Sie die Zahlen **einzeln**.\n\n| E | R | H | D | A |\n|:--:|:--:|:--:|:--:|:--:|\n| Emil | Richard | Heinrich | Dora | Anton |",
+      "actions": [
+        {
+          "id": "radio_kennzeichen",
+          "label": "📞 Kennzeichen buchstabieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "ich buchstabiere",
+              "Emil",
+              "Richard",
+              "Heinrich",
+              "Dora",
+              "Anton",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Kennzeichen, ich buchstabiere: Emil Richard Heinrich – Dora Anton – vier sieben – kommen.",
+            "briefing": "„hier“ + Rufname . „Kennzeichen, ich buchstabiere“ . Ortskennung: Emil Richard Heinrich . kurze Pause . Buchstaben: Dora Anton . Zahlen einzeln: vier sieben . „kommen“",
+            "onSuccess": "n_rueckfrage",
+            "onFailure": "n_kennzeichen_fail",
+            "feedbackSuccess": "✅ Sauber buchstabiert, mit kurzer Pause zwischen den Kennzeichen-Teilen.",
+            "feedbackFailure": "❌ Kündigen Sie mit „ich buchstabiere“ an und sprechen Sie Emil Richard Heinrich – Dora Anton – vier sieben."
+          }
+        }
+      ]
+    },
+    "n_kennzeichen_fail": {
+      "id": "n_kennzeichen_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Mit **„ich buchstabiere“** weiß die Gegenstelle, dass jetzt Buchstabierwörter kommen. Eine **kurze Pause** zwischen Ortskennung, Buchstaben und Zahlen macht die Gliederung des Kennzeichens hörbar. Zahlen werden **einzeln** gesprochen: „vier sieben“, nicht „siebenundvierzig“.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Kennzeichen, ich buchstabiere: Emil Richard Heinrich – Dora Anton – vier sieben – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_kennzeichen"
+        }
+      ]
+    },
+    "n_rueckfrage_x1": {
+      "id": "n_rueckfrage_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Die ILS hat **gezielt** nach dem Teil **nach „Heinrich“** gefragt. Wiederholen Sie genau diesen Teil – alles andere blockiert den Kanal unnötig.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_rueckfrage"
+        }
+      ]
+    },
+    "n_rueckfrage_x2": {
+      "id": "n_rueckfrage_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Was beim ersten Mal nicht ankam, kommt ohne Buchstabiertafel erst recht nicht an. Mit **„ich wiederhole“** ankündigen und **wieder buchstabieren**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_rueckfrage"
+        }
+      ]
+    },
+    "n_rueckfrage": {
+      "id": "n_rueckfrage",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – wiederholen Sie alles nach Heinrich – kommen.“\n\nDie ILS hat den Teil nach der Ortskennung nicht sicher verstanden. Wie antworten Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔁 Mit „ich wiederhole“ nur den angefragten Teil noch einmal buchstabieren: Dora Anton – vier sieben",
+          "nextNodeId": "n_wiederholen"
+        },
+        {
+          "id": "opt1",
+          "label": "📢 Das komplette Kennzeichen und die Lagemeldung noch einmal von vorn",
+          "nextNodeId": "n_rueckfrage_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "⚡ Schnell „D – A – 47“ hinterherschieben",
+          "nextNodeId": "n_rueckfrage_x2"
+        }
+      ]
+    },
+    "n_wiederholen": {
+      "id": "n_wiederholen",
+      "role": "gruppenführer_a",
+      "narrative": "Wiederholen Sie den angefragten Teil des Kennzeichens.",
+      "actions": [
+        {
+          "id": "radio_wiederholen",
+          "label": "📞 Teil wiederholen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "ich wiederhole",
+              "Dora",
+              "Anton",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – ich wiederhole: Dora Anton – vier sieben – kommen.",
+            "briefing": "„hier“ + Rufname . „ich wiederhole“ . nur den angefragten Teil: Dora Anton – vier sieben . „kommen“",
+            "onSuccess": "n_aufschrift",
+            "onFailure": "n_wiederholen_fail",
+            "feedbackSuccess": "✅ Genau der angefragte Teil – kurz und eindeutig.",
+            "feedbackFailure": "❌ Sagen Sie „ich wiederhole“ und buchstabieren Sie nur den Teil nach Heinrich: Dora Anton – vier sieben."
+          }
+        }
+      ]
+    },
+    "n_wiederholen_fail": {
+      "id": "n_wiederholen_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** **„Wiederholen Sie alles nach …“** fragt gezielt einen Teil ab. Die Antwort beginnt mit **„ich wiederhole“** und enthält genau diesen Teil.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – ich wiederhole: Dora Anton – vier sieben – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_wiederholen"
+        }
+      ]
+    },
+    "n_aufschrift": {
+      "id": "n_aufschrift",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden: Emil Richard Heinrich – Dora Anton – vier sieben. Frage Fahrzeugbeschreibung und Fluchtrichtung – kommen.“\n\nWeißer Kastenwagen mit Aufschrift **„Bäckerei Pfab“**, Fluchtrichtung **Adelsdorf**. Der Name ist ungewöhnlich – am Funk könnte „Pfaff“ oder „Pfab“ ankommen. Buchstabieren Sie ihn.\n\n| P | F | A | B |\n|:--:|:--:|:--:|:--:|\n| Paula | Friedrich | Anton | Berta |",
+      "actions": [
+        {
+          "id": "radio_aufschrift",
+          "label": "📞 Fahrzeug und Namen buchstabieren",
+          "radioCall": {
+            "expectedPhrases": [
+              "Kastenwagen",
+              "ich buchstabiere",
+              "Paula",
+              "Friedrich",
+              "Anton",
+              "Berta",
+              "Adelsdorf",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – weißer Kastenwagen, Aufschrift Bäckerei Pfab, ich buchstabiere: Paula Friedrich Anton Berta. Fluchtrichtung Adelsdorf – kommen.",
+            "briefing": "„hier“ + Rufname . Fahrzeug (weißer Kastenwagen) . Aufschrift „Bäckerei Pfab“ – „ich buchstabiere“: Paula Friedrich Anton Berta . Fluchtrichtung (Adelsdorf) . „kommen“",
+            "onSuccess": "n_zahlen",
+            "onFailure": "n_aufschrift_fail",
+            "feedbackSuccess": "✅ Fahrzeug, Name und Fluchtrichtung eindeutig durchgegeben.",
+            "feedbackFailure": "❌ Beschreiben Sie das Fahrzeug, buchstabieren Sie „Pfab“ (Paula Friedrich Anton Berta) und nennen Sie die Fluchtrichtung."
+          }
+        }
+      ]
+    },
+    "n_aufschrift_fail": {
+      "id": "n_aufschrift_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** **Eigennamen** werden buchstabiert, weil sie sich nicht aus dem Zusammenhang erraten lassen. Erst das Wort sprechen, dann **„ich buchstabiere“** und die Buchstabierwörter.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – weißer Kastenwagen, Aufschrift Bäckerei Pfab, ich buchstabiere: Paula Friedrich Anton Berta. Fluchtrichtung Adelsdorf – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_aufschrift"
+        }
+      ]
+    },
+    "n_zahlen_x1": {
+      "id": "n_zahlen_x1",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Zusammengesetzte Zahlen werden am Funk leicht verwechselt („zweiunddreißig“ / „dreiundzwanzig“). Im BOS-Funk werden Zahlen **einzeln** gesprochen: „eins – vier – drei – zwo“.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_zahlen"
+        }
+      ]
+    },
+    "n_zahlen_x2": {
+      "id": "n_zahlen_x2",
+      "role": "gruppenführer_a",
+      "narrative": "**Nicht richtig.** Ungefähre Zeitangaben helfen der Polizei nicht. Geben Sie die notierte Zeit **genau** und **ziffernweise** durch.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_zahlen"
+        }
+      ]
+    },
+    "n_zahlen": {
+      "id": "n_zahlen",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden: Bäckerei Paula Friedrich Anton Berta, weißer Kastenwagen, Richtung Adelsdorf. Frage Unfallzeit – kommen.“\n\nDer Zeuge nennt **14:32 Uhr**. Wie sprechen Sie die Uhrzeit?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🔢 Ziffern einzeln: „eins – vier – drei – zwo“",
+          "nextNodeId": "n_zeit"
+        },
+        {
+          "id": "opt1",
+          "label": "🕑 „vierzehn Uhr zweiunddreißig“",
+          "nextNodeId": "n_zahlen_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🕑 „halb drei, kurz danach“",
+          "nextNodeId": "n_zahlen_x2"
+        }
+      ]
+    },
+    "n_zeit": {
+      "id": "n_zeit",
+      "role": "gruppenführer_a",
+      "narrative": "In der Ausbildung ist **„zwo“** statt „zwei“ üblich – so lässt es sich bei schlechter Verbindung nicht mit „drei“ verwechseln. Geben Sie die Unfallzeit durch. Die Personalien des Zeugen nimmt die Polizei vor Ort auf – **nicht über Funk**.",
+      "actions": [
+        {
+          "id": "radio_zeit",
+          "label": "📞 Unfallzeit durchgeben",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus",
+              "Unfallzeit",
+              "Zeuge",
+              "Polizei",
+              "kommen"
+            ],
+            "hint": "Hier Florian Neuhaus 44/1 – Unfallzeit laut Zeuge eins vier drei zwo. Zeuge wartet an der Einsatzstelle auf die Polizei – kommen.",
+            "briefing": "„hier“ + Rufname . Unfallzeit ziffernweise (eins – vier – drei – zwo) . Hinweis: Zeuge wartet auf die Polizei (keine Personalien über Funk) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_zeit_fail",
+            "feedbackSuccess": "✅ Uhrzeit ziffernweise, Zeuge an die Polizei verwiesen – ohne Namen im Funk.",
+            "feedbackFailure": "❌ Sprechen Sie die Unfallzeit Ziffer für Ziffer und sagen Sie, dass der Zeuge auf die Polizei wartet."
+          }
+        }
+      ]
+    },
+    "n_zeit_fail": {
+      "id": "n_zeit_fail",
+      "role": "gruppenführer_a",
+      "narrative": "**Feedback:** Zahlen und Uhrzeiten werden **Ziffer für Ziffer** gesprochen. Personalien von Beteiligten oder Zeugen gehören **nicht** in den Funk – die Polizei nimmt sie vor Ort auf.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Unfallzeit laut Zeuge eins vier drei zwo. Zeuge wartet an der Einsatzstelle auf die Polizei – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_zeit"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "gruppenführer_a",
+      "narrative": "**Leitstelle:** „Hier Leitstelle – verstanden, Unfallzeit eins vier drei zwo, Polizei ist informiert – Ende.“\n\nKennzeichen und Name sauber buchstabiert, gezielte Rückfrage mit „ich wiederhole“ beantwortet, Zahlen einzeln gesprochen.\n\n> **Merke:** Im BOS-Funk ist die Buchstabiertafel mit **Namen** verbreitet (Anton, Berta, Cäsar, Dora, Emil … – für S teils **Samuel**, teils **Siegfried**). Die **DIN 5009** sieht seit **2022** eine neue Tafel mit **Städtenamen** vor (Augsburg, Berlin, Chemnitz …). Entscheidend ist, dass **alle Beteiligten dieselbe Tafel** benutzen – es gilt die Regelung Ihrer ILS bzw. Ihrer Ausbildung.\n\n**Übung abgeschlossen! 🎉**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_start"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}
