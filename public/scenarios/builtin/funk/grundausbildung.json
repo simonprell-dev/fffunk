@@ -1,0 +1,930 @@
+{
+  "id": "grundausbildung",
+  "title": "Grundausbildung",
+  "description": "Für Neulinge ohne Vorwissen: In 6 kurzen Kapiteln lernst du die Grundregeln des Sprechfunks – von „Wer ruft wen?“ bis Mayday.",
+  "startingNodeId": "r_start",
+  "playerRole": "truppmann",
+  "chapters": [
+    {
+      "id": "reihenfolge",
+      "title": "Wer ruft wen?",
+      "startNodeId": "r_start",
+      "endNodeId": "r_end"
+    },
+    {
+      "id": "kommen-ende",
+      "title": "Kommen und Ende",
+      "startNodeId": "k_start",
+      "endNodeId": "k_end"
+    },
+    {
+      "id": "frage",
+      "title": "Eine Frage stellen",
+      "startNodeId": "f_start",
+      "endNodeId": "f_end"
+    },
+    {
+      "id": "nachfrage",
+      "title": "Nachfragen",
+      "startNodeId": "n_start",
+      "endNodeId": "n_end"
+    },
+    {
+      "id": "anruf-beantworten",
+      "title": "Einen Anruf beantworten",
+      "startNodeId": "a_start",
+      "endNodeId": "a_end"
+    },
+    {
+      "id": "mayday",
+      "title": "Mayday",
+      "startNodeId": "m_start",
+      "endNodeId": "m_end"
+    }
+  ],
+  "nodes": {
+    "r_start": {
+      "id": "r_start",
+      "role": "truppmann",
+      "narrative": "Erster Übungsabend bei der Feuerwehr Neuhaus. Du bist **Truppmann im Angriffstrupp** des Löschfahrzeugs **Florian Neuhaus 40/1**. Dein Gruppenführer drückt dir ein Funkgerät in die Hand.\n\n**Gruppenführer:** „Beim Funk gilt immer dieselbe Reihenfolge: **Wen rufst du – von wem – kommen.** Zuerst der Gerufene, dann „von“ und du selbst. „Kommen“ heißt: Jetzt bist du dran.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_choice": {
+      "id": "r_choice",
+      "role": "truppmann",
+      "narrative": "Du willst deinen **Gruppenführer** anfunken. Welcher Funkspruch ist richtig?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„Gruppenführer von Angriffstrupp – kommen.“",
+          "nextNodeId": "r_speak"
+        },
+        {
+          "id": "opt1",
+          "label": "„Angriffstrupp an Gruppenführer – kommen.“",
+          "nextNodeId": "r_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "„Hallo Gruppenführer, hörst du mich?“",
+          "nextNodeId": "r_x2"
+        }
+      ]
+    },
+    "r_x1": {
+      "id": "r_x1",
+      "role": "truppmann",
+      "narrative": "**Nicht ganz.** Du hast dich zuerst genannt. Beim Funk steht **der Gerufene vorne** – er soll sofort hören, dass er gemeint ist. Danach kommen „von“ und dein eigener Name.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_x2": {
+      "id": "r_x2",
+      "role": "truppmann",
+      "narrative": "**Nicht ganz.** Über Funk gibt es kein „Hallo“ wie am Telefon. Ein Anruf ist immer gleich aufgebaut: **Gerufener – von – Rufender – kommen.**",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_speak": {
+      "id": "r_speak",
+      "role": "truppmann",
+      "narrative": "**Richtig!** Jetzt du: Halte die **Sprechtaste** gedrückt, warte kurz und sprich den Anruf an deinen Gruppenführer.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Gruppenführer anfunken",
+          "radioCall": {
+            "hint": "Gruppenführer von Angriffstrupp – kommen.",
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "kommen"
+            ],
+            "onSuccess": "r_speak2",
+            "onFailure": "r_fail",
+            "response": "Hier Gruppenführer – kommen."
+          }
+        }
+      ]
+    },
+    "r_fail": {
+      "id": "r_fail",
+      "role": "truppmann",
+      "narrative": "**Noch nicht ganz.** Merke dir: **Gerufener – von – Rufender – kommen.** Also: „Gruppenführer von Angriffstrupp – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "r_speak"
+        }
+      ]
+    },
+    "r_speak2": {
+      "id": "r_speak2",
+      "role": "truppmann",
+      "narrative": "Der Gruppenführer hat geantwortet – dein erster Funkspruch hat geklappt! Jetzt rufst du den **Maschinisten** am Fahrzeug. Gleiche Reihenfolge, nur ein anderer Gerufener.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Maschinisten anfunken",
+          "radioCall": {
+            "hint": "Maschinist von Angriffstrupp – kommen.",
+            "expectedPhrases": [
+              "Maschinist",
+              "Angriffstrupp",
+              "kommen"
+            ],
+            "onSuccess": "r_end",
+            "onFailure": "r_fail2",
+            "response": "Hier Maschinist – kommen."
+          }
+        }
+      ]
+    },
+    "r_fail2": {
+      "id": "r_fail2",
+      "role": "truppmann",
+      "narrative": "**Fast.** Zuerst der Gerufene: „Maschinist von Angriffstrupp – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "r_speak2"
+        }
+      ]
+    },
+    "r_end": {
+      "id": "r_end",
+      "role": "truppmann",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Wen rufe ich – von wem – kommen.**",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "k_start": {
+      "id": "k_start",
+      "role": "truppmann",
+      "narrative": "Übungsabend, du bist Truppmann im Angriffstrupp. Der Gruppenführer erklärt die zwei wichtigsten Funkwörter.\n\n**Gruppenführer:** „**Kommen** heißt: Ich warte auf deine Antwort. **Ende** heißt: Das Gespräch ist fertig, der Kanal ist wieder frei. Wer „Ende“ vergisst, lässt die anderen warten.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "k_choice"
+        }
+      ]
+    },
+    "k_choice": {
+      "id": "k_choice",
+      "role": "truppmann",
+      "narrative": "Der Gruppenführer funkt dich an:\n\n**Gruppenführer:** „Angriffstrupp von Gruppenführer – rüstet euch mit Atemschutz aus – kommen.“\n\nDu hast alles verstanden und brauchst nichts mehr. Wie antwortest du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„Okay, machen wir.“",
+          "nextNodeId": "k_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "„Hier Angriffstrupp – verstanden – Ende.“",
+          "nextNodeId": "k_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "„Hier Angriffstrupp – verstanden – kommen.“",
+          "nextNodeId": "k_x2"
+        }
+      ]
+    },
+    "k_x1": {
+      "id": "k_x1",
+      "role": "truppmann",
+      "narrative": "**Nicht ganz.** „Okay“ ist kein Funkwort, und es fehlt der Abschluss. Sag, **wer** spricht, dass du **verstanden** hast – und beende mit **Ende**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "k_choice"
+        }
+      ]
+    },
+    "k_x2": {
+      "id": "k_x2",
+      "role": "truppmann",
+      "narrative": "**Fast.** Mit „kommen“ wartest du auf eine weitere Antwort – aber es gibt nichts mehr zu sagen. Ist alles klar, schließt du mit **Ende** ab.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "k_choice"
+        }
+      ]
+    },
+    "k_speak": {
+      "id": "k_speak",
+      "role": "truppmann",
+      "narrative": "**Richtig!** Sprich jetzt deine Antwort und beende das Gespräch.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Antwort sprechen",
+          "radioCall": {
+            "hint": "Hier Angriffstrupp – verstanden – Ende.",
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "verstanden",
+              "Ende"
+            ],
+            "onSuccess": "k_speak2",
+            "onFailure": "k_fail",
+            "response": ""
+          }
+        }
+      ]
+    },
+    "k_fail": {
+      "id": "k_fail",
+      "role": "truppmann",
+      "narrative": "**Noch nicht ganz.** Wer spricht – verstanden – **Ende**: „Hier Angriffstrupp – verstanden – Ende.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "k_speak"
+        }
+      ]
+    },
+    "k_speak2": {
+      "id": "k_speak2",
+      "role": "truppmann",
+      "narrative": "Ihr seid ausgerüstet. Melde das jetzt dem Gruppenführer. Weil du auf seine Antwort wartest, endet deine Meldung mit **kommen**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Meldung sprechen",
+          "radioCall": {
+            "hint": "Gruppenführer von Angriffstrupp – Angriffstrupp ist ausgerüstet – kommen.",
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "ausgerüstet",
+              "kommen"
+            ],
+            "onSuccess": "k_end",
+            "onFailure": "k_fail2",
+            "response": "Hier Gruppenführer – verstanden – Ende."
+          }
+        }
+      ]
+    },
+    "k_fail2": {
+      "id": "k_fail2",
+      "role": "truppmann",
+      "narrative": "**Fast.** „Gruppenführer von Angriffstrupp – Angriffstrupp ist ausgerüstet – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "k_speak2"
+        }
+      ]
+    },
+    "k_end": {
+      "id": "k_end",
+      "role": "truppmann",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **kommen** = du bist dran. **Ende** = Gespräch fertig, Kanal frei.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "f_start": {
+      "id": "f_start",
+      "role": "truppmann",
+      "narrative": "Übungsabend am Übungshaus. Du sollst eine Schlauchleitung zum **Verteiler** legen – weißt aber nicht, wo er steht.\n\n**Gruppenführer:** „Willst du etwas wissen, sagst du **Frage** vor deine Frage. Dann weiß jeder sofort: Hier wird eine Antwort gebraucht. Und weil du auf die Antwort wartest: **kommen**.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "f_choice"
+        }
+      ]
+    },
+    "f_choice": {
+      "id": "f_choice",
+      "role": "truppmann",
+      "narrative": "Der Gruppenführer hat sich schon gemeldet: „Hier Gruppenführer – kommen.“ Wie stellst du deine Frage?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„Frage: Wo steht der Verteiler? – Ende.“",
+          "nextNodeId": "f_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "„Frage: Wo steht der Verteiler? – kommen.“",
+          "nextNodeId": "f_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "„Äh, wo ist eigentlich der Verteiler?“",
+          "nextNodeId": "f_x1"
+        }
+      ]
+    },
+    "f_x1": {
+      "id": "f_x1",
+      "role": "truppmann",
+      "narrative": "**Nicht ganz.** Ohne „Frage“ geht eine Frage im Funk leicht unter – und ohne „kommen“ weiß der andere nicht, dass er dran ist.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "f_choice"
+        }
+      ]
+    },
+    "f_x2": {
+      "id": "f_x2",
+      "role": "truppmann",
+      "narrative": "**Fast.** Mit „Ende“ beendest du das Gespräch – dann bekommst du keine Antwort. Bei einer Frage wartest du: **kommen**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "f_choice"
+        }
+      ]
+    },
+    "f_speak": {
+      "id": "f_speak",
+      "role": "truppmann",
+      "narrative": "**Richtig!** Jetzt der ganze Funkspruch: erst anrufen, auf die Antwort warten, dann die Frage stellen.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Frage funken",
+          "radioCall": {
+            "hint": "Gruppenführer von Angriffstrupp – Frage: Wo steht der Verteiler? – kommen.",
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Angriffstrupp",
+              "Frage",
+              "Verteiler",
+              "kommen"
+            ],
+            "onSuccess": "f_speak2",
+            "onFailure": "f_fail",
+            "response": "Hier Gruppenführer – Verteiler steht an der Hofeinfahrt – kommen."
+          }
+        }
+      ]
+    },
+    "f_fail": {
+      "id": "f_fail",
+      "role": "truppmann",
+      "narrative": "**Noch nicht ganz.** „Gruppenführer von Angriffstrupp – Frage: Wo steht der Verteiler? – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "f_speak"
+        }
+      ]
+    },
+    "f_speak2": {
+      "id": "f_speak2",
+      "role": "truppmann",
+      "narrative": "Die Antwort: Der Verteiler steht an der **Hofeinfahrt**. Bestätige kurz, was du verstanden hast, und beende das Gespräch.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Antwort bestätigen",
+          "radioCall": {
+            "hint": "Hier Angriffstrupp – verstanden, Verteiler an der Hofeinfahrt – Ende.",
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "verstanden",
+              "Hofeinfahrt",
+              "Ende"
+            ],
+            "onSuccess": "f_end",
+            "onFailure": "f_fail2",
+            "response": ""
+          }
+        }
+      ]
+    },
+    "f_fail2": {
+      "id": "f_fail2",
+      "role": "truppmann",
+      "narrative": "**Fast.** „Hier Angriffstrupp – verstanden, Verteiler an der Hofeinfahrt – Ende.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "f_speak2"
+        }
+      ]
+    },
+    "f_end": {
+      "id": "f_end",
+      "role": "truppmann",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Frage** voran – und am Schluss **kommen**, weil du auf die Antwort wartest.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "truppmann",
+      "narrative": "Übungsabend, du stehst als Truppmann hinter einer dicken Mauer – der Funk rauscht.\n\n**Gruppenführer:** „Hast du etwas **nicht sicher verstanden**, rate nie! Sag **wiederholen** – dann sagt der andere alles noch einmal. Ein falsch verstandener Auftrag ist gefährlicher als eine Nachfrage.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n_choice": {
+      "id": "n_choice",
+      "role": "truppmann",
+      "narrative": "Aus dem Funkgerät:\n\n**Gruppenführer:** „Angriffstrupp von Gruppenführer – erstes Rohr *krrrz* … zum *krrrz* … – kommen.“\n\nWas tust du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„Hier Angriffstrupp – verstanden – Ende.“ und dann schauen, was gemeint war",
+          "nextNodeId": "n_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Nichts sagen – er meldet sich schon noch mal",
+          "nextNodeId": "n_x2"
+        },
+        {
+          "id": "opt2",
+          "label": "„Hier Angriffstrupp – wiederholen – kommen.“",
+          "nextNodeId": "n_speak"
+        }
+      ]
+    },
+    "n_x1": {
+      "id": "n_x1",
+      "role": "truppmann",
+      "narrative": "**Nicht gut.** Du hast den Auftrag nicht verstanden – „verstanden“ wäre falsch. Wer rät, macht im Einsatz womöglich das Falsche. Frag nach: **wiederholen**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n_x2": {
+      "id": "n_x2",
+      "role": "truppmann",
+      "narrative": "**Nicht gut.** Schweigst du, weiß der Gruppenführer nicht, ob du ihn gehört hast. Melde dich und sag **wiederholen**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n_speak": {
+      "id": "n_speak",
+      "role": "truppmann",
+      "narrative": "**Richtig!** Sprich deine Nachfrage.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Nachfragen",
+          "radioCall": {
+            "hint": "Hier Angriffstrupp – wiederholen – kommen.",
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "wiederholen",
+              "kommen"
+            ],
+            "onSuccess": "n_speak2",
+            "onFailure": "n_fail",
+            "response": "Hier Gruppenführer – ich wiederhole: Angriffstrupp mit erstem Rohr zum Hauseingang – kommen."
+          }
+        }
+      ]
+    },
+    "n_fail": {
+      "id": "n_fail",
+      "role": "truppmann",
+      "narrative": "**Noch nicht ganz.** „Hier Angriffstrupp – wiederholen – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "n_speak"
+        }
+      ]
+    },
+    "n_speak2": {
+      "id": "n_speak2",
+      "role": "truppmann",
+      "narrative": "Jetzt war es klar: **erstes Rohr zum Hauseingang**. Bestätige den Auftrag und beende das Gespräch.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Auftrag bestätigen",
+          "radioCall": {
+            "hint": "Hier Angriffstrupp – verstanden, erstes Rohr zum Hauseingang – Ende.",
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "verstanden",
+              "Rohr",
+              "Hauseingang",
+              "Ende"
+            ],
+            "onSuccess": "n_end",
+            "onFailure": "n_fail2",
+            "response": ""
+          }
+        }
+      ]
+    },
+    "n_fail2": {
+      "id": "n_fail2",
+      "role": "truppmann",
+      "narrative": "**Fast.** „Hier Angriffstrupp – verstanden, erstes Rohr zum Hauseingang – Ende.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "n_speak2"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "truppmann",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: Nicht sicher verstanden? **Wiederholen** – niemals raten.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "a_start": {
+      "id": "a_start",
+      "role": "truppmann",
+      "narrative": "Übungsabend – diesmal wirst **du** angefunkt.\n\n**Gruppenführer:** „Ruft dich jemand, antwortest du mit **Hier**, deinem Namen und **kommen**. Viele sagen aus Gewohnheit „Angriffstrupp hört“ – „hört“ ist aber **kein Funkwort**. Richtig ist: „Hier Angriffstrupp – kommen.““",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_choice": {
+      "id": "a_choice",
+      "role": "truppmann",
+      "narrative": "Aus dem Funkgerät:\n\n**Gruppenführer:** „Angriffstrupp von Gruppenführer – kommen.“\n\nWie antwortest du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„Ja?“",
+          "nextNodeId": "a_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "„Angriffstrupp hört.“",
+          "nextNodeId": "a_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "„Hier Angriffstrupp – kommen.“",
+          "nextNodeId": "a_speak"
+        }
+      ]
+    },
+    "a_x1": {
+      "id": "a_x1",
+      "role": "truppmann",
+      "narrative": "**Nicht ganz.** „Hört“ ist kein Funkwort – auch wenn man es oft hört. Die Antwort beginnt mit **Hier**: „Hier Angriffstrupp – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_x2": {
+      "id": "a_x2",
+      "role": "truppmann",
+      "narrative": "**Nicht ganz.** Bei „Ja?“ weiß niemand, **wer** antwortet – es können mehrere Trupps auf dem Kanal sein. Nenne dich: „Hier Angriffstrupp – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_speak": {
+      "id": "a_speak",
+      "role": "truppmann",
+      "narrative": "**Richtig!** Der Gruppenführer ruft noch einmal:\n\n**Gruppenführer:** „Angriffstrupp von Gruppenführer – kommen.“\n\nAntworte ihm.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Anruf beantworten",
+          "radioCall": {
+            "hint": "Hier Angriffstrupp – kommen.",
+            "expectedPhrases": [
+              "hier",
+              "Angriffstrupp",
+              "kommen"
+            ],
+            "onSuccess": "a_speak2",
+            "onFailure": "a_fail",
+            "response": "Hier Gruppenführer – Angriffstrupp zur Übungspuppe ins Erdgeschoss vorgehen – kommen."
+          }
+        }
+      ]
+    },
+    "a_fail": {
+      "id": "a_fail",
+      "role": "truppmann",
+      "narrative": "**Noch nicht ganz.** Erst **Hier**, dann dein Name, dann **kommen**: „Hier Angriffstrupp – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "a_speak"
+        }
+      ]
+    },
+    "a_speak2": {
+      "id": "a_speak2",
+      "role": "truppmann",
+      "narrative": "Auftrag erhalten: **zur Übungspuppe ins Erdgeschoss**. Bestätige und beende das Gespräch.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Auftrag bestätigen",
+          "radioCall": {
+            "hint": "Hier Angriffstrupp – verstanden, gehen zur Übungspuppe ins Erdgeschoss vor – Ende.",
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "verstanden",
+              "Übungspuppe",
+              "Erdgeschoss",
+              "Ende"
+            ],
+            "onSuccess": "a_end",
+            "onFailure": "a_fail2",
+            "response": ""
+          }
+        }
+      ]
+    },
+    "a_fail2": {
+      "id": "a_fail2",
+      "role": "truppmann",
+      "narrative": "**Fast.** „Hier Angriffstrupp – verstanden, gehen zur Übungspuppe ins Erdgeschoss vor – Ende.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "a_speak2"
+        }
+      ]
+    },
+    "a_end": {
+      "id": "a_end",
+      "role": "truppmann",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: Angerufen? **Hier** + Name + **kommen**. „Hört“ gibt es im Funk nicht.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "m_start": {
+      "id": "m_start",
+      "role": "truppmann",
+      "narrative": "Zum Abschluss eine Atemschutzübung im verrauchten Übungshaus. Du bist mit deinem Truppführer im **Obergeschoss**.\n\n**Gruppenführer:** „Seid ihr in Lebensgefahr, rufst du **Mayday**. Erst die **Notruftaste** am Funkgerät drücken, dann: **Mayday, Mayday, Mayday – hier – wo – was – Mayday, kommen!** Mayday geht vor jedem anderen Funkspruch.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "m_choice"
+        }
+      ]
+    },
+    "m_choice": {
+      "id": "m_choice",
+      "role": "truppmann",
+      "narrative": "Plötzlich stürzt dein Truppführer im **Schlafzimmer** und reagiert nicht mehr. Was tust du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🆘 Notruftaste drücken und Mayday rufen",
+          "nextNodeId": "m_sos"
+        },
+        {
+          "id": "opt1",
+          "label": "Den Gruppenführer ganz normal anfunken: „Gruppenführer von Angriffstrupp – kommen.“",
+          "nextNodeId": "m_x2"
+        },
+        {
+          "id": "opt2",
+          "label": "Erst einmal abwarten, ob er wieder aufsteht",
+          "nextNodeId": "m_x1"
+        }
+      ]
+    },
+    "m_x1": {
+      "id": "m_x1",
+      "role": "truppmann",
+      "narrative": "**Gefährlich.** In einer Notlage zählt jede Sekunde – die Atemluft ist begrenzt. Sofort **Notruftaste** und **Mayday**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "m_choice"
+        }
+      ]
+    },
+    "m_x2": {
+      "id": "m_x2",
+      "role": "truppmann",
+      "narrative": "**Zu langsam.** Ein normaler Anruf muss warten, bis der Kanal frei ist. **Mayday** unterbricht jeden anderen Funkverkehr – genau dafür gibt es das Notrufwort.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "m_choice"
+        }
+      ]
+    },
+    "m_sos": {
+      "id": "m_sos",
+      "role": "truppmann",
+      "narrative": "**Richtig!** Drück jetzt die **Notruftaste** deines Funkgeräts.",
+      "actions": [
+        {
+          "id": "sos",
+          "label": "🆘 Notruftaste drücken",
+          "nextNodeId": "m_speak",
+          "key": "sos"
+        }
+      ]
+    },
+    "m_speak": {
+      "id": "m_speak",
+      "role": "truppmann",
+      "narrative": "Notruf ist ausgelöst. Jetzt sprich den Mayday: **wer** (Angriffstrupp Florian Neuhaus 40/1), **wo** (Obergeschoss, Schlafzimmer), **was** (Truppführer bewusstlos, Atemluft 150 bar).",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Mayday rufen",
+          "radioCall": {
+            "hint": "Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 40/1 – Obergeschoss, Schlafzimmer – Truppführer bewusstlos, Atemluft 150 bar – Mayday, kommen!",
+            "expectedPhrases": [
+              "Mayday",
+              "Angriffstrupp",
+              "Obergeschoss",
+              "Schlafzimmer",
+              "bewusstlos",
+              "kommen"
+            ],
+            "onSuccess": "m_speak2",
+            "onFailure": "m_fail",
+            "response": "Hier Gruppenführer – Mayday verstanden, Sicherheitstrupp kommt zu euch ins Obergeschoss – kommen."
+          }
+        }
+      ]
+    },
+    "m_fail": {
+      "id": "m_fail",
+      "role": "truppmann",
+      "narrative": "**Noch nicht ganz.** Dreimal **Mayday** – **hier** wer – **wo** – **was** – **Mayday, kommen!**",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "m_speak"
+        }
+      ]
+    },
+    "m_speak2": {
+      "id": "m_speak2",
+      "role": "truppmann",
+      "narrative": "Der Sicherheitstrupp ist unterwegs. Bestätige und bleib bei deinem Truppführer.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Bestätigen",
+          "radioCall": {
+            "hint": "Hier Angriffstrupp – verstanden, bleibe beim Truppführer – kommen.",
+            "expectedPhrases": [
+              "Angriffstrupp",
+              "verstanden",
+              "Truppführer",
+              "kommen"
+            ],
+            "onSuccess": "m_end",
+            "onFailure": "m_fail2",
+            "response": "Hier Gruppenführer – verstanden – Ende."
+          }
+        }
+      ]
+    },
+    "m_fail2": {
+      "id": "m_fail2",
+      "role": "truppmann",
+      "narrative": "**Fast.** „Hier Angriffstrupp – verstanden, bleibe beim Truppführer – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "m_speak2"
+        }
+      ]
+    },
+    "m_end": {
+      "id": "m_end",
+      "role": "truppmann",
+      "narrative": "**Übung beendet – der Sicherheitstrupp hat euch erreicht.** 🎉\n\nDu kennst jetzt die Grundregeln: Reihenfolge, kommen und Ende, Frage, Nachfrage, Anruf beantworten und Mayday. **Willkommen im Funkverkehr!**",
+      "actions": [
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        },
+        {
+          "id": "exit",
+          "label": "🏁 Beenden",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

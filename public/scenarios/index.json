@@ -21,6 +21,7 @@
       "builtin/wasser/wasserfoerderung_lange_wegstrecke.json"
     ],
     "funk": [
+      "builtin/funk/grundausbildung.json",
       "builtin/funk/alarm_ausruecken.json",
       "builtin/funk/buchstabieren_din5009.json",
       "builtin/funk/einsatzabschnitte_bilden.json",
