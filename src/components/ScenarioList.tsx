@@ -13,6 +13,8 @@ interface Props {
   onEditLocal: (scenario: Scenario) => void;
   onApiScenariosChange: (entries: ApiScenarioEntry[]) => void;
   mode?: 'guided' | 'training';
+  /** Hervorgehobener Einstieg über den Ordnern (Grundausbildung für Neulinge). */
+  featured?: Scenario;
 }
 
 interface FolderEntry {
@@ -44,7 +46,7 @@ function getScenarioFolder(scenario: Scenario): string {
 
 const COMMUNITY_FOLDER_ID = '__community__';
 
-export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCreate, onDeleteLocal, onEditLocal, onApiScenariosChange, mode = 'guided' }: Props) {
+export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCreate, onDeleteLocal, onEditLocal, onApiScenariosChange, mode = 'guided', featured }: Props) {
   const isTraining = mode === 'training';
   const [thankedIds, setThankedIds] = useState<Set<string>>(() => {
     const set = new Set<string>();
@@ -121,6 +123,15 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
           </button>
         )}
       </div>
+
+      {featured && !isTraining && (
+        <button
+          onClick={() => onSelect(featured)}
+          className="w-full flex items-center gap-2 rounded-lg border-2 border-[#dc2626] bg-[#dc2626]/10 hover:bg-[#dc2626]/20 px-4 py-3 compact:px-2 compact:py-1.5 text-left font-semibold compact:text-sm min-w-0"
+        >
+          <span className="truncate">Neu bei der Feuerwehr? → {featured.title}</span>
+        </button>
+      )}
 
       <div className="grid md:grid-cols-[220px_1fr] gap-4 compact:gap-2 items-start">
         <aside className="bg-[#111] border border-[#333] rounded-lg p-2 compact:p-1">

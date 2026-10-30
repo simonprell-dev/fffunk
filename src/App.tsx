@@ -18,6 +18,8 @@ interface LicenseData {
   rufnamen: Record<string, string>;
 }
 
+const GRUNDAUSBILDUNG_ID = 'grundausbildung';
+
 type View = 'list' | 'training' | 'lernen' | 'editor' | 'practice';
 type ScenarioFolderIndex = {
   builtin?: Record<string, string[]>;
@@ -258,6 +260,7 @@ function App() {
   const sosRef = useRef<() => void>(() => {});
   sosRef.current = () => {
     const mayday = scenarios.find(sc => sc.id === 'mayday_atemschutznotfall');
+    if (view === 'practice' && selectedScenario?.chapters) return; // Kapitel-Szenario wertet die Taste selbst aus
     if (mayday && selectedScenario?.id !== mayday.id) { audio.stop(); startScenario(mayday); }
   };
   useEffect(() => onRadioKey((key, pressed) => { if (key === 'sos' && pressed) sosRef.current(); }), []);
@@ -451,7 +454,7 @@ function App() {
           </div>
         ) : view === 'training' ? (
           <ScenarioList
-            scenarios={scenarios}
+            scenarios={scenarios.filter(s => s.id !== GRUNDAUSBILDUNG_ID)} // Muster-Funkspruch ist dort verborgen – nichts für Einsteiger
             apiScenarios={apiScenarios}
             mode="training"
             onSelect={(s) => startScenario(s, 'training')}
@@ -465,6 +468,7 @@ function App() {
             scenarios={scenarios}
             apiScenarios={apiScenarios}
             mode="guided"
+            featured={scenarios.find(s => s.id === GRUNDAUSBILDUNG_ID)}
             onSelect={startScenario}
             onCreate={() => openEditor()}
             onDeleteLocal={removeLocalScenario}
