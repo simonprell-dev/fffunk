@@ -8,8 +8,8 @@ s = S("vu_person_eingeklemmt", "Verkehrsunfall: Person eingeklemmt",
       "Mittel: Als Gruppenführer an einem PKW-Unfall die Einsatzstelle absichern, den Brandschutz befehlen, mit begründeter Nachforderung (Notarzt, hydraulisches Rettungsgerät) an die ILS melden, vor dem Schneiden stabilisieren, die Rettungsöffnung mit dem Notarzt abstimmen und die Befreiung zurückmelden. 4 Funk-Schritte.",
       GF, "n_start")
 s.choice("n_start",
-         "Alarm durch die ILS: **Verkehrsunfall, PKW gegen Baum, eine Person verletzt** – Kreisstraße zwischen Neuhaus und Adelsdorf. Alarmiert sind **Florian Neuhaus 44/1** und ein RTW.\n\n"
-         "Sie sind Gruppenführer auf **Florian Neuhaus 44/1**. Ihr Löschfahrzeug führt **kein hydraulisches Rettungsgerät** mit – das hat in Ihrem Bereich der **Rüstwagen** (Alarmplan der ILS).\n\nDie Besatzung sitzt auf. Was tun Sie beim Ausrücken?",
+         "Alarm durch die ILS: **Verkehrsunfall, PKW gegen Baum, eine Person verletzt** – Kreisstraße zwischen Neuhaus und Adelsdorf. Alarmiert sind **Florian Neuhaus 17/42/1** und ein RTW.\n\n"
+         "Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1**. Ihr Löschfahrzeug führt **kein hydraulisches Rettungsgerät** mit – das hat in Ihrem Bereich der **Rüstwagen** (Alarmplan der ILS).\n\nDie Besatzung sitzt auf. Was tun Sie beim Ausrücken?",
          [("⌨️ Status 3 drücken", "n_ankunft"),
           ("📞 Leitstelle anrufen und „rücken aus mit 1/8“ melden", None,
            "Das Ausrücken wird **nicht gesprochen**, sondern mit **Status 3** (Einsatzauftrag übernommen) gesendet. Ein Sprechfunkanruf belegt die Sprechgruppe der ILS unnötig."),
@@ -34,11 +34,11 @@ s.radio("n_befehl",
         "Befehlen Sie: Wassertrupp, Brandschutz sicherstellen, mit Pulverlöscher und Schnellangriff, zum Unfallfahrzeug.",
         "Bei jedem Verkehrsunfall mit eingeklemmter Person wird der **Brandschutz sichergestellt**, bevor mit Rettungsgerät gearbeitet wird – auslaufende Betriebsstoffe und heiße Motorteile können sich entzünden. Befehl nach FwDV 3: **Einheit – Auftrag – Mittel – Ziel – Weg**.")
 s.radio("n_lage",
-        "Der Wassertrupp hat den Brandschutz übernommen. Sie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\n"
+        "Der Wassertrupp hat den Brandschutz übernommen. Sie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\n"
         "Geben Sie die **Lagemeldung** ab: Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung. Denken Sie an die Lücken: Ein **Notarzt** ist bisher nicht alarmiert, und Ihr LF hat **kein hydraulisches Rettungsgerät**.",
         "Lagemeldung mit Nachforderung",
         ["Florian Neuhaus", "Kreisstraße", "eingeklemmt", "ansprechbar", "Brandschutz", "Notarzt", "Rettungsgerät", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße zwischen Neuhaus und Adelsdorf, PKW gegen Baum. Eine Person im Fahrzeug eingeklemmt, ansprechbar. Einsatzstelle abgesichert, Brandschutz sichergestellt, Erstversorgung läuft. Nachforderung: Notarzt und hydraulisches Rettungsgerät, Rüstwagen nach Alarmplan – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Lagemeldung: Kreisstraße zwischen Neuhaus und Adelsdorf, PKW gegen Baum. Eine Person im Fahrzeug eingeklemmt, ansprechbar. Einsatzstelle abgesichert, Brandschutz sichergestellt, Erstversorgung läuft. Nachforderung: Notarzt und hydraulisches Rettungsgerät, Rüstwagen nach Alarmplan – kommen.",
         "Eigener Rufname + „Lagemeldung“ . WO: Kreisstraße zwischen Neuhaus und Adelsdorf . WAS: PKW gegen Baum . MENSCHENLEBEN: eine Person eingeklemmt, ansprechbar . MASSNAHMEN: abgesichert, Brandschutz, Erstversorgung . NACHFORDERUNG: Notarzt + hydraulisches Rettungsgerät (Rüstwagen nach Alarmplan) . „kommen“",
         "n_stabil",
         "Lagemeldung vollständig – die Nachforderung ist konkret und begründet.",
@@ -72,10 +72,10 @@ s.radio("n_innen",
         "Die **innere Betreuung** muss wissen, wo geschnitten wird: Sie schützt den Patienten mit einer **Schutzdecke** vor Splittern und Kanten, hält den **Kopf** stabil und **erklärt** dem Patienten jeden Schritt – das nimmt Angst und verhindert Bewegungen.")
 s.radio("n_meldung",
         "Nach etwa 25 Minuten ist der Fahrer schonend über die Seitenöffnung auf dem Rettungsbrett befreit und an Notarzt und Rettungsdienst übergeben. Er wird mit dem RTW abtransportiert. Die Polizei nimmt den Unfall auf.\n\n"
-        "Sie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Folgemeldung** ab.",
+        "Sie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\nGeben Sie die **Folgemeldung** ab.",
         "Folgemeldung sprechen",
         ["Florian Neuhaus", "Folgemeldung", "Person befreit", "Rettungsdienst", "übergeben", "keine weitere Nachforderung", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Folgemeldung Kreisstraße: Person befreit und an den Rettungsdienst übergeben. Polizei vor Ort, Brandschutz bleibt bis zur Bergung des Fahrzeugs. Keine weitere Nachforderung – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Folgemeldung Kreisstraße: Person befreit und an den Rettungsdienst übergeben. Polizei vor Ort, Brandschutz bleibt bis zur Bergung des Fahrzeugs. Keine weitere Nachforderung – kommen.",
         "Eigener Rufname + „Folgemeldung“ . Ergebnis: Person befreit und an den Rettungsdienst übergeben . Lage: Polizei vor Ort, Brandschutz bis zur Bergung . „keine weitere Nachforderung“ . „kommen“",
         "n_end",
         "Folgemeldung klar und vollständig.",
@@ -91,7 +91,7 @@ s = S("bma_taeuschungsalarm", "Brandmeldeanlage: Erkundung und Täuschungsalarm"
       "Einsteiger: Einen Alarm der Brandmeldeanlage richtig abarbeiten – Feuerwehr-Anlaufstelle mit FAT/FBF und Schlüsseldepot, Erkundung mit Laufkarte und Atemschutzbereitschaft, Ursache quittieren, Anlage geordnet an den Betreiber übergeben und den Täuschungsalarm an die ILS melden. 3 Funk-Schritte.",
       GF, "n_anfahrt")
 s.choice("n_anfahrt",
-         "Alarm durch die ILS: **Brandmeldeanlage** – Druckerei, Industriestraße 7, Gewerbegebiet Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**, **Status 3** ist gedrückt.\n\n"
+         "Alarm durch die ILS: **Brandmeldeanlage** – Druckerei, Industriestraße 7, Gewerbegebiet Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1**, **Status 3** ist gedrückt.\n\n"
          "> Eine **Brandmeldeanlage (BMA)** meldet über eine Übertragungseinrichtung automatisch an die ILS. Jeder BMA-Alarm wird behandelt wie ein Brand – bis die Erkundung etwas anderes zeigt.\n\nWohin fahren Sie?",
          [("🚨 Zur **Feuerwehr-Anlaufstelle** (gekennzeichnet durch die **Blitzleuchte**) – dort sind Feuerwehr-Schlüsseldepot (FSD), Feuerwehr-Anzeigetableau (FAT) und Feuerwehr-Bedienfeld (FBF). Status 4 drücken.", "n_fat"),
           ("🏭 Zur Hallenseite, auf der es vermutlich brennt", None,
@@ -143,10 +143,10 @@ s.choice("n_rueck",
            "Solange die Anlage nicht zurückgestellt ist, kann in der Regel **kein neuer Alarm** an die ILS übertragen werden – das Objekt wäre ungeschützt. Außerdem gehört der Schlüssel zurück ins FSD und die Einsatzstelle wird **ausdrücklich übergeben**. Wer genau zurückstellt, regelt Ihre örtliche Vorgabe.")])
 s.radio("n_ils",
         "> **Täuschungsalarm oder Fehlalarm?** „Fehlalarm“ wird oft als **Oberbegriff** für jeden Alarm ohne Schadenfeuer benutzt. Ein **Täuschungsalarm** liegt vor, wenn ein Melder auf eine **brandähnliche Kenngröße** reagiert hat – Staub, Wasserdampf, Abgase. Die Anlage hat also funktioniert, wurde aber „getäuscht“. Davon unterscheidet man z. B. einen **technischen Defekt** oder eine **böswillige Auslösung**. Welche Begriffe Ihre ILS in der Rückmeldung erwartet, regelt sie selbst.\n\n"
-        "Sie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Rückmeldung** ab.",
+        "Sie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\nGeben Sie die **Rückmeldung** ab.",
         "Rückmeldung an die ILS",
         ["Florian Neuhaus", "Brandmeldeanlage", "Täuschungsalarm", "kein Feuer", "Betreiber", "übergeben", "geräumt", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Rückmeldung Brandmeldeanlage Druckerei Industriestraße 7: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer. Anlage zurückgestellt und an den Betreiber übergeben. Einsatzstelle wird geräumt – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Rückmeldung Brandmeldeanlage Druckerei Industriestraße 7: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer. Anlage zurückgestellt und an den Betreiber übergeben. Einsatzstelle wird geräumt – kommen.",
         "Eigener Rufname + „Rückmeldung“ . Objekt (BMA Druckerei, Industriestraße 7) . Ergebnis: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer . Anlage zurückgestellt und an den Betreiber übergeben . „Einsatzstelle wird geräumt“ . „kommen“",
         "n_end",
         "Rückmeldung klar: Ursache, kein Feuer, Übergabe, Einsatzende.",
@@ -162,7 +162,7 @@ s = S("gefahrgut_un_nummer", "Gefahrgut: Warntafel richtig durchgeben",
       "Mittel: An einem verunfallten Tank-LKW nach der GAMS-Regel vorgehen – mit dem Wind anfahren, Warntafel aus sicherer Entfernung ablesen, Menschen aus dem Gefahrenbereich holen, absperren, Brandschutz befehlen und die Nummern Ziffer für Ziffer an die ILS melden und kontrollieren. 4 Funk-Schritte.",
       GF, "n_anfahrt")
 s.choice("n_anfahrt",
-         "Alarm durch die ILS: **Verkehrsunfall mit LKW, Flüssigkeit läuft aus** – Kreisstraße nördlich von Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**, **Status 3** ist gedrückt.\n\n"
+         "Alarm durch die ILS: **Verkehrsunfall mit LKW, Flüssigkeit läuft aus** – Kreisstraße nördlich von Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1**, **Status 3** ist gedrückt.\n\n"
          "Die Kreisstraße verläuft von **West nach Ost**. Die Fahnen am Ortsrand zeigen: **Wind schwach aus West**. Sie können von Osten (kürzester Weg) oder über die Umgehung von Westen anfahren.\n\nWie fahren Sie an?",
          [("🌬️ Von **Westen** anfahren – **Wind im Rücken** –, mit großem Abstand anhalten, nicht in Senken, Status 4 drücken", "n_gams"),
           ("➡️ Von **Osten** – das ist der kürzeste Weg", None,
@@ -209,11 +209,11 @@ s.radio("n_brandschutz",
         "Befehlen Sie: Wassertrupp, Brandschutz, Schaum, außerhalb des Gefahrenbereichs mit dem Wind im Rücken.",
         "Der Brandschutz wird **außerhalb des Gefahrenbereichs** und **mit dem Wind im Rücken** bereitgestellt – nicht in der Lache. Bei wassermischbaren Flüssigkeiten wie Ethanol braucht es **alkoholbeständiges Schaummittel** (AR). Führt Ihr Fahrzeug keins mit, gehört das in die Nachforderung.")
 s.radio("n_lage",
-        "**Wassertrupp:** „Hier Wassertrupp – verstanden – Ende.“\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\n"
+        "**Wassertrupp:** „Hier Wassertrupp – verstanden – Ende.“\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\n"
         "Geben Sie die **Lagemeldung** ab. Die Nummern der Warntafel sprechen Sie **Ziffer für Ziffer** – erst die obere, dann die untere Zahl. Dazu: Wind, Absperrung und Nachforderung von Gefahrgut-/ABC-Kräften **nach Alarmplan Ihrer ILS**.",
         "Lagemeldung Gefahrgut",
         ["Florian Neuhaus", "Warntafel", "drei drei", "eins eins sieben null", "Wind aus West", "Absperrung", "Nachforderung", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße nördlich Neuhaus, Tank-LKW verunfallt, Flüssigkeit läuft aus. Warntafel: Nummer zur Kennzeichnung der Gefahr drei – drei, UN-Nummer eins – eins – sieben – null. Fahrer aus dem Gefahrenbereich, leicht verletzt. Wind schwach aus West, Absperrung 100 Meter, Brandschutz sichergestellt. Nachforderung: Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Lagemeldung: Kreisstraße nördlich Neuhaus, Tank-LKW verunfallt, Flüssigkeit läuft aus. Warntafel: Nummer zur Kennzeichnung der Gefahr drei – drei, UN-Nummer eins – eins – sieben – null. Fahrer aus dem Gefahrenbereich, leicht verletzt. Wind schwach aus West, Absperrung 100 Meter, Brandschutz sichergestellt. Nachforderung: Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei – kommen.",
         "Eigener Rufname + „Lagemeldung“ . WO: Kreisstraße nördlich Neuhaus . WAS: Tank-LKW, Flüssigkeit läuft aus . Warntafel Ziffer für Ziffer: oben drei – drei, unten eins – eins – sieben – null . MENSCHEN: Fahrer aus dem Gefahrenbereich, leicht verletzt . MASSNAHMEN: Wind aus West, Absperrung 100 m, Brandschutz . NACHFORDERUNG: Gefahrgutkräfte nach Alarmplan, Rettungsdienst, Polizei . „kommen“",
         "n_korr",
         "Lagemeldung mit Warntafel in Ziffern, Wind, Absperrung und Nachforderung.",
@@ -230,7 +230,7 @@ s.radio("n_korrektur",
         "Geben Sie die UN-Nummer erneut durch – mit **„ich wiederhole“** und Ziffer für Ziffer.",
         "UN-Nummer richtigstellen",
         ["Florian Neuhaus", "ich wiederhole", "UN-Nummer", "eins eins sieben null", "kommen"],
-        "Hier Florian Neuhaus 44/1 – ich wiederhole: UN-Nummer eins – eins – sieben – null. Nummer zur Kennzeichnung der Gefahr drei – drei – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – ich wiederhole: UN-Nummer eins – eins – sieben – null. Nummer zur Kennzeichnung der Gefahr drei – drei – kommen.",
         "„hier“ + Rufname . „ich wiederhole“ . UN-Nummer Ziffer für Ziffer: eins – eins – sieben – null . zur Sicherheit auch die obere Zahl: drei – drei . „kommen“",
         "n_end",
         "UN-Nummer klar richtiggestellt.",

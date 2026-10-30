@@ -32,7 +32,7 @@
     "n_start": {
       "id": "n_start",
       "role": "truppmann",
-      "narrative": "Innenangriff im **Erdgeschoss** eines Reihenhauses in Neuhaus, Sicht nahezu null. Sie sind **Truppmann** im Angriffstrupp von **Florian Neuhaus 44/1**. Gefunkt wird im Einsatzstellenfunk (DMO), Ihr Gruppenführer führt den Einsatz.\n\nPlötzlich sackt Ihr **Truppführer** zusammen und reagiert nicht mehr auf Ansprache und Rütteln. Sie hören, dass sein **Lungenautomat noch arbeitet** – er atmet.\n\nWas tun Sie **zuerst**?",
+      "narrative": "Innenangriff im **Erdgeschoss** eines Reihenhauses in Neuhaus, Sicht nahezu null. Sie sind **Truppmann** im Angriffstrupp von **Florian Neuhaus 17/42/1**. Gefunkt wird im Einsatzstellenfunk (DMO), Ihr Gruppenführer führt den Einsatz.\n\nPlötzlich sackt Ihr **Truppführer** zusammen und reagiert nicht mehr auf Ansprache und Rütteln. Sie hören, dass sein **Lungenautomat noch arbeitet** – er atmet.\n\nWas tun Sie **zuerst**?",
       "actions": [
         {
           "id": "opt0",
@@ -69,8 +69,8 @@
               "bewusstlos",
               "kommen"
             ],
-            "hint": "Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 44/1 – Erdgeschoss, Wohnzimmer, etwa zehn Meter hinter der Haustür an der Schlauchleitung – Truppführer bewusstlos – Mayday, kommen!",
-            "briefing": "Kennwort dreimal: Mayday, Mayday, Mayday . „hier“ + Funkrufname (Angriffstrupp Florian Neuhaus 44/1) . Standort (Erdgeschoss, Wohnzimmer, ca. 10 m hinter der Haustür, an der Schlauchleitung) . Lage (Truppführer bewusstlos) . „Mayday, kommen“",
+            "hint": "Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 17/42/1 – Erdgeschoss, Wohnzimmer, etwa zehn Meter hinter der Haustür an der Schlauchleitung – Truppführer bewusstlos – Mayday, kommen!",
+            "briefing": "Kennwort dreimal: Mayday, Mayday, Mayday . „hier“ + Funkrufname (Angriffstrupp Florian Neuhaus 17/42/1) . Standort (Erdgeschoss, Wohnzimmer, ca. 10 m hinter der Haustür, an der Schlauchleitung) . Lage (Truppführer bewusstlos) . „Mayday, kommen“",
             "onSuccess": "n_lage",
             "onFailure": "n_mayday_fail",
             "feedbackSuccess": "✅ Mayday nach FwDV 7 abgesetzt.",
@@ -82,7 +82,7 @@
     "n_mayday_fail": {
       "id": "n_mayday_fail",
       "role": "truppmann",
-      "narrative": "**Feedback:** Auch der **Truppmann** setzt das Mayday ab, wenn der Truppführer ausfällt – im Wortlaut der FwDV 7:\n1. **„Mayday, Mayday, Mayday“**\n2. **„hier“ + Funkrufname des Trupps**\n3. **Standort**\n4. **Lage**\n5. **„Mayday, kommen“**\n\nBeispiel: *„Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 44/1 – Erdgeschoss, Wohnzimmer, etwa zehn Meter hinter der Haustür an der Schlauchleitung – Truppführer bewusstlos – Mayday, kommen!“*",
+      "narrative": "**Feedback:** Auch der **Truppmann** setzt das Mayday ab, wenn der Truppführer ausfällt – im Wortlaut der FwDV 7:\n1. **„Mayday, Mayday, Mayday“**\n2. **„hier“ + Funkrufname des Trupps**\n3. **Standort**\n4. **Lage**\n5. **„Mayday, kommen“**\n\nBeispiel: *„Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 17/42/1 – Erdgeschoss, Wohnzimmer, etwa zehn Meter hinter der Haustür an der Schlauchleitung – Truppführer bewusstlos – Mayday, kommen!“*",
       "actions": [
         {
           "id": "retry",
@@ -94,7 +94,7 @@
     "n_lage": {
       "id": "n_lage",
       "role": "truppmann",
-      "narrative": "**Gruppenführer:** „Hier Florian Neuhaus 44/1 – Mayday verstanden. Sicherheitstrupp geht vor, folgt der Schlauchleitung. Frage Atmung, Druck und Rückweg – kommen.“\n\nSie lesen die Manometer ab: Truppführer **150 bar**, Sie selbst **160 bar**. Der Weg zur Haustür entlang des Schlauchs ist frei.",
+      "narrative": "**Gruppenführer:** „Hier Florian Neuhaus 17/42/1 – Mayday verstanden. Sicherheitstrupp geht vor, folgt der Schlauchleitung. Frage Atmung, Druck und Rückweg – kommen.“\n\nSie lesen die Manometer ab: Truppführer **150 bar**, Sie selbst **160 bar**. Der Weg zur Haustür entlang des Schlauchs ist frei.",
       "actions": [
         {
           "id": "radio_lage",
@@ -109,7 +109,7 @@
               "Schlauchleitung",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – Truppführer atmet, Lungenautomat arbeitet. Druck Truppführer 150, eigener Druck 160 bar. Rückweg entlang der Schlauchleitung frei – kommen.",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 17/42/1 – Truppführer atmet, Lungenautomat arbeitet. Druck Truppführer 150, eigener Druck 160 bar. Rückweg entlang der Schlauchleitung frei – kommen.",
             "briefing": "„hier“ + Rufname . Atmung (Truppführer atmet, Lungenautomat arbeitet) . Druck beider Geräte (150 / 160 bar) . Rückweg (entlang der Schlauchleitung frei) . „kommen“",
             "onSuccess": "n_massnahme",
             "onFailure": "n_lage_fail",
@@ -122,7 +122,7 @@
     "n_lage_fail": {
       "id": "n_lage_fail",
       "role": "truppmann",
-      "narrative": "**Feedback:** Der Gruppenführer und der Sicherheitstrupp brauchen: **Atmet er? Wie viel Luft haben beide? Ist der Rückweg frei?**\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – Truppführer atmet, Lungenautomat arbeitet. Druck Truppführer 150, eigener Druck 160 bar. Rückweg entlang der Schlauchleitung frei – kommen.“*",
+      "narrative": "**Feedback:** Der Gruppenführer und der Sicherheitstrupp brauchen: **Atmet er? Wie viel Luft haben beide? Ist der Rückweg frei?**\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 17/42/1 – Truppführer atmet, Lungenautomat arbeitet. Druck Truppführer 150, eigener Druck 160 bar. Rückweg entlang der Schlauchleitung frei – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -195,7 +195,7 @@
               "Lampe",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – verstanden: bleibe beim Truppführer, ziehe ihn am Schlauch Richtung Haustür, mache mich mit der Lampe bemerkbar – kommen.",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 17/42/1 – verstanden: bleibe beim Truppführer, ziehe ihn am Schlauch Richtung Haustür, mache mich mit der Lampe bemerkbar – kommen.",
             "briefing": "„hier“ + Rufname . „verstanden“ . Anweisung wiederholen (beim Truppführer bleiben, am Schlauch Richtung Haustür ziehen, mit Lampe bemerkbar machen) . „kommen“",
             "onSuccess": "n_st",
             "onFailure": "n_bestaetigen_fail",
@@ -208,7 +208,7 @@
     "n_bestaetigen_fail": {
       "id": "n_bestaetigen_fail",
       "role": "truppmann",
-      "narrative": "**Feedback:** Nach dem Mayday gehört der Funk dem Notfall: **kurz bestätigen**, dann nur noch Wesentliches.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – verstanden: bleibe beim Truppführer, ziehe ihn am Schlauch Richtung Haustür, mache mich mit der Lampe bemerkbar – kommen.“*",
+      "narrative": "**Feedback:** Nach dem Mayday gehört der Funk dem Notfall: **kurz bestätigen**, dann nur noch Wesentliches.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 17/42/1 – verstanden: bleibe beim Truppführer, ziehe ihn am Schlauch Richtung Haustür, mache mich mit der Lampe bemerkbar – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -235,7 +235,7 @@
               "im Freien",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – Truppführer durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 17/42/1 – Truppführer durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.",
             "briefing": "„hier“ + Rufname . Truppführer durch Sicherheitstrupp gerettet . an den Rettungsdienst übergeben . Angriffstrupp vollständig im Freien . „kommen“ – Aufhebung durch den Gruppenführer",
             "onSuccess": "n_end",
             "onFailure": "n_st_fail",
@@ -248,7 +248,7 @@
     "n_st_fail": {
       "id": "n_st_fail",
       "role": "truppmann",
-      "narrative": "**Feedback:** Sie melden das **Ergebnis**, der **Gruppenführer bzw. Einsatzleiter** hebt Mayday und Funkbeschränkung auf.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – Truppführer durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.“*",
+      "narrative": "**Feedback:** Sie melden das **Ergebnis**, der **Gruppenführer bzw. Einsatzleiter** hebt Mayday und Funkbeschränkung auf.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 17/42/1 – Truppführer durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -260,7 +260,7 @@
     "n_end": {
       "id": "n_end",
       "role": "truppmann",
-      "narrative": "**Gruppenführer:** „Florian Neuhaus 44/1 an alle: Atemschutznotfall beendet, Funkverkehr wieder frei.“\n\nSie haben richtig gehandelt: sofort Notruftaste und Mayday, präzise Lage, beim Truppführer geblieben, Schlauch nie losgelassen.\n\n> Nach einem Atemschutznotfall lassen sich **beide** Geräteträger vom Rettungsdienst untersuchen. Die **PSNV** (Psychosoziale Notfallversorgung für Einsatzkräfte) wird angeboten. Sie gehen nicht wieder vor.\n\n**Übung abgeschlossen! 🏆**",
+      "narrative": "**Gruppenführer:** „Florian Neuhaus 17/42/1 an alle: Atemschutznotfall beendet, Funkverkehr wieder frei.“\n\nSie haben richtig gehandelt: sofort Notruftaste und Mayday, präzise Lage, beim Truppführer geblieben, Schlauch nie losgelassen.\n\n> Nach einem Atemschutznotfall lassen sich **beide** Geräteträger vom Rettungsdienst untersuchen. Die **PSNV** (Psychosoziale Notfallversorgung für Einsatzkräfte) wird angeboten. Sie gehen nicht wieder vor.\n\n**Übung abgeschlossen! 🏆**",
       "actions": [
         {
           "id": "restart",

@@ -10,7 +10,7 @@ s = S("wasserfoerderung_lange_wegstrecke", "Wasserförderung über lange Wegstre
       TF, "n_start")
 s.radio("n_start",
         "Scheunenbrand auf einem Aussiedlerhof bei Neuhaus. Hydranten gibt es dort nicht. Löschwasser kommt aus einem **Weiher rund 900 m entfernt** – über eine **Förderstrecke** aus B-Schläuchen in **geschlossener Schaltreihe** (Pumpe speist direkt in Pumpe).\n\n"
-        "Die Kette: **Wasserentnahme** (Pumpe am Weiher, saugt aus dem offenen Gewässer) → **Verstärkerpumpe 1** (Tragkraftspritze etwa auf halber Strecke) → **Einspeisung** (Maschinist von Florian Neuhaus 44/1 am Brandobjekt). Die Pumpen funken im Einsatzstellenfunk unter diesen **funktionalen Rufnamen**.\n\n"
+        "Die Kette: **Wasserentnahme** (Pumpe am Weiher, saugt aus dem offenen Gewässer) → **Verstärkerpumpe 1** (Tragkraftspritze etwa auf halber Strecke) → **Einspeisung** (Maschinist von Florian Neuhaus 17/42/1 am Brandobjekt). Die Pumpen funken im Einsatzstellenfunk unter diesen **funktionalen Rufnamen**.\n\n"
         "Sie sind **Maschinist der Verstärkerpumpe 1**. Ihre Pumpe läuft im Leerlauf, Eingang und Ausgang sind angeschlossen, der Druckabgang ist zu. Der Einsatzleiter hat festgelegt: Die Einspeisung fordert das Wasser an, angefahren wird **von der Wasserentnahme aus**.\n\n"
         "**Einspeisung:** „Verstärkerpumpe 1 von Einspeisung – Einspeisung betriebsbereit, **Wasser marsch** – kommen.“\n\n"
         "Bestätigen Sie und kündigen Sie an, dass Sie den Befehl an die Wasserentnahme weitergeben.",
@@ -105,13 +105,13 @@ s = S("unwetter_einsatzserie", "Unwetter: Einsatzserie über die ILS",
       "Einsteiger: Bei einer Sturmlage nacheinander Einsätze der ILS über Sprechfunk übernehmen, Aufträge quittieren und wiederholen, Status 3/4/1 per Taste senden, eine Gefahr für Personen vorrangig melden und die überlastete Sprechgruppe nur für das Nötige nutzen. 4 Funk-Schritte.",
       GF, "n_auftrag1")
 s.radio("n_auftrag1",
-        "Ein **Sturmtief** zieht über den Landkreis. Bei der ILS gehen Dutzende Notrufe ein, die Sprechgruppe ist dauernd belegt. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**, die Gruppe ist im Gerätehaus besetzt (**Status 2**).\n\n"
+        "Ein **Sturmtief** zieht über den Landkreis. Bei der ILS gehen Dutzende Notrufe ein, die Sprechgruppe ist dauernd belegt. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1**, die Gruppe ist im Gerätehaus besetzt (**Status 2**).\n\n"
         "> Bei Unwetterlagen vergibt die ILS Einsätze oft nacheinander per Sprechfunk an bereitstehende Fahrzeuge. Wie genau das läuft (Sprechfunk, Fax, Einsatzmonitor, örtliche Einsatzleitung), regelt **Ihre ILS** bzw. der Landkreis.\n\n"
-        "**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Einsatzauftrag: **Baum auf Fahrbahn**, Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz. Fahrbahn komplett blockiert, keine Personen betroffen – kommen.“\n\n"
+        "**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Einsatzauftrag: **Baum auf Fahrbahn**, Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz. Fahrbahn komplett blockiert, keine Personen betroffen – kommen.“\n\n"
         "Quittieren Sie den Auftrag und wiederholen Sie die wichtigen Punkte.",
         "Auftrag quittieren",
         ["Florian Neuhaus", "verstanden", "Baum", "Kreisstraße", "Waldparkplatz", "kommen"],
-        "Hier Florian Neuhaus 44/1 – verstanden: Baum auf Fahrbahn, Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – verstanden: Baum auf Fahrbahn, Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz – kommen.",
         "„hier“ + eigener Rufname . „verstanden“ . Einsatzart (Baum auf Fahrbahn) . Ort (Kreisstraße Neuhaus – Adelsdorf, Höhe Waldparkplatz) . „kommen“",
         "n_ausruecken",
         "Auftrag quittiert und Ort wiederholt.",
@@ -120,7 +120,7 @@ s.radio("n_auftrag1",
 s.choice("n_ausruecken",
          "**Leitstelle:** „Verstanden – Ende.“\n\nSie rücken aus. Was senden Sie?",
          [("⌨️ Status 3 drücken", "n_baum_fertig"),
-          ("📞 Leitstelle anrufen: „Florian Neuhaus 44/1 rückt aus“", None,
+          ("📞 Leitstelle anrufen: „Florian Neuhaus 17/42/1 rückt aus“", None,
            "Das Ausrücken wird mit **Status 3** gedrückt, nicht gesprochen. Bei einer Unwetterlage ist jedes unnötige Gespräch eines zu viel – andere warten auf die Sprechgruppe."),
           ("⌨️ Gar nichts – die ILS hat Ihnen den Einsatz ja selbst gegeben", None,
            "Die ILS muss sehen, dass Sie den Auftrag **übernommen** haben und unterwegs sind. Das geht mit **Status 3** – ohne ein Wort zu sprechen.")])
@@ -134,11 +134,11 @@ s.choice("n_baum_fertig",
            "**Status 2** heißt „einsatzbereit auf Wache“. Sie stehen aber noch an der Kreisstraße und sind **über Funk** einsatzbereit – also **Status 1**.")])
 s.radio("n_auftrag2",
         "Kaum ist Status 1 gesendet, kommt der nächste Auftrag:\n\n"
-        "**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – nächster Einsatz: **Keller unter Wasser**, Neuhaus, **Lindenweg 7**. Wasser etwa 30 Zentimeter hoch, Bewohner wohlauf, Heizung im Keller – kommen.“\n\n"
+        "**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – nächster Einsatz: **Keller unter Wasser**, Neuhaus, **Lindenweg 7**. Wasser etwa 30 Zentimeter hoch, Bewohner wohlauf, Heizung im Keller – kommen.“\n\n"
         "Quittieren und wiederholen Sie.",
         "Zweiten Auftrag quittieren",
         ["Florian Neuhaus", "verstanden", "Keller", "Lindenweg 7", "Heizung", "kommen"],
-        "Hier Florian Neuhaus 44/1 – verstanden: Keller unter Wasser, Lindenweg 7, Heizung im Keller – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – verstanden: Keller unter Wasser, Lindenweg 7, Heizung im Keller – kommen.",
         "„hier“ + eigener Rufname . „verstanden“ . Einsatzart (Keller unter Wasser) . Ort (Lindenweg 7) . wichtiger Hinweis (Heizung im Keller) . „kommen“",
         "n_unterwegs",
         "Zweiter Auftrag quittiert – mit dem Hinweis auf die Heizung.",
@@ -153,11 +153,11 @@ s.choice("n_unterwegs",
            "Ohne Meldung glaubt die ILS, Sie seien auf dem Weg zum Lindenweg. Sie weiß nichts von der neuen Gefahrenstelle und kann weder eine Drehleiter schicken noch den Keller umplanen. Eine **kurze** Meldung ist hier **nötig**.")])
 s.radio("n_meldung",
         "Ihre Gruppe hat die Kinder in Sicherheit gebracht und sperrt den Gehweg großräumig ab. Ziegel fallen weiter – zum Sichern des Daches brauchen Sie eine **Drehleiter**.\n\n"
-        "**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Sprechwunsch – kommen.“\n\n"
+        "**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Sprechwunsch – kommen.“\n\n"
         "Melden Sie kurz nach Schema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung** – und dass der Keller warten muss.",
         "Neue Gefahrenstelle melden",
         ["Florian Neuhaus", "Hauptstraße 3", "Dachziegel", "Bushaltestelle", "abgesperrt", "Drehleiter", "Lindenweg", "kommen"],
-        "Hier Florian Neuhaus 44/1 – auf Anfahrt Lindenweg angehalten: Hauptstraße 3, Sturm reißt Dachziegel ab, Gefahr für Personen an der Bushaltestelle. Personen in Sicherheit, Gehweg abgesperrt. Nachforderung: Drehleiter zum Sichern des Daches. Lindenweg 7 übernehmen wir anschließend – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – auf Anfahrt Lindenweg angehalten: Hauptstraße 3, Sturm reißt Dachziegel ab, Gefahr für Personen an der Bushaltestelle. Personen in Sicherheit, Gehweg abgesperrt. Nachforderung: Drehleiter zum Sichern des Daches. Lindenweg 7 übernehmen wir anschließend – kommen.",
         "„hier“ + Rufname . WO: Hauptstraße 3 . WAS: Dachziegel fallen . MENSCHENLEBEN: Gefahr für Personen an der Bushaltestelle, jetzt in Sicherheit . MASSNAHMEN: Gehweg abgesperrt . NACHFORDERUNG: Drehleiter . Hinweis: Lindenweg 7 anschließend . „kommen“",
         "n_disziplin",
         "Kurze, vollständige Meldung – die ILS kann neu disponieren.",
@@ -174,11 +174,11 @@ s.choice("n_disziplin",
            "Der **priorisierte Sprechwunsch (Status 0)** ist für Notfälle und Gefahr im Verzug – nicht für Fragen. Die Verwendung ist regional geregelt; Missbrauch blockiert die echten Notfälle.")])
 s.radio("n_abgearbeitet",
         "Der Keller ist ausgepumpt, die Bewohner kümmern sich um den Rest. Bevor Sie Status 1 drücken, ruft Sie die ILS:\n\n"
-        "**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Frage Stand Lindenweg 7 – kommen.“\n\n"
+        "**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Frage Stand Lindenweg 7 – kommen.“\n\n"
         "Antworten Sie **so kurz wie möglich**.",
         "Kurz zurückmelden",
         ["Florian Neuhaus", "Lindenweg 7", "abgearbeitet", "einsatzbereit", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Lindenweg 7 Einsatzstelle abgearbeitet, wieder einsatzbereit – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Lindenweg 7 Einsatzstelle abgearbeitet, wieder einsatzbereit – kommen.",
         "„hier“ + Rufname . Ort (Lindenweg 7) . „Einsatzstelle abgearbeitet“ . „wieder einsatzbereit“ . „kommen“ – danach Status 1 drücken",
         "n_end",
         "Kurz und eindeutig: abgearbeitet und einsatzbereit.",
@@ -194,7 +194,7 @@ s = S("manv_erstmeldung", "MANV: Erstmeldung als ersteintreffende Einheit",
       "Profi: Als Gruppenführer der ersteintreffenden Einheit an einem Busunfall mit vielen Verletzten den Überblick gewinnen statt sofort zu behandeln, die Erstmeldung mit „MANV“ und geschätzter Patientenzahl absetzen, nach MANV-Konzept nachfordern, Zufahrt und Bereitstellungsraum festlegen und die Sichtung durch den Rettungsdienst unterstützen. 4 Funk-Schritte.",
       GF, "n_start")
 s.choice("n_start",
-         "Alarm: **„THL – Verkehrsunfall mit Bus – Staatsstraße Neuhaus – Adelsdorf“**. Sie sind Gruppenführer auf **Florian Neuhaus 44/1** (1/8) und treffen als **erste Einheit** ein – der Rettungsdienst ist noch nicht da. Sie haben **Status 4** gedrückt.\n\n"
+         "Alarm: **„THL – Verkehrsunfall mit Bus – Staatsstraße Neuhaus – Adelsdorf“**. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1** (1/8) und treffen als **erste Einheit** ein – der Rettungsdienst ist noch nicht da. Sie haben **Status 4** gedrückt.\n\n"
          "Ein **Reisebus** ist von der Fahrbahn abgekommen und liegt **auf der Seite im Straßengraben**. Mehrere Menschen laufen blutend auf der Straße umher, einige sitzen oder liegen am Rand, aus dem Bus hört man Hilferufe. Es riecht nach Diesel.\n\n"
          "Ein Fahrgast zieht Sie am Arm: „Helfen Sie meiner Frau, sie blutet am Kopf!“\n\nWas tun Sie als Gruppenführer **zuerst**?",
          [("👀 Kurz erkunden: einmal um die Einsatzstelle, Gefahren erfassen, Zahl der Verletzten grob schätzen – dann sofort melden", "n_aufstellung"),
@@ -211,11 +211,11 @@ s.choice("n_aufstellung",
           ("🅿️ Erst einmal nichts festlegen – das macht später der Rettungsdienst", None,
            "Der Rettungsdienst kommt erst in einigen Minuten. Bis dahin parken Ersthelfer und Schaulustige die Straße zu. **Absicherung, freie Zufahrt und Brandschutz** sind von Anfang an Aufgabe der ersteintreffenden Feuerwehr.")])
 s.radio("n_erstmeldung",
-        "Sie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Sprechwunsch – kommen.“\n\n"
+        "Sie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Sprechwunsch – kommen.“\n\n"
         "Setzen Sie die **Erstmeldung** ab. Nennen Sie ausdrücklich **„MANV“** und die **geschätzte** Zahl der Verletzten („ca.“) – genaue Zahlen gibt es erst nach der Sichtung. Dazu Gefahren und eingeklemmte Personen. Die Nachforderung geben Sie gleich danach.",
         "Erstmeldung MANV",
         ["Florian Neuhaus", "MANV", "Reisebus", "ca. 25", "Verletzte", "eingeklemmt", "Diesel", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Erstmeldung MANV: Staatsstraße Neuhaus – Adelsdorf, Reisebus auf der Seite im Graben. Ca. 25 Verletzte, davon mindestens zwei im Bus eingeklemmt. Diesel läuft aus, Bus instabil. Einsatzstelle wird abgesichert, Brandschutz wird aufgebaut. Nachforderung folgt sofort – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Erstmeldung MANV: Staatsstraße Neuhaus – Adelsdorf, Reisebus auf der Seite im Graben. Ca. 25 Verletzte, davon mindestens zwei im Bus eingeklemmt. Diesel läuft aus, Bus instabil. Einsatzstelle wird abgesichert, Brandschutz wird aufgebaut. Nachforderung folgt sofort – kommen.",
         "„hier“ + Rufname + „Erstmeldung MANV“ . WO: Staatsstraße Neuhaus – Adelsdorf . WAS: Reisebus auf der Seite im Graben . MENSCHENLEBEN: ca. 25 Verletzte, mind. 2 eingeklemmt . Gefahren: Diesel läuft aus, Bus instabil . Maßnahmen: Absicherung, Brandschutz . „Nachforderung folgt sofort“ . „kommen“",
         "n_nachforderung",
         "Erstmeldung mit „MANV“ und geschätzter Patientenzahl – die ILS kann das MANV-Konzept auslösen.",
@@ -226,7 +226,7 @@ s.radio("n_nachforderung",
         "Fordern Sie nach: **Rettungsdienst nach dem MANV-Alarmplan Ihrer ILS** einschließlich **Leitendem Notarzt** und **Organisatorischem Leiter Rettungsdienst**, für die Eingeklemmten **technische Rettung** (Rüstwagen, weitere Feuerwehr). Nennen Sie die **Zufahrt** und schlagen Sie einen **Bereitstellungsraum** vor: den Parkplatz an der Mühle, etwa 300 m Richtung Neuhaus.",
         "Nachforderung und Zufahrt",
         ["Florian Neuhaus", "Leitender Notarzt", "Organisatorischer Leiter", "Rüstwagen", "Zufahrt", "Bereitstellungsraum", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Nachforderung: Rettungsdienst nach MANV-Alarmplan, dazu Leitender Notarzt und Organisatorischer Leiter Rettungsdienst. Für zwei Eingeklemmte Rüstwagen und Florian Adelsdorf 44/1. Zufahrt nur von Neuhaus her, Bereitstellungsraum Parkplatz an der Mühle – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Nachforderung: Rettungsdienst nach MANV-Alarmplan, dazu Leitender Notarzt und Organisatorischer Leiter Rettungsdienst. Für zwei Eingeklemmte Rüstwagen und Florian Adelsdorf 44/1. Zufahrt nur von Neuhaus her, Bereitstellungsraum Parkplatz an der Mühle – kommen.",
         "„hier“ + Rufname . Nachforderung: Rettungsdienst nach MANV-Alarmplan, Leitender Notarzt, Organisatorischer Leiter Rettungsdienst . technische Rettung: Rüstwagen + weitere Feuerwehr (Florian Adelsdorf 44/1) . Zufahrt (von Neuhaus her) . Bereitstellungsraum (Parkplatz an der Mühle) . „kommen“",
         "n_sichtung",
         "Nachforderung nach MANV-Konzept mit Zufahrt und Bereitstellungsraum.",
@@ -254,10 +254,10 @@ s.radio("n_zufahrt",
 s.radio("n_folge",
         "**Schlauchtrupp:** „Hier Schlauchtrupp – verstanden – Ende.“\n\n"
         "Inzwischen sind ein Notarzt und mehrere RTW eingetroffen, die **Sichtung durch den Rettungsdienst läuft**. Der Bus ist gesichert, ein Schnellangriff steht, der ausgelaufene Diesel ist abgestreut. Die gehfähigen Verletzten werden an der Sammelstelle am Feldweg betreut. Der Rüstwagen ist da, die **technische Rettung der zwei Eingeklemmten** hat begonnen.\n\n"
-        "Die Leitstelle ruft Sie:\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Frage Lage – kommen.“\n\nGeben Sie eine kurze **Folgemeldung**.",
+        "Die Leitstelle ruft Sie:\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Frage Lage – kommen.“\n\nGeben Sie eine kurze **Folgemeldung**.",
         "Folgemeldung",
         ["Florian Neuhaus", "Folgemeldung", "Sichtung", "Rettungsdienst", "Sammelstelle", "technische Rettung", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Folgemeldung: Sichtung durch den Rettungsdienst läuft. Gehfähige Verletzte an der Sammelstelle am Feldweg betreut. Bus gesichert, Brandschutz steht, technische Rettung der zwei Eingeklemmten läuft. Zufahrt frei – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Folgemeldung: Sichtung durch den Rettungsdienst läuft. Gehfähige Verletzte an der Sammelstelle am Feldweg betreut. Bus gesichert, Brandschutz steht, technische Rettung der zwei Eingeklemmten läuft. Zufahrt frei – kommen.",
         "„hier“ + Rufname + „Folgemeldung“ . Sichtung durch den Rettungsdienst läuft . Gehfähige an der Sammelstelle (Feldweg) . Bus gesichert, Brandschutz steht . technische Rettung der 2 Eingeklemmten läuft . Zufahrt frei . „kommen“",
         "n_end",
         "Folgemeldung kurz und vollständig – ohne Namen, ohne medizinische Details.",

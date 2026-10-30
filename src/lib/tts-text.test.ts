@@ -6,6 +6,10 @@ describe('ttsText', () => {
     expect(ttsText('Florian Neuhaus 44/1 – kommen')).toBe('Florian Neuhaus 44 1 – kommen');
   });
 
+  it('liest dreiteilige Funkrufnamen ohne Bruch', () => {
+    expect(ttsText('Florian Neuhaus 17/42/1')).toBe('Florian Neuhaus 17 42 1');
+  });
+
   it('trennt auch mit Leerzeichen um den Schrägstrich', () => {
     expect(ttsText('Florian 11 / 2')).toBe('Florian 11 2');
   });

@@ -32,7 +32,7 @@
     "n_start": {
       "id": "n_start",
       "role": "gruppenführer_a",
-      "narrative": "Alarm: **„THL – Verkehrsunfall mit Bus – Staatsstraße Neuhaus – Adelsdorf“**. Sie sind Gruppenführer auf **Florian Neuhaus 44/1** (1/8) und treffen als **erste Einheit** ein – der Rettungsdienst ist noch nicht da. Sie haben **Status 4** gedrückt.\n\nEin **Reisebus** ist von der Fahrbahn abgekommen und liegt **auf der Seite im Straßengraben**. Mehrere Menschen laufen blutend auf der Straße umher, einige sitzen oder liegen am Rand, aus dem Bus hört man Hilferufe. Es riecht nach Diesel.\n\nEin Fahrgast zieht Sie am Arm: „Helfen Sie meiner Frau, sie blutet am Kopf!“\n\nWas tun Sie als Gruppenführer **zuerst**?",
+      "narrative": "Alarm: **„THL – Verkehrsunfall mit Bus – Staatsstraße Neuhaus – Adelsdorf“**. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1** (1/8) und treffen als **erste Einheit** ein – der Rettungsdienst ist noch nicht da. Sie haben **Status 4** gedrückt.\n\nEin **Reisebus** ist von der Fahrbahn abgekommen und liegt **auf der Seite im Straßengraben**. Mehrere Menschen laufen blutend auf der Straße umher, einige sitzen oder liegen am Rand, aus dem Bus hört man Hilferufe. Es riecht nach Diesel.\n\nEin Fahrgast zieht Sie am Arm: „Helfen Sie meiner Frau, sie blutet am Kopf!“\n\nWas tun Sie als Gruppenführer **zuerst**?",
       "actions": [
         {
           "id": "opt0",
@@ -100,7 +100,7 @@
     "n_erstmeldung": {
       "id": "n_erstmeldung",
       "role": "gruppenführer_a",
-      "narrative": "Sie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Sprechwunsch – kommen.“\n\nSetzen Sie die **Erstmeldung** ab. Nennen Sie ausdrücklich **„MANV“** und die **geschätzte** Zahl der Verletzten („ca.“) – genaue Zahlen gibt es erst nach der Sichtung. Dazu Gefahren und eingeklemmte Personen. Die Nachforderung geben Sie gleich danach.",
+      "narrative": "Sie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Sprechwunsch – kommen.“\n\nSetzen Sie die **Erstmeldung** ab. Nennen Sie ausdrücklich **„MANV“** und die **geschätzte** Zahl der Verletzten („ca.“) – genaue Zahlen gibt es erst nach der Sichtung. Dazu Gefahren und eingeklemmte Personen. Die Nachforderung geben Sie gleich danach.",
       "actions": [
         {
           "id": "radio_erstmeldung",
@@ -116,7 +116,7 @@
               "Diesel",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Erstmeldung MANV: Staatsstraße Neuhaus – Adelsdorf, Reisebus auf der Seite im Graben. Ca. 25 Verletzte, davon mindestens zwei im Bus eingeklemmt. Diesel läuft aus, Bus instabil. Einsatzstelle wird abgesichert, Brandschutz wird aufgebaut. Nachforderung folgt sofort – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Erstmeldung MANV: Staatsstraße Neuhaus – Adelsdorf, Reisebus auf der Seite im Graben. Ca. 25 Verletzte, davon mindestens zwei im Bus eingeklemmt. Diesel läuft aus, Bus instabil. Einsatzstelle wird abgesichert, Brandschutz wird aufgebaut. Nachforderung folgt sofort – kommen.",
             "briefing": "„hier“ + Rufname + „Erstmeldung MANV“ . WO: Staatsstraße Neuhaus – Adelsdorf . WAS: Reisebus auf der Seite im Graben . MENSCHENLEBEN: ca. 25 Verletzte, mind. 2 eingeklemmt . Gefahren: Diesel läuft aus, Bus instabil . Maßnahmen: Absicherung, Brandschutz . „Nachforderung folgt sofort“ . „kommen“",
             "onSuccess": "n_nachforderung",
             "onFailure": "n_erstmeldung_fail",
@@ -129,7 +129,7 @@
     "n_erstmeldung_fail": {
       "id": "n_erstmeldung_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Das Stichwort **„MANV“** (Massenanfall von Verletzten) und eine **geschätzte Patientenzahl** sind die wichtigsten Informationen: Damit löst die ILS ihr **MANV-Konzept** aus und alarmiert Rettungsmittel in großer Zahl. Schätzen ist richtig – „ca.“ sagen, nicht minutenlang zählen.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Erstmeldung MANV: Staatsstraße Neuhaus – Adelsdorf, Reisebus auf der Seite im Graben. Ca. 25 Verletzte, davon mindestens zwei im Bus eingeklemmt. Diesel läuft aus, Bus instabil. Einsatzstelle wird abgesichert, Brandschutz wird aufgebaut. Nachforderung folgt sofort – kommen.“*",
+      "narrative": "**Feedback:** Das Stichwort **„MANV“** (Massenanfall von Verletzten) und eine **geschätzte Patientenzahl** sind die wichtigsten Informationen: Damit löst die ILS ihr **MANV-Konzept** aus und alarmiert Rettungsmittel in großer Zahl. Schätzen ist richtig – „ca.“ sagen, nicht minutenlang zählen.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Erstmeldung MANV: Staatsstraße Neuhaus – Adelsdorf, Reisebus auf der Seite im Graben. Ca. 25 Verletzte, davon mindestens zwei im Bus eingeklemmt. Diesel läuft aus, Bus instabil. Einsatzstelle wird abgesichert, Brandschutz wird aufgebaut. Nachforderung folgt sofort – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -156,7 +156,7 @@
               "Bereitstellungsraum",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Nachforderung: Rettungsdienst nach MANV-Alarmplan, dazu Leitender Notarzt und Organisatorischer Leiter Rettungsdienst. Für zwei Eingeklemmte Rüstwagen und Florian Adelsdorf 44/1. Zufahrt nur von Neuhaus her, Bereitstellungsraum Parkplatz an der Mühle – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Nachforderung: Rettungsdienst nach MANV-Alarmplan, dazu Leitender Notarzt und Organisatorischer Leiter Rettungsdienst. Für zwei Eingeklemmte Rüstwagen und Florian Adelsdorf 44/1. Zufahrt nur von Neuhaus her, Bereitstellungsraum Parkplatz an der Mühle – kommen.",
             "briefing": "„hier“ + Rufname . Nachforderung: Rettungsdienst nach MANV-Alarmplan, Leitender Notarzt, Organisatorischer Leiter Rettungsdienst . technische Rettung: Rüstwagen + weitere Feuerwehr (Florian Adelsdorf 44/1) . Zufahrt (von Neuhaus her) . Bereitstellungsraum (Parkplatz an der Mühle) . „kommen“",
             "onSuccess": "n_sichtung",
             "onFailure": "n_nachforderung_fail",
@@ -169,7 +169,7 @@
     "n_nachforderung_fail": {
       "id": "n_nachforderung_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Bei einem MANV braucht der Rettungsdienst eine eigene **Führung**: **Leitender Notarzt (LNA)** und **Organisatorischer Leiter Rettungsdienst (OrgL)**. Welche Kräfte bei welchem Stichwort kommen, steht im **Alarmplan Ihrer ILS**. Die vielen Rettungsmittel sammeln sich im **Bereitstellungsraum** und werden von dort gezielt an die Einsatzstelle geholt – so bleibt die Zufahrt frei.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Nachforderung: Rettungsdienst nach MANV-Alarmplan, dazu Leitender Notarzt und Organisatorischer Leiter Rettungsdienst. Für zwei Eingeklemmte Rüstwagen und Florian Adelsdorf 44/1. Zufahrt nur von Neuhaus her, Bereitstellungsraum Parkplatz an der Mühle – kommen.“*",
+      "narrative": "**Feedback:** Bei einem MANV braucht der Rettungsdienst eine eigene **Führung**: **Leitender Notarzt (LNA)** und **Organisatorischer Leiter Rettungsdienst (OrgL)**. Welche Kräfte bei welchem Stichwort kommen, steht im **Alarmplan Ihrer ILS**. Die vielen Rettungsmittel sammeln sich im **Bereitstellungsraum** und werden von dort gezielt an die Einsatzstelle geholt – so bleibt die Zufahrt frei.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Nachforderung: Rettungsdienst nach MANV-Alarmplan, dazu Leitender Notarzt und Organisatorischer Leiter Rettungsdienst. Für zwei Eingeklemmte Rüstwagen und Florian Adelsdorf 44/1. Zufahrt nur von Neuhaus her, Bereitstellungsraum Parkplatz an der Mühle – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -268,7 +268,7 @@
     "n_folge": {
       "id": "n_folge",
       "role": "gruppenführer_a",
-      "narrative": "**Schlauchtrupp:** „Hier Schlauchtrupp – verstanden – Ende.“\n\nInzwischen sind ein Notarzt und mehrere RTW eingetroffen, die **Sichtung durch den Rettungsdienst läuft**. Der Bus ist gesichert, ein Schnellangriff steht, der ausgelaufene Diesel ist abgestreut. Die gehfähigen Verletzten werden an der Sammelstelle am Feldweg betreut. Der Rüstwagen ist da, die **technische Rettung der zwei Eingeklemmten** hat begonnen.\n\nDie Leitstelle ruft Sie:\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Frage Lage – kommen.“\n\nGeben Sie eine kurze **Folgemeldung**.",
+      "narrative": "**Schlauchtrupp:** „Hier Schlauchtrupp – verstanden – Ende.“\n\nInzwischen sind ein Notarzt und mehrere RTW eingetroffen, die **Sichtung durch den Rettungsdienst läuft**. Der Bus ist gesichert, ein Schnellangriff steht, der ausgelaufene Diesel ist abgestreut. Die gehfähigen Verletzten werden an der Sammelstelle am Feldweg betreut. Der Rüstwagen ist da, die **technische Rettung der zwei Eingeklemmten** hat begonnen.\n\nDie Leitstelle ruft Sie:\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Frage Lage – kommen.“\n\nGeben Sie eine kurze **Folgemeldung**.",
       "actions": [
         {
           "id": "radio_folge",
@@ -283,7 +283,7 @@
               "technische Rettung",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Folgemeldung: Sichtung durch den Rettungsdienst läuft. Gehfähige Verletzte an der Sammelstelle am Feldweg betreut. Bus gesichert, Brandschutz steht, technische Rettung der zwei Eingeklemmten läuft. Zufahrt frei – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Folgemeldung: Sichtung durch den Rettungsdienst läuft. Gehfähige Verletzte an der Sammelstelle am Feldweg betreut. Bus gesichert, Brandschutz steht, technische Rettung der zwei Eingeklemmten läuft. Zufahrt frei – kommen.",
             "briefing": "„hier“ + Rufname + „Folgemeldung“ . Sichtung durch den Rettungsdienst läuft . Gehfähige an der Sammelstelle (Feldweg) . Bus gesichert, Brandschutz steht . technische Rettung der 2 Eingeklemmten läuft . Zufahrt frei . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_folge_fail",
@@ -296,7 +296,7 @@
     "n_folge_fail": {
       "id": "n_folge_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** In die Folgemeldung der Feuerwehr gehört, was **Sie** verantworten: Sicherung, Brandschutz, technische Rettung, Zufahrt. Patientenzahlen nach Sichtungskategorien meldet der **Rettungsdienst** (LNA/OrgL) – keine Namen und keine Diagnosen über Funk.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Folgemeldung: Sichtung durch den Rettungsdienst läuft. Gehfähige Verletzte an der Sammelstelle am Feldweg betreut. Bus gesichert, Brandschutz steht, technische Rettung der zwei Eingeklemmten läuft. Zufahrt frei – kommen.“*",
+      "narrative": "**Feedback:** In die Folgemeldung der Feuerwehr gehört, was **Sie** verantworten: Sicherung, Brandschutz, technische Rettung, Zufahrt. Patientenzahlen nach Sichtungskategorien meldet der **Rettungsdienst** (LNA/OrgL) – keine Namen und keine Diagnosen über Funk.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Folgemeldung: Sichtung durch den Rettungsdienst läuft. Gehfähige Verletzte an der Sammelstelle am Feldweg betreut. Bus gesichert, Brandschutz steht, technische Rettung der zwei Eingeklemmten läuft. Zufahrt frei – kommen.“*",
       "actions": [
         {
           "id": "retry",

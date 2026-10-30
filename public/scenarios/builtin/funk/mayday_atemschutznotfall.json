@@ -32,7 +32,7 @@
     "n_start": {
       "id": "n_start",
       "role": "truppführer",
-      "narrative": "Sie sind Truppführer des Angriffstrupps von **Florian Neuhaus 44/1** im Innenangriff, Wohnungsbrand im **zweiten Obergeschoss**. Einsatzleiter ist **Florian Neuhaus 11/1**, gefunkt wird im Einsatzstellenfunk (DMO).\n\n**Lage:** Im Wohnzimmer bricht ein Teil der abgehängten Decke herunter. Ihr **Truppmann ist verschüttet und reagiert nicht**. Der Weg zurück zur Tür ist teilweise versperrt. Ihr Behälterdruck: **80 bar**.\n\nWas tun Sie zuerst?",
+      "narrative": "Sie sind Truppführer des Angriffstrupps von **Florian Neuhaus 17/42/1** im Innenangriff, Wohnungsbrand im **zweiten Obergeschoss**. Einsatzleiter ist **Florian Neuhaus 11/1**, gefunkt wird im Einsatzstellenfunk (DMO).\n\n**Lage:** Im Wohnzimmer bricht ein Teil der abgehängten Decke herunter. Ihr **Truppmann ist verschüttet und reagiert nicht**. Der Weg zurück zur Tür ist teilweise versperrt. Ihr Behälterdruck: **80 bar**.\n\nWas tun Sie zuerst?",
       "actions": [
         {
           "id": "opt0",
@@ -69,8 +69,8 @@
               "verschüttet",
               "kommen"
             ],
-            "hint": "Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 44/1 – zweites Obergeschoss, Brandwohnung, Wohnzimmer – Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt – Mayday, kommen!",
-            "briefing": "Kennwort dreimal: Mayday, Mayday, Mayday . „hier“ + eigener Funkrufname (Angriffstrupp Florian Neuhaus 44/1) . Standort so genau wie möglich (Geschoss, Wohnung, Raum) . Lage (Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt) . Abschluss: „Mayday, kommen“",
+            "hint": "Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 17/42/1 – zweites Obergeschoss, Brandwohnung, Wohnzimmer – Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt – Mayday, kommen!",
+            "briefing": "Kennwort dreimal: Mayday, Mayday, Mayday . „hier“ + eigener Funkrufname (Angriffstrupp Florian Neuhaus 17/42/1) . Standort so genau wie möglich (Geschoss, Wohnung, Raum) . Lage (Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt) . Abschluss: „Mayday, kommen“",
             "onSuccess": "n_lage",
             "onFailure": "n_mayday_fail",
             "feedbackSuccess": "✅ Mayday nach FwDV 7: Kennwort dreimal, Rufname, Standort, Lage, „Mayday, kommen“.",
@@ -82,7 +82,7 @@
     "n_mayday_fail": {
       "id": "n_mayday_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Der Mayday-Notruf hat nach **FwDV 7** eine feste Reihenfolge:\n1. **„Mayday, Mayday, Mayday“**\n2. **„hier“ + eigener Funkrufname**\n3. **Standort** – Geschoss, Wohnung, Raum\n4. **Lage** – Art des Notfalls\n5. **„Mayday, kommen“**\n\nMayday hat **Vorrang vor jedem anderen Funkverkehr**.\n\nBeispiel: *„Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 44/1 – zweites Obergeschoss, Brandwohnung, Wohnzimmer – Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt – Mayday, kommen!“*",
+      "narrative": "**Feedback:** Der Mayday-Notruf hat nach **FwDV 7** eine feste Reihenfolge:\n1. **„Mayday, Mayday, Mayday“**\n2. **„hier“ + eigener Funkrufname**\n3. **Standort** – Geschoss, Wohnung, Raum\n4. **Lage** – Art des Notfalls\n5. **„Mayday, kommen“**\n\nMayday hat **Vorrang vor jedem anderen Funkverkehr**.\n\nBeispiel: *„Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 17/42/1 – zweites Obergeschoss, Brandwohnung, Wohnzimmer – Truppmann verschüttet und bewusstlos, Rückweg teilweise versperrt – Mayday, kommen!“*",
       "actions": [
         {
           "id": "retry",
@@ -108,7 +108,7 @@
               "bar",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – zweites Obergeschoss, Wohnzimmer, links neben dem Fenster zur Straße, Schlauchleitung führt zu uns – Behälterdruck 80 bar – kommen!",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 17/42/1 – zweites Obergeschoss, Wohnzimmer, links neben dem Fenster zur Straße, Schlauchleitung führt zu uns – Behälterdruck 80 bar – kommen!",
             "briefing": "„hier“ + Rufname . genauer Standort mit Anhaltspunkt (2. OG, Wohnzimmer, links neben dem Fenster zur Straße) . Hinweis für den Sicherheitstrupp: Schlauchleitung führt zu uns . Behälterdruck in bar . „kommen“",
             "onSuccess": "n_anweisung",
             "onFailure": "n_lage_fail",
@@ -121,7 +121,7 @@
     "n_lage_fail": {
       "id": "n_lage_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Der Sicherheitstrupp braucht **Geschoss, Raum und einen Anhaltspunkt** (Fenster, Tür, Möbel) und den Hinweis, dass er der **Schlauchleitung** folgen kann. Der **Behälterdruck** zeigt, wie viel Zeit bleibt.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – zweites Obergeschoss, Wohnzimmer, links neben dem Fenster zur Straße, Schlauchleitung führt zu uns – Behälterdruck 80 bar – kommen!“*",
+      "narrative": "**Feedback:** Der Sicherheitstrupp braucht **Geschoss, Raum und einen Anhaltspunkt** (Fenster, Tür, Möbel) und den Hinweis, dass er der **Schlauchleitung** folgen kann. Der **Behälterdruck** zeigt, wie viel Zeit bleibt.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 17/42/1 – zweites Obergeschoss, Wohnzimmer, links neben dem Fenster zur Straße, Schlauchleitung führt zu uns – Behälterdruck 80 bar – kommen!“*",
       "actions": [
         {
           "id": "retry",
@@ -146,7 +146,7 @@
               "Lampe",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – verstanden, bleibe beim Truppmann, mache mich mit der Lampe bemerkbar – kommen.",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 17/42/1 – verstanden, bleibe beim Truppmann, mache mich mit der Lampe bemerkbar – kommen.",
             "briefing": "„hier“ + Rufname . „verstanden“ . Anweisung kurz wiederholen (bleibe beim Truppmann, mache mich mit der Lampe bemerkbar) . „kommen“ – danach Funkdisziplin",
             "onSuccess": "n_rettung",
             "onFailure": "n_anweisung_fail",
@@ -159,7 +159,7 @@
     "n_anweisung_fail": {
       "id": "n_anweisung_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Im Atemschutznotfall gilt **Funkdisziplin**: kurz bestätigen, Anweisung wiederholen, danach nur noch Wichtiges funken.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – verstanden, bleibe beim Truppmann, mache mich mit der Lampe bemerkbar – kommen.“*",
+      "narrative": "**Feedback:** Im Atemschutznotfall gilt **Funkdisziplin**: kurz bestätigen, Anweisung wiederholen, danach nur noch Wichtiges funken.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 17/42/1 – verstanden, bleibe beim Truppmann, mache mich mit der Lampe bemerkbar – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -185,7 +185,7 @@
               "im Freien",
               "kommen"
             ],
-            "hint": "Hier Angriffstrupp Florian Neuhaus 44/1 – Truppmann durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.",
+            "hint": "Hier Angriffstrupp Florian Neuhaus 17/42/1 – Truppmann durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.",
             "briefing": "„hier“ + Rufname . Truppmann durch den Sicherheitstrupp gerettet . an den Rettungsdienst übergeben . Angriffstrupp vollständig im Freien . „kommen“ – die Aufhebung spricht der Einsatzleiter",
             "onSuccess": "n_end",
             "onFailure": "n_rettung_fail",
@@ -198,7 +198,7 @@
     "n_rettung_fail": {
       "id": "n_rettung_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Sie melden das **Ergebnis**. Die **Aufhebung** von Mayday und Funkbeschränkung gibt der **Einsatzleiter** an alle durch – einzelne Funkstellen nehmen den normalen Funkverkehr nicht eigenmächtig wieder auf.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 44/1 – Truppmann durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.“*",
+      "narrative": "**Feedback:** Sie melden das **Ergebnis**. Die **Aufhebung** von Mayday und Funkbeschränkung gibt der **Einsatzleiter** an alle durch – einzelne Funkstellen nehmen den normalen Funkverkehr nicht eigenmächtig wieder auf.\n\nBeispiel: *„Hier Angriffstrupp Florian Neuhaus 17/42/1 – Truppmann durch Sicherheitstrupp gerettet und an den Rettungsdienst übergeben, Angriffstrupp vollständig im Freien – kommen.“*",
       "actions": [
         {
           "id": "retry",

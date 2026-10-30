@@ -8,7 +8,7 @@
     "n_ankunft": {
       "id": "n_ankunft",
       "role": "gruppenführer_a",
-      "narrative": "Ein **78-jähriger, an Demenz erkrankter Mann** wird seit drei Stunden aus einem Seniorenheim in Neuhaus vermisst. Die **Polizei leitet die Suche**, die Feuerwehr unterstützt. Am Sammelplatz Sportplatz führt **Florian Neuhaus 11/1** den Feuerwehr-Abschnitt.\n\nSie treffen als Gruppenführer mit **Florian Neuhaus 44/1** und **1/8** am Sammelplatz ein. Melden Sie sich an und erfragen Sie den Auftrag.",
+      "narrative": "Ein **78-jähriger, an Demenz erkrankter Mann** wird seit drei Stunden aus einem Seniorenheim in Neuhaus vermisst. Die **Polizei leitet die Suche**, die Feuerwehr unterstützt. Am Sammelplatz Sportplatz führt **Florian Neuhaus 11/1** den Feuerwehr-Abschnitt.\n\nSie treffen als Gruppenführer mit **Florian Neuhaus 17/42/1** und **1/8** am Sammelplatz ein. Melden Sie sich an und erfragen Sie den Auftrag.",
       "actions": [
         {
           "id": "radio_ankunft",
@@ -21,8 +21,8 @@
               "Auftrag",
               "kommen"
             ],
-            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – mit Gruppe 1/8 am Sammelplatz Sportplatz eingetroffen, Frage Suchauftrag – kommen.",
-            "briefing": "Anruf: Florian Neuhaus 11/1 von Florian Neuhaus 44/1 . eingetroffen am Sammelplatz Sportplatz . Stärke (1/8 = Gruppe) . Frage Suchauftrag . „kommen“",
+            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – mit Gruppe 1/8 am Sammelplatz Sportplatz eingetroffen, Frage Suchauftrag – kommen.",
+            "briefing": "Anruf: Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 . eingetroffen am Sammelplatz Sportplatz . Stärke (1/8 = Gruppe) . Frage Suchauftrag . „kommen“",
             "onSuccess": "n_auftrag",
             "onFailure": "n_ankunft_fail",
             "feedbackSuccess": "✅ Anmeldung mit Stärke – der Abschnitt weiß, mit wie vielen Kräften er planen kann.",
@@ -34,7 +34,7 @@
     "n_ankunft_fail": {
       "id": "n_ankunft_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Bei Suchen zählt jede Person: Melden Sie sich mit **Stärke** (z. B. **1/8** = ein Führer, acht Mann) an.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – mit Gruppe 1/8 am Sammelplatz Sportplatz eingetroffen, Frage Suchauftrag – kommen.“*",
+      "narrative": "**Feedback:** Bei Suchen zählt jede Person: Melden Sie sich mit **Stärke** (z. B. **1/8** = ein Führer, acht Mann) an.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – mit Gruppe 1/8 am Sammelplatz Sportplatz eingetroffen, Frage Suchauftrag – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -46,7 +46,7 @@
     "n_auftrag": {
       "id": "n_auftrag",
       "role": "gruppenführer_a",
-      "narrative": "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – Auftrag für Florian Neuhaus 44/1: **Suchabschnitt drei**, Waldstück nördlich des Sportplatzes zwischen Feldweg und Bachlauf bis zur Kreisstraße. Suchkette, Abstand höchstens fünf Meter. Gesucht: Mann, 78, graue Jacke, Gehstock. Fundstücke nicht verändern. Bei Auffinden **keine Namen** über Funk – kommen.“\n\nWiederholen Sie die wesentlichen Punkte.",
+      "narrative": "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – Auftrag für Florian Neuhaus 17/42/1: **Suchabschnitt drei**, Waldstück nördlich des Sportplatzes zwischen Feldweg und Bachlauf bis zur Kreisstraße. Suchkette, Abstand höchstens fünf Meter. Gesucht: Mann, 78, graue Jacke, Gehstock. Fundstücke nicht verändern. Bei Auffinden **keine Namen** über Funk – kommen.“\n\nWiederholen Sie die wesentlichen Punkte.",
       "actions": [
         {
           "id": "radio_auftrag",
@@ -62,7 +62,7 @@
               "Suchkette",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – verstanden: Suchabschnitt drei, Waldstück zwischen Feldweg und Bachlauf bis zur Kreisstraße, Suchkette mit höchstens fünf Metern Abstand, graue Jacke, Gehstock – beginnen mit der Suche – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – verstanden: Suchabschnitt drei, Waldstück zwischen Feldweg und Bachlauf bis zur Kreisstraße, Suchkette mit höchstens fünf Metern Abstand, graue Jacke, Gehstock – beginnen mit der Suche – kommen.",
             "briefing": "„hier“ + Rufname . „verstanden“ . Abschnitt und Grenzen (Suchabschnitt drei, Feldweg – Bachlauf – Kreisstraße) . Suchart (Suchkette, max. 5 m) . Merkmale (graue Jacke, Gehstock) . Beginn melden . „kommen“",
             "onSuccess": "n_kette",
             "onFailure": "n_auftrag_fail",
@@ -75,7 +75,7 @@
     "n_auftrag_fail": {
       "id": "n_auftrag_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Die **Abschnittsgrenzen** sind das Wichtigste: Nur so überlappen sich die Abschnitte nicht und es bleiben keine Lücken.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: Suchabschnitt drei, Waldstück zwischen Feldweg und Bachlauf bis zur Kreisstraße, Suchkette mit höchstens fünf Metern Abstand, graue Jacke, Gehstock – beginnen mit der Suche – kommen.“*",
+      "narrative": "**Feedback:** Die **Abschnittsgrenzen** sind das Wichtigste: Nur so überlappen sich die Abschnitte nicht und es bleiben keine Lücken.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – verstanden: Suchabschnitt drei, Waldstück zwischen Feldweg und Bachlauf bis zur Kreisstraße, Suchkette mit höchstens fünf Metern Abstand, graue Jacke, Gehstock – beginnen mit der Suche – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -178,8 +178,8 @@
               "markiert",
               "kommen"
             ],
-            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Fund in Suchabschnitt drei: Gehstock am Bachufer, etwa zweihundert Meter nördlich der Holzbrücke. Fundstelle markiert und nicht verändert – kommen.",
-            "briefing": "Anruf: Florian Neuhaus 11/1 von Florian Neuhaus 44/1 . „Fund“ + Suchabschnitt . was (Gehstock) . wo – mit markantem Punkt oder Koordinaten (Bachufer, ca. 200 m nördlich der Holzbrücke) . markiert und nicht verändert . „kommen“",
+            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – Fund in Suchabschnitt drei: Gehstock am Bachufer, etwa zweihundert Meter nördlich der Holzbrücke. Fundstelle markiert und nicht verändert – kommen.",
+            "briefing": "Anruf: Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 . „Fund“ + Suchabschnitt . was (Gehstock) . wo – mit markantem Punkt oder Koordinaten (Bachufer, ca. 200 m nördlich der Holzbrücke) . markiert und nicht verändert . „kommen“",
             "onSuccess": "n_person",
             "onFailure": "n_fund_melden_fail",
             "feedbackSuccess": "✅ Fund mit Standort gemeldet und gesichert.",
@@ -191,7 +191,7 @@
     "n_fund_melden_fail": {
       "id": "n_fund_melden_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Der Standort muss **für andere auffindbar** sein: markanter Punkt mit Entfernung und Richtung oder Koordinaten aus dem Funkgerät oder der App.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Fund in Suchabschnitt drei: Gehstock am Bachufer, etwa zweihundert Meter nördlich der Holzbrücke. Fundstelle markiert und nicht verändert – kommen.“*",
+      "narrative": "**Feedback:** Der Standort muss **für andere auffindbar** sein: markanter Punkt mit Entfernung und Richtung oder Koordinaten aus dem Funkgerät oder der App.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – Fund in Suchabschnitt drei: Gehstock am Bachufer, etwa zweihundert Meter nördlich der Holzbrücke. Fundstelle markiert und nicht verändert – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -219,7 +219,7 @@
               "Feldweg",
               "kommen"
             ],
-            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Person aufgefunden in Suchabschnitt drei, im Graben am Bachlauf, etwa fünfzig Meter unterhalb des Fundorts Gehstock. Ansprechbar, stark unterkühlt. Erstversorgung läuft, benötigen Rettungsdienst. Zufahrt über den Feldweg ab der Kreisstraße, Einweiser steht an der Kreisstraße – kommen.",
+            "hint": "Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – Person aufgefunden in Suchabschnitt drei, im Graben am Bachlauf, etwa fünfzig Meter unterhalb des Fundorts Gehstock. Ansprechbar, stark unterkühlt. Erstversorgung läuft, benötigen Rettungsdienst. Zufahrt über den Feldweg ab der Kreisstraße, Einweiser steht an der Kreisstraße – kommen.",
             "briefing": "Anruf . „Person aufgefunden“ + Suchabschnitt (keine Namen!) . Fundort . Zustand (ansprechbar, stark unterkühlt) . Maßnahmen (Erstversorgung) . Nachforderung (Rettungsdienst) . Zufahrt + Einweiser . „kommen“",
             "onSuccess": "n_vollzaehlig",
             "onFailure": "n_person_fail",
@@ -232,7 +232,7 @@
     "n_person_fail": {
       "id": "n_person_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Über Funk hören viele mit (auch Scanner). **Keine Namen** der vermissten Person. Der Rettungsdienst braucht eine **befahrbare Zufahrt** und einen **Einweiser**.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Person aufgefunden in Suchabschnitt drei, im Graben am Bachlauf, etwa fünfzig Meter unterhalb des Fundorts Gehstock. Ansprechbar, stark unterkühlt. Erstversorgung läuft, benötigen Rettungsdienst. Zufahrt über den Feldweg ab der Kreisstraße, Einweiser steht an der Kreisstraße – kommen.“*",
+      "narrative": "**Feedback:** Über Funk hören viele mit (auch Scanner). **Keine Namen** der vermissten Person. Der Rettungsdienst braucht eine **befahrbare Zufahrt** und einen **Einweiser**.\n\nBeispiel: *„Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – Person aufgefunden in Suchabschnitt drei, im Graben am Bachlauf, etwa fünfzig Meter unterhalb des Fundorts Gehstock. Ansprechbar, stark unterkühlt. Erstversorgung läuft, benötigen Rettungsdienst. Zufahrt über den Feldweg ab der Kreisstraße, Einweiser steht an der Kreisstraße – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -259,7 +259,7 @@
               "Sammelplatz",
               "Ende"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – verstanden: Person an den Rettungsdienst übergeben, Gruppe vollzählig 1/8, rücken zum Sammelplatz – Ende.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – verstanden: Person an den Rettungsdienst übergeben, Gruppe vollzählig 1/8, rücken zum Sammelplatz – Ende.",
             "briefing": "„hier“ + Rufname . „verstanden“ . Person übergeben . Vollzähligkeit mit Stärke (1/8) . rücken zum Sammelplatz . „Ende“",
             "onSuccess": "n_end",
             "onFailure": "n_vollzaehlig_fail",
@@ -272,7 +272,7 @@
     "n_vollzaehlig_fail": {
       "id": "n_vollzaehlig_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Nach jeder Suche wird die **Vollzähligkeit** gemeldet – im Gelände kann eine Einsatzkraft leicht selbst verloren gehen.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: Person an den Rettungsdienst übergeben, Gruppe vollzählig 1/8, rücken zum Sammelplatz – Ende.“*",
+      "narrative": "**Feedback:** Nach jeder Suche wird die **Vollzähligkeit** gemeldet – im Gelände kann eine Einsatzkraft leicht selbst verloren gehen.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – verstanden: Person an den Rettungsdienst übergeben, Gruppe vollzählig 1/8, rücken zum Sammelplatz – Ende.“*",
       "actions": [
         {
           "id": "retry",

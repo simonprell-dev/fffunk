@@ -8,7 +8,7 @@
     "n_alarm": {
       "id": "n_alarm",
       "role": "gruppenführer_a",
-      "narrative": "Verkehrsunfall auf der Kreisstraße bei Neuhaus, ein Schwerverletzter. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Rettungshubschrauber **Christoph 27** ist alarmiert, Ankunft in etwa acht Minuten. Richten Sie einen Landeplatz ein, der Hubschrauber meldet sich bei Ihnen in der Einsatz-Sprechgruppe – kommen.“\n\nBestätigen Sie.",
+      "narrative": "Verkehrsunfall auf der Kreisstraße bei Neuhaus, ein Schwerverletzter. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1**.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Rettungshubschrauber **Christoph 27** ist alarmiert, Ankunft in etwa acht Minuten. Richten Sie einen Landeplatz ein, der Hubschrauber meldet sich bei Ihnen in der Einsatz-Sprechgruppe – kommen.“\n\nBestätigen Sie.",
       "actions": [
         {
           "id": "radio_alarm",
@@ -22,7 +22,7 @@
               "Landeplatz",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – verstanden: Christoph 27 in etwa acht Minuten, richten Landeplatz ein – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – verstanden: Christoph 27 in etwa acht Minuten, richten Landeplatz ein – kommen.",
             "briefing": "„hier“ + Rufname . „verstanden“ . wiederholen: Christoph 27, Ankunft in etwa 8 Minuten, Landeplatz einrichten . „kommen“",
             "onSuccess": "n_platz",
             "onFailure": "n_alarm_fail",
@@ -35,7 +35,7 @@
     "n_alarm_fail": {
       "id": "n_alarm_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Wiederholen Sie die einsatzwichtigen Inhalte – Rufname des Hubschraubers, Zeit, Auftrag.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: Christoph 27 in etwa acht Minuten, richten Landeplatz ein – kommen.“*",
+      "narrative": "**Feedback:** Wiederholen Sie die einsatzwichtigen Inhalte – Rufname des Hubschraubers, Zeit, Auftrag.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – verstanden: Christoph 27 in etwa acht Minuten, richten Landeplatz ein – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -133,7 +133,7 @@
     "n_daten": {
       "id": "n_daten",
       "role": "gruppenführer_a",
-      "narrative": "**Christoph 27:** „Florian Neuhaus 44/1 von Christoph 27 – im Anflug, Frage Landeplatz – kommen.“\n\nWind: schwach aus **West**. Geben Sie die Landeplatzdaten durch.",
+      "narrative": "**Christoph 27:** „Florian Neuhaus 17/42/1 von Christoph 27 – im Anflug, Frage Landeplatz – kommen.“\n\nWind: schwach aus **West**. Geben Sie die Landeplatzdaten durch.",
       "actions": [
         {
           "id": "radio_daten",
@@ -151,7 +151,7 @@
               "Einweiser",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Landeplatz Wiese etwa 100 Meter südlich der Unfallstelle, östlich der Kreisstraße. Fläche eben, etwa 40 mal 40 Meter. Hindernis: Stromleitung etwa 150 Meter nördlich. Wind schwach aus West. Landeplatz abgesperrt, Einweiser in Warnkleidung – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Landeplatz Wiese etwa 100 Meter südlich der Unfallstelle, östlich der Kreisstraße. Fläche eben, etwa 40 mal 40 Meter. Hindernis: Stromleitung etwa 150 Meter nördlich. Wind schwach aus West. Landeplatz abgesperrt, Einweiser in Warnkleidung – kommen.",
             "briefing": "„hier“ + Rufname . Lage des Landeplatzes (Wiese ca. 100 m südlich, östlich der Straße) . Fläche und Untergrund . Hindernisse (Stromleitung ca. 150 m nördlich) . Wind (Richtung und Stärke) . abgesperrt, Einweiser in Warnkleidung . „kommen“",
             "onSuccess": "n_einweiser",
             "onFailure": "n_daten_fail",
@@ -164,7 +164,7 @@
     "n_daten_fail": {
       "id": "n_daten_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Für den Piloten zählen **Lage, Größe/Untergrund, Hindernisse** (vor allem **Leitungen** – aus der Luft kaum zu sehen) und **Wind**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Landeplatz Wiese etwa 100 Meter südlich der Unfallstelle, östlich der Kreisstraße. Fläche eben, etwa 40 mal 40 Meter. Hindernis: Stromleitung etwa 150 Meter nördlich. Wind schwach aus West. Landeplatz abgesperrt, Einweiser in Warnkleidung – kommen.“*",
+      "narrative": "**Feedback:** Für den Piloten zählen **Lage, Größe/Untergrund, Hindernisse** (vor allem **Leitungen** – aus der Luft kaum zu sehen) und **Wind**.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Landeplatz Wiese etwa 100 Meter südlich der Unfallstelle, östlich der Kreisstraße. Fläche eben, etwa 40 mal 40 Meter. Hindernis: Stromleitung etwa 150 Meter nördlich. Wind schwach aus West. Landeplatz abgesperrt, Einweiser in Warnkleidung – kommen.“*",
       "actions": [
         {
           "id": "retry",

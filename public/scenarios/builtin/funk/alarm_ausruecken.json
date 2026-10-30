@@ -32,7 +32,7 @@
     "n_alarm": {
       "id": "n_alarm",
       "role": "gruppenführer_a",
-      "narrative": "Ihr Funkmeldeempfänger löst aus: **„B 3 – Wohnhaus – Neuhaus, Birkenweg 12 – Rauch aus dem Dachgeschoss“**.\n\nSie sind Gruppenführer auf **Florian Neuhaus 44/1**. Das Fahrzeug ist mit einer Gruppe (**1/8**) besetzt und rückt aus dem Gerätehaus aus.\n\n> In Bayern alarmiert die **Integrierte Leitstelle (ILS)** über Funkmeldeempfänger und Sirene – nicht über Sprechfunk. Fahrzeugzustände werden als **Status per Taste** gesendet.\n\nWas tun Sie beim Ausrücken?",
+      "narrative": "Ihr Funkmeldeempfänger löst aus: **„B 3 – Wohnhaus – Neuhaus, Birkenweg 12 – Rauch aus dem Dachgeschoss“**.\n\nSie sind Gruppenführer auf **Florian Neuhaus 17/42/1**. Das Fahrzeug ist mit einer Gruppe (**1/8**) besetzt und rückt aus dem Gerätehaus aus.\n\n> In Bayern alarmiert die **Integrierte Leitstelle (ILS)** über Funkmeldeempfänger und Sirene – nicht über Sprechfunk. Fahrzeugzustände werden als **Status per Taste** gesendet.\n\nWas tun Sie beim Ausrücken?",
       "actions": [
         {
           "id": "opt0",
@@ -54,7 +54,7 @@
     "n_anruf": {
       "id": "n_anruf",
       "role": "gruppenführer_a",
-      "narrative": "Auf der Anfahrt meldet sich die Leitstelle:\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nBeantworten Sie den Anruf korrekt.",
+      "narrative": "Auf der Anfahrt meldet sich die Leitstelle:\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\nBeantworten Sie den Anruf korrekt.",
       "actions": [
         {
           "id": "radio_anruf",
@@ -65,7 +65,7 @@
               "Florian Neuhaus",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – kommen.",
             "briefing": "Antwort beginnt mit „hier“ . eigener Funkrufname . mit „kommen“ die Sprecherlaubnis zurückgeben",
             "onSuccess": "n_nachinfo",
             "onFailure": "n_anruf_fail",
@@ -78,7 +78,7 @@
     "n_anruf_fail": {
       "id": "n_anruf_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Auf einen Anruf antworten Sie mit **„hier“ + eigenem Funkrufnamen + „kommen“**. Kein „hört“, kein „ja bitte“ – „hört“ ist kein Betriebswort.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – kommen.“*",
+      "narrative": "**Feedback:** Auf einen Anruf antworten Sie mit **„hier“ + eigenem Funkrufnamen + „kommen“**. Kein „hört“, kein „ja bitte“ – „hört“ ist kein Betriebswort.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -104,7 +104,7 @@
               "Keller",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – verstanden: alle Bewohner im Freien, Gasanschluss im Keller – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – verstanden: alle Bewohner im Freien, Gasanschluss im Keller – kommen.",
             "briefing": "Eigener Rufname . „verstanden“ . die wichtigen Inhalte kurz wiederholen (alle Bewohner im Freien, Gasanschluss im Keller) . „kommen“ – die Leitstelle hat das Gespräch eröffnet und beendet es",
             "onSuccess": "n_ankunft",
             "onFailure": "n_nachinfo_fail",
@@ -117,7 +117,7 @@
     "n_nachinfo_fail": {
       "id": "n_nachinfo_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Einsatzwichtige Informationen werden **quittiert und kurz wiederholt** – so merkt die Leitstelle sofort, wenn etwas falsch angekommen ist. Das Gespräch hat die Leitstelle eröffnet, deshalb beendet sie es auch mit „Ende“.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – verstanden: alle Bewohner im Freien, Gasanschluss im Keller – kommen.“*",
+      "narrative": "**Feedback:** Einsatzwichtige Informationen werden **quittiert und kurz wiederholt** – so merkt die Leitstelle sofort, wenn etwas falsch angekommen ist. Das Gespräch hat die Leitstelle eröffnet, deshalb beendet sie es auch mit „Ende“.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – verstanden: alle Bewohner im Freien, Gasanschluss im Keller – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -187,7 +187,7 @@
     "n_lage": {
       "id": "n_lage",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – Sprechwunsch – kommen.“\n\nGeben Sie die **Lagemeldung** nach Schema ab: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**.",
+      "narrative": "**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – Sprechwunsch – kommen.“\n\nGeben Sie die **Lagemeldung** nach Schema ab: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**.",
       "actions": [
         {
           "id": "radio_lage",
@@ -203,7 +203,7 @@
               "keine Nachforderung",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Lagemeldung: Birkenweg 12, freistehendes Einfamilienhaus, Brand im Dachgeschoss. Alle Bewohner im Freien, kein Menschenleben in Gefahr. Brandbekämpfung mit einem Rohr im Innenangriff eingeleitet. Keine Nachforderung – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Lagemeldung: Birkenweg 12, freistehendes Einfamilienhaus, Brand im Dachgeschoss. Alle Bewohner im Freien, kein Menschenleben in Gefahr. Brandbekämpfung mit einem Rohr im Innenangriff eingeleitet. Keine Nachforderung – kommen.",
             "briefing": "Eigener Rufname + „Lagemeldung“ . WO: Birkenweg 12, freistehendes Einfamilienhaus . WAS: Brand im Dachgeschoss . MENSCHENLEBEN: alle Bewohner im Freien, niemand in Gefahr . MASSNAHMEN: ein Rohr im Innenangriff . NACHFORDERUNG: keine . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_lage_fail",
@@ -216,7 +216,7 @@
     "n_lage_fail": {
       "id": "n_lage_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Die Lagemeldung folgt einem festen Schema:\n1. **Wo** – Adresse und Objekt\n2. **Was** – Art und Umfang des Schadens\n3. **Menschenleben in Gefahr** – ja oder nein\n4. **Eigene Maßnahmen**\n5. **Nachforderung** – auch „keine Nachforderung“ ausdrücklich sagen\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lagemeldung: Birkenweg 12, freistehendes Einfamilienhaus, Brand im Dachgeschoss. Alle Bewohner im Freien, kein Menschenleben in Gefahr. Brandbekämpfung mit einem Rohr im Innenangriff eingeleitet. Keine Nachforderung – kommen.“*",
+      "narrative": "**Feedback:** Die Lagemeldung folgt einem festen Schema:\n1. **Wo** – Adresse und Objekt\n2. **Was** – Art und Umfang des Schadens\n3. **Menschenleben in Gefahr** – ja oder nein\n4. **Eigene Maßnahmen**\n5. **Nachforderung** – auch „keine Nachforderung“ ausdrücklich sagen\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Lagemeldung: Birkenweg 12, freistehendes Einfamilienhaus, Brand im Dachgeschoss. Alle Bewohner im Freien, kein Menschenleben in Gefahr. Brandbekämpfung mit einem Rohr im Innenangriff eingeleitet. Keine Nachforderung – kommen.“*",
       "actions": [
         {
           "id": "retry",

@@ -46,7 +46,7 @@
     "r_start": {
       "id": "r_start",
       "role": "truppmann",
-      "narrative": "Erster Übungsabend bei der Feuerwehr Neuhaus. Du bist **Truppmann im Angriffstrupp** des Löschfahrzeugs **Florian Neuhaus 44/1**. Dein Gruppenführer drückt dir ein Funkgerät in die Hand.\n\n**Gruppenführer:** „Beim Funk gilt immer dieselbe Reihenfolge: **Wen rufst du – von wem – kommen.** Zuerst der Gerufene, dann „von“ und du selbst. „Kommen“ heißt: Jetzt bist du dran.“",
+      "narrative": "Erster Übungsabend bei der Feuerwehr Neuhaus. Du bist **Truppmann im Angriffstrupp** des Löschfahrzeugs **Florian Neuhaus 17/42/1**. Dein Gruppenführer drückt dir ein Funkgerät in die Hand.\n\n**Gruppenführer:** „Beim Funk gilt immer dieselbe Reihenfolge: **Wen rufst du – von wem – kommen.** Zuerst der Gerufene, dann „von“ und du selbst. „Kommen“ heißt: Jetzt bist du dran.“",
       "actions": [
         {
           "id": "ok",
@@ -840,13 +840,13 @@
     "m_speak": {
       "id": "m_speak",
       "role": "truppmann",
-      "narrative": "Notruf ist ausgelöst. Jetzt sprich den Mayday: **wer** (Angriffstrupp Florian Neuhaus 44/1), **wo** (Obergeschoss, Schlafzimmer), **was** (Truppführer bewusstlos, Atemluft 150 bar).",
+      "narrative": "Notruf ist ausgelöst. Jetzt sprich den Mayday: **wer** (Angriffstrupp Florian Neuhaus 17/42/1), **wo** (Obergeschoss, Schlafzimmer), **was** (Truppführer bewusstlos, Atemluft 150 bar).",
       "actions": [
         {
           "id": "funk",
           "label": "Mayday rufen",
           "radioCall": {
-            "hint": "Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 44/1 – Obergeschoss, Schlafzimmer – Truppführer bewusstlos, Atemluft 150 bar – Mayday, kommen!",
+            "hint": "Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 17/42/1 – Obergeschoss, Schlafzimmer – Truppführer bewusstlos, Atemluft 150 bar – Mayday, kommen!",
             "expectedPhrases": [
               "Mayday",
               "Angriffstrupp",

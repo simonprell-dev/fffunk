@@ -17,7 +17,8 @@ import com.getcapacitor.annotation.CapacitorPlugin;
  * Tasten von PoC-Funkgeräten (getestet: Android-9-Gerät mit 2,4"-Display).
  *
  * Event „key“ { key, pressed }:
- *   ptt     – seitliche Sprechtaste (Broadcast android.intent.action.ptt.down/up)
+ *   ptt     – seitliche Sprechtaste (Broadcast android.intent.action.ptt.down/up;
+ *             Cat S62 Pro: com.android.ptt.down/up, Einstellung „Programmierbare Taste“ auf PTT)
  *   sos     – Notruftaste (Broadcast unipro.hotkey.vb.down/up)
  *   next / prev / select – mittlerer Drehknopf (Kanalwähler: KEY_COPY/KEY_OPEN → F3/F4) und Knopfdruck,
  *                          ersatzweise Steuerkreuz. Der Lautstärkeknopf bleibt Lautstärke.
@@ -43,6 +44,8 @@ public class RadioKeysPlugin extends Plugin {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.intent.action.ptt.down");
         filter.addAction("android.intent.action.ptt.up");
+        filter.addAction("com.android.ptt.down");   // Cat S62 Pro: programmierbare Taste im PTT-Modus
+        filter.addAction("com.android.ptt.up");
         filter.addAction("unipro.hotkey.vb.down");
         filter.addAction("unipro.hotkey.vb.up");
         // Die Tasten-Broadcasts kommen vom System, nicht aus der App → EXPORTED (ab Android 14 Pflicht).

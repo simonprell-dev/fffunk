@@ -32,7 +32,7 @@
     "n_anfahrt": {
       "id": "n_anfahrt",
       "role": "gruppenführer_a",
-      "narrative": "Alarm durch die ILS: **Verkehrsunfall mit LKW, Flüssigkeit läuft aus** – Kreisstraße nördlich von Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**, **Status 3** ist gedrückt.\n\nDie Kreisstraße verläuft von **West nach Ost**. Die Fahnen am Ortsrand zeigen: **Wind schwach aus West**. Sie können von Osten (kürzester Weg) oder über die Umgehung von Westen anfahren.\n\nWie fahren Sie an?",
+      "narrative": "Alarm durch die ILS: **Verkehrsunfall mit LKW, Flüssigkeit läuft aus** – Kreisstraße nördlich von Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1**, **Status 3** ist gedrückt.\n\nDie Kreisstraße verläuft von **West nach Ost**. Die Fahnen am Ortsrand zeigen: **Wind schwach aus West**. Sie können von Osten (kürzester Weg) oder über die Umgehung von Westen anfahren.\n\nWie fahren Sie an?",
       "actions": [
         {
           "id": "opt0",
@@ -225,7 +225,7 @@
     "n_lage": {
       "id": "n_lage",
       "role": "gruppenführer_a",
-      "narrative": "**Wassertrupp:** „Hier Wassertrupp – verstanden – Ende.“\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab. Die Nummern der Warntafel sprechen Sie **Ziffer für Ziffer** – erst die obere, dann die untere Zahl. Dazu: Wind, Absperrung und Nachforderung von Gefahrgut-/ABC-Kräften **nach Alarmplan Ihrer ILS**.",
+      "narrative": "**Wassertrupp:** „Hier Wassertrupp – verstanden – Ende.“\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab. Die Nummern der Warntafel sprechen Sie **Ziffer für Ziffer** – erst die obere, dann die untere Zahl. Dazu: Wind, Absperrung und Nachforderung von Gefahrgut-/ABC-Kräften **nach Alarmplan Ihrer ILS**.",
       "actions": [
         {
           "id": "radio_lage",
@@ -241,7 +241,7 @@
               "Nachforderung",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße nördlich Neuhaus, Tank-LKW verunfallt, Flüssigkeit läuft aus. Warntafel: Nummer zur Kennzeichnung der Gefahr drei – drei, UN-Nummer eins – eins – sieben – null. Fahrer aus dem Gefahrenbereich, leicht verletzt. Wind schwach aus West, Absperrung 100 Meter, Brandschutz sichergestellt. Nachforderung: Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Lagemeldung: Kreisstraße nördlich Neuhaus, Tank-LKW verunfallt, Flüssigkeit läuft aus. Warntafel: Nummer zur Kennzeichnung der Gefahr drei – drei, UN-Nummer eins – eins – sieben – null. Fahrer aus dem Gefahrenbereich, leicht verletzt. Wind schwach aus West, Absperrung 100 Meter, Brandschutz sichergestellt. Nachforderung: Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei – kommen.",
             "briefing": "Eigener Rufname + „Lagemeldung“ . WO: Kreisstraße nördlich Neuhaus . WAS: Tank-LKW, Flüssigkeit läuft aus . Warntafel Ziffer für Ziffer: oben drei – drei, unten eins – eins – sieben – null . MENSCHEN: Fahrer aus dem Gefahrenbereich, leicht verletzt . MASSNAHMEN: Wind aus West, Absperrung 100 m, Brandschutz . NACHFORDERUNG: Gefahrgutkräfte nach Alarmplan, Rettungsdienst, Polizei . „kommen“",
             "onSuccess": "n_korr",
             "onFailure": "n_lage_fail",
@@ -254,7 +254,7 @@
     "n_lage_fail": {
       "id": "n_lage_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Zahlen werden im Funk **einzeln** gesprochen – „eins – eins – sieben – null“, nicht „elfhundertsiebzig“. Bei Gefahrgut ist das lebenswichtig: **Eine falsche Ziffer ist ein anderer Stoff.** Wind und Absperrung braucht die ILS, um Spezialkräfte richtig anfahren zu lassen und ggf. die Bevölkerung zu warnen.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße nördlich Neuhaus, Tank-LKW verunfallt, Flüssigkeit läuft aus. Warntafel: Nummer zur Kennzeichnung der Gefahr drei – drei, UN-Nummer eins – eins – sieben – null. Fahrer aus dem Gefahrenbereich, leicht verletzt. Wind schwach aus West, Absperrung 100 Meter, Brandschutz sichergestellt. Nachforderung: Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei – kommen.“*",
+      "narrative": "**Feedback:** Zahlen werden im Funk **einzeln** gesprochen – „eins – eins – sieben – null“, nicht „elfhundertsiebzig“. Bei Gefahrgut ist das lebenswichtig: **Eine falsche Ziffer ist ein anderer Stoff.** Wind und Absperrung braucht die ILS, um Spezialkräfte richtig anfahren zu lassen und ggf. die Bevölkerung zu warnen.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Lagemeldung: Kreisstraße nördlich Neuhaus, Tank-LKW verunfallt, Flüssigkeit läuft aus. Warntafel: Nummer zur Kennzeichnung der Gefahr drei – drei, UN-Nummer eins – eins – sieben – null. Fahrer aus dem Gefahrenbereich, leicht verletzt. Wind schwach aus West, Absperrung 100 Meter, Brandschutz sichergestellt. Nachforderung: Gefahrgutkräfte nach Alarmplan, Rettungsdienst und Polizei – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -325,7 +325,7 @@
               "eins eins sieben null",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – ich wiederhole: UN-Nummer eins – eins – sieben – null. Nummer zur Kennzeichnung der Gefahr drei – drei – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – ich wiederhole: UN-Nummer eins – eins – sieben – null. Nummer zur Kennzeichnung der Gefahr drei – drei – kommen.",
             "briefing": "„hier“ + Rufname . „ich wiederhole“ . UN-Nummer Ziffer für Ziffer: eins – eins – sieben – null . zur Sicherheit auch die obere Zahl: drei – drei . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_korrektur_fail",
@@ -338,7 +338,7 @@
     "n_korrektur_fail": {
       "id": "n_korrektur_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Mit **„ich wiederhole“** geben Sie Ihre eigene Nachricht noch einmal durch. Sprechen Sie langsam und **Ziffer für Ziffer** – „null“ am Ende ist deutlich von „eins“ zu unterscheiden.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – ich wiederhole: UN-Nummer eins – eins – sieben – null. Nummer zur Kennzeichnung der Gefahr drei – drei – kommen.“*",
+      "narrative": "**Feedback:** Mit **„ich wiederhole“** geben Sie Ihre eigene Nachricht noch einmal durch. Sprechen Sie langsam und **Ziffer für Ziffer** – „null“ am Ende ist deutlich von „eins“ zu unterscheiden.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – ich wiederhole: UN-Nummer eins – eins – sieben – null. Nummer zur Kennzeichnung der Gefahr drei – drei – kommen.“*",
       "actions": [
         {
           "id": "retry",

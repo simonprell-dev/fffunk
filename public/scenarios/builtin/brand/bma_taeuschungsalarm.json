@@ -32,7 +32,7 @@
     "n_anfahrt": {
       "id": "n_anfahrt",
       "role": "gruppenführer_a",
-      "narrative": "Alarm durch die ILS: **Brandmeldeanlage** – Druckerei, Industriestraße 7, Gewerbegebiet Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**, **Status 3** ist gedrückt.\n\n> Eine **Brandmeldeanlage (BMA)** meldet über eine Übertragungseinrichtung automatisch an die ILS. Jeder BMA-Alarm wird behandelt wie ein Brand – bis die Erkundung etwas anderes zeigt.\n\nWohin fahren Sie?",
+      "narrative": "Alarm durch die ILS: **Brandmeldeanlage** – Druckerei, Industriestraße 7, Gewerbegebiet Neuhaus. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1**, **Status 3** ist gedrückt.\n\n> Eine **Brandmeldeanlage (BMA)** meldet über eine Übertragungseinrichtung automatisch an die ILS. Jeder BMA-Alarm wird behandelt wie ein Brand – bis die Erkundung etwas anderes zeigt.\n\nWohin fahren Sie?",
       "actions": [
         {
           "id": "opt0",
@@ -273,7 +273,7 @@
     "n_ils": {
       "id": "n_ils",
       "role": "gruppenführer_a",
-      "narrative": "> **Täuschungsalarm oder Fehlalarm?** „Fehlalarm“ wird oft als **Oberbegriff** für jeden Alarm ohne Schadenfeuer benutzt. Ein **Täuschungsalarm** liegt vor, wenn ein Melder auf eine **brandähnliche Kenngröße** reagiert hat – Staub, Wasserdampf, Abgase. Die Anlage hat also funktioniert, wurde aber „getäuscht“. Davon unterscheidet man z. B. einen **technischen Defekt** oder eine **böswillige Auslösung**. Welche Begriffe Ihre ILS in der Rückmeldung erwartet, regelt sie selbst.\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Rückmeldung** ab.",
+      "narrative": "> **Täuschungsalarm oder Fehlalarm?** „Fehlalarm“ wird oft als **Oberbegriff** für jeden Alarm ohne Schadenfeuer benutzt. Ein **Täuschungsalarm** liegt vor, wenn ein Melder auf eine **brandähnliche Kenngröße** reagiert hat – Staub, Wasserdampf, Abgase. Die Anlage hat also funktioniert, wurde aber „getäuscht“. Davon unterscheidet man z. B. einen **technischen Defekt** oder eine **böswillige Auslösung**. Welche Begriffe Ihre ILS in der Rückmeldung erwartet, regelt sie selbst.\n\nSie drücken **Status 5**.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\nGeben Sie die **Rückmeldung** ab.",
       "actions": [
         {
           "id": "radio_ils",
@@ -289,7 +289,7 @@
               "geräumt",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Rückmeldung Brandmeldeanlage Druckerei Industriestraße 7: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer. Anlage zurückgestellt und an den Betreiber übergeben. Einsatzstelle wird geräumt – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Rückmeldung Brandmeldeanlage Druckerei Industriestraße 7: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer. Anlage zurückgestellt und an den Betreiber übergeben. Einsatzstelle wird geräumt – kommen.",
             "briefing": "Eigener Rufname + „Rückmeldung“ . Objekt (BMA Druckerei, Industriestraße 7) . Ergebnis: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer . Anlage zurückgestellt und an den Betreiber übergeben . „Einsatzstelle wird geräumt“ . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_ils_fail",
@@ -302,7 +302,7 @@
     "n_ils_fail": {
       "id": "n_ils_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Die ILS braucht: **Objekt**, **Ergebnis mit Ursache** (Täuschungsalarm durch Staub, kein Feuer), **Übergabe an den Betreiber** und dass Sie die **Einsatzstelle räumen**. Danach folgt auf der Rückfahrt **Status 1**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Rückmeldung Brandmeldeanlage Druckerei Industriestraße 7: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer. Anlage zurückgestellt und an den Betreiber übergeben. Einsatzstelle wird geräumt – kommen.“*",
+      "narrative": "**Feedback:** Die ILS braucht: **Objekt**, **Ergebnis mit Ursache** (Täuschungsalarm durch Staub, kein Feuer), **Übergabe an den Betreiber** und dass Sie die **Einsatzstelle räumen**. Danach folgt auf der Rückfahrt **Status 1**.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Rückmeldung Brandmeldeanlage Druckerei Industriestraße 7: Täuschungsalarm durch Staub von Bauarbeiten, kein Feuer. Anlage zurückgestellt und an den Betreiber übergeben. Einsatzstelle wird geräumt – kommen.“*",
       "actions": [
         {
           "id": "retry",

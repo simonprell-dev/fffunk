@@ -10,7 +10,7 @@ s = S("buchstabieren_din5009", "Buchstabieren: Kennzeichen und Namen durchgeben"
       "Einsteiger: Nach einer Unfallflucht der ILS das Kennzeichen und eine Firmenaufschrift buchstabiert durchgeben, auf „wiederholen Sie alles nach …“ richtig reagieren und Zahlen einzeln sprechen. 5 Funk-Schritte.",
       GF, "n_start")
 s.choice("n_start",
-         "Verkehrsunfall auf der Kreisstraße zwischen Neuhaus und Adelsdorf. Sie sind Gruppenführer auf **Florian Neuhaus 44/1**. Ein Kastenwagen hat einen geparkten PKW gestreift, aus dem PKW läuft etwas Öl aus. **Niemand ist verletzt.** Der Verursacher ist **weitergefahren**.\n\n"
+         "Verkehrsunfall auf der Kreisstraße zwischen Neuhaus und Adelsdorf. Sie sind Gruppenführer auf **Florian Neuhaus 17/42/1**. Ein Kastenwagen hat einen geparkten PKW gestreift, aus dem PKW läuft etwas Öl aus. **Niemand ist verletzt.** Der Verursacher ist **weitergefahren**.\n\n"
          "Ein Zeuge hat sich notiert: weißer Kastenwagen, Aufschrift **„Bäckerei Pfab“**, Kennzeichen **ERH – DA 47**, Unfallzeit **14:32 Uhr**.\n\n"
          "Das wollen Sie der ILS durchgeben. Wie geben Sie die Buchstaben durch?",
          [("🔤 Mit „ich buchstabiere“ ankündigen und jeden Buchstaben mit dem Wort der Buchstabiertafel sprechen: Emil – Richard – Heinrich …", "n_lage"),
@@ -20,11 +20,11 @@ s.choice("n_start",
            "Einzelne Buchstaben klingen im Funk zum Verwechseln ähnlich (**D/T, B/P, E/D, M/N**). Deshalb wird mit einer **Buchstabiertafel** buchstabiert.")])
 s.radio("n_lage",
         "Die Einsatzstelle ist abgesichert, das Öl wird mit Bindemittel aufgenommen. Sie haben **Status 5** gedrückt.\n\n"
-        "**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\n"
+        "**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\n"
         "Geben Sie eine kurze **Lagemeldung** und fordern Sie die **Polizei** wegen der Unfallflucht nach. Kennzeichen und Fahrzeug folgen gleich.",
         "Lagemeldung mit Nachforderung Polizei",
         ["Florian Neuhaus", "Lagemeldung", "Kreisstraße", "keine Verletzten", "geflüchtet", "Polizei", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Lagemeldung: Kreisstraße zwischen Neuhaus und Adelsdorf, ein geparkter PKW angefahren, keine Verletzten, Verursacher geflüchtet. Einsatzstelle abgesichert, Öl wird abgebunden. Nachforderung: Polizei – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Lagemeldung: Kreisstraße zwischen Neuhaus und Adelsdorf, ein geparkter PKW angefahren, keine Verletzten, Verursacher geflüchtet. Einsatzstelle abgesichert, Öl wird abgebunden. Nachforderung: Polizei – kommen.",
         "„hier“ + Rufname . „Lagemeldung“ . WO: Kreisstraße Neuhaus – Adelsdorf . WAS: geparkter PKW angefahren, Verursacher geflüchtet . MENSCHENLEBEN: keine Verletzten . MASSNAHMEN: abgesichert, Öl wird abgebunden . NACHFORDERUNG: Polizei . „kommen“",
         "n_kennzeichen",
         "Lagemeldung vollständig – die Polizei wird verständigt.",
@@ -36,7 +36,7 @@ s.radio("n_kennzeichen",
         "| E | R | H | D | A |\n|:--:|:--:|:--:|:--:|:--:|\n| Emil | Richard | Heinrich | Dora | Anton |",
         "Kennzeichen buchstabieren",
         ["Florian Neuhaus", "ich buchstabiere", "Emil", "Richard", "Heinrich", "Dora", "Anton", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Kennzeichen, ich buchstabiere: Emil Richard Heinrich – Dora Anton – vier sieben – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Kennzeichen, ich buchstabiere: Emil Richard Heinrich – Dora Anton – vier sieben – kommen.",
         "„hier“ + Rufname . „Kennzeichen, ich buchstabiere“ . Ortskennung: Emil Richard Heinrich . kurze Pause . Buchstaben: Dora Anton . Zahlen einzeln: vier sieben . „kommen“",
         "n_rueckfrage",
         "Sauber buchstabiert, mit kurzer Pause zwischen den Kennzeichen-Teilen.",
@@ -54,7 +54,7 @@ s.radio("n_wiederholen",
         "Wiederholen Sie den angefragten Teil des Kennzeichens.",
         "Teil wiederholen",
         ["Florian Neuhaus", "ich wiederhole", "Dora", "Anton", "kommen"],
-        "Hier Florian Neuhaus 44/1 – ich wiederhole: Dora Anton – vier sieben – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – ich wiederhole: Dora Anton – vier sieben – kommen.",
         "„hier“ + Rufname . „ich wiederhole“ . nur den angefragten Teil: Dora Anton – vier sieben . „kommen“",
         "n_aufschrift",
         "Genau der angefragte Teil – kurz und eindeutig.",
@@ -66,7 +66,7 @@ s.radio("n_aufschrift",
         "| P | F | A | B |\n|:--:|:--:|:--:|:--:|\n| Paula | Friedrich | Anton | Berta |",
         "Fahrzeug und Namen buchstabieren",
         ["Kastenwagen", "ich buchstabiere", "Paula", "Friedrich", "Anton", "Berta", "Adelsdorf", "kommen"],
-        "Hier Florian Neuhaus 44/1 – weißer Kastenwagen, Aufschrift Bäckerei Pfab, ich buchstabiere: Paula Friedrich Anton Berta. Fluchtrichtung Adelsdorf – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – weißer Kastenwagen, Aufschrift Bäckerei Pfab, ich buchstabiere: Paula Friedrich Anton Berta. Fluchtrichtung Adelsdorf – kommen.",
         "„hier“ + Rufname . Fahrzeug (weißer Kastenwagen) . Aufschrift „Bäckerei Pfab“ – „ich buchstabiere“: Paula Friedrich Anton Berta . Fluchtrichtung (Adelsdorf) . „kommen“",
         "n_zahlen",
         "Fahrzeug, Name und Fluchtrichtung eindeutig durchgegeben.",
@@ -84,7 +84,7 @@ s.radio("n_zeit",
         "In der Ausbildung ist **„zwo“** statt „zwei“ üblich – so lässt es sich bei schlechter Verbindung nicht mit „drei“ verwechseln. Geben Sie die Unfallzeit durch. Die Personalien des Zeugen nimmt die Polizei vor Ort auf – **nicht über Funk**.",
         "Unfallzeit durchgeben",
         ["Florian Neuhaus", "Unfallzeit", "Zeuge", "Polizei", "kommen"],
-        "Hier Florian Neuhaus 44/1 – Unfallzeit laut Zeuge eins vier drei zwo. Zeuge wartet an der Einsatzstelle auf die Polizei – kommen.",
+        "Hier Florian Neuhaus 17/42/1 – Unfallzeit laut Zeuge eins vier drei zwo. Zeuge wartet an der Einsatzstelle auf die Polizei – kommen.",
         "„hier“ + Rufname . Unfallzeit ziffernweise (eins – vier – drei – zwo) . Hinweis: Zeuge wartet auf die Polizei (keine Personalien über Funk) . „kommen“",
         "n_end",
         "Uhrzeit ziffernweise, Zeuge an die Polizei verwiesen – ohne Namen im Funk.",
@@ -100,7 +100,7 @@ s = S("verbindung_schlecht_dmo", "Schlechte Verbindung: wiederholen und auf DMO 
       "Mittel: Als Truppführer im zweiten Untergeschoss einer Tiefgarage mit abreißendem Funk umgehen – auf „wiederholen Sie“ richtig antworten, Standort wechseln, in die vorgegebene DMO-Sprechgruppe wechseln und die Grenzen von DMO kennen. 5 Funk-Schritte.",
       TF, "n_start")
 s.radio("n_start",
-        "PKW-Brand im **zweiten Untergeschoss** einer Tiefgarage unter einer Wohnanlage in Neuhaus. Sie sind **Truppführer des Angriffstrupps** von Florian Neuhaus 44/1 und gehen unter Atemschutz mit dem ersten Rohr über die Zufahrtsrampe vor.\n\n"
+        "PKW-Brand im **zweiten Untergeschoss** einer Tiefgarage unter einer Wohnanlage in Neuhaus. Sie sind **Truppführer des Angriffstrupps** von Florian Neuhaus 17/42/1 und gehen unter Atemschutz mit dem ersten Rohr über die Zufahrtsrampe vor.\n\n"
          "Gefunkt wird zunächst im **Netzbetrieb (TMO)** in der Einsatz-Sprechgruppe. Der Gruppenführer hat vor dem Vorgehen festgelegt: **Bricht der Funk ab, wechseln Trupp, Gruppenführer und Atemschutzüberwachung in die vorgegebene DMO-Sprechgruppe** (sie ist auf Ihrem Funkzettel eingetragen).\n\n"
         "Sie haben den brennenden PKW erreicht und löschen. Melden Sie das dem Gruppenführer.",
         "Lage melden",
@@ -191,7 +191,7 @@ s = S("funkdisziplin_mayday_fremd", "Funkdisziplin: Fremder Mayday – Funkstill
       TF, "n_start")
 s.choice("n_start",
          "Brand in einer Lagerhalle am Ortsrand von Neuhaus. Einsatzleiter ist **Florian Neuhaus 11/1**. Im Innenangriff ist unter anderem der **Angriffstrupp von Florian Adelsdorf 44/1**. Alle Trupps an der Einsatzstelle funken in derselben Sprechgruppe.\n\n"
-         "Sie sind **Truppführer des Wassertrupps** von Florian Neuhaus 44/1 und haben an der **Nordseite** der Halle die Wasserversorgung vom Hydranten zum Verteiler aufgebaut. Gerade wollen Sie das Ihrem Gruppenführer melden – da hören Sie:\n\n"
+         "Sie sind **Truppführer des Wassertrupps** von Florian Neuhaus 17/42/1 und haben an der **Nordseite** der Halle die Wasserversorgung vom Hydranten zum Verteiler aufgebaut. Gerade wollen Sie das Ihrem Gruppenführer melden – da hören Sie:\n\n"
          "**Angriffstrupp Florian Adelsdorf 44/1:** „Mayday, Mayday, Mayday – hier Angriffstrupp Florian Adelsdorf 44/1 – Halle, Erdgeschoss, hinterer Bereich – Orientierung verloren, Atemluft 90 bar – Mayday, kommen!“\n\n"
          "Was tun Sie?",
          [("🔇 Sofort Funkstille: eigene Meldung zurückstellen, Sprechtaste nicht drücken, aufmerksam mithören", "n_kamerad"),
@@ -215,18 +215,18 @@ s.radio("n_aufforderung",
         "Sie stehen an der Nordseite: Das **Rolltor Nord** ist geschlossen, die **Schlupftür** daneben ist **offen**. Jetzt sind **Sie gefragt** – antworten Sie kurz.",
         "Auf Aufforderung antworten",
         ["Wassertrupp", "Nordseite", "Rolltor", "geschlossen", "Schlupftür", "offen", "kommen"],
-        "Hier Wassertrupp Florian Neuhaus 44/1 – stehe an der Nordseite. Rolltor Nord geschlossen, Schlupftür daneben offen – kommen.",
-        "„hier“ + Trupp und Rufname (Wassertrupp Florian Neuhaus 44/1) . Standort (Nordseite) . nur die erfragte Information: Rolltor Nord geschlossen, Schlupftür daneben offen . „kommen“",
+        "Hier Wassertrupp Florian Neuhaus 17/42/1 – stehe an der Nordseite. Rolltor Nord geschlossen, Schlupftür daneben offen – kommen.",
+        "„hier“ + Trupp und Rufname (Wassertrupp Florian Neuhaus 17/42/1) . Standort (Nordseite) . nur die erfragte Information: Rolltor Nord geschlossen, Schlupftür daneben offen . „kommen“",
         "n_auftrag",
         "Auf Aufforderung gesprochen – kurz, nur die erfragte Information.",
         "Melden Sie Ihren Standort und den Zustand der Zugänge an der Nordseite.",
         "Während eines Mayday sprechen Sie nur, wenn die Einsatzleitung **fragt** – und dann **nur das Erfragte**. Ihre Wasserversorgungs-Meldung gehört nicht hinein.")
 s.radio("n_auftrag",
-        "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – verstanden. Wassertrupp Florian Neuhaus 44/1: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.“\n\n"
+        "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – verstanden. Wassertrupp Florian Neuhaus 17/42/1: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.“\n\n"
         "Bestätigen Sie den Auftrag.",
         "Auftrag bestätigen",
         ["Wassertrupp", "verstanden", "Schlupftür", "offen halten", "Lampe", "nicht vorgehen", "kommen"],
-        "Hier Wassertrupp Florian Neuhaus 44/1 – verstanden: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.",
+        "Hier Wassertrupp Florian Neuhaus 17/42/1 – verstanden: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.",
         "„hier“ + Trupp und Rufname . „verstanden“ . Auftrag wiederholen (Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen) . „kommen“",
         "n_ende",
         "Auftrag kurz und vollständig bestätigt.",
@@ -262,9 +262,9 @@ s = S("einsatzabschnitte_bilden", "Einsatzleitung: Einsatzabschnitte bilden",
 s.choice("n_start",
          "Brand auf einem landwirtschaftlichen Anwesen, **Hofstelle Am Mühlbach 2** bei Neuhaus. Sie sind Einsatzleiter auf **Florian Neuhaus 11/1**.\n\n"
          "**Lage:** Eine **Scheune** mit Heu und Stroh steht in **Vollbrand**. Nur wenige Meter daneben das **Wohnhaus**, auf der anderen Seite ein **Stall** mit Rindern. Der Landwirt meldet: **alle Bewohner draußen**. Der Hydrant am Hof liefert nur wenig Wasser, ein **Löschteich** liegt etwa **400 m** entfernt.\n\n"
-         "An der Einsatzstelle: **Florian Neuhaus 44/1** (LF), **Florian Neuhaus 33/1** (Drehleiter), **Florian Adelsdorf 44/1** (LF). Gefunkt wird in der von der ILS zugewiesenen Einsatz-Sprechgruppe.\n\n"
+         "An der Einsatzstelle: **Florian Neuhaus 17/42/1** (LF), **Florian Neuhaus 33/1** (Drehleiter), **Florian Adelsdorf 44/1** (LF). Gefunkt wird in der von der ILS zugewiesenen Einsatz-Sprechgruppe.\n\n"
          "Wie führen Sie die Einsatzstelle?",
-         [("🗂️ Zwei Einsatzabschnitte mit je einem Abschnittsleiter: **Brandbekämpfung** (Florian Neuhaus 44/1, Drehleiter unterstellt) und **Wasserversorgung** (Florian Adelsdorf 44/1) – Sie führen die Abschnittsleiter", "n_sammel"),
+         [("🗂️ Zwei Einsatzabschnitte mit je einem Abschnittsleiter: **Brandbekämpfung** (Florian Neuhaus 17/42/1, Drehleiter unterstellt) und **Wasserversorgung** (Florian Adelsdorf 44/1) – Sie führen die Abschnittsleiter", "n_sammel"),
           ("📡 Alle Trupps direkt vom ELW aus über Funk führen", None,
            "Ein Führer kann nur eine begrenzte Zahl Einheiten sicher führen (**Führungsspanne** etwa 2 bis 5). Wer jeden Trupp selbst führt, ist überlastet und blockiert den Funk. Mit **Einsatzabschnitten** führen Sie nur noch die Abschnittsleiter."),
           ("🚒 Jedes Fahrzeug arbeitet für sich, Absprachen untereinander", None,
@@ -273,14 +273,14 @@ s.radio("n_sammel",
         "Geben Sie die Abschnittsbildung per **Sammelruf** an alle bekannt. Die Abschnittsleiter sollen sich melden.",
         "Sammelruf an alle",
         ["an alle", "Einsatzabschnitte", "Brandbekämpfung", "Florian Neuhaus", "Wasserversorgung", "Florian Adelsdorf", "kommen"],
-        "An alle von Florian Neuhaus 11/1 – Einsatzstelle wird in zwei Einsatzabschnitte geteilt. Abschnitt Brandbekämpfung: Florian Neuhaus 44/1, Drehleiter Florian Neuhaus 33/1 ist unterstellt. Abschnitt Wasserversorgung: Florian Adelsdorf 44/1. Abschnittsleiter melden sich – kommen.",
-        "„An alle von“ + eigener Rufname . „zwei Einsatzabschnitte“ . Abschnitt Brandbekämpfung: Florian Neuhaus 44/1, Drehleiter unterstellt . Abschnitt Wasserversorgung: Florian Adelsdorf 44/1 . Abschnittsleiter melden sich . „kommen“",
+        "An alle von Florian Neuhaus 11/1 – Einsatzstelle wird in zwei Einsatzabschnitte geteilt. Abschnitt Brandbekämpfung: Florian Neuhaus 17/42/1, Drehleiter Florian Neuhaus 33/1 ist unterstellt. Abschnitt Wasserversorgung: Florian Adelsdorf 44/1. Abschnittsleiter melden sich – kommen.",
+        "„An alle von“ + eigener Rufname . „zwei Einsatzabschnitte“ . Abschnitt Brandbekämpfung: Florian Neuhaus 17/42/1, Drehleiter unterstellt . Abschnitt Wasserversorgung: Florian Adelsdorf 44/1 . Abschnittsleiter melden sich . „kommen“",
         "n_prio",
         "Führungsstruktur für alle klar bekanntgegeben.",
-        "Geben Sie an alle durch: zwei Einsatzabschnitte – Brandbekämpfung (Florian Neuhaus 44/1 mit Drehleiter) und Wasserversorgung (Florian Adelsdorf 44/1).",
+        "Geben Sie an alle durch: zwei Einsatzabschnitte – Brandbekämpfung (Florian Neuhaus 17/42/1 mit Drehleiter) und Wasserversorgung (Florian Adelsdorf 44/1).",
         "Ein **Sammelruf** erreicht alle Einheiten gleichzeitig. Jede Einheit muss wissen, **zu welchem Abschnitt** sie gehört und **wer ihr Abschnittsleiter** ist.")
 s.choice("n_prio",
-         "**Florian Neuhaus 44/1:** „Hier Florian Neuhaus 44/1 – verstanden, übernehme Abschnitt Brandbekämpfung – Frage Auftrag – kommen.“\n\n"
+         "**Florian Neuhaus 17/42/1:** „Hier Florian Neuhaus 17/42/1 – verstanden, übernehme Abschnitt Brandbekämpfung – Frage Auftrag – kommen.“\n\n"
          "**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – verstanden, Abschnitt Wasserversorgung – kommen.“\n\n"
          "Die Scheune ist nicht mehr zu retten. Was ist der **Schwerpunkt** für den Abschnitt Brandbekämpfung?",
          [("🛡️ Ausbreitung verhindern: Riegelstellung zum Wohnhaus und zum Stall, Scheune von außen ablöschen", "n_auftrag1"),
@@ -292,14 +292,14 @@ s.radio("n_auftrag1",
         "Geben Sie dem Abschnittsleiter Brandbekämpfung seinen Auftrag – er hat Sie gerade gerufen.",
         "Auftrag Abschnitt Brandbekämpfung",
         ["Florian Neuhaus", "Riegelstellung", "Wohnhaus", "Stall", "Drehleiter", "Scheune", "kommen"],
-        "Hier Florian Neuhaus 11/1 – Florian Neuhaus 44/1: Abschnitt Brandbekämpfung – Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, soweit gefahrlos möglich. Scheune von außen ablöschen – kommen.",
-        "„hier“ + eigener Rufname . Einheit (Florian Neuhaus 44/1) . Abschnitt (Brandbekämpfung) . Schwerpunkt: Riegelstellung Wohnhaus (mit Drehleiter) und Stall . Stall räumen, soweit gefahrlos . Scheune von außen ablöschen . „kommen“",
+        "Hier Florian Neuhaus 11/1 – Florian Neuhaus 17/42/1: Abschnitt Brandbekämpfung – Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, soweit gefahrlos möglich. Scheune von außen ablöschen – kommen.",
+        "„hier“ + eigener Rufname . Einheit (Florian Neuhaus 17/42/1) . Abschnitt (Brandbekämpfung) . Schwerpunkt: Riegelstellung Wohnhaus (mit Drehleiter) und Stall . Stall räumen, soweit gefahrlos . Scheune von außen ablöschen . „kommen“",
         "n_auftrag2",
         "Abschnittsauftrag mit klarem Schwerpunkt erteilt.",
         "Nennen Sie: Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, Scheune von außen ablöschen.",
         "Als Einsatzleiter geben Sie dem Abschnitt **Auftrag und Schwerpunkt** – wie er die Trupps einsetzt, entscheidet der **Abschnittsleiter**.")
 s.radio("n_auftrag2",
-        "**Florian Neuhaus 44/1:** „Hier Florian Neuhaus 44/1 – verstanden: Riegelstellung Wohnhaus mit Drehleiter und Stall, Stall räumen, Scheune von außen – Ende.“\n\n"
+        "**Florian Neuhaus 17/42/1:** „Hier Florian Neuhaus 17/42/1 – verstanden: Riegelstellung Wohnhaus mit Drehleiter und Stall, Stall räumen, Scheune von außen – Ende.“\n\n"
         "Rufen Sie jetzt den Abschnittsleiter **Wasserversorgung** und geben Sie seinen Auftrag: Löschwasserentnahme am **Löschteich**, Förderleitung zum Verteiler vor der Scheune, Wasser für den Abschnitt Brandbekämpfung.",
         "Auftrag Abschnitt Wasserversorgung",
         ["Florian Adelsdorf", "Florian Neuhaus", "Wasserversorgung", "Löschteich", "Förderleitung", "Verteiler", "kommen"],
@@ -312,7 +312,7 @@ s.radio("n_auftrag2",
 s.radio("n_quittung",
         "**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – verstanden: Wasserversorgung vom Löschteich zum Verteiler vor der Scheune – Ende.“\n\n"
         "Zwanzig Minuten später:\n\n"
-        "**Florian Neuhaus 44/1:** „Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Rückmeldung Abschnitt Brandbekämpfung: Riegelstellung steht, Übergreifen auf Wohnhaus und Stall verhindert. Stall geräumt, alle Tiere draußen. Wasserversorgung vom Löschteich steht – kommen.“\n\n"
+        "**Florian Neuhaus 17/42/1:** „Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – Rückmeldung Abschnitt Brandbekämpfung: Riegelstellung steht, Übergreifen auf Wohnhaus und Stall verhindert. Stall geräumt, alle Tiere draußen. Wasserversorgung vom Löschteich steht – kommen.“\n\n"
         "Quittieren Sie die Rückmeldung mit den wesentlichen Punkten.",
         "Rückmeldung quittieren",
         ["Florian Neuhaus", "verstanden", "Riegelstellung", "Wohnhaus", "Stall geräumt", "Ende"],
@@ -335,7 +335,7 @@ s.radio("n_ils",
         "Geben Sie die Lagemeldung mit Führungsstruktur und Nachforderung.",
         "Lagemeldung an die ILS",
         ["Florian Neuhaus", "Lagemeldung", "Scheune", "keine Personen", "Einsatzabschnitte", "Nachforderung", "Löschfahrzeug", "kommen"],
-        "Hier Florian Neuhaus 11/1 – Lagemeldung: Hofstelle Am Mühlbach 2, Scheune in Vollbrand, keine Personen in Gefahr, Tiere gerettet. Wohnhaus und Stall durch Riegelstellung geschützt. Zwei Einsatzabschnitte: Brandbekämpfung unter Florian Neuhaus 44/1, Wasserversorgung vom Löschteich unter Florian Adelsdorf 44/1. Nachforderung: ein weiteres Löschfahrzeug zur Ablösung der Wasserförderung – kommen.",
+        "Hier Florian Neuhaus 11/1 – Lagemeldung: Hofstelle Am Mühlbach 2, Scheune in Vollbrand, keine Personen in Gefahr, Tiere gerettet. Wohnhaus und Stall durch Riegelstellung geschützt. Zwei Einsatzabschnitte: Brandbekämpfung unter Florian Neuhaus 17/42/1, Wasserversorgung vom Löschteich unter Florian Adelsdorf 44/1. Nachforderung: ein weiteres Löschfahrzeug zur Ablösung der Wasserförderung – kommen.",
         "„hier“ + Rufname . „Lagemeldung“ . WO: Hofstelle Am Mühlbach 2 . WAS: Scheune in Vollbrand . MENSCHENLEBEN: keine Personen in Gefahr, Tiere gerettet . MASSNAHMEN: Riegelstellung Wohnhaus und Stall, zwei Einsatzabschnitte mit Abschnittsleitern . NACHFORDERUNG: ein weiteres Löschfahrzeug . „kommen“",
         "n_end",
         "Vollständige Lagemeldung mit Führungsstruktur und konkreter Nachforderung.",

@@ -76,10 +76,10 @@ describe('Grundausbildung', () => {
     });
   }
 
-  it('nutzt den Funkrufnamen der übrigen Szenarien (44/1, wird per Lizenz ersetzt)', () => {
+  it('nutzt den Funkrufnamen der übrigen Szenarien (17/42/1, wird per Lizenz ersetzt)', () => {
     const raw = JSON.stringify(scenario);
-    expect(raw).toContain('Florian Neuhaus 44/1');
-    expect(raw).not.toContain('40/1');
+    expect(raw).toContain('Florian Neuhaus 17/42/1');
+    expect(raw).not.toMatch(/4[04]\/1/);
   });
 
   it('hält die Texte kurz', () => {

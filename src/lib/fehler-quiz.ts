@@ -20,8 +20,8 @@ export interface FehlerQuizItem {
 export const fehlerQuiz: FehlerQuizItem[] = [
   {
     id: 'hoert',
-    situation: 'Die Leitstelle ruft: „Florian Neuhaus 44/1 von Leitstelle – kommen.“ Der Gruppenführer antwortet:',
-    spoken: 'Florian Neuhaus 44/1 hört – kommen.',
+    situation: 'Die Leitstelle ruft: „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“ Der Gruppenführer antwortet:',
+    spoken: 'Florian Neuhaus 17/42/1 hört – kommen.',
     options: [
       '„hört“ ist kein Betriebswort – die Antwort beginnt mit „hier“',
       'Der eigene Funkrufname darf in der Antwort nicht vorkommen',
@@ -29,7 +29,7 @@ export const fehlerQuiz: FehlerQuizItem[] = [
     ],
     correct: 0,
     explanation: 'Auf einen Anruf antwortet man mit **„hier“ + eigenem Funkrufnamen + „kommen“**. „Hört“ ist kein Betriebswort.',
-    corrected: 'Hier Florian Neuhaus 44/1 – kommen.',
+    corrected: 'Hier Florian Neuhaus 17/42/1 – kommen.',
   },
   {
     id: 'eigener_rufname_fehlt',
@@ -46,8 +46,8 @@ export const fehlerQuiz: FehlerQuizItem[] = [
   },
   {
     id: 'reihenfolge',
-    situation: 'Florian Neuhaus 44/1 will die Leitstelle anrufen:',
-    spoken: 'Florian Neuhaus 44/1 ruft Leitstelle – kommen.',
+    situation: 'Florian Neuhaus 17/42/1 will die Leitstelle anrufen:',
+    spoken: 'Florian Neuhaus 17/42/1 ruft Leitstelle – kommen.',
     options: [
       'Reihenfolge falsch: erst die Gegenstelle, dann „von“ und der eigene Rufname',
       'Die Leitstelle darf man nur per Status 0 erreichen',
@@ -55,7 +55,7 @@ export const fehlerQuiz: FehlerQuizItem[] = [
     ],
     correct: 0,
     explanation: 'Zuerst wird die **gerufene Stelle** genannt – so horcht sie sofort auf. Dann **„von“** und der eigene Rufname. In Bayern meldet man sich bei der ILS im Regelfall zuvor mit **Status 5** (Sprechwunsch).',
-    corrected: 'Leitstelle von Florian Neuhaus 44/1 – kommen.',
+    corrected: 'Leitstelle von Florian Neuhaus 17/42/1 – kommen.',
   },
   {
     id: 'hoeflichkeit',
@@ -111,8 +111,8 @@ export const fehlerQuiz: FehlerQuizItem[] = [
   },
   {
     id: 'status_gesprochen',
-    situation: 'Florian Neuhaus 44/1 erreicht die Einsatzstelle:',
-    spoken: 'Leitstelle von Florian Neuhaus 44/1 – wir sind jetzt am Einsatzort angekommen – kommen.',
+    situation: 'Florian Neuhaus 17/42/1 erreicht die Einsatzstelle:',
+    spoken: 'Leitstelle von Florian Neuhaus 17/42/1 – wir sind jetzt am Einsatzort angekommen – kommen.',
     options: [
       'Die Ankunft wird mit Status 4 gedrückt, nicht gesprochen',
       'Die Ankunft muss mit „Ende“ statt „kommen“ gemeldet werden',
@@ -124,8 +124,8 @@ export const fehlerQuiz: FehlerQuizItem[] = [
   },
   {
     id: 'lagemeldung_unvollstaendig',
-    situation: 'Die Leitstelle hat Florian Neuhaus 44/1 auf Sprechwunsch gerufen. Lagemeldung:',
-    spoken: 'Hier Florian Neuhaus 44/1 – Lagemeldung: Birkenweg 12, Brand im Dachgeschoss, ein Rohr im Innenangriff – kommen.',
+    situation: 'Die Leitstelle hat Florian Neuhaus 17/42/1 auf Sprechwunsch gerufen. Lagemeldung:',
+    spoken: 'Hier Florian Neuhaus 17/42/1 – Lagemeldung: Birkenweg 12, Brand im Dachgeschoss, ein Rohr im Innenangriff – kommen.',
     options: [
       'Es fehlen „Menschenleben in Gefahr“ und die Nachforderung',
       'Die Adresse darf nicht über Funk genannt werden',
@@ -133,7 +133,7 @@ export const fehlerQuiz: FehlerQuizItem[] = [
     ],
     correct: 0,
     explanation: 'Die Lagemeldung folgt dem Schema **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung** – auch „keine Nachforderung“ wird ausdrücklich gesagt.',
-    corrected: 'Hier Florian Neuhaus 44/1 – Lagemeldung: Birkenweg 12, Brand im Dachgeschoss. Alle Bewohner im Freien, kein Menschenleben in Gefahr. Ein Rohr im Innenangriff. Keine Nachforderung – kommen.',
+    corrected: 'Hier Florian Neuhaus 17/42/1 – Lagemeldung: Birkenweg 12, Brand im Dachgeschoss. Alle Bewohner im Freien, kein Menschenleben in Gefahr. Ein Rohr im Innenangriff. Keine Nachforderung – kommen.',
   },
   {
     id: 'mayday_falsch',
@@ -146,12 +146,12 @@ export const fehlerQuiz: FehlerQuizItem[] = [
     ],
     correct: 0,
     explanation: 'Der Atemschutznotfall beginnt mit **„Mayday, Mayday, Mayday – hier <Rufname>“**, dann **Standort** und **Lage**, Abschluss **„Mayday – kommen“**. Zusätzlich die **Notruftaste** drücken. „Mayday“ verschafft sofort Vorrang in der Sprechgruppe.',
-    corrected: 'Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 44/1 – Erdgeschoss Wohnzimmer – Truppführer bewusstlos – Mayday, kommen!',
+    corrected: 'Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 17/42/1 – Erdgeschoss Wohnzimmer – Truppführer bewusstlos – Mayday, kommen!',
   },
   {
     id: 'fuellwoerter',
     situation: 'Der Gruppenführer meldet sich bei der Leitstelle (die ihn auf Sprechwunsch gerufen hat):',
-    spoken: 'Hier Florian Neuhaus 44/1 – äh, also, wir schauen uns das jetzt mal an und melden uns dann irgendwann nochmal – kommen.',
+    spoken: 'Hier Florian Neuhaus 17/42/1 – äh, also, wir schauen uns das jetzt mal an und melden uns dann irgendwann nochmal – kommen.',
     options: [
       'Kein Inhalt, Füllwörter – erst denken, dann drücken, dann sprechen',
       '„Hier“ ist am Anfang falsch',
@@ -177,7 +177,7 @@ export const fehlerQuiz: FehlerQuizItem[] = [
   {
     id: 'ok_ohne_wiederholung',
     situation: 'Die Leitstelle gibt eine Nachinformation: „Alle Bewohner im Freien, Gasanschluss im Keller – kommen.“ Antwort:',
-    spoken: 'Hier Florian Neuhaus 44/1 – ok – Ende.',
+    spoken: 'Hier Florian Neuhaus 17/42/1 – ok – Ende.',
     options: [
       '„ok“ statt „verstanden“, die wichtigen Punkte nicht wiederholt – und „Ende“ sagt die Stelle, die das Gespräch eröffnet hat',
       'Eine Nachinformation wird nicht beantwortet',
@@ -185,12 +185,12 @@ export const fehlerQuiz: FehlerQuizItem[] = [
     ],
     correct: 0,
     explanation: 'Einsatzwichtige Informationen werden mit **„verstanden“** quittiert und **kurz wiederholt** – so fallen Hörfehler sofort auf. Das Gespräch beendet die Stelle, die es eröffnet hat, hier also die Leitstelle.',
-    corrected: 'Hier Florian Neuhaus 44/1 – verstanden: alle Bewohner im Freien, Gasanschluss im Keller – kommen.',
+    corrected: 'Hier Florian Neuhaus 17/42/1 – verstanden: alle Bewohner im Freien, Gasanschluss im Keller – kommen.',
   },
   {
     id: 'name_betroffener',
     situation: 'Bei der Vermisstensuche wird die Person gefunden. Meldung an den Einsatzleiter:',
-    spoken: 'Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – wir haben Herrn Max Müller aus der Bergstraße 7 gefunden, er ist unterkühlt – kommen.',
+    spoken: 'Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – wir haben Herrn Max Müller aus der Bergstraße 7 gefunden, er ist unterkühlt – kommen.',
     options: [
       'Namen von Betroffenen gehören nicht in den Funk – Fundort und Zustand genügen',
       'Unterkühlung darf nicht gemeldet werden',
@@ -198,6 +198,6 @@ export const fehlerQuiz: FehlerQuizItem[] = [
     ],
     correct: 0,
     explanation: 'Funk kann **mitgehört** werden. Namen von Betroffenen und andere persönliche Daten werden nicht gefunkt. Fundort, Zustand und benötigte Hilfe reichen für die Einsatzführung.',
-    corrected: 'Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Person aufgefunden in Suchabschnitt drei, am Bachlauf, ansprechbar, stark unterkühlt, benötigen Rettungsdienst – kommen.',
+    corrected: 'Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – Person aufgefunden in Suchabschnitt drei, am Bachlauf, ansprechbar, stark unterkühlt, benötigen Rettungsdienst – kommen.',
   },
 ];

@@ -20,7 +20,7 @@
     "n_alarm": {
       "id": "n_alarm",
       "role": "gruppenführer_a",
-      "narrative": "Alarm über Funkmeldeempfänger und Sirene: **„B 4 – Wohnhaus, Person in Gefahr – Neuhaus, Hauptstraße 22 – Mehrfamilienhaus, Rauch aus dem 2. OG“**.\n\nSie sind Gruppenführer auf **Florian Neuhaus 44/1**, besetzt mit **1/8**. Was tun Sie beim Ausrücken?",
+      "narrative": "Alarm über Funkmeldeempfänger und Sirene: **„B 4 – Wohnhaus, Person in Gefahr – Neuhaus, Hauptstraße 22 – Mehrfamilienhaus, Rauch aus dem 2. OG“**.\n\nSie sind Gruppenführer auf **Florian Neuhaus 17/42/1**, besetzt mit **1/8**. Was tun Sie beim Ausrücken?",
       "actions": [
         {
           "id": "opt0",
@@ -83,7 +83,7 @@
     "n_lage": {
       "id": "n_lage",
       "role": "gruppenführer_a",
-      "narrative": "**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab und fordern Sie das nach, was Sie für **zwei Personen über die Straßenseite** brauchen.",
+      "narrative": "**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab und fordern Sie das nach, was Sie für **zwei Personen über die Straßenseite** brauchen.",
       "actions": [
         {
           "id": "radio_lage",
@@ -100,7 +100,7 @@
               "Rettungsdienst",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Lagemeldung: Hauptstraße 22, Mehrfamilienhaus mit vier Geschossen, zweites Obergeschoss in Vollbrand, Treppenraum verraucht. Zwei Personen am Fenster zweites Obergeschoss, Menschenleben in Gefahr. Menschenrettung eingeleitet. Nachforderung: Drehleiter und Rettungsdienst für zwei Personen – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Lagemeldung: Hauptstraße 22, Mehrfamilienhaus mit vier Geschossen, zweites Obergeschoss in Vollbrand, Treppenraum verraucht. Zwei Personen am Fenster zweites Obergeschoss, Menschenleben in Gefahr. Menschenrettung eingeleitet. Nachforderung: Drehleiter und Rettungsdienst für zwei Personen – kommen.",
             "briefing": "Eigener Rufname + „Lagemeldung“ . WO: Hauptstraße 22, Mehrfamilienhaus . WAS: 2. OG in Vollbrand, Treppenraum verraucht . MENSCHENLEBEN: zwei Personen am Fenster in Gefahr . MASSNAHMEN: Menschenrettung eingeleitet . NACHFORDERUNG: Drehleiter + Rettungsdienst für zwei Personen . „kommen“",
             "onSuccess": "n_folge",
             "onFailure": "n_lage_fail",
@@ -113,7 +113,7 @@
     "n_lage_fail": {
       "id": "n_lage_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Bei Personen am Fenster und verrauchtem Treppenraum ist die **Drehleiter** das Rettungsmittel. Fordern Sie sie und den **Rettungsdienst** sofort mit an.\n\nSchema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lagemeldung: Hauptstraße 22, Mehrfamilienhaus mit vier Geschossen, zweites Obergeschoss in Vollbrand, Treppenraum verraucht. Zwei Personen am Fenster zweites Obergeschoss, Menschenleben in Gefahr. Menschenrettung eingeleitet. Nachforderung: Drehleiter und Rettungsdienst für zwei Personen – kommen.“*",
+      "narrative": "**Feedback:** Bei Personen am Fenster und verrauchtem Treppenraum ist die **Drehleiter** das Rettungsmittel. Fordern Sie sie und den **Rettungsdienst** sofort mit an.\n\nSchema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Lagemeldung: Hauptstraße 22, Mehrfamilienhaus mit vier Geschossen, zweites Obergeschoss in Vollbrand, Treppenraum verraucht. Zwei Personen am Fenster zweites Obergeschoss, Menschenleben in Gefahr. Menschenrettung eingeleitet. Nachforderung: Drehleiter und Rettungsdienst für zwei Personen – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -140,7 +140,7 @@
               "zwei Rohre",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Folgemeldung Hauptstraße 22: zwei Personen über Drehleiter gerettet und an den Rettungsdienst übergeben, eine mit Verdacht auf Rauchgasvergiftung. Brandbekämpfung mit zwei Rohren – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Folgemeldung Hauptstraße 22: zwei Personen über Drehleiter gerettet und an den Rettungsdienst übergeben, eine mit Verdacht auf Rauchgasvergiftung. Brandbekämpfung mit zwei Rohren – kommen.",
             "briefing": "Eigener Rufname + „Folgemeldung“ . Menschenrettung: zwei Personen über die Drehleiter gerettet . an den Rettungsdienst übergeben (eine mit Verdacht auf Rauchgasvergiftung) . Brandbekämpfung mit zwei Rohren . keine Namen . „kommen“",
             "onSuccess": "n_kontrolle",
             "onFailure": "n_folge_fail",
@@ -153,7 +153,7 @@
     "n_folge_fail": {
       "id": "n_folge_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Eine Folgemeldung sagt, **was sich geändert hat**. Personen werden über Funk nicht namentlich genannt. Der Transport ist Sache des Rettungsdienstes – Ihr Löschfahrzeug bleibt im Einsatz.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Folgemeldung Hauptstraße 22: zwei Personen über Drehleiter gerettet und an den Rettungsdienst übergeben, eine mit Verdacht auf Rauchgasvergiftung. Brandbekämpfung mit zwei Rohren – kommen.“*",
+      "narrative": "**Feedback:** Eine Folgemeldung sagt, **was sich geändert hat**. Personen werden über Funk nicht namentlich genannt. Der Transport ist Sache des Rettungsdienstes – Ihr Löschfahrzeug bleibt im Einsatz.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Folgemeldung Hauptstraße 22: zwei Personen über Drehleiter gerettet und an den Rettungsdienst übergeben, eine mit Verdacht auf Rauchgasvergiftung. Brandbekämpfung mit zwei Rohren – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -177,7 +177,7 @@
               "Feuer unter Kontrolle",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Einsatz Hauptstraße 22: Feuer unter Kontrolle – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Einsatz Hauptstraße 22: Feuer unter Kontrolle – kommen.",
             "briefing": "Eigener Rufname . Einsatzstelle . „Feuer unter Kontrolle“ . „kommen“",
             "onSuccess": "n_aus",
             "onFailure": "n_kontrolle_fail",
@@ -190,7 +190,7 @@
     "n_kontrolle_fail": {
       "id": "n_kontrolle_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** **„Feuer unter Kontrolle“** = keine weitere Ausbreitung, Löscharbeiten laufen noch.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Einsatz Hauptstraße 22: Feuer unter Kontrolle – kommen.“*",
+      "narrative": "**Feedback:** **„Feuer unter Kontrolle“** = keine weitere Ausbreitung, Löscharbeiten laufen noch.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Einsatz Hauptstraße 22: Feuer unter Kontrolle – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -216,7 +216,7 @@
               "rücken ein",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Einsatz Hauptstraße 22: Feuer aus, Nachkontrolle durchgeführt, Einsatzstelle an die Polizei übergeben, rücken ein – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Einsatz Hauptstraße 22: Feuer aus, Nachkontrolle durchgeführt, Einsatzstelle an die Polizei übergeben, rücken ein – kommen.",
             "briefing": "Eigener Rufname . „Feuer aus“ . Nachkontrolle durchgeführt . Einsatzstelle an die Polizei übergeben . „rücken ein“ . „kommen“ – Status 1 wird anschließend gedrückt",
             "onSuccess": "n_einruecken",
             "onFailure": "n_aus_fail",
@@ -229,7 +229,7 @@
     "n_aus_fail": {
       "id": "n_aus_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Zum Einsatzende gehören **„Feuer aus“**, die **Übergabe der Einsatzstelle** und das **Einrücken**. Die Status folgen per Taste.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Einsatz Hauptstraße 22: Feuer aus, Nachkontrolle durchgeführt, Einsatzstelle an die Polizei übergeben, rücken ein – kommen.“*",
+      "narrative": "**Feedback:** Zum Einsatzende gehören **„Feuer aus“**, die **Übergabe der Einsatzstelle** und das **Einrücken**. Die Status folgen per Taste.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Einsatz Hauptstraße 22: Feuer aus, Nachkontrolle durchgeführt, Einsatzstelle an die Polizei übergeben, rücken ein – kommen.“*",
       "actions": [
         {
           "id": "retry",

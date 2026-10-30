@@ -92,7 +92,7 @@ function rufToText(rufnamen) {
 
 function defaultWildcardText() {
   return [
-    'Florian Neuhaus 44/1=Florian [Ort] 44/1',
+    'Florian Neuhaus 17/42/1=Florian [Ort] 17/42/1',
     'Florian Neuhaus 33/1=Florian [Ort] 33/1',
     'Florian Neuhaus 11/1=Florian [Ort] 11/1',
     'Florian Adelsdorf 44/1=Florian [Nachbarort] 44/1',
@@ -841,7 +841,7 @@ function licenseFormPage(l, err = '') {
   const isEdit = l != null;
   const v = (f, fb = '') => esc(l?.[f] ?? fb);
   const rufText = esc(rufToText(l?.rufnamen ?? {
-    'Florian Neuhaus 44/1': 'Florian [Ort] 44/1',
+    'Florian Neuhaus 17/42/1': 'Florian [Ort] 17/42/1',
     'Florian Neuhaus 33/1': 'Florian [Ort] 33/1',
     'Florian Neuhaus 11/1': 'Florian [Ort] 11/1',
     'Florian Adelsdorf 44/1': 'Florian [Nachbarort] 44/1',
@@ -902,7 +902,7 @@ function licenseFormPage(l, err = '') {
             Die App ersetzt diese Texte automatisch in Szenarien und in der Sprachausgabe.
             Längere Begriffe werden zuerst ersetzt.
           </p>
-          <textarea name="rufnamen" rows="10" class="mono" placeholder="Florian Neuhaus 44/1=Florian Musterstadt 44/1&#10;Neuhaus=Musterstadt&#10;Leitstelle=ILS München">${rufText}</textarea>
+          <textarea name="rufnamen" rows="10" class="mono" placeholder="Florian Neuhaus 17/42/1=Florian Musterstadt 17/42/1&#10;Neuhaus=Musterstadt&#10;Leitstelle=ILS München">${rufText}</textarea>
         </div>
 
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
@@ -1120,7 +1120,7 @@ async function adminScenarioFormPage(s = null, err = '') {
             Optional. Eine Ersetzung pro Zeile: <code style="background:#0a0a0a;padding:.1rem .35rem;border-radius:.25rem;">Suchtext=Ersetzung</code>.
             Beim Speichern werden diese Texte im kompletten Szenario-JSON ersetzt. Das ist praktisch für Orte, Leitstellen und Rufnamen.
           </p>
-          <textarea name="wildcards" rows="7" class="mono" placeholder="Florian Neuhaus 44/1=Florian Musterstadt 44/1&#10;Neuhaus=Musterstadt&#10;Leitstelle=ILS München">${isEdit ? '' : esc(defaultWildcardText())}</textarea>
+          <textarea name="wildcards" rows="7" class="mono" placeholder="Florian Neuhaus 17/42/1=Florian Musterstadt 17/42/1&#10;Neuhaus=Musterstadt&#10;Leitstelle=ILS München">${isEdit ? '' : esc(defaultWildcardText())}</textarea>
         </div>
         <div class="card">
           <h3>Szenario-JSON</h3>

@@ -44,7 +44,7 @@
     "n_start": {
       "id": "n_start",
       "role": "truppführer",
-      "narrative": "Brand in einer Lagerhalle am Ortsrand von Neuhaus. Einsatzleiter ist **Florian Neuhaus 11/1**. Im Innenangriff ist unter anderem der **Angriffstrupp von Florian Adelsdorf 44/1**. Alle Trupps an der Einsatzstelle funken in derselben Sprechgruppe.\n\nSie sind **Truppführer des Wassertrupps** von Florian Neuhaus 44/1 und haben an der **Nordseite** der Halle die Wasserversorgung vom Hydranten zum Verteiler aufgebaut. Gerade wollen Sie das Ihrem Gruppenführer melden – da hören Sie:\n\n**Angriffstrupp Florian Adelsdorf 44/1:** „Mayday, Mayday, Mayday – hier Angriffstrupp Florian Adelsdorf 44/1 – Halle, Erdgeschoss, hinterer Bereich – Orientierung verloren, Atemluft 90 bar – Mayday, kommen!“\n\nWas tun Sie?",
+      "narrative": "Brand in einer Lagerhalle am Ortsrand von Neuhaus. Einsatzleiter ist **Florian Neuhaus 11/1**. Im Innenangriff ist unter anderem der **Angriffstrupp von Florian Adelsdorf 44/1**. Alle Trupps an der Einsatzstelle funken in derselben Sprechgruppe.\n\nSie sind **Truppführer des Wassertrupps** von Florian Neuhaus 17/42/1 und haben an der **Nordseite** der Halle die Wasserversorgung vom Hydranten zum Verteiler aufgebaut. Gerade wollen Sie das Ihrem Gruppenführer melden – da hören Sie:\n\n**Angriffstrupp Florian Adelsdorf 44/1:** „Mayday, Mayday, Mayday – hier Angriffstrupp Florian Adelsdorf 44/1 – Halle, Erdgeschoss, hinterer Bereich – Orientierung verloren, Atemluft 90 bar – Mayday, kommen!“\n\nWas tun Sie?",
       "actions": [
         {
           "id": "opt0",
@@ -132,8 +132,8 @@
               "offen",
               "kommen"
             ],
-            "hint": "Hier Wassertrupp Florian Neuhaus 44/1 – stehe an der Nordseite. Rolltor Nord geschlossen, Schlupftür daneben offen – kommen.",
-            "briefing": "„hier“ + Trupp und Rufname (Wassertrupp Florian Neuhaus 44/1) . Standort (Nordseite) . nur die erfragte Information: Rolltor Nord geschlossen, Schlupftür daneben offen . „kommen“",
+            "hint": "Hier Wassertrupp Florian Neuhaus 17/42/1 – stehe an der Nordseite. Rolltor Nord geschlossen, Schlupftür daneben offen – kommen.",
+            "briefing": "„hier“ + Trupp und Rufname (Wassertrupp Florian Neuhaus 17/42/1) . Standort (Nordseite) . nur die erfragte Information: Rolltor Nord geschlossen, Schlupftür daneben offen . „kommen“",
             "onSuccess": "n_auftrag",
             "onFailure": "n_aufforderung_fail",
             "feedbackSuccess": "✅ Auf Aufforderung gesprochen – kurz, nur die erfragte Information.",
@@ -145,7 +145,7 @@
     "n_aufforderung_fail": {
       "id": "n_aufforderung_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Während eines Mayday sprechen Sie nur, wenn die Einsatzleitung **fragt** – und dann **nur das Erfragte**. Ihre Wasserversorgungs-Meldung gehört nicht hinein.\n\nBeispiel: *„Hier Wassertrupp Florian Neuhaus 44/1 – stehe an der Nordseite. Rolltor Nord geschlossen, Schlupftür daneben offen – kommen.“*",
+      "narrative": "**Feedback:** Während eines Mayday sprechen Sie nur, wenn die Einsatzleitung **fragt** – und dann **nur das Erfragte**. Ihre Wasserversorgungs-Meldung gehört nicht hinein.\n\nBeispiel: *„Hier Wassertrupp Florian Neuhaus 17/42/1 – stehe an der Nordseite. Rolltor Nord geschlossen, Schlupftür daneben offen – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -157,7 +157,7 @@
     "n_auftrag": {
       "id": "n_auftrag",
       "role": "truppführer",
-      "narrative": "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – verstanden. Wassertrupp Florian Neuhaus 44/1: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.“\n\nBestätigen Sie den Auftrag.",
+      "narrative": "**Florian Neuhaus 11/1:** „Hier Florian Neuhaus 11/1 – verstanden. Wassertrupp Florian Neuhaus 17/42/1: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.“\n\nBestätigen Sie den Auftrag.",
       "actions": [
         {
           "id": "radio_auftrag",
@@ -172,7 +172,7 @@
               "nicht vorgehen",
               "kommen"
             ],
-            "hint": "Hier Wassertrupp Florian Neuhaus 44/1 – verstanden: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.",
+            "hint": "Hier Wassertrupp Florian Neuhaus 17/42/1 – verstanden: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.",
             "briefing": "„hier“ + Trupp und Rufname . „verstanden“ . Auftrag wiederholen (Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen) . „kommen“",
             "onSuccess": "n_ende",
             "onFailure": "n_auftrag_fail",
@@ -185,7 +185,7 @@
     "n_auftrag_fail": {
       "id": "n_auftrag_fail",
       "role": "truppführer",
-      "narrative": "**Feedback:** Ein Auftrag der Einsatzleitung wird auch im Notfall **kurz bestätigt** – sonst weiß sie nicht, ob er angekommen ist. Danach wieder Funkstille.\n\nBeispiel: *„Hier Wassertrupp Florian Neuhaus 44/1 – verstanden: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.“*",
+      "narrative": "**Feedback:** Ein Auftrag der Einsatzleitung wird auch im Notfall **kurz bestätigt** – sonst weiß sie nicht, ob er angekommen ist. Danach wieder Funkstille.\n\nBeispiel: *„Hier Wassertrupp Florian Neuhaus 17/42/1 – verstanden: Schlupftür Nord offen halten, mit Lampe und Zuruf bemerkbar machen, nicht vorgehen – kommen.“*",
       "actions": [
         {
           "id": "retry",

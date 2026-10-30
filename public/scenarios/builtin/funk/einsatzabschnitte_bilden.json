@@ -32,11 +32,11 @@
     "n_start": {
       "id": "n_start",
       "role": "einsatzleit",
-      "narrative": "Brand auf einem landwirtschaftlichen Anwesen, **Hofstelle Am Mühlbach 2** bei Neuhaus. Sie sind Einsatzleiter auf **Florian Neuhaus 11/1**.\n\n**Lage:** Eine **Scheune** mit Heu und Stroh steht in **Vollbrand**. Nur wenige Meter daneben das **Wohnhaus**, auf der anderen Seite ein **Stall** mit Rindern. Der Landwirt meldet: **alle Bewohner draußen**. Der Hydrant am Hof liefert nur wenig Wasser, ein **Löschteich** liegt etwa **400 m** entfernt.\n\nAn der Einsatzstelle: **Florian Neuhaus 44/1** (LF), **Florian Neuhaus 33/1** (Drehleiter), **Florian Adelsdorf 44/1** (LF). Gefunkt wird in der von der ILS zugewiesenen Einsatz-Sprechgruppe.\n\nWie führen Sie die Einsatzstelle?",
+      "narrative": "Brand auf einem landwirtschaftlichen Anwesen, **Hofstelle Am Mühlbach 2** bei Neuhaus. Sie sind Einsatzleiter auf **Florian Neuhaus 11/1**.\n\n**Lage:** Eine **Scheune** mit Heu und Stroh steht in **Vollbrand**. Nur wenige Meter daneben das **Wohnhaus**, auf der anderen Seite ein **Stall** mit Rindern. Der Landwirt meldet: **alle Bewohner draußen**. Der Hydrant am Hof liefert nur wenig Wasser, ein **Löschteich** liegt etwa **400 m** entfernt.\n\nAn der Einsatzstelle: **Florian Neuhaus 17/42/1** (LF), **Florian Neuhaus 33/1** (Drehleiter), **Florian Adelsdorf 44/1** (LF). Gefunkt wird in der von der ILS zugewiesenen Einsatz-Sprechgruppe.\n\nWie führen Sie die Einsatzstelle?",
       "actions": [
         {
           "id": "opt0",
-          "label": "🗂️ Zwei Einsatzabschnitte mit je einem Abschnittsleiter: **Brandbekämpfung** (Florian Neuhaus 44/1, Drehleiter unterstellt) und **Wasserversorgung** (Florian Adelsdorf 44/1) – Sie führen die Abschnittsleiter",
+          "label": "🗂️ Zwei Einsatzabschnitte mit je einem Abschnittsleiter: **Brandbekämpfung** (Florian Neuhaus 17/42/1, Drehleiter unterstellt) und **Wasserversorgung** (Florian Adelsdorf 44/1) – Sie führen die Abschnittsleiter",
           "nextNodeId": "n_sammel"
         },
         {
@@ -69,12 +69,12 @@
               "Florian Adelsdorf",
               "kommen"
             ],
-            "hint": "An alle von Florian Neuhaus 11/1 – Einsatzstelle wird in zwei Einsatzabschnitte geteilt. Abschnitt Brandbekämpfung: Florian Neuhaus 44/1, Drehleiter Florian Neuhaus 33/1 ist unterstellt. Abschnitt Wasserversorgung: Florian Adelsdorf 44/1. Abschnittsleiter melden sich – kommen.",
-            "briefing": "„An alle von“ + eigener Rufname . „zwei Einsatzabschnitte“ . Abschnitt Brandbekämpfung: Florian Neuhaus 44/1, Drehleiter unterstellt . Abschnitt Wasserversorgung: Florian Adelsdorf 44/1 . Abschnittsleiter melden sich . „kommen“",
+            "hint": "An alle von Florian Neuhaus 11/1 – Einsatzstelle wird in zwei Einsatzabschnitte geteilt. Abschnitt Brandbekämpfung: Florian Neuhaus 17/42/1, Drehleiter Florian Neuhaus 33/1 ist unterstellt. Abschnitt Wasserversorgung: Florian Adelsdorf 44/1. Abschnittsleiter melden sich – kommen.",
+            "briefing": "„An alle von“ + eigener Rufname . „zwei Einsatzabschnitte“ . Abschnitt Brandbekämpfung: Florian Neuhaus 17/42/1, Drehleiter unterstellt . Abschnitt Wasserversorgung: Florian Adelsdorf 44/1 . Abschnittsleiter melden sich . „kommen“",
             "onSuccess": "n_prio",
             "onFailure": "n_sammel_fail",
             "feedbackSuccess": "✅ Führungsstruktur für alle klar bekanntgegeben.",
-            "feedbackFailure": "❌ Geben Sie an alle durch: zwei Einsatzabschnitte – Brandbekämpfung (Florian Neuhaus 44/1 mit Drehleiter) und Wasserversorgung (Florian Adelsdorf 44/1)."
+            "feedbackFailure": "❌ Geben Sie an alle durch: zwei Einsatzabschnitte – Brandbekämpfung (Florian Neuhaus 17/42/1 mit Drehleiter) und Wasserversorgung (Florian Adelsdorf 44/1)."
           }
         }
       ]
@@ -82,7 +82,7 @@
     "n_sammel_fail": {
       "id": "n_sammel_fail",
       "role": "einsatzleit",
-      "narrative": "**Feedback:** Ein **Sammelruf** erreicht alle Einheiten gleichzeitig. Jede Einheit muss wissen, **zu welchem Abschnitt** sie gehört und **wer ihr Abschnittsleiter** ist.\n\nBeispiel: *„An alle von Florian Neuhaus 11/1 – Einsatzstelle wird in zwei Einsatzabschnitte geteilt. Abschnitt Brandbekämpfung: Florian Neuhaus 44/1, Drehleiter Florian Neuhaus 33/1 ist unterstellt. Abschnitt Wasserversorgung: Florian Adelsdorf 44/1. Abschnittsleiter melden sich – kommen.“*",
+      "narrative": "**Feedback:** Ein **Sammelruf** erreicht alle Einheiten gleichzeitig. Jede Einheit muss wissen, **zu welchem Abschnitt** sie gehört und **wer ihr Abschnittsleiter** ist.\n\nBeispiel: *„An alle von Florian Neuhaus 11/1 – Einsatzstelle wird in zwei Einsatzabschnitte geteilt. Abschnitt Brandbekämpfung: Florian Neuhaus 17/42/1, Drehleiter Florian Neuhaus 33/1 ist unterstellt. Abschnitt Wasserversorgung: Florian Adelsdorf 44/1. Abschnittsleiter melden sich – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -118,7 +118,7 @@
     "n_prio": {
       "id": "n_prio",
       "role": "einsatzleit",
-      "narrative": "**Florian Neuhaus 44/1:** „Hier Florian Neuhaus 44/1 – verstanden, übernehme Abschnitt Brandbekämpfung – Frage Auftrag – kommen.“\n\n**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – verstanden, Abschnitt Wasserversorgung – kommen.“\n\nDie Scheune ist nicht mehr zu retten. Was ist der **Schwerpunkt** für den Abschnitt Brandbekämpfung?",
+      "narrative": "**Florian Neuhaus 17/42/1:** „Hier Florian Neuhaus 17/42/1 – verstanden, übernehme Abschnitt Brandbekämpfung – Frage Auftrag – kommen.“\n\n**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – verstanden, Abschnitt Wasserversorgung – kommen.“\n\nDie Scheune ist nicht mehr zu retten. Was ist der **Schwerpunkt** für den Abschnitt Brandbekämpfung?",
       "actions": [
         {
           "id": "opt0",
@@ -155,8 +155,8 @@
               "Scheune",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 11/1 – Florian Neuhaus 44/1: Abschnitt Brandbekämpfung – Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, soweit gefahrlos möglich. Scheune von außen ablöschen – kommen.",
-            "briefing": "„hier“ + eigener Rufname . Einheit (Florian Neuhaus 44/1) . Abschnitt (Brandbekämpfung) . Schwerpunkt: Riegelstellung Wohnhaus (mit Drehleiter) und Stall . Stall räumen, soweit gefahrlos . Scheune von außen ablöschen . „kommen“",
+            "hint": "Hier Florian Neuhaus 11/1 – Florian Neuhaus 17/42/1: Abschnitt Brandbekämpfung – Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, soweit gefahrlos möglich. Scheune von außen ablöschen – kommen.",
+            "briefing": "„hier“ + eigener Rufname . Einheit (Florian Neuhaus 17/42/1) . Abschnitt (Brandbekämpfung) . Schwerpunkt: Riegelstellung Wohnhaus (mit Drehleiter) und Stall . Stall räumen, soweit gefahrlos . Scheune von außen ablöschen . „kommen“",
             "onSuccess": "n_auftrag2",
             "onFailure": "n_auftrag1_fail",
             "feedbackSuccess": "✅ Abschnittsauftrag mit klarem Schwerpunkt erteilt.",
@@ -168,7 +168,7 @@
     "n_auftrag1_fail": {
       "id": "n_auftrag1_fail",
       "role": "einsatzleit",
-      "narrative": "**Feedback:** Als Einsatzleiter geben Sie dem Abschnitt **Auftrag und Schwerpunkt** – wie er die Trupps einsetzt, entscheidet der **Abschnittsleiter**.\n\nBeispiel: *„Hier Florian Neuhaus 11/1 – Florian Neuhaus 44/1: Abschnitt Brandbekämpfung – Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, soweit gefahrlos möglich. Scheune von außen ablöschen – kommen.“*",
+      "narrative": "**Feedback:** Als Einsatzleiter geben Sie dem Abschnitt **Auftrag und Schwerpunkt** – wie er die Trupps einsetzt, entscheidet der **Abschnittsleiter**.\n\nBeispiel: *„Hier Florian Neuhaus 11/1 – Florian Neuhaus 17/42/1: Abschnitt Brandbekämpfung – Riegelstellung zum Wohnhaus mit der Drehleiter und zum Stall, Stall räumen, soweit gefahrlos möglich. Scheune von außen ablöschen – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -180,7 +180,7 @@
     "n_auftrag2": {
       "id": "n_auftrag2",
       "role": "einsatzleit",
-      "narrative": "**Florian Neuhaus 44/1:** „Hier Florian Neuhaus 44/1 – verstanden: Riegelstellung Wohnhaus mit Drehleiter und Stall, Stall räumen, Scheune von außen – Ende.“\n\nRufen Sie jetzt den Abschnittsleiter **Wasserversorgung** und geben Sie seinen Auftrag: Löschwasserentnahme am **Löschteich**, Förderleitung zum Verteiler vor der Scheune, Wasser für den Abschnitt Brandbekämpfung.",
+      "narrative": "**Florian Neuhaus 17/42/1:** „Hier Florian Neuhaus 17/42/1 – verstanden: Riegelstellung Wohnhaus mit Drehleiter und Stall, Stall räumen, Scheune von außen – Ende.“\n\nRufen Sie jetzt den Abschnittsleiter **Wasserversorgung** und geben Sie seinen Auftrag: Löschwasserentnahme am **Löschteich**, Förderleitung zum Verteiler vor der Scheune, Wasser für den Abschnitt Brandbekämpfung.",
       "actions": [
         {
           "id": "radio_auftrag2",
@@ -220,7 +220,7 @@
     "n_quittung": {
       "id": "n_quittung",
       "role": "einsatzleit",
-      "narrative": "**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – verstanden: Wasserversorgung vom Löschteich zum Verteiler vor der Scheune – Ende.“\n\nZwanzig Minuten später:\n\n**Florian Neuhaus 44/1:** „Florian Neuhaus 11/1 von Florian Neuhaus 44/1 – Rückmeldung Abschnitt Brandbekämpfung: Riegelstellung steht, Übergreifen auf Wohnhaus und Stall verhindert. Stall geräumt, alle Tiere draußen. Wasserversorgung vom Löschteich steht – kommen.“\n\nQuittieren Sie die Rückmeldung mit den wesentlichen Punkten.",
+      "narrative": "**Florian Adelsdorf 44/1:** „Hier Florian Adelsdorf 44/1 – verstanden: Wasserversorgung vom Löschteich zum Verteiler vor der Scheune – Ende.“\n\nZwanzig Minuten später:\n\n**Florian Neuhaus 17/42/1:** „Florian Neuhaus 11/1 von Florian Neuhaus 17/42/1 – Rückmeldung Abschnitt Brandbekämpfung: Riegelstellung steht, Übergreifen auf Wohnhaus und Stall verhindert. Stall geräumt, alle Tiere draußen. Wasserversorgung vom Löschteich steht – kommen.“\n\nQuittieren Sie die Rückmeldung mit den wesentlichen Punkten.",
       "actions": [
         {
           "id": "radio_quittung",
@@ -321,7 +321,7 @@
               "Löschfahrzeug",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 11/1 – Lagemeldung: Hofstelle Am Mühlbach 2, Scheune in Vollbrand, keine Personen in Gefahr, Tiere gerettet. Wohnhaus und Stall durch Riegelstellung geschützt. Zwei Einsatzabschnitte: Brandbekämpfung unter Florian Neuhaus 44/1, Wasserversorgung vom Löschteich unter Florian Adelsdorf 44/1. Nachforderung: ein weiteres Löschfahrzeug zur Ablösung der Wasserförderung – kommen.",
+            "hint": "Hier Florian Neuhaus 11/1 – Lagemeldung: Hofstelle Am Mühlbach 2, Scheune in Vollbrand, keine Personen in Gefahr, Tiere gerettet. Wohnhaus und Stall durch Riegelstellung geschützt. Zwei Einsatzabschnitte: Brandbekämpfung unter Florian Neuhaus 17/42/1, Wasserversorgung vom Löschteich unter Florian Adelsdorf 44/1. Nachforderung: ein weiteres Löschfahrzeug zur Ablösung der Wasserförderung – kommen.",
             "briefing": "„hier“ + Rufname . „Lagemeldung“ . WO: Hofstelle Am Mühlbach 2 . WAS: Scheune in Vollbrand . MENSCHENLEBEN: keine Personen in Gefahr, Tiere gerettet . MASSNAHMEN: Riegelstellung Wohnhaus und Stall, zwei Einsatzabschnitte mit Abschnittsleitern . NACHFORDERUNG: ein weiteres Löschfahrzeug . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_ils_fail",
@@ -334,7 +334,7 @@
     "n_ils_fail": {
       "id": "n_ils_fail",
       "role": "einsatzleit",
-      "narrative": "**Feedback:** Schema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**. Bei größeren Lagen gehört die **Führungsstruktur** (Einsatzabschnitte, Abschnittsleiter) zu den Maßnahmen – so weiß die ILS, wohin sie nachrückende Kräfte schickt.\n\nBeispiel: *„Hier Florian Neuhaus 11/1 – Lagemeldung: Hofstelle Am Mühlbach 2, Scheune in Vollbrand, keine Personen in Gefahr, Tiere gerettet. Wohnhaus und Stall durch Riegelstellung geschützt. Zwei Einsatzabschnitte: Brandbekämpfung unter Florian Neuhaus 44/1, Wasserversorgung vom Löschteich unter Florian Adelsdorf 44/1. Nachforderung: ein weiteres Löschfahrzeug zur Ablösung der Wasserförderung – kommen.“*",
+      "narrative": "**Feedback:** Schema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**. Bei größeren Lagen gehört die **Führungsstruktur** (Einsatzabschnitte, Abschnittsleiter) zu den Maßnahmen – so weiß die ILS, wohin sie nachrückende Kräfte schickt.\n\nBeispiel: *„Hier Florian Neuhaus 11/1 – Lagemeldung: Hofstelle Am Mühlbach 2, Scheune in Vollbrand, keine Personen in Gefahr, Tiere gerettet. Wohnhaus und Stall durch Riegelstellung geschützt. Zwei Einsatzabschnitte: Brandbekämpfung unter Florian Neuhaus 17/42/1, Wasserversorgung vom Löschteich unter Florian Adelsdorf 44/1. Nachforderung: ein weiteres Löschfahrzeug zur Ablösung der Wasserförderung – kommen.“*",
       "actions": [
         {
           "id": "retry",

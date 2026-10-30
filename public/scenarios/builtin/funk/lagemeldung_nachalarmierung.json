@@ -8,7 +8,7 @@
     "n_vor_ort": {
       "id": "n_vor_ort",
       "role": "gruppenführer_a",
-      "narrative": "Sie sind mit **Florian Neuhaus 44/1** als erste Einheit an der **Bergstraße 4 in Neuhaus** eingetroffen und haben **Status 4** gedrückt.\n\n**Lage:** Freistehendes Einfamilienhaus, **Dachgeschoss in Vollbrand**. Am Dachfenster ist **eine Person** zu sehen und ruft um Hilfe. Der Treppenraum ist stark verraucht. Keine weiteren Kräfte vor Ort.\n\nSie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 44/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab. Weil Menschenleben in Gefahr sind, fordern Sie **sofort** nach – nicht „Nachforderung folgt“.",
+      "narrative": "Sie sind mit **Florian Neuhaus 17/42/1** als erste Einheit an der **Bergstraße 4 in Neuhaus** eingetroffen und haben **Status 4** gedrückt.\n\n**Lage:** Freistehendes Einfamilienhaus, **Dachgeschoss in Vollbrand**. Am Dachfenster ist **eine Person** zu sehen und ruft um Hilfe. Der Treppenraum ist stark verraucht. Keine weiteren Kräfte vor Ort.\n\nSie haben **Status 5** gedrückt.\n\n**Leitstelle:** „Florian Neuhaus 17/42/1 von Leitstelle – kommen.“\n\nGeben Sie die **Lagemeldung** ab. Weil Menschenleben in Gefahr sind, fordern Sie **sofort** nach – nicht „Nachforderung folgt“.",
       "actions": [
         {
           "id": "radio_vor_ort",
@@ -25,7 +25,7 @@
               "Rettungsdienst",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Lagemeldung: Bergstraße 4, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Eine Person im Dachgeschoss, Menschenleben in Gefahr. Menschenrettung über den Innenangriff eingeleitet. Nachforderung: Drehleiter und Rettungsdienst – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Lagemeldung: Bergstraße 4, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Eine Person im Dachgeschoss, Menschenleben in Gefahr. Menschenrettung über den Innenangriff eingeleitet. Nachforderung: Drehleiter und Rettungsdienst – kommen.",
             "briefing": "Eigener Rufname + „Lagemeldung“ . WO: Bergstraße 4, freistehendes Einfamilienhaus . WAS: Dachgeschoss in Vollbrand . MENSCHENLEBEN: eine Person im Dachgeschoss in Gefahr . MASSNAHMEN: Menschenrettung über Innenangriff eingeleitet . NACHFORDERUNG: Drehleiter + Rettungsdienst . „kommen“",
             "onSuccess": "n_folge",
             "onFailure": "n_vor_ort_fail",
@@ -38,7 +38,7 @@
     "n_vor_ort_fail": {
       "id": "n_vor_ort_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Sind Menschenleben in Gefahr, gehört die **Nachforderung direkt in die erste Lagemeldung** – jede Minute Anfahrt zählt. Lieber früh nachfordern und später abbestellen.\n\nSchema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Lagemeldung: Bergstraße 4, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Eine Person im Dachgeschoss, Menschenleben in Gefahr. Menschenrettung über den Innenangriff eingeleitet. Nachforderung: Drehleiter und Rettungsdienst – kommen.“*",
+      "narrative": "**Feedback:** Sind Menschenleben in Gefahr, gehört die **Nachforderung direkt in die erste Lagemeldung** – jede Minute Anfahrt zählt. Lieber früh nachfordern und später abbestellen.\n\nSchema: **Wo · Was · Menschenleben in Gefahr · eigene Maßnahmen · Nachforderung**.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Lagemeldung: Bergstraße 4, freistehendes Einfamilienhaus, Dachgeschoss in Vollbrand. Eine Person im Dachgeschoss, Menschenleben in Gefahr. Menschenrettung über den Innenangriff eingeleitet. Nachforderung: Drehleiter und Rettungsdienst – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -65,7 +65,7 @@
               "Drehleiter",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Folgemeldung Bergstraße 4: eine Person gerettet und mit Verdacht auf Rauchgasvergiftung an den Rettungsdienst übergeben. Brandbekämpfung innen mit einem Rohr und außen über die Drehleiter – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Folgemeldung Bergstraße 4: eine Person gerettet und mit Verdacht auf Rauchgasvergiftung an den Rettungsdienst übergeben. Brandbekämpfung innen mit einem Rohr und außen über die Drehleiter – kommen.",
             "briefing": "Eigener Rufname + „Folgemeldung“ . Menschenrettung abgeschlossen: eine Person gerettet . Übergabe an den Rettungsdienst, Verdacht Rauchgasvergiftung . aktuelle Maßnahmen: innen ein Rohr, außen Drehleiter . keine Namen über Funk . „kommen“",
             "onSuccess": "n_kontrolle",
             "onFailure": "n_folge_fail",
@@ -78,7 +78,7 @@
     "n_folge_fail": {
       "id": "n_folge_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Eine **Folgemeldung** aktualisiert die Lage: Was hat sich geändert, was läuft gerade? Personenbezogene Daten (Namen, Geburtsdaten) gehören **nicht** in den Funk.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Folgemeldung Bergstraße 4: eine Person gerettet und mit Verdacht auf Rauchgasvergiftung an den Rettungsdienst übergeben. Brandbekämpfung innen mit einem Rohr und außen über die Drehleiter – kommen.“*",
+      "narrative": "**Feedback:** Eine **Folgemeldung** aktualisiert die Lage: Was hat sich geändert, was läuft gerade? Personenbezogene Daten (Namen, Geburtsdaten) gehören **nicht** in den Funk.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Folgemeldung Bergstraße 4: eine Person gerettet und mit Verdacht auf Rauchgasvergiftung an den Rettungsdienst übergeben. Brandbekämpfung innen mit einem Rohr und außen über die Drehleiter – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -102,7 +102,7 @@
               "Feuer unter Kontrolle",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Einsatz Bergstraße 4: Feuer unter Kontrolle – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Einsatz Bergstraße 4: Feuer unter Kontrolle – kommen.",
             "briefing": "Eigener Rufname . Einsatzstelle (Bergstraße 4) . Standardmeldung „Feuer unter Kontrolle“ = keine weitere Ausbreitung, Löscharbeiten laufen noch . „kommen“",
             "onSuccess": "n_aus",
             "onFailure": "n_kontrolle_fail",
@@ -115,7 +115,7 @@
     "n_kontrolle_fail": {
       "id": "n_kontrolle_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** **„Feuer unter Kontrolle“** heißt: keine weitere Ausbreitung, die Löscharbeiten laufen aber noch. **„Feuer aus“** folgt erst, wenn kein offenes Feuer mehr vorhanden ist.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Einsatz Bergstraße 4: Feuer unter Kontrolle – kommen.“*",
+      "narrative": "**Feedback:** **„Feuer unter Kontrolle“** heißt: keine weitere Ausbreitung, die Löscharbeiten laufen aber noch. **„Feuer aus“** folgt erst, wenn kein offenes Feuer mehr vorhanden ist.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Einsatz Bergstraße 4: Feuer unter Kontrolle – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -141,7 +141,7 @@
               "übergeben",
               "kommen"
             ],
-            "hint": "Hier Florian Neuhaus 44/1 – Einsatz Bergstraße 4: Feuer aus, Nachlöscharbeiten laufen. Einsatzstelle wird anschließend an die Polizei übergeben – kommen.",
+            "hint": "Hier Florian Neuhaus 17/42/1 – Einsatz Bergstraße 4: Feuer aus, Nachlöscharbeiten laufen. Einsatzstelle wird anschließend an die Polizei übergeben – kommen.",
             "briefing": "Eigener Rufname . Einsatzstelle . „Feuer aus“ . Nachlöscharbeiten laufen . Übergabe der Einsatzstelle an die Polizei (Brandursachenermittlung) . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_aus_fail",
@@ -154,7 +154,7 @@
     "n_aus_fail": {
       "id": "n_aus_fail",
       "role": "gruppenführer_a",
-      "narrative": "**Feedback:** Nach **„Feuer aus“** folgen Nachlöscharbeiten und die **Übergabe der Einsatzstelle** (hier an die Polizei). Erst danach geht es zurück – auf dem Rückweg **Status 1**.\n\nBeispiel: *„Hier Florian Neuhaus 44/1 – Einsatz Bergstraße 4: Feuer aus, Nachlöscharbeiten laufen. Einsatzstelle wird anschließend an die Polizei übergeben – kommen.“*",
+      "narrative": "**Feedback:** Nach **„Feuer aus“** folgen Nachlöscharbeiten und die **Übergabe der Einsatzstelle** (hier an die Polizei). Erst danach geht es zurück – auf dem Rückweg **Status 1**.\n\nBeispiel: *„Hier Florian Neuhaus 17/42/1 – Einsatz Bergstraße 4: Feuer aus, Nachlöscharbeiten laufen. Einsatzstelle wird anschließend an die Polizei übergeben – kommen.“*",
       "actions": [
         {
           "id": "retry",
