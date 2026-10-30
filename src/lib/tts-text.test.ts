@@ -18,6 +18,10 @@ describe('ttsText', () => {
     expect(ttsText('Angriffstrupp und Sicherheitstrupp')).toBe('Angriffs-Trupp und Sicherheits-Trupp');
   });
 
+  it('macht aus Absätzen keine langen Sprechpausen', () => {
+    expect(ttsText('Erster Satz.\n\nZweiter Satz.\nDritter.')).toBe('Erster Satz. Zweiter Satz. Dritter.');
+  });
+
   it('lässt Trupp ohne Fugen-s in Ruhe', () => {
     expect(ttsText('Wassertrupp, Schlauchtrupp, Trupp')).toBe('Wassertrupp, Schlauchtrupp, Trupp');
   });

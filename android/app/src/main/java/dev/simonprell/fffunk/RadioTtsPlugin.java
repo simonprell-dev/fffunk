@@ -2,6 +2,8 @@ package dev.simonprell.fffunk;
 
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
+import android.util.Log;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -33,7 +35,8 @@ public class RadioTtsPlugin extends Plugin {
             if (status != TextToSpeech.SUCCESS) return;
             int r = tts.setLanguage(Locale.GERMANY);
             german = r != TextToSpeech.LANG_MISSING_DATA && r != TextToSpeech.LANG_NOT_SUPPORTED;
-            tts.setSpeechRate(1.15f);
+            if (german) useOfflineGermanVoice();
+            tts.setSpeechRate(1.1f);
             tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                 @Override public void onStart(String id) { }
                 @Override public void onDone(String id) { finish(id); }
@@ -42,6 +45,25 @@ public class RadioTtsPlugin extends Plugin {
             });
             ready = true;
         });
+    }
+
+    /**
+     * Neuere Google-Sprachausgabe nimmt sonst gern eine Online-Stimme, die Satz für Satz lädt –
+     * lange Pausen zwischen den Sätzen (z. B. Cat S62 Pro). Offline-Stimme mit bester Qualität bevorzugen.
+     */
+    private void useOfflineGermanVoice() {
+        try {
+            Voice best = null;
+            for (Voice v : tts.getVoices()) {
+                if (!"de".equals(v.getLocale().getLanguage()) || v.isNetworkConnectionRequired()) continue;
+                if (v.getFeatures() != null && v.getFeatures().contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED)) continue;
+                if (best == null || v.getQuality() > best.getQuality()) best = v;
+            }
+            if (best != null) tts.setVoice(best);
+            Log.d("FFFunkTts", "Stimme: " + (best != null ? best.getName() : "Standard"));
+        } catch (RuntimeException e) {
+            Log.w("FFFunkTts", "Stimmenwahl fehlgeschlagen", e); // ältere Engines: Standardstimme behalten
+        }
     }
 
     private synchronized void finish(String id) {

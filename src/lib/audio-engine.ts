@@ -191,6 +191,8 @@ export class AudioEngine {
     const controller = new AbortController();
 
     try {
+      // Android-App: Gerätestimme sofort und offline – kein Warten auf den Server vor jedem Satz
+      if (isNativeTtsAvailable()) throw new Error('native');
       this.ttsAbortController = controller;
       const response = await fetch(apiUrl('/api/tts'), {
         method: 'POST',
