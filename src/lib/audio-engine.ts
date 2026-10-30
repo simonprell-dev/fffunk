@@ -1,6 +1,7 @@
 import { Transcription } from '../types/story';
 import { apiUrl } from './api-base';
 import { RadioTts, isNativeTtsAvailable } from './radio-tts';
+import { ttsText } from './tts-text';
 
 export type RadioMode = 'tmo' | 'dmo' | 'dispatch' | 'clear';
 
@@ -180,7 +181,7 @@ export class AudioEngine {
 
     if (this.muted) return;
 
-    const clean = this.stripMarkdown(text);
+    const clean = ttsText(this.stripMarkdown(text));
     if (!clean) return;
 
     this.playPttClick('open');
