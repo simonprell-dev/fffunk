@@ -76,6 +76,12 @@ describe('Grundausbildung', () => {
     });
   }
 
+  it('nutzt den Funkrufnamen der übrigen Szenarien (44/1, wird per Lizenz ersetzt)', () => {
+    const raw = JSON.stringify(scenario);
+    expect(raw).toContain('Florian Neuhaus 44/1');
+    expect(raw).not.toContain('40/1');
+  });
+
   it('hält die Texte kurz', () => {
     for (const n of nodes) expect(n.narrative.length, n.id).toBeLessThanOrEqual(600);
   });

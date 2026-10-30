@@ -26,7 +26,7 @@ export default function ChapterMenu({ chapters, progress, onStart }: Props) {
         className="w-full flex items-center gap-2 px-5 py-3 compact:px-2 compact:py-1.5 compact:text-sm rounded-lg font-semibold text-left bg-[#dc2626] hover:bg-[#b91c1c] text-white min-w-0"
       >
         <Play size={16} className="shrink-0" />
-        <span className="truncate">{primaryLabel}</span>
+        <span className="min-w-0">{primaryLabel}</span>
       </button>
 
       <div className="bg-[#111] border border-[#333] rounded-lg p-2 compact:p-1 min-w-0">
