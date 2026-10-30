@@ -129,7 +129,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
           onClick={() => onSelect(featured)}
           className="w-full flex items-center gap-2 rounded-lg border-2 border-[#dc2626] bg-[#dc2626]/10 hover:bg-[#dc2626]/20 px-4 py-3 compact:px-2 compact:py-1.5 text-left font-semibold compact:text-sm min-w-0"
         >
-          <span className="truncate">Neu bei der Feuerwehr? → {featured.title}</span>
+          <span>Neu bei der Feuerwehr? → {featured.title}</span>
         </button>
       )}
 
