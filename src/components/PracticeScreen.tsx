@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Scenario, StoryNode, Action, RadioCall } from '../types/story';
+import { Scenario, StoryNode, Action, RadioCall, Chapter } from '../types/story';
 import { StoryEngine } from '../lib/story-engine';
 import { AudioEngine } from '../lib/audio-engine';
 import NarrativePanel from './NarrativePanel';
@@ -9,6 +9,8 @@ import { applyRufnamen } from '../lib/rufnamen';
 import { RadioResponse, radioResponseFor, splitCall, splitLeadingResponse } from '../lib/radio-response';
 import { trackEvent } from '../lib/usage-stats';
 import { onRadioKey } from '../lib/radio-keys';
+import ChapterMenu from './ChapterMenu';
+import { chapterEndingAt, loadChapterProgress, markChapterDone, markChapterStarted, nextChapter } from '../lib/chapter-progress';
 
 interface Props {
   scenario: Scenario;
@@ -27,6 +29,10 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
   const [score, setScore] = useState(engine.getProgress().score);
   const [muted, setMuted] = useState(audio.isMuted());
   const [incoming, setIncoming] = useState<RadioResponse | null>(null); // Gegenstelle antwortet gerade
+  // Kapitel-Szenarien beginnen mit der Kapitelauswahl
+  const chapters = scenario.chapters;
+  const [menuOpen, setMenuOpen] = useState(!!chapters);
+  const [chapterProgress, setChapterProgress] = useState(() => loadChapterProgress(scenario.id));
 
   const navigationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const responseSeqRef = useRef(0);       // erhöht → laufende Antwort-Sequenz verwerfen
@@ -88,11 +94,38 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
     refreshNode();
   };
 
+  const startChapter = (chapter: Chapter) => {
+    setChapterProgress(markChapterStarted(scenario.id, chapter.id));
+    setFeedback(null);
+    engine.goTo(chapter.startNodeId);
+    refreshNode();
+    setMenuOpen(false);
+    window.scrollTo(0, 0);
+  };
+
+  const openChapterMenu = () => {
+    setChapterProgress(loadChapterProgress(scenario.id));
+    setFeedback(null);
+    setMenuOpen(true);
+    window.scrollTo(0, 0);
+  };
+
   const handleAction = (action: Action) => {
     audio.stop(); // Ansage des aktuellen Schritts nicht weiterlaufen lassen
     if (navigationTimerRef.current) {
       clearTimeout(navigationTimerRef.current);
       navigationTimerRef.current = null;
+    }
+    if (chapters && action.nextNodeId === '__chapters__') {
+      openChapterMenu();
+      return;
+    }
+    if (chapters && action.nextNodeId === '__next_chapter__') {
+      const current = chapterEndingAt(chapters, currentNode.id);
+      const next = current && nextChapter(chapters, current.id);
+      if (next) startChapter(next);
+      else openChapterMenu();
+      return;
     }
     if (action.radioCall) {
       setPendingAction(action);
@@ -112,11 +145,28 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
   // Sprechtaste des Funkgeräts öffnet den Funkspruch des aktuellen Schritts (danach im Dialog: sprechen).
   const pttOpenRef = useRef<() => void>(() => {});
   pttOpenRef.current = () => {
-    if (radioModalOpen || incoming) return;
+    if (radioModalOpen || incoming || menuOpen) return;
     const radioAction = currentNode.actions.find(a => a.radioCall);
     if (radioAction) handleAction(radioAction);
   };
   useEffect(() => onRadioKey((key, pressed) => { if (key === 'ptt' && pressed) pttOpenRef.current(); }), []);
+
+  // Notruftaste löst die dafür markierte Aktion des aktuellen Schritts aus (Grundausbildung, Kapitel Mayday).
+  const sosRef = useRef<() => void>(() => {});
+  sosRef.current = () => {
+    if (radioModalOpen || incoming || menuOpen) return;
+    const sosAction = currentNode.actions.find(a => a.key === 'sos');
+    if (sosAction) handleAction(sosAction);
+  };
+  useEffect(() => onRadioKey((key, pressed) => { if (key === 'sos' && pressed) sosRef.current(); }), []);
+
+  // Kapitel-Endknoten erreicht → Kapitel abgeschlossen
+  useEffect(() => {
+    const done = chapters && chapterEndingAt(chapters, currentNode.id);
+    if (!done) return;
+    setChapterProgress(markChapterDone(scenario.id, done.id));
+    trackEvent('chapter_complete');
+  }, [currentNode.id, chapters, scenario.id]);
 
   const handleRadioResult = (success: boolean, _transcript: string) => {
     setRadioModalOpen(false);
@@ -173,6 +223,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
   }, [audio]);
 
   useEffect(() => {
+    if (menuOpen) return; // Kapitelauswahl: nichts vorlesen
     if (lastNarrativeRef.current !== narrative) {
       prevNarrativeRef.current = lastNarrativeRef.current;
       lastNarrativeRef.current = narrative;
@@ -185,7 +236,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
     if (text) {
       audio.speakRadio(text).catch(() => {});
     }
-  }, [currentNode.id, audio, narrative]);
+  }, [currentNode.id, audio, narrative, menuOpen]);
 
   return (
     <div className="space-y-6 compact:space-y-2">
@@ -228,6 +279,9 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
         </div>
       </div>
 
+      {menuOpen && chapters ? (
+        <ChapterMenu chapters={chapters} progress={chapterProgress} onStart={startChapter} />
+      ) : (<>
       <NarrativePanel narrative={narrative} />
 
       {feedback && (
@@ -246,6 +300,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
       ) : (
         <ActionButtons actions={currentNode.actions} onSelect={handleAction} />
       )}
+      </>)}
 
       {radioModalOpen && pendingAction && (
         <RadioCallModal

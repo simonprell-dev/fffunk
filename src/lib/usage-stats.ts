@@ -5,6 +5,7 @@ export type UsageEvent =
   | 'scenario_start'
   | 'training_start'
   | 'scenario_complete'
+  | 'chapter_complete'
   | 'radio_ok'
   | 'radio_fail'
   | 'lern_open';

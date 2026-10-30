@@ -25,6 +25,8 @@ export interface Action {
   nextNodeId?: string;
   radioCall?: RadioCall;
   auto?: boolean;
+  /** 'sos': die Notruftaste des Funkgeräts löst diese Aktion ebenfalls aus. */
+  key?: 'sos';
 }
 
 export interface RadioCall {

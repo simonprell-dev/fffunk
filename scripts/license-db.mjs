@@ -389,6 +389,7 @@ export const USAGE_EVENTS = {
   scenario_start: 'Szenario gestartet',
   training_start: 'Training gestartet',
   scenario_complete: 'Szenario abgeschlossen',
+  chapter_complete: 'Kapitel abgeschlossen',
   radio_ok: 'Funkspruch richtig',
   radio_fail: 'Funkspruch falsch',
   lern_open: 'Lernbereich geöffnet',
