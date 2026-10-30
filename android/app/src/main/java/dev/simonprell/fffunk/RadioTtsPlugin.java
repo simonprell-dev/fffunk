@@ -1,5 +1,6 @@
 package dev.simonprell.fffunk;
 
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
@@ -44,6 +45,12 @@ public class RadioTtsPlugin extends Plugin {
                 @Override public void onStop(String id, boolean interrupted) { finish(id); }
             });
             ready = true;
+            // Stimme vorladen: sonst dauert der erste längere Text spürbar, bis er weiterläuft
+            if (german) {
+                Bundle silent = new Bundle();
+                silent.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 0f);
+                tts.speak("Funkverbindung steht.", TextToSpeech.QUEUE_ADD, silent, "warmup");
+            }
         });
     }
 

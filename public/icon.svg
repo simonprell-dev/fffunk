@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <!-- FFFunk-Logo wie in der Kopfzeile: rotes Feld, weißes F -->
+  <rect width="108" height="108" rx="20" fill="#dc2626"/>
+  <path d="M37 26h36v12H50v12h20v12H50v20H37z" fill="#fff"/>
+</svg>
