@@ -3,6 +3,9 @@ import { Mic, ShieldAlert, ClipboardList, CheckCircle2, XCircle, RotateCcw, Arro
 import { Capacitor } from '@capacitor/core';
 import { SpeechRecognition } from '@capacitor-community/speech-recognition';
 import { WhistleRecorder, isWhistleSupported, loadWhistle, prefersWhistle, transcribeWithWhistle } from '../lib/whistle-stt';
+import { VoskStt, isVoskAvailable, voskGrammar } from '../lib/vosk-stt';
+import { normalizeSpeech, phraseMatches } from '../lib/speech-match';
+import { onRadioKey } from '../lib/radio-keys';
 import type { CallSplit } from '../lib/radio-response';
 
 interface Props {
@@ -23,7 +26,10 @@ interface Props {
 
 type Status = 'init' | 'ready' | 'recording' | 'done' | 'reveal';
 type Phase = 'call' | 'answer' | 'message';
-type Engine = 'google' | 'whistle';
+type Engine = 'google' | 'whistle' | 'vosk';
+
+// Loslassen erst nach kurzer Pause werten – resistive Displays verlieren beim Halten kurz den Kontakt.
+const RELEASE_GRACE_MS = 300;
 
 // Einmal ausgefallene Google-Erkennung (z. B. kein Netz/Dienst) nicht bei jedem Funkspruch erneut versuchen.
 let googleUnavailable = false;
@@ -50,6 +56,8 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   const beepCtxRef = useRef<AudioContext | null>(null);
   const whistleRecRef = useRef<WhistleRecorder | null>(null);
   const silentEndsRef = useRef(0); // Google-Erkennung ohne Ergebnis beendet (in Folge)
+  const voskActiveRef = useRef(false); // Vosk-Aufnahme läuft (nach dem Piepton gestartet)
+  const releaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const getSpeechRecognition = () =>
     (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition ?? null;
@@ -96,6 +104,22 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     }
   };
 
+  // ---- Offline in der Android-App: Vosk (natives Plugin, läuft auch mit alter WebView) ----
+  const prepareVosk = async () => {
+    setEngine('vosk');
+    setStatus('init');
+    setError(null);
+    try {
+      await VoskStt.load(); // erster Start: Modell entpacken (einige Sekunden)
+      setStatus('ready');
+    } catch (e: any) {
+      setError(String(e?.message ?? e));
+    }
+  };
+
+  // Ohne Google-Sprachdienst: in der App Vosk, im Browser Whistle.
+  const prepareOffline = () => (isVoskAvailable() ? prepareVosk() : prepareWhistle());
+
   // Mikrofon direkt beim Öffnen vorbereiten → kein "Funk beginnen"-Knopf nötig.
   const prepareMic = async () => {
     setError(null);
@@ -103,7 +127,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     setEngine('google');
 
     if (prefersWhistle() || googleUnavailable) {
-      await prepareWhistle();
+      await prepareOffline();
       return;
     }
 
@@ -112,7 +136,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       try {
         const avail = await SpeechRecognition.available();
         if (!avail?.available) {
-          await prepareWhistle(); // kein Google-Sprachdienst auf dem Gerät
+          await prepareOffline(); // kein Google-Sprachdienst auf dem Gerät
           return;
         }
         const perm = await SpeechRecognition.requestPermissions();
@@ -153,6 +177,8 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       prepareMic();
     } else {
       whistleRecRef.current?.release();
+      if (releaseTimerRef.current) { clearTimeout(releaseTimerRef.current); releaseTimerRef.current = null; }
+      if (voskActiveRef.current) { voskActiveRef.current = false; VoskStt.stop().catch(() => {}); }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -191,35 +217,6 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
       setTimeout(resolve, 220); // Sicherheitsnetz
     } catch { resolve(); }
   });
-
-  const normalizeSpeech = (value: string): string =>
-    value
-      .toLowerCase()
-      .replace(/\b(eins|eine|ein)\b/g, '1')
-      .replace(/\b(zwei|zwo)\b/g, '2') // „zwo“ = Funk-Aussprache
-      .replace(/\bdrei\b/g, '3')
-      .replace(/\bvier\b/g, '4')
-      .replace(/\b(fuenf|fünf)\b/g, '5')
-      .replace(/\bsechs\b/g, '6')
-      .replace(/\bsieben\b/g, '7')
-      .replace(/\bacht\b/g, '8')
-      .replace(/\bneun\b/g, '9')
-      .replace(/\bnull\b/g, '0')
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '')
-      .replace(/[^a-z0-9]+/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-
-  const phraseMatches = (spokenText: string, phrase: string): boolean => {
-    const spoken = normalizeSpeech(spokenText);
-    const expected = normalizeSpeech(phrase);
-    if (!expected) return false;
-    if (spoken.includes(expected)) return true;
-    const expectedWords = expected.split(' ').filter(word => word.length > 1);
-    if (expectedWords.length <= 1) return spoken.split(' ').includes(expected);
-    return expectedWords.every(word => spoken.split(' ').includes(word));
-  };
 
   // Anruf: Gegenstelle + eigener Name + „kommen“. Nachricht: nur Begriffe, die im Spruch selbst vorkommen
   // (die Rufnamen wurden schon beim Anruf genannt).
@@ -291,6 +288,17 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     setStatus('recording');
     setError(null);
     setNotice(null);
+
+    // ---- Offline (Vosk, App): erkennt während der Aufnahme, Ergebnis beim Loslassen ----
+    if (engine === 'vosk') {
+      voskActiveRef.current = true;
+      VoskStt.start({ grammar: voskGrammar([activeHint, ...activeExpected]) }).catch((e: any) => {
+        voskActiveRef.current = false;
+        setError(String(e?.message ?? e));
+        setStatus('ready'); setPressed(false); pressedRef.current = false;
+      });
+      return;
+    }
 
     // ---- Offline (Whistle): Audio aufnehmen, Auswertung beim Loslassen ----
     if (engine === 'whistle') {
@@ -401,6 +409,27 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   };
 
   const stopRecording = async () => {
+    if (engine === 'vosk') {
+      setPressed(false);
+      if (!voskActiveRef.current) { setStatus('ready'); return; } // während des Pieptons losgelassen
+      voskActiveRef.current = false;
+      setTranscribing(true);
+      try {
+        const { text } = await VoskStt.stop();
+        if (!text) {
+          setError('Keine Sprache erkannt. Bitte erneut versuchen.');
+          setStatus('ready');
+          return;
+        }
+        processTranscript(text);
+      } catch (e: any) {
+        setError(String(e?.message ?? e));
+        setStatus('ready');
+      } finally {
+        setTranscribing(false);
+      }
+      return;
+    }
     if (engine === 'whistle') {
       setPressed(false);
       const rec = whistleRecRef.current;
@@ -438,11 +467,15 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
   };
 
   // Drücken → erst kurzer Piepton, danach beginnt die Aufnahme (wie beim Funkgerät).
-  const handlePointerDown = async (e: React.PointerEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const pressStart = async () => {
+    // Kurz losgelassen und gleich wieder gedrückt (Touch verliert Kontakt) → einfach weitersprechen.
+    if (releaseTimerRef.current) {
+      clearTimeout(releaseTimerRef.current);
+      releaseTimerRef.current = null;
+      return;
+    }
     if (status !== 'ready' && status !== 'recording') return;
     if (pressedRef.current || transcribing || phase === 'answer') return; // Gegenstelle spricht
-    try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* ignore */ }
     pressedRef.current = true;
     setPressed(true);
     setError(null);
@@ -454,13 +487,37 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
     }
   };
 
+  const pressEnd = () => {
+    if (!pressedRef.current || releaseTimerRef.current) return;
+    releaseTimerRef.current = setTimeout(() => {
+      releaseTimerRef.current = null;
+      pressedRef.current = false;
+      setPressed(false);
+      setBeeping(false);
+      stopRecording();
+    }, RELEASE_GRACE_MS);
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try { (e.currentTarget as Element).setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    pressStart();
+  };
+
   const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    pressedRef.current = false;
-    setPressed(false);
-    setBeeping(false);
-    stopRecording();
+    pressEnd();
   };
+
+  // Seitliche Sprechtaste des Funkgeräts – Listener einmal, Handler immer aktuell.
+  const pttRef = useRef({ pressStart, pressEnd });
+  pttRef.current = { pressStart, pressEnd };
+  useEffect(() => {
+    if (!isOpen) return;
+    return onRadioKey((key, pressed) => {
+      if (key === 'ptt') { if (pressed) pttRef.current.pressStart(); else pttRef.current.pressEnd(); }
+    });
+  }, [isOpen]);
 
   const handleClose = () => {
     if (recognitionRef.current) {
@@ -541,10 +598,10 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
           {(status === 'ready' || status === 'recording') && (
             <div className="py-2">
               {transcript && (
-                <div className="mb-4 text-left">
-                  <div className="text-sm text-[#a3a3a3] mb-2">Erkannt:</div>
-                  <div className="p-3 bg-[#262626] border border-[#444] rounded-lg text-[#e5e5e5]">
-                    „{transcript}"
+                <div className="mb-4 compact:mb-1 text-left">
+                  <div className="text-sm text-[#a3a3a3] mb-2 compact:hidden">Erkannt:</div>
+                  <div className="p-3 compact:px-2 compact:py-1 compact:text-xs compact:line-clamp-2 bg-[#262626] border border-[#444] rounded-lg text-[#e5e5e5]">
+                    <span className="hidden compact:inline text-[#a3a3a3]">Erkannt: </span>„{transcript}"
                   </div>
                 </div>
               )}
@@ -561,10 +618,11 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
               {/* PTT button — stays mounted during recording so pointer events fire correctly */}
               <button
                 disabled={phase === 'answer'}
+                data-knob="skip"
                 onPointerDown={handlePointerDown}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerUp}
-                className="w-full min-h-[180px] compact:min-h-[120px] rounded-xl font-semibold flex flex-col items-center justify-center gap-3 compact:gap-1 transition-all duration-75 select-none touch-none text-white"
+                className="w-full min-h-[180px] compact:min-h-[96px] rounded-xl font-semibold flex flex-col items-center justify-center gap-3 compact:gap-1 transition-all duration-75 select-none touch-none text-white"
                 style={{
                   backgroundColor: phase === 'answer' ? '#3f3f46' : pressed ? '#7f1d1d' : '#dc2626',
                   transform: pressed ? 'scale(0.96)' : 'scale(1)',
@@ -582,7 +640,7 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
               <div className="mt-3 text-xs text-[#666] text-center compact:hidden">
                 Gedrückt halten · nach dem Piepton sprechen · Loslassen zum Senden
               </div>
-              {engine === 'whistle' && (
+              {engine !== 'google' && (
                 <div className="mt-1 text-xs text-[#666] text-center">Offline-Spracherkennung aktiv</div>
               )}
               {notice && (
@@ -660,9 +718,9 @@ export default function RadioCallModal({ isOpen, onClose, onResult, expectedPhra
           )}
 
           {error && (
-            <div className="flex items-start gap-3 text-red-400 p-4 bg-red-900/20 rounded-lg mt-4 text-left">
-              <ShieldAlert size={20} className="shrink-0 mt-0.5" />
-              <span className="text-sm">{error}</span>
+            <div className="flex items-start gap-3 compact:gap-1 text-red-400 p-4 compact:p-1 bg-red-900/20 rounded-lg mt-4 compact:mt-1 text-left">
+              <ShieldAlert size={20} className="shrink-0 mt-0.5 compact:hidden" />
+              <span className="text-sm compact:text-xs compact:line-clamp-3">{error}</span>
             </div>
           )}
         </div>

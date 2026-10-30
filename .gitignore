@@ -26,3 +26,6 @@ android/app/src/main/res/xml/config.xml
 android/keystore.properties
 *.jks
 *.keystore
+
+# Vosk-Modell (node scripts/fetch-vosk-model.mjs)
+android/app/src/main/assets/model-de/

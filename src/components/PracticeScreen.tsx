@@ -8,6 +8,7 @@ import RadioCallModal from './RadioCallModal';
 import { applyRufnamen } from '../lib/rufnamen';
 import { RadioResponse, radioResponseFor, splitCall, splitLeadingResponse } from '../lib/radio-response';
 import { trackEvent } from '../lib/usage-stats';
+import { onRadioKey } from '../lib/radio-keys';
 
 interface Props {
   scenario: Scenario;
@@ -107,6 +108,15 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
       refreshNode();
     }
   };
+
+  // Sprechtaste des Funkgeräts öffnet den Funkspruch des aktuellen Schritts (danach im Dialog: sprechen).
+  const pttOpenRef = useRef<() => void>(() => {});
+  pttOpenRef.current = () => {
+    if (radioModalOpen || incoming) return;
+    const radioAction = currentNode.actions.find(a => a.radioCall);
+    if (radioAction) handleAction(radioAction);
+  };
+  useEffect(() => onRadioKey((key, pressed) => { if (key === 'ptt' && pressed) pttOpenRef.current(); }), []);
 
   const handleRadioResult = (success: boolean, _transcript: string) => {
     setRadioModalOpen(false);

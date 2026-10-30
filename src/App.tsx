@@ -11,6 +11,7 @@ import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community
 import { apiUrl } from './lib/api-base';
 import { CompactSetting, getCompactSetting, setCompactSetting } from './lib/display-mode';
 import { trackEvent } from './lib/usage-stats';
+import { onRadioKey } from './lib/radio-keys';
 
 interface LicenseData {
   organizationName: string;
@@ -253,6 +254,14 @@ function App() {
     window.history.replaceState(null, '', '#practice');
   };
 
+  // Notruftaste des Funkgeräts: wie beim Digitalfunk – direkt in die MAYDAY-Übung.
+  const sosRef = useRef<() => void>(() => {});
+  sosRef.current = () => {
+    const mayday = scenarios.find(sc => sc.id === 'mayday_atemschutznotfall');
+    if (mayday && selectedScenario?.id !== mayday.id) { audio.stop(); startScenario(mayday); }
+  };
+  useEffect(() => onRadioKey((key, pressed) => { if (key === 'sos' && pressed) sosRef.current(); }), []);
+
   const navCls = (v: View) =>
     `hover:text-white ${view === v ? 'text-white font-semibold' : 'text-[#a3a3a3]'}`;
 
@@ -428,6 +437,7 @@ function App() {
           <LernbereichView rufnamen={licenseData?.rufnamen} />
         ) : view === 'practice' && engine && selectedScenario ? (
           <PracticeScreen
+            key={selectedScenario.id} // Wechsel per Notruftaste → frisch starten
             scenario={selectedScenario}
             engine={engine}
             audio={audio}

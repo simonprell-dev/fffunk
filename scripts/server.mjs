@@ -172,6 +172,10 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.url?.startsWith('/api/tts')) {
+    // Die Android-App (Origin https://localhost) ruft die Sprachausgabe hier ab.
+    res.setHeader('access-control-allow-origin', '*');
+    res.setHeader('access-control-allow-methods', 'POST, OPTIONS');
+    res.setHeader('access-control-allow-headers', 'content-type');
     await handleTtsRequest(req, res);
     return;
   }

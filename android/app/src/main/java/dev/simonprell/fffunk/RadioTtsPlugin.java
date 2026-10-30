@@ -1,0 +1,82 @@
+package dev.simonprell.fffunk;
+
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+
+import com.getcapacitor.JSObject;
+import com.getcapacitor.Plugin;
+import com.getcapacitor.PluginCall;
+import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.CapacitorPlugin;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * Sprachausgabe über die Android-Sprachsynthese – Ersatz, wenn der Server (Piper) nicht erreichbar ist.
+ * Die Android-WebView kennt keine Web-Speech-Sprachausgabe.
+ *
+ * speak({ text }) → endet, wenn fertig gesprochen;  stop();  info() → { available, german }
+ */
+@CapacitorPlugin(name = "RadioTts")
+public class RadioTtsPlugin extends Plugin {
+    private TextToSpeech tts;
+    private boolean ready;
+    private boolean german;
+    private int counter;
+    private final Map<String, PluginCall> pending = new HashMap<>();
+
+    @Override
+    public void load() {
+        tts = new TextToSpeech(getContext(), status -> {
+            if (status != TextToSpeech.SUCCESS) return;
+            int r = tts.setLanguage(Locale.GERMANY);
+            german = r != TextToSpeech.LANG_MISSING_DATA && r != TextToSpeech.LANG_NOT_SUPPORTED;
+            tts.setSpeechRate(1.15f);
+            tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                @Override public void onStart(String id) { }
+                @Override public void onDone(String id) { finish(id); }
+                @Override public void onError(String id) { finish(id); }
+                @Override public void onStop(String id, boolean interrupted) { finish(id); }
+            });
+            ready = true;
+        });
+    }
+
+    private synchronized void finish(String id) {
+        PluginCall call = pending.remove(id);
+        if (call != null) call.resolve();
+    }
+
+    @PluginMethod
+    public void info(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("available", ready);
+        ret.put("german", german);
+        call.resolve(ret);
+    }
+
+    @PluginMethod
+    public void speak(PluginCall call) {
+        String text = call.getString("text", "");
+        if (!ready || !german || text.isEmpty()) {
+            call.reject("Keine deutsche Sprachausgabe auf dem Gerät.");
+            return;
+        }
+        String id = "u" + (++counter);
+        synchronized (this) { pending.put(id, call); }
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, id); // QUEUE_FLUSH beendet die vorige Ausgabe → onStop
+    }
+
+    @PluginMethod
+    public void stop(PluginCall call) {
+        if (tts != null) tts.stop();
+        call.resolve();
+    }
+
+    @Override
+    protected void handleOnDestroy() {
+        if (tts != null) tts.shutdown();
+    }
+}

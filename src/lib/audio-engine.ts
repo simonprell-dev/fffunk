@@ -1,5 +1,6 @@
 import { Transcription } from '../types/story';
 import { apiUrl } from './api-base';
+import { RadioTts, isNativeTtsAvailable } from './radio-tts';
 
 export type RadioMode = 'tmo' | 'dmo' | 'dispatch' | 'clear';
 
@@ -32,7 +33,8 @@ export class AudioEngine {
 
   stop(): void {
     this.generation++;
-    window.speechSynthesis.cancel();
+    window.speechSynthesis?.cancel(); // fehlt z. B. in der Android-WebView
+    if (isNativeTtsAvailable()) RadioTts.stop().catch(() => {});
     this.ttsAbortController?.abort();
     this.ttsAbortController = null;
     for (const source of this.activeSources) {
@@ -122,7 +124,21 @@ export class AudioEngine {
     });
   }
 
+  // Android-App: Sprachausgabe des Geräts (die WebView hat keine Web-Speech-Ausgabe).
+  private async speakNative(text: string): Promise<void> {
+    const noiseNode = this.radioHissEnabled ? this.playRadioHiss() : null;
+    try {
+      await RadioTts.speak({ text });
+    } catch {
+      // keine deutsche Stimme installiert → stumm weiter
+    } finally {
+      if (noiseNode) { try { noiseNode.stop(); } catch { /* ignore */ } }
+    }
+  }
+
   private speakWebSpeech(text: string, lang: string): Promise<void> {
+    if (isNativeTtsAvailable()) return this.speakNative(text);
+    if (!window.speechSynthesis) return Promise.resolve();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
     utterance.pitch = 1.1;

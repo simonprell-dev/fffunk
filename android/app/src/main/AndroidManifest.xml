@@ -40,10 +40,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-    <!-- Android 11+: Sichtbarkeit des Geräte-Spracherkennungsdienstes -->
+    <!-- Android 11+: Sichtbarkeit der Geräte-Spracherkennung und -Sprachausgabe -->
     <queries>
         <intent>
             <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
     </queries>
 </manifest>

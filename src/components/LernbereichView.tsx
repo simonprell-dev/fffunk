@@ -3,7 +3,7 @@ import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
   Radio, MessagesSquare, Type, ListOrdered, Tag, ClipboardList,
-  AlertTriangle, ShieldCheck, BookOpen, GraduationCap, type LucideIcon,
+  AlertTriangle, ShieldCheck, BookOpen, GraduationCap, ArrowLeft, type LucideIcon,
 } from 'lucide-react';
 import { lernChapters } from '../lib/lern-content';
 import { applyRufnamen } from '../lib/rufnamen';
@@ -61,6 +61,8 @@ export default function LernbereichView({ rufnamen }: Props) {
   const [tab, setTab] = useState<'theorie' | 'fehler'>('theorie');
   const [audio] = useState(() => new AudioEngine()); // Sprachausgabe für „Fehler finden“
   const [activeId, setActiveId] = useState<string>(lernChapters[0]?.id ?? '');
+  // Kompaktansicht: entweder Kapitelliste oder Kapiteltext (sonst steht der Text unter der Liste außer Sicht).
+  const [reading, setReading] = useState(false);
   const ruf = rufnamen ?? {};
   const active = lernChapters.find(c => c.id === activeId) ?? lernChapters[0];
 
@@ -97,7 +99,7 @@ export default function LernbereichView({ rufnamen }: Props) {
         <FehlerFindenView audio={audio} rufnamen={rufnamen} />
       ) : (
       <div className="grid md:grid-cols-[260px_1fr] gap-4 items-start">
-        <aside className="bg-[#111] border border-[#333] rounded-lg p-2">
+        <aside className={`bg-[#111] border border-[#333] rounded-lg p-2 min-w-0 ${reading ? 'compact:hidden' : ''}`}>
           <div className="px-2 py-2 text-xs uppercase tracking-wide text-[#777]">Kapitel</div>
           <div className="space-y-1">
             {lernChapters.map((chapter, idx) => {
@@ -106,7 +108,7 @@ export default function LernbereichView({ rufnamen }: Props) {
               return (
                 <button
                   key={chapter.id}
-                  onClick={() => setActiveId(chapter.id)}
+                  onClick={() => { setActiveId(chapter.id); setReading(true); window.scrollTo(0, 0); }}
                   className={`w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm ${
                     isActive ? 'bg-[#dc2626] text-white' : 'text-[#d4d4d4] hover:bg-[#262626]'
                   }`}
@@ -122,10 +124,16 @@ export default function LernbereichView({ rufnamen }: Props) {
           </div>
         </aside>
 
-        <section className="bg-[#1a1a1a] border border-[#333] rounded-xl p-6 shadow-sm min-w-0">
-          <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#2a2a2a]">
-            <span className="text-[#dc2626]"><ActiveIcon size={22} /></span>
-            <h3 className="text-xl font-bold">{active.title}</h3>
+        <section className={`bg-[#1a1a1a] border border-[#333] rounded-xl p-6 compact:p-3 shadow-sm min-w-0 ${reading ? '' : 'compact:hidden'}`}>
+          <button
+            onClick={() => { setReading(false); window.scrollTo(0, 0); }}
+            className="hidden compact:flex items-center gap-1 mb-2 px-2 py-1 rounded-lg bg-[#262626] border border-[#444] text-sm text-[#d4d4d4]"
+          >
+            <ArrowLeft size={14} /> Kapitel
+          </button>
+          <div className="flex items-center gap-3 mb-4 pb-4 compact:mb-2 compact:pb-2 border-b border-[#2a2a2a]">
+            <span className="text-[#dc2626] compact:hidden"><ActiveIcon size={22} /></span>
+            <h3 className="text-xl font-bold compact:text-lg">{active.title}</h3>
           </div>
           <div className="max-w-none text-[#d4d4d4]">
             <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
