@@ -43,6 +43,15 @@ export interface RadioCall {
   response?: string;
 }
 
+/** Einzeln startbarer Abschnitt eines Szenarios (z. B. Grundausbildung). */
+export interface Chapter {
+  id: string;
+  title: string;
+  startNodeId: string;
+  /** Erreichen dieses Knotens schließt das Kapitel ab. */
+  endNodeId: string;
+}
+
 export interface Scenario {
   id: string;
   title: string;
@@ -50,6 +59,8 @@ export interface Scenario {
   startingNodeId: string;
   playerRole: PlayerRole;
   nodes: Record<string, StoryNode>;
+  /** Gesetzt → statt der Geschichte erscheint zuerst die Kapitelauswahl. */
+  chapters?: Chapter[];
   /** Ordner der eingebauten Szenarien (Schlüssel aus public/scenarios/index.json). */
   category?: string;
   community?: CommunityScenarioMeta;
