@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FFFunk – Messe</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<!-- Messe-Endlosschleife: erklärt FFFunk in sieben Szenen, ohne Bedienung. Bewusst ohne
+     moderne CSS/JS-Features, damit sie auch auf dem Messe-Funkgerät (Chrome 72) läuft. -->
+<style>
+  :root { --rot: #dc2626; --rot-hell: #f87171; --grund: #0b0f17; --flaeche: #151b26; --rand: #273042; --text: #f1f5f9; --leise: #94a3b8; --gruen: #22c55e; --gelb: #facc15; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: var(--grund); color: var(--text);
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; cursor: none; }
+  body { font-size: 2.2vmin; }
+
+  .bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; }
+  .bg span { position: absolute; left: 50%; top: 50%; width: 20vmin; height: 20vmin; margin: -10vmin 0 0 -10vmin;
+    border: 0.3vmin solid var(--rot); border-radius: 50%; opacity: 0; animation: welle 6s linear infinite; }
+  .bg span:nth-child(2) { animation-delay: 2s; } .bg span:nth-child(3) { animation-delay: 4s; }
+  @keyframes welle { 0% { transform: scale(0.5); opacity: 0.35; } 100% { transform: scale(9); opacity: 0; } }
+
+  .kopf { position: fixed; top: 3vmin; left: 4vmin; display: flex; align-items: center; z-index: 5; }
+  .kopf img { width: 6vmin; height: 6vmin; margin-right: 1.6vmin; }
+  .kopf b { font-size: 3.4vmin; letter-spacing: 0.05em; }
+  .url { position: fixed; top: 4.2vmin; right: 4vmin; color: var(--leise); font-size: 2.2vmin; z-index: 5; }
+
+  .szene { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; padding: 12vmin 8vmin 10vmin;
+    opacity: 0; transform: translateY(3vmin); transition: opacity 0.9s ease, transform 0.9s ease; pointer-events: none; }
+  .szene.an { opacity: 1; transform: none; }
+  .szene .rein { opacity: 0; transform: translateY(2vmin); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .szene.an .rein { opacity: 1; transform: none; }
+  .szene.an .d1 { transition-delay: 0.5s; } .szene.an .d2 { transition-delay: 1.3s; } .szene.an .d3 { transition-delay: 2.1s; }
+  .szene.an .d4 { transition-delay: 2.9s; } .szene.an .d5 { transition-delay: 3.7s; } .szene.an .d6 { transition-delay: 4.5s; }
+  .szene.an .d7 { transition-delay: 5.3s; } .szene.an .d8 { transition-delay: 6.1s; }
+
+  h1 { font-size: 11vmin; font-weight: 800; letter-spacing: 0.02em; }
+  h1 em { font-style: normal; color: var(--rot); }
+  h2 { font-size: 6vmin; font-weight: 800; line-height: 1.15; margin-bottom: 4vmin; }
+  h2 em { font-style: normal; color: var(--rot-hell); }
+  .unter { font-size: 3.6vmin; color: var(--leise); margin-top: 2.5vmin; line-height: 1.35; }
+  .gross-logo { width: 26vmin; height: 26vmin; margin-bottom: 4vmin; animation: puls 2.4s ease-in-out infinite; }
+  @keyframes puls { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+  .reihe { display: flex; justify-content: center; flex-wrap: wrap; }
+  .karte { background: var(--flaeche); border: 0.25vmin solid var(--rand); border-radius: 2.2vmin; padding: 3vmin;
+    width: 30vmin; margin: 1.2vmin; text-align: left; }
+  .karte .zahl { display: inline-block; width: 5.5vmin; height: 5.5vmin; line-height: 5.5vmin; border-radius: 50%;
+    background: var(--rot); text-align: center; font-weight: 800; font-size: 3vmin; margin-bottom: 1.8vmin; }
+  .karte .sym { font-size: 6vmin; margin-bottom: 1.2vmin; }
+  .karte b { display: block; font-size: 3.1vmin; margin-bottom: 0.8vmin; }
+  .karte p { color: var(--leise); font-size: 2.4vmin; line-height: 1.35; }
+
+  /* Funkspruch-Szene */
+  .geraet { display: flex; align-items: center; justify-content: center; }
+  .funk { width: 22vmin; height: 46vmin; background: #1f2633; border: 0.4vmin solid var(--rand); border-radius: 3vmin;
+    position: relative; margin-right: 6vmin; flex-shrink: 0; }
+  .funk:before { content: ""; position: absolute; top: -12vmin; left: 4vmin; width: 2.4vmin; height: 13vmin; background: #1f2633;
+    border: 0.4vmin solid var(--rand); border-bottom: 0; border-radius: 1.2vmin 1.2vmin 0 0; }
+  .funk .display { position: absolute; top: 4vmin; left: 3vmin; right: 3vmin; height: 12vmin; background: #0f2a1c;
+    border-radius: 1vmin; color: #6ee7b7; font-family: Consolas, monospace; font-size: 2vmin; padding: 1.4vmin; text-align: left; line-height: 1.5; }
+  .funk .ptt { position: absolute; left: -2.6vmin; top: 18vmin; width: 2.6vmin; height: 10vmin; background: var(--rot); border-radius: 1vmin 0 0 1vmin; }
+  .funk.sendet .ptt { left: -1.6vmin; width: 1.6vmin; }
+  .funk .lampe { position: absolute; top: 1.2vmin; right: 3vmin; width: 1.8vmin; height: 1.8vmin; border-radius: 50%; background: #334155; }
+  .funk.sendet .lampe { background: var(--rot); box-shadow: 0 0 2vmin var(--rot); }
+  .funk.empfaengt .lampe { background: var(--gruen); box-shadow: 0 0 2vmin var(--gruen); }
+  .funk .gitter { position: absolute; bottom: 4vmin; left: 4vmin; right: 4vmin; height: 16vmin;
+    background-image: radial-gradient(#0b0f17 30%, transparent 32%); background-size: 2.2vmin 2.2vmin; }
+
+  .gespraech { width: 70vmin; text-align: left; }
+  .blase { background: var(--flaeche); border: 0.25vmin solid var(--rand); border-radius: 2vmin; padding: 2.2vmin 2.8vmin;
+    margin-bottom: 2vmin; font-size: 3vmin; line-height: 1.35; opacity: 0; transform: translateY(1.5vmin); transition: all 0.5s ease; min-height: 9vmin; }
+  .blase.zeig { opacity: 1; transform: none; }
+  .blase small { display: block; font-size: 2vmin; color: var(--leise); margin-bottom: 0.6vmin; text-transform: uppercase; letter-spacing: 0.08em; }
+  .blase.du { border-color: var(--rot); }
+  .blase.ok { border-color: var(--gruen); color: #bbf7d0; font-size: 2.6vmin; min-height: 0; }
+  .welle { display: inline-block; vertical-align: middle; height: 3vmin; margin-left: 1vmin; }
+  .welle i { display: inline-block; width: 0.6vmin; height: 100%; margin-right: 0.4vmin; background: var(--rot); border-radius: 0.3vmin;
+    animation: pegel 0.6s ease-in-out infinite; }
+  .welle i:nth-child(2) { animation-delay: 0.1s; } .welle i:nth-child(3) { animation-delay: 0.2s; }
+  .welle i:nth-child(4) { animation-delay: 0.3s; } .welle i:nth-child(5) { animation-delay: 0.4s; }
+  @keyframes pegel { 0%, 100% { transform: scaleY(0.25); } 50% { transform: scaleY(1); } }
+  .cursor:after { content: "▍"; color: var(--rot); animation: blink 0.8s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Kapitel */
+  .kapitel { width: 70vmin; text-align: left; }
+  .kapitel div { display: flex; align-items: center; background: var(--flaeche); border: 0.25vmin solid var(--rand);
+    border-radius: 1.6vmin; padding: 1.6vmin 2.4vmin; margin-bottom: 1.3vmin; font-size: 3vmin; }
+  .kapitel div span { flex: 1; }
+  .kapitel div i { font-style: normal; width: 4.4vmin; height: 4.4vmin; line-height: 4.4vmin; border-radius: 50%; text-align: center;
+    background: #334155; font-size: 2.4vmin; margin-right: 2vmin; color: var(--leise); }
+  .kapitel div.fertig { border-color: var(--gruen); }
+  .kapitel div.fertig i { background: var(--gruen); color: #052e16; }
+  .regel { font-size: 2.6vmin; color: var(--leise); margin-top: 2vmin; }
+  .falsch { color: var(--rot-hell); text-decoration: line-through; }
+
+  .mayday { display: inline-block; background: var(--rot); color: #fff; font-weight: 800; font-size: 5vmin; padding: 2vmin 5vmin;
+    border-radius: 2vmin; margin-bottom: 3vmin; animation: alarm 1s ease-in-out infinite; }
+  @keyframes alarm { 50% { box-shadow: 0 0 0 2.5vmin rgba(220, 38, 38, 0.25); } }
+
+  .cta { display: flex; align-items: center; justify-content: center; }
+  .qr { background: #fff; padding: 2vmin; border-radius: 2vmin; margin-right: 6vmin; width: 36vmin; height: 36vmin; }
+  .qr img, .qr canvas, .qr svg { width: 100%; height: 100%; display: block; }
+  .cta .text { text-align: left; }
+  .cta .link { font-size: 4.2vmin; font-weight: 700; color: var(--rot-hell); margin-top: 2vmin; word-break: break-all; }
+
+  .fortschritt { position: fixed; left: 0; bottom: 0; height: 0.8vmin; background: var(--rot); width: 0; z-index: 5; }
+  .punkte { position: fixed; bottom: 3vmin; left: 0; right: 0; text-align: center; z-index: 5; }
+  .punkte i { display: inline-block; width: 1.4vmin; height: 1.4vmin; border-radius: 50%; background: var(--rand); margin: 0 0.8vmin; transition: background 0.4s; }
+  .punkte i.an { background: var(--rot); }
+
+  @media (orientation: portrait) {
+    .geraet, .cta { flex-direction: column; }
+    .funk { margin: 12vmin 0 4vmin; height: 34vmin; width: 18vmin; }
+    .funk .gitter { display: none; }
+    .qr { margin: 0 0 4vmin; }
+    .cta .text { text-align: center; }
+    .gespraech, .kapitel { width: 86vmin; }
+  }
+</style>
+</head>
+<body>
+<div class="bg"><span></span><span></span><span></span></div>
+<div class="kopf"><img src="/icon.svg" alt=""><b>FFFunk</b></div>
+<div class="url">fffunk-production.up.railway.app</div>
+
+<!-- 1: Titel -->
+<section class="szene" data-dauer="7000">
+  <img class="gross-logo rein" src="/icon.svg" alt="">
+  <h1 class="rein d1">FF<em>Funk</em></h1>
+  <p class="unter rein d2">Der Sprechfunk-Trainer für die Feuerwehr</p>
+</section>
+
+<!-- 2: Problem -->
+<section class="szene" data-dauer="8000">
+  <h2 class="rein">Im Einsatz muss<br>der Funkspruch <em>sitzen</em>.</h2>
+  <p class="unter rein d2">Doch Funkübungen sind selten –<br>und vor der ganzen Wache traut sich kaum jemand.</p>
+  <p class="unter rein d4" style="color: var(--text); font-weight: 700;">FFFunk macht Funken übbar. Allein, jederzeit.</p>
+</section>
+
+<!-- 3: So funktioniert's -->
+<section class="szene" data-dauer="10000">
+  <h2 class="rein">So funktioniert’s</h2>
+  <div class="reihe">
+    <div class="karte rein d1"><span class="zahl">1</span><b>Lage hören</b><p>Ein Einsatz beginnt – die Leitstelle und der Gruppenführer sprechen dich an.</p></div>
+    <div class="karte rein d2"><span class="zahl">2</span><b>Taste drücken</b><p>Push-to-Talk wie am echten Gerät – und deinen Funkspruch sprechen.</p></div>
+    <div class="karte rein d3"><span class="zahl">3</span><b>Feedback</b><p>Die Spracherkennung prüft Reihenfolge und Inhalt – und sagt, was fehlt.</p></div>
+  </div>
+</section>
+
+<!-- 4: Funkspruch live -->
+<section class="szene" data-dauer="17000" data-start="funkspruch">
+  <div class="geraet">
+    <div class="funk" id="funk">
+      <div class="lampe"></div><div class="ptt"></div>
+      <div class="display" id="display">TMO&nbsp;&nbsp;▮▮▮▮<br>FW Neuhaus</div>
+      <div class="gitter"></div>
+    </div>
+    <div class="gespraech">
+      <div class="blase" id="b1"><small>Gruppenführer</small>Angriffstrupp, geht unter Atemschutz zur Menschenrettung ins Obergeschoss vor.</div>
+      <div class="blase du" id="b2"><small>Du – PTT gedrückt <span class="welle"><i></i><i></i><i></i><i></i><i></i></span></small><span id="tipp"></span></div>
+      <div class="blase ok" id="b3">✓ Richtig: erst wen du rufst, dann wer du bist – und am Ende „kommen“.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5: Grundausbildung -->
+<section class="szene" data-dauer="12000" data-start="kapitel">
+  <h2 class="rein">Neu bei der Feuerwehr?<br><em>Die Grundausbildung</em></h2>
+  <div class="kapitel" id="kapitel">
+    <div><i>1</i><span>Wer ruft wen?</span></div>
+    <div><i>2</i><span>Kommen und Ende</span></div>
+    <div><i>3</i><span>Eine Frage stellen</span></div>
+    <div><i>4</i><span>Nachfragen</span></div>
+    <div><i>5</i><span>Einen Anruf beantworten</span></div>
+    <div><i>6</i><span>Mayday</span></div>
+  </div>
+  <p class="regel rein d3">Ohne Vorwissen · Kapitel für Kapitel · verstehen → auswählen → selbst sprechen</p>
+</section>
+
+<!-- 6: Mayday -->
+<section class="szene" data-dauer="8000">
+  <div class="mayday rein">MAYDAY</div>
+  <h2 class="rein d1">Auch den Notfall üben –<br>bevor er passiert.</h2>
+  <p class="unter rein d2">Mit der Notruftaste am Funkgerät, wie im echten Einsatz.<br>Und typische Fehler wie <span class="falsch">„hört“</span> werden korrigiert.</p>
+</section>
+
+<!-- 7: Überall -->
+<section class="szene" data-dauer="10000">
+  <h2 class="rein">Überall dabei</h2>
+  <div class="reihe">
+    <div class="karte rein d1"><div class="sym">🌐</div><b>Im Browser</b><p>Am PC, Tablet oder Handy – ohne Installation.</p></div>
+    <div class="karte rein d2"><div class="sym">📱</div><b>Android-App</b><p>Seitentaste wird zur Sprechtaste. Sprachausgabe auch offline.</p></div>
+    <div class="karte rein d3"><div class="sym">📻</div><b>Am Funkgerät</b><p>Echte PTT- und Notruftaste – so nah am Einsatz wie möglich.</p></div>
+  </div>
+  <p class="unter rein d5">27 Szenarien: Brand, Technische Hilfe, Verkehr, Atemschutz und mehr</p>
+</section>
+
+<!-- 8: Mitmachen -->
+<section class="szene" data-dauer="11000">
+  <div class="cta">
+    <div class="qr rein" id="qr"></div>
+    <div class="text">
+      <h2 class="rein d1" style="margin-bottom: 1vmin;">Jetzt ausprobieren</h2>
+      <p class="unter rein d2" style="margin-top: 0;">Code scannen und direkt loslegen –<br>oder hier am Gerät testen.</p>
+      <p class="link rein d3">fffunk-production.up.railway.app</p>
+    </div>
+  </div>
+</section>
+
+<div class="punkte" id="punkte"></div>
+<div class="fortschritt" id="fortschritt"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function () {
+  var APP_URL = 'https://fffunk-production.up.railway.app/';
+  var SPRUCH = 'Gruppenführer von Angriffstrupp – verstanden, gehen zur Menschenrettung ins Obergeschoss vor – kommen.';
+  var szenen = document.querySelectorAll('.szene');
+  var punkte = document.getElementById('punkte');
+  var balken = document.getElementById('fortschritt');
+  var timer = [];
+  var i = -1;
+
+  for (var p = 0; p < szenen.length; p++) punkte.appendChild(document.createElement('i'));
+
+  // QR-Code; ohne Netz bleibt die URL als Text stehen
+  try {
+    var qr = qrcode(0, 'M'); qr.addData(APP_URL); qr.make();
+    document.getElementById('qr').innerHTML = qr.createSvgTag({ margin: 0, scalable: true });
+  } catch (e) { document.getElementById('qr').style.display = 'none'; }
+
+  function spaeter(fn, ms) { timer.push(setTimeout(fn, ms)); }
+  function aufraeumen() { for (var t = 0; t < timer.length; t++) clearTimeout(timer[t]); timer = []; }
+
+  var starts = {
+    funkspruch: function () {
+      var funk = document.getElementById('funk'), tipp = document.getElementById('tipp');
+      var display = document.getElementById('display');
+      var b = [document.getElementById('b1'), document.getElementById('b2'), document.getElementById('b3')];
+      funk.className = 'funk'; tipp.textContent = ''; tipp.className = '';
+      display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>FW Neuhaus';
+      for (var k = 0; k < b.length; k++) b[k].className = b[k].className.replace(' zeig', '');
+      spaeter(function () { funk.className = 'funk empfaengt'; display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>◀ Gruppenführer'; b[0].className += ' zeig'; }, 600);
+      spaeter(function () {
+        funk.className = 'funk sendet'; display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>▶ SENDEN'; b[1].className += ' zeig'; tipp.className = 'cursor';
+        var n = 0;
+        (function schreib() {
+          tipp.textContent = SPRUCH.slice(0, ++n);
+          if (n < SPRUCH.length) spaeter(schreib, 55);
+          else spaeter(function () {
+            tipp.className = ''; funk.className = 'funk';
+            display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>FW Neuhaus';
+            b[2].className += ' zeig';
+          }, 500);
+        })();
+      }, 3600);
+    },
+    kapitel: function () {
+      var zeilen = document.getElementById('kapitel').children;
+      for (var k = 0; k < zeilen.length; k++) { zeilen[k].className = ''; zeilen[k].firstChild.textContent = String(k + 1); }
+      for (var j = 0; j < zeilen.length; j++) (function (z, j) {
+        spaeter(function () { z.className = 'fertig'; z.firstChild.textContent = '✓'; }, 1500 + j * 1100);
+      })(zeilen[j], j);
+    }
+  };
+
+  function weiter() {
+    aufraeumen();
+    if (i >= 0) szenen[i].className = 'szene';
+    i = (i + 1) % szenen.length;
+    var s = szenen[i], dauer = parseInt(s.getAttribute('data-dauer'), 10) || 8000;
+    // Neu einblenden, damit die verzögerten Elemente jedes Mal wieder nacheinander erscheinen
+    void s.offsetWidth;
+    s.className = 'szene an';
+    var start = s.getAttribute('data-start');
+    if (start && starts[start]) starts[start]();
+    for (var d = 0; d < punkte.children.length; d++) punkte.children[d].className = d === i ? 'an' : '';
+    balken.style.transition = 'none'; balken.style.width = '0';
+    void balken.offsetWidth;
+    balken.style.transition = 'width ' + dauer + 'ms linear'; balken.style.width = '100%';
+    spaeter(weiter, dauer);
+  }
+  weiter();
+
+  // Messe-Dauerbetrieb: Bildschirm wach halten; Klick schaltet auf Vollbild
+  function wach() { try { if (navigator.wakeLock) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {} }
+  wach();
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) wach(); });
+  document.addEventListener('click', function () {
+    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+  });
+})();
+</script>
+</body>
+</html>

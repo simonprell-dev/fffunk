@@ -180,7 +180,9 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const requested = safeFilePath(req.url || '/');
+  let requested = safeFilePath(req.url || '/');
+  // Verzeichnisse wie /messe liefern ihre eigene index.html
+  if (fs.existsSync(requested) && fs.statSync(requested).isDirectory()) requested = path.join(requested, 'index.html');
   const file = fs.existsSync(requested) && fs.statSync(requested).isFile()
     ? requested
     : path.join(dist, 'index.html');
