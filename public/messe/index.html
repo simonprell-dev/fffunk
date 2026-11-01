@@ -8,7 +8,7 @@
 <!-- Messe-Endlosschleife: erklärt FFFunk in sieben Szenen, ohne Bedienung. Bewusst ohne
      moderne CSS/JS-Features, damit sie auch auf dem Messe-Funkgerät (Chrome 72) läuft. -->
 <style>
-  :root { --rot: #dc2626; --rot-hell: #f87171; --grund: #0b0f17; --flaeche: #151b26; --rand: #273042; --text: #f1f5f9; --leise: #94a3b8; --gruen: #22c55e; --gelb: #facc15; }
+  :root { --rot: #dc2626; --rot-hell: #f87171; --grund: #0b0f17; --flaeche: #151b26; --rand: #273042; --text: #f1f5f9; --leise: #94a3b8; --gruen: #22c55e; --gelb: #facc15; --blau: #3b82f6; --rosa: #f43f5e; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; background: var(--grund); color: var(--text);
     font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; cursor: none; }
@@ -111,6 +111,31 @@
   .punkte i { display: inline-block; width: 1.4vmin; height: 1.4vmin; border-radius: 50%; background: var(--rand); margin: 0 0.8vmin; transition: background 0.4s; }
   .punkte i.an { background: var(--rot); }
 
+  /* Organisationen */
+  .karte.org { border-top-width: 1vmin; }
+  .karte.fw { border-top-color: var(--rot); } .karte.thw { border-top-color: var(--blau); } .karte.rd { border-top-color: var(--rosa); }
+  .karte .ruf { font-family: Consolas, monospace; font-size: 2.3vmin; color: var(--text); margin-top: 1.4vmin; }
+  .orgname { font-size: 3.4vmin; font-weight: 800; margin-bottom: 2vmin; }
+
+  /* THW: Stärkemeldung */
+  .staerke { display: flex; justify-content: center; margin: 1vmin 0 3vmin; }
+  .staerke div { width: 17vmin; margin: 0 1vmin; text-align: center; opacity: 0.25; transition: opacity 0.4s, transform 0.4s; }
+  .staerke div.an { opacity: 1; transform: translateY(-0.8vmin); }
+  .staerke b { display: block; font-size: 10vmin; font-weight: 800; color: var(--blau); line-height: 1.1; }
+  .staerke div:last-child b { color: var(--text); }
+  .staerke small { font-size: 2.2vmin; color: var(--leise); }
+
+  /* Rettungsdienst: Status */
+  .tasten { display: flex; justify-content: center; margin-bottom: 2.4vmin; }
+  .tasten i { font-style: normal; width: 8vmin; height: 8vmin; line-height: 8vmin; margin: 0 0.7vmin; border-radius: 1.4vmin;
+    background: var(--flaeche); border: 0.3vmin solid var(--rand); font-size: 4vmin; font-weight: 800; color: var(--leise); transition: all 0.3s; }
+  .tasten i.an { background: var(--rosa); border-color: var(--rosa); color: #fff; transform: scale(1.12); box-shadow: 0 0 3vmin rgba(244, 63, 94, 0.5); }
+  .statustext { font-size: 3.6vmin; font-weight: 700; min-height: 5vmin; margin-bottom: 3vmin; }
+  .gespraech.mitte { margin: 0 auto; }
+  .blase.thw { border-color: var(--blau); } .blase.rd { border-color: var(--rosa); }
+  .weg { color: var(--rot-hell); text-decoration: line-through; opacity: 0; transition: opacity 0.4s; }
+  .weg.zeig { opacity: 1; }
+
   @media (orientation: portrait) {
     .geraet, .cta { flex-direction: column; }
     .funk { margin: 12vmin 0 4vmin; height: 34vmin; width: 18vmin; }
@@ -118,6 +143,7 @@
     .qr { margin: 0 0 4vmin; }
     .cta .text { text-align: center; }
     .gespraech, .kapitel { width: 86vmin; }
+    .tasten i { width: 8.5vmin; margin: 0 0.4vmin; }
   }
 </style>
 </head>
@@ -140,7 +166,17 @@
   <p class="unter rein d4" style="color: var(--text); font-weight: 700;">FFFunk macht Funken übbar. Allein, jederzeit.</p>
 </section>
 
-<!-- 3: So funktioniert's -->
+<!-- Drei Organisationen -->
+<section class="szene" data-dauer="9000">
+  <h2 class="rein">Ein Trainer –<br><em>drei Organisationen</em></h2>
+  <div class="reihe">
+    <div class="karte org fw rein d1"><b>Feuerwehr</b><p>Angriffstrupp, Atemschutz, Mayday, Einsatzleitung</p><div class="ruf">Florian Neuhaus 17/42/1</div></div>
+    <div class="karte org thw rein d2"><b>THW</b><p>Bergung, Pumpen, Licht, Deich – mit Stärkemeldung</p><div class="ruf">Heros Neuhaus 22/51</div></div>
+    <div class="karte org rd rein d3"><b>Rettungsdienst</b><p>Status, Sprechwunsch, Klinikanmeldung, MANV</p><div class="ruf">Rotkreuz Neuhaus 71/1</div></div>
+  </div>
+</section>
+
+<!-- So funktioniert's -->
 <section class="szene" data-dauer="10000">
   <h2 class="rein">So funktioniert’s</h2>
   <div class="reihe">
@@ -166,17 +202,36 @@
   </div>
 </section>
 
-<!-- 5: Grundausbildung -->
-<section class="szene" data-dauer="12000" data-start="kapitel">
-  <h2 class="rein">Neu bei der Feuerwehr?<br><em>Die Grundausbildung</em></h2>
-  <div class="kapitel" id="kapitel">
-    <div><i>1</i><span>Wer ruft wen?</span></div>
-    <div><i>2</i><span>Kommen und Ende</span></div>
-    <div><i>3</i><span>Eine Frage stellen</span></div>
-    <div><i>4</i><span>Nachfragen</span></div>
-    <div><i>5</i><span>Einen Anruf beantworten</span></div>
-    <div><i>6</i><span>Mayday</span></div>
+<!-- THW live -->
+<section class="szene" data-dauer="13000" data-start="thw">
+  <h2 class="rein" style="margin-bottom: 2vmin;"><em style="color: var(--blau);">THW:</em> Stärke und Gefahr melden</h2>
+  <div class="staerke" id="staerke">
+    <div><b>0</b><small>Führer</small></div>
+    <div><b>2</b><small>Unterführer</small></div>
+    <div><b>7</b><small>Helfer</small></div>
+    <div><b>9</b><small>gesamt</small></div>
   </div>
+  <div class="gespraech mitte">
+    <div class="blase thw" id="t1"><small>Beobachtungsposten</small>Gruppenführer von Beobachtungsposten – <b>Gefahr!</b> Giebelwand bewegt sich – sofort räumen – kommen.</div>
+  </div>
+</section>
+
+<!-- Rettungsdienst live -->
+<section class="szene" data-dauer="15000" data-start="rd">
+  <h2 class="rein" style="margin-bottom: 3vmin;"><em style="color: var(--rosa);">Rettungsdienst:</em> Status und Anmeldung</h2>
+  <div class="tasten" id="tasten"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i></div>
+  <div class="statustext" id="statustext"></div>
+  <div class="gespraech mitte">
+    <div class="blase rd" id="r1"><small>Klinikanmeldung über die Leitstelle</small>Bitte für das Klinikum Neuhaus anmelden: <span class="weg" id="rname">Max Berger, geb. 1950,</span> männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.</div>
+    <div class="blase ok" id="r2">✓ Kein Name im Funk – jeder kann mithören.</div>
+  </div>
+</section>
+
+<!-- Grundausbildung -->
+<section class="szene" data-dauer="21000" data-start="kapitel">
+  <h2 class="rein" style="margin-bottom: 2vmin;">Neu dabei?<br><em>Die Grundausbildung</em></h2>
+  <div class="orgname" id="orgname"></div>
+  <div class="kapitel" id="kapitel"></div>
   <p class="regel rein d3">Ohne Vorwissen · Kapitel für Kapitel · verstehen → auswählen → selbst sprechen</p>
 </section>
 
@@ -184,7 +239,8 @@
 <section class="szene" data-dauer="8000">
   <div class="mayday rein">MAYDAY</div>
   <h2 class="rein d1">Auch den Notfall üben –<br>bevor er passiert.</h2>
-  <p class="unter rein d2">Mit der Notruftaste am Funkgerät, wie im echten Einsatz.<br>Und typische Fehler wie <span class="falsch">„hört“</span> werden korrigiert.</p>
+  <p class="unter rein d2">Mayday im Atemschutzeinsatz, Notruftaste bei Bedrohung im Rettungsdienst,<br>„Gefahr!“ am Trümmerkegel – mit der echten Notruftaste am Funkgerät.</p>
+  <p class="unter rein d4">Und typische Fehler wie <span class="falsch">„hört“</span> werden korrigiert.</p>
 </section>
 
 <!-- 7: Überall -->
@@ -259,11 +315,52 @@
       }, 3600);
     },
     kapitel: function () {
-      var zeilen = document.getElementById('kapitel').children;
-      for (var k = 0; k < zeilen.length; k++) { zeilen[k].className = ''; zeilen[k].firstChild.textContent = String(k + 1); }
-      for (var j = 0; j < zeilen.length; j++) (function (z, j) {
-        spaeter(function () { z.className = 'fertig'; z.firstChild.textContent = '✓'; }, 1500 + j * 1100);
-      })(zeilen[j], j);
+      var liste = document.getElementById('kapitel'), name = document.getElementById('orgname');
+      var orgs = [
+        ['Feuerwehr', 'var(--rot-hell)', ['Wer ruft wen?', 'Kommen und Ende', 'Eine Frage stellen', 'Nachfragen', 'Einen Anruf beantworten', 'Mayday']],
+        ['THW', 'var(--blau)', ['Heros-Rufnamen lesen', 'Die Stärkemeldung', 'Meldung nach den 5 W', 'An- und Abmelden', 'Gefahr melden']],
+        ['Rettungsdienst', 'var(--rosa)', ['Rufnamen im Rettungsdienst', 'Status drücken', 'Sprechwunsch: Status 5 und J', 'Klinikanmeldung ohne Namen', 'Status 0 oder Notruftaste']]
+      ];
+      liste.innerHTML = ''; name.textContent = '';
+      orgs.forEach(function (o, n) {
+        spaeter(function () {
+          name.textContent = o[0]; name.style.color = o[1];
+          liste.innerHTML = '';
+          o[2].forEach(function (t, j) {
+            var z = document.createElement('div');
+            z.innerHTML = '<i>' + (j + 1) + '</i><span></span>';
+            z.lastChild.textContent = t;
+            liste.appendChild(z);
+            spaeter(function () { z.className = 'fertig'; z.firstChild.textContent = '✓'; }, 1200 + j * 700);
+          });
+        }, n * 7000);
+      });
+    },
+    thw: function () {
+      var felder = document.getElementById('staerke').children, t1 = document.getElementById('t1');
+      for (var k = 0; k < felder.length; k++) felder[k].className = '';
+      t1.className = t1.className.replace(' zeig', '');
+      for (var j = 0; j < felder.length; j++) (function (f, j) {
+        spaeter(function () { f.className = 'an'; }, 1500 + j * 900);
+      })(felder[j], j);
+      spaeter(function () { t1.className += ' zeig'; }, 6500);
+    },
+    rd: function () {
+      var tasten = document.getElementById('tasten').children, text = document.getElementById('statustext');
+      var r1 = document.getElementById('r1'), r2 = document.getElementById('r2'), rname = document.getElementById('rname');
+      var folge = [[3, 'Status 3 – Einsatz übernommen'], [4, 'Status 4 – am Einsatzort'], [7, 'Status 7 – Patient aufgenommen'],
+                   [8, 'Status 8 – am Zielort'], [1, 'Status 1 – wieder frei']];
+      text.textContent = ''; rname.className = 'weg';
+      r1.className = r1.className.replace(' zeig', ''); r2.className = r2.className.replace(' zeig', '');
+      for (var k = 0; k < tasten.length; k++) tasten[k].className = '';
+      folge.forEach(function (f, j) {
+        spaeter(function () {
+          for (var k = 0; k < tasten.length; k++) tasten[k].className = '';
+          tasten[f[0] - 1].className = 'an'; text.textContent = f[1];
+        }, 1000 + j * 1300);
+      });
+      spaeter(function () { r1.className += ' zeig'; rname.className = 'weg zeig'; }, 8000);
+      spaeter(function () { r2.className += ' zeig'; }, 10500);
     }
   };
 
