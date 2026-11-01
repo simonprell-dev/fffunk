@@ -61,19 +61,16 @@
           "label": "📞 Erste Lagemeldung",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
               "Kreisstraße 7",
               "Bus",
               "20 Verletzte",
-              "MANV",
               "Notarzt",
-              "LNA",
-              "OrgL",
               "Einsatzleitung",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Lagemeldung: Kreisstraße 7, Linienbus gegen Baum, geschätzt 20 Verletzte, MANV. Fordern weitere Rettungsmittel, Notärzte, LNA und OrgL an. Übernehmen vorläufige Einsatzleitung – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Lagemeldung: Kreisstraße 7, Linienbus gegen Baum, geschätzt 20 Verletzte, MANV. Fordern weitere Rettungsmittel, Notärzte, LNA und OrgL an. Übernehmen vorläufige Einsatzleitung – kommen.",
             "briefing": "Anruf . „Lagemeldung“ . wo (Kreisstraße 7) . was (Bus gegen Baum) . wie viele (geschätzt 20 Verletzte) . „MANV“ . Anforderung (Rettungsmittel, Notärzte, LNA, OrgL) . „übernehmen vorläufige Einsatzleitung“ . „kommen“",
             "onSuccess": "n_sichtung",
             "onFailure": "n_lage_fail",
@@ -86,7 +83,7 @@
     "n_lage_fail": {
       "id": "n_lage_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Die **erste Lagemeldung** bestimmt, wie groß die Leitstelle nachalarmiert. Fordern Sie **Einsatzmittel** an – wer kommt, entscheidet die Leitstelle.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Lagemeldung: Kreisstraße 7, Linienbus gegen Baum, geschätzt 20 Verletzte, MANV. Fordern weitere Rettungsmittel, Notärzte, LNA und OrgL an. Übernehmen vorläufige Einsatzleitung – kommen.“*",
+      "narrative": "**Feedback:** Die **erste Lagemeldung** bestimmt, wie groß die Leitstelle nachalarmiert. Fordern Sie **Einsatzmittel** an – wer kommt, entscheidet die Leitstelle.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Lagemeldung: Kreisstraße 7, Linienbus gegen Baum, geschätzt 20 Verletzte, MANV. Fordern weitere Rettungsmittel, Notärzte, LNA und OrgL an. Übernehmen vorläufige Einsatzleitung – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -105,7 +102,7 @@
           "label": "📞 Sichtungsergebnis melden",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
               "Sichtungsergebnis",
               "3 rot",
@@ -114,7 +111,7 @@
               "20",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Sichtungsergebnis: 3 rot, 6 gelb, 11 grün, gesamt 20 – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Sichtungsergebnis: 3 rot, 6 gelb, 11 grün, gesamt 20 – kommen.",
             "briefing": "Anruf . „Sichtungsergebnis“ . Zahlen je Kategorie (3 rot, 6 gelb, 11 grün) . gesamt 20 . „kommen“",
             "onSuccess": "n_uebergabe",
             "onFailure": "n_sichtung_fail",
@@ -127,7 +124,7 @@
     "n_sichtung_fail": {
       "id": "n_sichtung_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Mit den **Zahlen je Kategorie** plant die Leitstelle Transportmittel und verteilt die Patienten auf die Kliniken.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Sichtungsergebnis: 3 rot, 6 gelb, 11 grün, gesamt 20 – kommen.“*",
+      "narrative": "**Feedback:** Mit den **Zahlen je Kategorie** plant die Leitstelle Transportmittel und verteilt die Patienten auf die Kliniken.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Sichtungsergebnis: 3 rot, 6 gelb, 11 grün, gesamt 20 – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -192,16 +189,14 @@
           "label": "📞 Übergabe melden",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
               "Einsatzleitung",
               "übergeben",
-              "LNA",
-              "OrgL",
               "Versorgung",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Einsatzleitung an LNA und OrgL übergeben, übernehmen Patientenversorgung – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Einsatzleitung an LNA und OrgL übergeben, übernehmen Patientenversorgung – kommen.",
             "briefing": "Anruf . Einsatzleitung übergeben (an LNA und OrgL) . was Sie jetzt tun (Patientenversorgung) . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_melden_fail",
@@ -214,7 +209,7 @@
     "n_melden_fail": {
       "id": "n_melden_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Die Leitstelle muss wissen, **wer** jetzt die Einsatzstelle führt – ab sofort laufen Rückfragen über LNA und OrgL.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Einsatzleitung an LNA und OrgL übergeben, übernehmen Patientenversorgung – kommen.“*",
+      "narrative": "**Feedback:** Die Leitstelle muss wissen, **wer** jetzt die Einsatzstelle führt – ab sofort laufen Rückfragen über LNA und OrgL.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Einsatzleitung an LNA und OrgL übergeben, übernehmen Patientenversorgung – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -226,7 +221,7 @@
     "n_end": {
       "id": "n_end",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Neuhaus:** „Verstanden – Ende.“\n\nNicht sofort behandelt, sondern gemeldet und geordnet, nach Kategorien gesichtet und sauber übergeben – genau das rettet beim MANV die meisten Leben.\n\n**Übung abgeschlossen! 🏆**",
+      "narrative": "**Leitstelle Nürnberg:** „Verstanden – Ende.“\n\nNicht sofort behandelt, sondern gemeldet und geordnet, nach Kategorien gesichtet und sauber übergeben – genau das rettet beim MANV die meisten Leben.\n\n**Übung abgeschlossen! 🏆**",
       "actions": [
         {
           "id": "restart",

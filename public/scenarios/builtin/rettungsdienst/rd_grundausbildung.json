@@ -40,7 +40,7 @@
     "r_start": {
       "id": "r_start",
       "role": "rettungsdienst",
-      "narrative": "Dein erster Dienst auf der **Rettungswache Neuhaus** des Roten Kreuzes. Dein Praxisanleiter zeigt dir den Rettungswagen.\n\n**Praxisanleiter:** „Unser RTW heißt **Rotkreuz Neuhaus 71/1**. Das Kennwort sagt, wer das Fahrzeug betreibt: **Rotkreuz** (BRK/DRK), **Sama** (ASB), **Akkon** (Johanniter), **Johannes** (Malteser). Die **71** ist der RTW, **72** der KTW, **76** das Notarzteinsatzfahrzeug, **79** First Responder. Die Leitstelle ist einfach **Leitstelle Neuhaus**.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
+      "narrative": "Dein erster Dienst auf der **Rettungswache Neuhaus** des Roten Kreuzes. Dein Praxisanleiter zeigt dir den Rettungswagen.\n\n**Praxisanleiter:** „Unser RTW heißt **Rotkreuz Neuhaus 71/1**. Das Kennwort sagt, wer das Fahrzeug betreibt: **Rotkreuz** (BRK/DRK), **Sama** (ASB), **Akkon** (Johanniter), **Johannes** (Malteser). Die **71** ist der RTW, **72** der KTW, **76** das Notarzteinsatzfahrzeug, **79** First Responder. Die Leitstelle ist einfach **Leitstelle Nürnberg**.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
       "actions": [
         {
           "id": "ok",
@@ -104,16 +104,16 @@
           "id": "funk",
           "label": "Leitstelle anfunken",
           "radioCall": {
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – kommen.",
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "Rotkreuz",
               "71/1",
               "kommen"
             ],
             "onSuccess": "r_speak2",
             "onFailure": "r_fail",
-            "response": "Hier Leitstelle Neuhaus – kommen."
+            "response": "Hier Leitstelle Nürnberg – kommen."
           }
         }
       ]
@@ -121,7 +121,7 @@
     "r_fail": {
       "id": "r_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – kommen.“",
+      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -133,7 +133,7 @@
     "r_speak2": {
       "id": "r_speak2",
       "role": "rettungsdienst",
-      "narrative": "Jetzt ruft die Leitstelle **euch**:\n\n**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 von Leitstelle Neuhaus – kommen.“\n\nAntworte: **Hier** – dein Rufname – **kommen**.",
+      "narrative": "Jetzt ruft die Leitstelle **euch**:\n\n**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 von Leitstelle Nürnberg – kommen.“\n\nAntworte: **Hier** – dein Rufname – **kommen**.",
       "actions": [
         {
           "id": "funk",
@@ -148,7 +148,7 @@
             ],
             "onSuccess": "r_end",
             "onFailure": "r_fail2",
-            "response": "Hier Leitstelle Neuhaus – Funkprobe, danke – Ende."
+            "response": "Hier Leitstelle Nürnberg – Funkprobe, danke – Ende."
           }
         }
       ]
@@ -289,22 +289,22 @@
     "s_speak": {
       "id": "s_speak",
       "role": "rettungsdienst",
-      "narrative": "**Richtig!** Nach Status 7 fragt die Leitstelle oft nach dem Ziel:\n\n**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 – Transportziel durchgeben – kommen.“\n\nIhr fahrt ins **Klinikum Neuhaus**.",
+      "narrative": "**Richtig!** Nach Status 7 fragt die Leitstelle oft nach dem Ziel:\n\n**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 – Transportziel durchgeben – kommen.“\n\nIhr fahrt ins **Uniklinikum Erlangen**.",
       "actions": [
         {
           "id": "funk",
           "label": "Transportziel durchgeben",
           "radioCall": {
-            "hint": "Hier Rotkreuz Neuhaus 71/1 – Transportziel Klinikum Neuhaus – kommen.",
+            "hint": "Hier Rotkreuz Neuhaus 71/1 – Transportziel Uniklinikum Erlangen – kommen.",
             "expectedPhrases": [
               "71/1",
               "Transportziel",
-              "Klinikum Neuhaus",
+              "Uniklinikum Erlangen",
               "kommen"
             ],
             "onSuccess": "s_end",
             "onFailure": "s_fail",
-            "response": "Hier Leitstelle Neuhaus – verstanden – Ende."
+            "response": "Hier Leitstelle Nürnberg – verstanden – Ende."
           }
         }
       ]
@@ -312,7 +312,7 @@
     "s_fail": {
       "id": "s_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** „Hier Rotkreuz Neuhaus 71/1 – Transportziel Klinikum Neuhaus – kommen.“",
+      "narrative": "**Noch nicht ganz.** „Hier Rotkreuz Neuhaus 71/1 – Transportziel Uniklinikum Erlangen – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -357,7 +357,7 @@
       "actions": [
         {
           "id": "opt0",
-          "label": "Einfach lossprechen: „Leitstelle Neuhaus von …“",
+          "label": "Einfach lossprechen: „Leitstelle Nürnberg von …“",
           "nextNodeId": "w_x1"
         },
         {
@@ -405,9 +405,9 @@
           "id": "funk",
           "label": "Nach J sprechen",
           "radioCall": {
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.",
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
               "verschmutzt",
               "Desinfektion",
@@ -417,7 +417,7 @@
             ],
             "onSuccess": "w2_choice",
             "onFailure": "w_fail",
-            "response": "Hier Leitstelle Neuhaus – verstanden, Status 6 – Ende."
+            "response": "Hier Leitstelle Nürnberg – verstanden, Status 6 – Ende."
           }
         }
       ]
@@ -425,7 +425,7 @@
     "w_fail": {
       "id": "w_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.“",
+      "narrative": "**Noch nicht ganz.** „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -512,7 +512,7 @@
     "a_choice": {
       "id": "a_choice",
       "role": "rettungsdienst",
-      "narrative": "Euer Patient: **Herr Max Berger**, geboren 1950, Sturz vom Fahrrad, Verdacht auf **Unterschenkelbruch**. In etwa **20 Minuten** seid ihr im Klinikum Neuhaus. Was gehört in den Funkspruch?",
+      "narrative": "Euer Patient: **Herr Max Berger**, geboren 1950, Sturz vom Fahrrad, Verdacht auf **Unterschenkelbruch**. In etwa **20 Minuten** seid ihr im Uniklinikum Erlangen. Was gehört in den Funkspruch?",
       "actions": [
         {
           "id": "opt0",
@@ -564,11 +564,11 @@
           "id": "funk",
           "label": "Patienten anmelden",
           "radioCall": {
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.",
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
-              "Klinikum Neuhaus",
+              "Uniklinikum Erlangen",
               "anmelden",
               "männlich",
               "Unterschenkelfraktur",
@@ -577,7 +577,7 @@
             ],
             "onSuccess": "a_end",
             "onFailure": "a_fail",
-            "response": "Hier Leitstelle Neuhaus – verstanden, Klinikum Neuhaus, männlich, Unterschenkelfraktur, 20 Minuten – Ende."
+            "response": "Hier Leitstelle Nürnberg – verstanden, Uniklinikum Erlangen, männlich, Unterschenkelfraktur, 20 Minuten – Ende."
           }
         }
       ]
@@ -585,7 +585,7 @@
     "a_fail": {
       "id": "a_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** Klinik – Geschlecht – Verdacht – Ankunft, aber **kein Name**: „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.“",
+      "narrative": "**Noch nicht ganz.** Klinik – Geschlecht – Verdacht – Ankunft, aber **kein Name**: „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -749,7 +749,7 @@
             ],
             "onSuccess": "n_end",
             "onFailure": "n_fail",
-            "response": "Hier Leitstelle Neuhaus – Notruf verstanden, Polizei ist alarmiert. Bleiben Sie im Fahrzeug – kommen."
+            "response": "Hier Leitstelle Nürnberg – Notruf verstanden, Polizei ist alarmiert. Bleiben Sie im Fahrzeug – kommen."
           }
         }
       ]

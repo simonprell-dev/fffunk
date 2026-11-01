@@ -54,7 +54,7 @@
     "n_nachfordern": {
       "id": "n_nachfordern",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 – kommen.“\n\nFordern Sie den Notarzt nach: Ort, Grund, Zustand.",
+      "narrative": "**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 – kommen.“\n\nFordern Sie den Notarzt nach: Ort, Grund, Zustand.",
       "actions": [
         {
           "id": "radio_nachfordern",
@@ -93,7 +93,7 @@
     "n_alarm": {
       "id": "n_alarm",
       "role": "rettungsdienst",
-      "narrative": "Das Display zeigt **A – Notarzt alarmiert**.\n\n**Leitstelle Neuhaus:** „Notarzt ist alarmiert: **Rotkreuz Neuhaus 76/1**, Eintreffen in etwa **8 Minuten** – kommen.“\n\nBestätigen Sie und sagen Sie, wo der Notarzt hin muss.",
+      "narrative": "Das Display zeigt **A – Notarzt alarmiert**.\n\n**Leitstelle Nürnberg:** „Notarzt ist alarmiert: **Rotkreuz Neuhaus 76/1**, Eintreffen in etwa **8 Minuten** – kommen.“\n\nBestätigen Sie und sagen Sie, wo der Notarzt hin muss.",
       "actions": [
         {
           "id": "radio_alarm",
@@ -156,7 +156,7 @@
     "n_voranmeldung": {
       "id": "n_voranmeldung",
       "role": "rettungsdienst",
-      "narrative": "Der Notarzt ist da, der Patient ist stabilisiert. Ziel: das **Herzkatheterlabor im Klinikum Neuhaus**. Was gehört zur Anmeldung?",
+      "narrative": "Der Notarzt ist da, der Patient ist stabilisiert. Ziel: das **Herzkatheterlabor im Uniklinikum Erlangen**. Was gehört zur Anmeldung?",
       "actions": [
         {
           "id": "opt0",
@@ -185,9 +185,9 @@
           "label": "📞 Klinik anmelden",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
-              "Klinikum Neuhaus",
+              "Uniklinikum Erlangen",
               "anmelden",
               "männlich",
               "Herzinfarkt",
@@ -196,8 +196,8 @@
               "telefonisch",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.",
-            "briefing": "Anruf . „bitte für das Klinikum Neuhaus, Herzkatheter, anmelden“ . männlich . Herzinfarkt . mit Notarzt . Ankunft in 25 Minuten . telefonisch vorangemeldet . „kommen“",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.",
+            "briefing": "Anruf . „bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden“ . männlich . Herzinfarkt . mit Notarzt . Ankunft in 25 Minuten . telefonisch vorangemeldet . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_anmelden_fail",
             "feedbackSuccess": "✅ Vollständige Anmeldung mit Hinweis auf die telefonische Voranmeldung.",
@@ -209,7 +209,7 @@
     "n_anmelden_fail": {
       "id": "n_anmelden_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** „Telefonisch vorangemeldet“ zeigt der Leitstelle, dass die Klinik Bescheid weiß – sie muss nicht noch einmal anrufen.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.“*",
+      "narrative": "**Feedback:** „Telefonisch vorangemeldet“ zeigt der Leitstelle, dass die Klinik Bescheid weiß – sie muss nicht noch einmal anrufen.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -221,7 +221,7 @@
     "n_end": {
       "id": "n_end",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Neuhaus:** „Verstanden – Zielort verständigt – Ende.“\n\nStatus 0 statt Warten, präzise Nachforderung und eine vollständige Anmeldung – so kommt der Patient schnell ins Katheterlabor.\n\n**Übung abgeschlossen! 🏆**",
+      "narrative": "**Leitstelle Nürnberg:** „Verstanden – Zielort verständigt – Ende.“\n\nStatus 0 statt Warten, präzise Nachforderung und eine vollständige Anmeldung – so kommt der Patient schnell ins Katheterlabor.\n\n**Übung abgeschlossen! 🏆**",
       "actions": [
         {
           "id": "restart",

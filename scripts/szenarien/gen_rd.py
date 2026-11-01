@@ -9,7 +9,7 @@ OUT = []
 RD = "rettungsdienst"
 HINWEIS = "\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*"
 HINWEIS_SIE = "\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*"
-ILS = "**Leitstelle Neuhaus:**"
+ILS = "**Leitstelle Nürnberg:**"
 
 # ================================================================ Grundausbildung Rettungsdienst
 k = K("rd_grundausbildung", "Rettungsdienst Grundausbildung Sprechfunk",
@@ -26,7 +26,7 @@ PA = "**Praxisanleiter:**"
 k.node("r_start",
        "Dein erster Dienst auf der **Rettungswache Neuhaus** des Roten Kreuzes. Dein Praxisanleiter zeigt dir den Rettungswagen.\n\n"
        f"{PA} „Unser RTW heißt **Rotkreuz Neuhaus 71/1**. Das Kennwort sagt, wer das Fahrzeug betreibt: **Rotkreuz** (BRK/DRK), **Sama** (ASB), **Akkon** (Johanniter), **Johannes** (Malteser). "
-       "Die **71** ist der RTW, **72** der KTW, **76** das Notarzteinsatzfahrzeug, **79** First Responder. Die Leitstelle ist einfach **Leitstelle Neuhaus**.“" + HINWEIS,
+       "Die **71** ist der RTW, **72** der KTW, **76** das Notarzteinsatzfahrzeug, **79** First Responder. Die Leitstelle ist einfach **Leitstelle Nürnberg**.“" + HINWEIS,
        [K.go("ok", "👍 Verstanden", "r_choice")])
 k.ask("r", "Über Funk hörst du **Akkon Neuhaus 76/1**. Wer ist das?",
       "Das Notarzteinsatzfahrzeug der Johanniter",
@@ -36,12 +36,12 @@ k.ask("r", "Über Funk hörst du **Akkon Neuhaus 76/1**. Wer ist das?",
         "**Fast.** Akkon = Johanniter stimmt. Aber der KTW hat die **72** – die **76** ist das **Notarzteinsatzfahrzeug**.")],
       "r_speak", [2, 0, 1])
 k.node("r_speak", "**Richtig!** Jetzt du: Rufe die Leitstelle. Wie immer: **Wen rufst du – von wem – kommen.**",
-       [K.call("Leitstelle anfunken", "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – kommen.",
-               ["Leitstelle Neuhaus", "Rotkreuz", "71/1", "kommen"], "r_speak2", "r_fail", "Hier Leitstelle Neuhaus – kommen.")])
-k.retry("r_fail", "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – kommen.“", "r_speak")
-k.node("r_speak2", f"Jetzt ruft die Leitstelle **euch**:\n\n{ILS} „Rotkreuz Neuhaus 71/1 von Leitstelle Neuhaus – kommen.“\n\nAntworte: **Hier** – dein Rufname – **kommen**.",
+       [K.call("Leitstelle anfunken", "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – kommen.",
+               ["Leitstelle Nürnberg", "Rotkreuz", "71/1", "kommen"], "r_speak2", "r_fail", "Hier Leitstelle Nürnberg – kommen.")])
+k.retry("r_fail", "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – kommen.“", "r_speak")
+k.node("r_speak2", f"Jetzt ruft die Leitstelle **euch**:\n\n{ILS} „Rotkreuz Neuhaus 71/1 von Leitstelle Nürnberg – kommen.“\n\nAntworte: **Hier** – dein Rufname – **kommen**.",
        [K.call("Anruf beantworten", "Hier Rotkreuz Neuhaus 71/1 – kommen.",
-               ["hier", "Rotkreuz", "71/1", "kommen"], "r_end", "r_fail2", "Hier Leitstelle Neuhaus – Funkprobe, danke – Ende.")])
+               ["hier", "Rotkreuz", "71/1", "kommen"], "r_end", "r_fail2", "Hier Leitstelle Nürnberg – Funkprobe, danke – Ende.")])
 k.retry("r_fail2", "**Fast.** „Hier Rotkreuz Neuhaus 71/1 – kommen.“ – „hört“ ist kein Funkwort.", "r_speak2")
 k.finish("r_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Kennwort – Ort – Kennzahl.** 71 RTW, 72 KTW, 76 NEF, 79 First Responder.")
 
@@ -62,10 +62,10 @@ k.ask("s2", "**Richtig!** Ihr habt die Patientin versorgt, sie liegt im RTW, ihr
       [("Status 8", "**Noch nicht.** **8** drückst du erst **am Zielort**, also in der Klinik. Mit Patient an Bord unterwegs: **7**."),
        ("Status 3", "**Nicht ganz.** **3** war die Anfahrt zum Einsatz. Mit Patient an Bord: **7** – Patient aufgenommen.")],
       "s_speak", [2, 1, 0])
-k.node("s_speak", f"**Richtig!** Nach Status 7 fragt die Leitstelle oft nach dem Ziel:\n\n{ILS} „Rotkreuz Neuhaus 71/1 – Transportziel durchgeben – kommen.“\n\nIhr fahrt ins **Klinikum Neuhaus**.",
-       [K.call("Transportziel durchgeben", "Hier Rotkreuz Neuhaus 71/1 – Transportziel Klinikum Neuhaus – kommen.",
-               ["71/1", "Transportziel", "Klinikum Neuhaus", "kommen"], "s_end", "s_fail", "Hier Leitstelle Neuhaus – verstanden – Ende.")])
-k.retry("s_fail", "**Noch nicht ganz.** „Hier Rotkreuz Neuhaus 71/1 – Transportziel Klinikum Neuhaus – kommen.“", "s_speak")
+k.node("s_speak", f"**Richtig!** Nach Status 7 fragt die Leitstelle oft nach dem Ziel:\n\n{ILS} „Rotkreuz Neuhaus 71/1 – Transportziel durchgeben – kommen.“\n\nIhr fahrt ins **Uniklinikum Erlangen**.",
+       [K.call("Transportziel durchgeben", "Hier Rotkreuz Neuhaus 71/1 – Transportziel Uniklinikum Erlangen – kommen.",
+               ["71/1", "Transportziel", "Uniklinikum Erlangen", "kommen"], "s_end", "s_fail", "Hier Leitstelle Nürnberg – verstanden – Ende.")])
+k.retry("s_fail", "**Noch nicht ganz.** „Hier Rotkreuz Neuhaus 71/1 – Transportziel Uniklinikum Erlangen – kommen.“", "s_speak")
 k.finish("s_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **3** los – **4** da – **7** Patient an Bord – **8** am Ziel – **1** wieder frei.")
 
 # ---------- Kapitel 3: Sprechwunsch ----------
@@ -76,16 +76,16 @@ k.node("w_start",
        [K.go("ok", "👍 Verstanden", "w_choice")])
 k.ask("w", "Nach einem Transport ist euer RTW **stark verschmutzt** und muss auf der Wache desinfiziert werden. Das muss die Leitstelle wissen. Was machst du?",
       "Status 5 drücken und auf J warten",
-      [("Einfach lossprechen: „Leitstelle Neuhaus von …“",
+      [("Einfach lossprechen: „Leitstelle Nürnberg von …“",
         "**Nicht ganz.** Vielleicht spricht die Leitstelle gerade mit einem anderen Fahrzeug über einen Notfall. Mit **Status 5** meldest du dich an – sie ruft dich, sobald sie kann."),
        ("Gar nichts sagen und einfach zur Wache fahren",
         "**Nicht gut.** Die Leitstelle hält euch sonst für einsatzbereit und schickt euch womöglich zum nächsten Notfall.")],
       "w_speak", [1, 0, 2])
 k.node("w_speak", "**Richtig!** Auf dem Display erscheint **J**. Sprich jetzt: was los ist, was ihr tut, wie lange es dauert.",
-       [K.call("Nach J sprechen", "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.",
-               ["Leitstelle Neuhaus", "71/1", "verschmutzt", "Desinfektion", "30 Minuten", "nicht einsatzbereit", "kommen"],
-               "w2_choice", "w_fail", "Hier Leitstelle Neuhaus – verstanden, Status 6 – Ende.")])
-k.retry("w_fail", "**Noch nicht ganz.** „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.“", "w_speak")
+       [K.call("Nach J sprechen", "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.",
+               ["Leitstelle Nürnberg", "71/1", "verschmutzt", "Desinfektion", "30 Minuten", "nicht einsatzbereit", "kommen"],
+               "w2_choice", "w_fail", "Hier Leitstelle Nürnberg – verstanden, Status 6 – Ende.")])
+k.retry("w_fail", "**Noch nicht ganz.** „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.“", "w_speak")
 k.ask("w2", "Die Leitstelle sagt „Status 6“. Nach der Desinfektion steht der RTW sauber auf der Wache. Welchen Status drückst du jetzt?",
       "Status 2 – frei auf Wache",
       [("Status 6", "**Nicht mehr.** **6** heißt nicht einsatzbereit – das seid ihr ja nicht mehr. Auf der Wache und bereit: **2**."),
@@ -99,7 +99,7 @@ k.node("a_start",
        f"{PA} „Funk kann **jeder mithören**. Deshalb nennen wir **nie Namen oder Geburtsdaten**. Für die Klinik reicht: **Wunschklinik, Geschlecht, Verdachtsdiagnose, Ankunftszeit**. "
        "Viele Bereiche nutzen statt der Diagnose einen **PZC** (Patientenzuweisungscode). Bei **Schockraum, Schlaganfall, Herzinfarkt oder Reanimation** meldest du zusätzlich **telefonisch** vor.“" + HINWEIS,
        [K.go("ok", "👍 Verstanden", "a_choice")])
-k.ask("a", "Euer Patient: **Herr Max Berger**, geboren 1950, Sturz vom Fahrrad, Verdacht auf **Unterschenkelbruch**. In etwa **20 Minuten** seid ihr im Klinikum Neuhaus. Was gehört in den Funkspruch?",
+k.ask("a", "Euer Patient: **Herr Max Berger**, geboren 1950, Sturz vom Fahrrad, Verdacht auf **Unterschenkelbruch**. In etwa **20 Minuten** seid ihr im Uniklinikum Erlangen. Was gehört in den Funkspruch?",
       "„… männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten …“",
       [("„… Herr Max Berger, geboren 1950, Unterschenkelbruch …“",
         "**Datenschutz!** Über Funk hört jeder mit, der einen Scanner hat. **Keine Namen, keine Geburtsdaten** – Geschlecht und Verdachtsdiagnose reichen der Klinik."),
@@ -107,10 +107,10 @@ k.ask("a", "Euer Patient: **Herr Max Berger**, geboren 1950, Sturz vom Fahrrad, 
         "**Zu wenig.** Die Klinik muss wissen, **was** kommt und **wann** – sonst steht kein passendes Team bereit.")],
       "a_speak", [1, 0, 2])
 k.node("a_speak", "**Richtig!** Die Leitstelle hat euch nach Status 5 aufgefordert. Melde den Patienten über die Leitstelle beim Klinikum an.",
-       [K.call("Patienten anmelden", "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.",
-               ["Leitstelle Neuhaus", "71/1", "Klinikum Neuhaus", "anmelden", "männlich", "Unterschenkelfraktur", "20 Minuten", "kommen"],
-               "a_end", "a_fail", "Hier Leitstelle Neuhaus – verstanden, Klinikum Neuhaus, männlich, Unterschenkelfraktur, 20 Minuten – Ende.")])
-k.retry("a_fail", "**Noch nicht ganz.** Klinik – Geschlecht – Verdacht – Ankunft, aber **kein Name**: „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.“", "a_speak")
+       [K.call("Patienten anmelden", "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.",
+               ["Leitstelle Nürnberg", "71/1", "Uniklinikum Erlangen", "anmelden", "männlich", "Unterschenkelfraktur", "20 Minuten", "kommen"],
+               "a_end", "a_fail", "Hier Leitstelle Nürnberg – verstanden, Uniklinikum Erlangen, männlich, Unterschenkelfraktur, 20 Minuten – Ende.")])
+k.retry("a_fail", "**Noch nicht ganz.** Klinik – Geschlecht – Verdacht – Ankunft, aber **kein Name**: „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.“", "a_speak")
 k.finish("a_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Klinik – Geschlecht – Verdacht – Ankunft.** Namen gibt es nur am Telefon oder bei der Übergabe.")
 
 # ---------- Kapitel 5: Status 0 oder Notruftaste ----------
@@ -138,7 +138,7 @@ k.node("n_sos", "**Richtig!** Drück jetzt die **Notruftaste** deines Funkgerät
 k.node("n_speak", "Die Notruftaste ist ausgelöst, dein Mikrofon ist offen. Sprich sofort: **Notruf – wer – wo – was – was ihr braucht.**",
        [K.call("Notruf sprechen", "Notruf – Rotkreuz Neuhaus 71/1 – Lindenweg 3 – Bedrohung durch Person mit Messer – ziehen uns zum Fahrzeug zurück – brauchen Polizei – kommen.",
                ["Notruf", "71/1", "Lindenweg 3", "Bedrohung", "Messer", "Polizei", "kommen"],
-               "n_end", "n_fail", "Hier Leitstelle Neuhaus – Notruf verstanden, Polizei ist alarmiert. Bleiben Sie im Fahrzeug – kommen.")])
+               "n_end", "n_fail", "Hier Leitstelle Nürnberg – Notruf verstanden, Polizei ist alarmiert. Bleiben Sie im Fahrzeug – kommen.")])
 k.retry("n_fail", "**Noch nicht ganz.** **Notruf** – wer – wo – was – was ihr braucht: „Notruf – Rotkreuz Neuhaus 71/1 – Lindenweg 3 – Bedrohung durch Person mit Messer – ziehen uns zum Fahrzeug zurück – brauchen Polizei – kommen.“", "n_speak")
 k.finish("n_end", "**Geschafft – die Polizei ist unterwegs, ihr seid in Sicherheit.** 🎉\n\n"
          "Du kennst jetzt die Grundlagen: Rufnamen, Status, Sprechwunsch, Klinikanmeldung ohne Namen, Status 0 und Notruftaste. **Willkommen im Rettungsdienst-Funk!**", last=True)
@@ -179,8 +179,8 @@ s.radio("n_rueckmeldung",
         "In der Wohnung finden Sie eine **ältere Dame**, gestürzt, das **rechte Bein ist verkürzt und nach außen gedreht** – Verdacht auf **Oberschenkelhalsbruch**. Kreislauf stabil, ein Notarzt ist **nicht** nötig.\n\n"
         "Sie drücken Status 5, die Leitstelle schickt **J**. Geben Sie eine kurze Rückmeldung.",
         "Rückmeldung geben",
-        ["Leitstelle Neuhaus", "71/1", "Oberschenkelhalsfraktur", "stabil", "kein Notarzt", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.",
+        ["Leitstelle Nürnberg", "71/1", "Oberschenkelhalsfraktur", "stabil", "kein Notarzt", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.",
         "Anruf . Patientin (weiblich, kein Name) . Verdacht (Oberschenkelhalsfraktur) . Zustand (stabil) . „kein Notarzt erforderlich“ . „kommen“",
         "n_status7",
         "Kurze, namenlose Rückmeldung mit der wichtigsten Information: kein Notarzt nötig.",
@@ -191,11 +191,11 @@ status(s, "n_status7", "Die Patientin ist auf der Trage im RTW, Sie fahren los. 
        [("Status 8", "**8** heißt am **Zielort** – Sie sind noch unterwegs."), ("Status 3", "**3** war die Anfahrt zum Einsatz.")],
        "n_anmeldung")
 s.radio("n_anmeldung",
-        f"{ILS} sendet **d – Transportziel durchgeben**. Sie fahren ins **Klinikum Neuhaus**, Ankunft in etwa **15 Minuten**.\n\nMelden Sie Ziel und Patientin an – ohne Namen.",
+        f"{ILS} sendet **d – Transportziel durchgeben**. Sie fahren ins **Uniklinikum Erlangen**, Ankunft in etwa **15 Minuten**.\n\nMelden Sie Ziel und Patientin an – ohne Namen.",
         "Zielklinik anmelden",
-        ["Leitstelle Neuhaus", "71/1", "Klinikum Neuhaus", "anmelden", "weiblich", "Oberschenkelhalsfraktur", "15 Minuten", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.",
-        "Anruf . „bitte für das Klinikum Neuhaus anmelden“ . Geschlecht . Verdacht . Ankunftszeit . „kommen“",
+        ["Leitstelle Nürnberg", "71/1", "Uniklinikum Erlangen", "anmelden", "weiblich", "Oberschenkelhalsfraktur", "15 Minuten", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.",
+        "Anruf . „bitte für das Uniklinikum Erlangen anmelden“ . Geschlecht . Verdacht . Ankunftszeit . „kommen“",
         "n_status8",
         "Anmeldung vollständig und ohne Namen.",
         "Melden Sie: Klinik, weiblich, Verdacht, Ankunft in 15 Minuten.",
@@ -246,7 +246,7 @@ s.radio("n_alarm",
         "Bestätigen Sie 76/1 und die Zeit und sagen Sie, wo Sie sind.",
         "Ein kurzer **Anfahrtshinweis** (Stockwerk, offene Tür) spart dem Notarzt Suchzeit.")
 s.choice("n_voranmeldung",
-         "Der Notarzt ist da, der Patient ist stabilisiert. Ziel: das **Herzkatheterlabor im Klinikum Neuhaus**. Was gehört zur Anmeldung?",
+         "Der Notarzt ist da, der Patient ist stabilisiert. Ziel: das **Herzkatheterlabor im Uniklinikum Erlangen**. Was gehört zur Anmeldung?",
          [("☎️ Funk-Anmeldung über die Leitstelle **und** telefonische Voranmeldung beim Herzkatheter", "n_anmelden"),
           ("📻 Nur Funk-Anmeldung – die Klinik wird schon Bescheid wissen", None,
            "Bei **Herzinfarkt, Schlaganfall, Schockraum und Reanimation** ist eine **telefonische Voranmeldung** üblich – das Katheterteam muss sich vorbereiten."),
@@ -255,9 +255,9 @@ s.choice("n_voranmeldung",
 s.radio("n_anmelden",
         "Die telefonische Voranmeldung hat der Notarzt erledigt. Ankunft in etwa **25 Minuten**, der Notarzt fährt mit.\n\nMelden Sie über die Leitstelle an.",
         "Klinik anmelden",
-        ["Leitstelle Neuhaus", "71/1", "Klinikum Neuhaus", "anmelden", "männlich", "Herzinfarkt", "Notarzt", "25 Minuten", "telefonisch", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.",
-        "Anruf . „bitte für das Klinikum Neuhaus, Herzkatheter, anmelden“ . männlich . Herzinfarkt . mit Notarzt . Ankunft in 25 Minuten . telefonisch vorangemeldet . „kommen“",
+        ["Leitstelle Nürnberg", "71/1", "Uniklinikum Erlangen", "anmelden", "männlich", "Herzinfarkt", "Notarzt", "25 Minuten", "telefonisch", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.",
+        "Anruf . „bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden“ . männlich . Herzinfarkt . mit Notarzt . Ankunft in 25 Minuten . telefonisch vorangemeldet . „kommen“",
         "n_end",
         "Vollständige Anmeldung mit Hinweis auf die telefonische Voranmeldung.",
         "Melden Sie: Klinik und Herzkatheter, männlich, Herzinfarkt, mit Notarzt, 25 Minuten, telefonisch vorangemeldet.",
@@ -278,7 +278,7 @@ s.choice("n_name",
           ("🙈 Gar nichts sagen", None,
            "Der Ehemann meint es gut. Erklären Sie kurz, **warum** der Name nicht in den Funk gehört – dann fühlt er sich ernst genommen.")])
 s.choice("n_voranmeldung",
-         "Ziel ist die **Stroke Unit im Klinikum Neuhaus**. Was ist bei einem Schlaganfall-Verdacht zusätzlich wichtig?",
+         "Ziel ist die **Stroke Unit im Uniklinikum Erlangen**. Was ist bei einem Schlaganfall-Verdacht zusätzlich wichtig?",
          [("☎️ Telefonische Voranmeldung – und die Uhrzeit des Symptombeginns nennen", "n_anmelden"),
           ("⏱️ Erst in der Klinik sagen, wann es losging", None,
            "Ob eine Lyse oder Katheter-Behandlung infrage kommt, hängt vom **Zeitfenster** ab. Der **Symptombeginn** gehört schon in die Anmeldung."),
@@ -287,15 +287,15 @@ s.choice("n_voranmeldung",
 s.radio("n_anmelden",
         "Ihr Kollege meldet telefonisch vor. Sie haben Status 5 gedrückt, die Leitstelle hat Sie aufgefordert. Ankunft in etwa **20 Minuten**.\n\nMelden Sie die Patientin über Funk an.",
         "Stroke Unit anmelden",
-        ["Leitstelle Neuhaus", "71/1", "Stroke Unit", "anmelden", "weiblich", "Schlaganfall", "9:40", "20 Minuten", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Klinikum Neuhaus anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.",
-        "Anruf . „bitte für die Stroke Unit Klinikum Neuhaus anmelden“ . weiblich . Verdacht Schlaganfall . Symptombeginn 9:40 Uhr . Ankunft in 20 Minuten . „kommen“ – kein Name",
+        ["Leitstelle Nürnberg", "71/1", "Uniklinikum Erlangen", "anmelden", "weiblich", "Schlaganfall", "9:40", "20 Minuten", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Uniklinikum Erlangen anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.",
+        "Anruf . „bitte für die Stroke Unit Uniklinikum Erlangen anmelden“ . weiblich . Verdacht Schlaganfall . Symptombeginn 9:40 Uhr . Ankunft in 20 Minuten . „kommen“ – kein Name",
         "n_status",
         "Anmeldung mit Symptombeginn – und ohne Namen.",
         "Melden Sie: Stroke Unit, weiblich, Verdacht Schlaganfall, Symptombeginn, Ankunft in 20 Minuten.",
         "Der **Symptombeginn** ist bei einem Schlaganfall die wichtigste Zahl: Davon hängt die Behandlung ab.")
 s.radio("n_status",
-        f"{ILS} „Hier Leitstelle Neuhaus – Stroke Unit ist verständigt – kommen.“\n\nBestätigen Sie kurz und beenden Sie den Funkverkehr.",
+        f"{ILS} „Hier Leitstelle Nürnberg – Stroke Unit ist verständigt – kommen.“\n\nBestätigen Sie kurz und beenden Sie den Funkverkehr.",
         "Bestätigen",
         ["71/1", "verstanden", "Ende"],
         "Hier Rotkreuz Neuhaus 71/1 – verstanden – Ende.",
@@ -323,8 +323,8 @@ s.choice("n_erster",
 s.radio("n_lage",
         "Geben Sie die erste Lagemeldung: Ort, was passiert ist, geschätzte Zahl der Verletzten, was Sie brauchen.",
         "Erste Lagemeldung",
-        ["Leitstelle Neuhaus", "71/1", "Kreisstraße 7", "Bus", "20 Verletzte", "MANV", "Notarzt", "LNA", "OrgL", "Einsatzleitung", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Lagemeldung: Kreisstraße 7, Linienbus gegen Baum, geschätzt 20 Verletzte, MANV. Fordern weitere Rettungsmittel, Notärzte, LNA und OrgL an. Übernehmen vorläufige Einsatzleitung – kommen.",
+        ["Leitstelle Nürnberg", "71/1", "Kreisstraße 7", "Bus", "20 Verletzte", "Notarzt", "Einsatzleitung", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Lagemeldung: Kreisstraße 7, Linienbus gegen Baum, geschätzt 20 Verletzte, MANV. Fordern weitere Rettungsmittel, Notärzte, LNA und OrgL an. Übernehmen vorläufige Einsatzleitung – kommen.",
         "Anruf . „Lagemeldung“ . wo (Kreisstraße 7) . was (Bus gegen Baum) . wie viele (geschätzt 20 Verletzte) . „MANV“ . Anforderung (Rettungsmittel, Notärzte, LNA, OrgL) . „übernehmen vorläufige Einsatzleitung“ . „kommen“",
         "n_sichtung",
         "Lagemeldung vollständig – die Leitstelle kann groß nachalarmieren.",
@@ -333,8 +333,8 @@ s.radio("n_lage",
 s.radio("n_sichtung",
         "Ihr Kollege und Sie haben gesichtet: **3 rot** (lebensbedrohlich), **6 gelb** (schwer verletzt), **11 grün** (leicht verletzt). Die ersten Nachalarmierten sind unterwegs.\n\nGeben Sie das Sichtungsergebnis durch.",
         "Sichtungsergebnis melden",
-        ["Leitstelle Neuhaus", "71/1", "Sichtungsergebnis", "3 rot", "6 gelb", "11 grün", "20", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Sichtungsergebnis: 3 rot, 6 gelb, 11 grün, gesamt 20 – kommen.",
+        ["Leitstelle Nürnberg", "71/1", "Sichtungsergebnis", "3 rot", "6 gelb", "11 grün", "20", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Sichtungsergebnis: 3 rot, 6 gelb, 11 grün, gesamt 20 – kommen.",
         "Anruf . „Sichtungsergebnis“ . Zahlen je Kategorie (3 rot, 6 gelb, 11 grün) . gesamt 20 . „kommen“",
         "n_uebergabe",
         "Sichtungsergebnis klar nach Kategorien gemeldet.",
@@ -350,8 +350,8 @@ s.choice("n_uebergabe",
 s.radio("n_melden",
         "Die Übergabe ist erledigt. Melden Sie der Leitstelle, dass LNA und OrgL die Einsatzleitung übernommen haben und Sie in die Versorgung gehen.",
         "Übergabe melden",
-        ["Leitstelle Neuhaus", "71/1", "Einsatzleitung", "übergeben", "LNA", "OrgL", "Versorgung", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Einsatzleitung an LNA und OrgL übergeben, übernehmen Patientenversorgung – kommen.",
+        ["Leitstelle Nürnberg", "71/1", "Einsatzleitung", "übergeben", "Versorgung", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Einsatzleitung an LNA und OrgL übergeben, übernehmen Patientenversorgung – kommen.",
         "Anruf . Einsatzleitung übergeben (an LNA und OrgL) . was Sie jetzt tun (Patientenversorgung) . „kommen“",
         "n_end",
         "Übergabe der Einsatzleitung gemeldet.",
@@ -373,8 +373,8 @@ status(s, "n_defekt",
 s.radio("n_sprechwunsch",
         "Die Leitstelle soll wissen, **warum** und **wie lange**. Sie drücken Status 5, das Display zeigt **J**. Die Ersatztrage liegt auf der Wache, Tausch etwa **30 Minuten**.",
         "Ausfall melden",
-        ["Leitstelle Neuhaus", "71/1", "Trage defekt", "nicht einsatzbereit", "Wache", "30 Minuten", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Trage defekt, Fahrzeug nicht einsatzbereit, fahren zur Wache zum Tausch, etwa 30 Minuten – kommen.",
+        ["Leitstelle Nürnberg", "71/1", "Trage defekt", "nicht einsatzbereit", "Wache", "30 Minuten", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Trage defekt, Fahrzeug nicht einsatzbereit, fahren zur Wache zum Tausch, etwa 30 Minuten – kommen.",
         "Anruf . was (Trage defekt) . Folge (nicht einsatzbereit) . was Sie tun (zur Wache, Tausch) . wie lange (30 Minuten) . „kommen“",
         "n_wieder",
         "Ausfall mit Grund, Maßnahme und Dauer gemeldet.",
@@ -382,7 +382,7 @@ s.radio("n_sprechwunsch",
         "Mit der **Dauer** kann die Leitstelle planen, ob ein anderes Fahrzeug Ihren Bereich abdecken muss.")
 s.radio("n_wieder",
         "Auf der Wache ist die Trage getauscht, der RTW ist wieder voll einsatzbereit. Die Leitstelle möchte das **auch hören**, weil sie Ihren Bereich umgeplant hatte – sie ruft Sie:\n\n"
-        f"{ILS} „Rotkreuz Neuhaus 71/1 von Leitstelle Neuhaus – Frage Einsatzbereitschaft – kommen.“",
+        f"{ILS} „Rotkreuz Neuhaus 71/1 von Leitstelle Nürnberg – Frage Einsatzbereitschaft – kommen.“",
         "Einsatzbereitschaft melden",
         ["71/1", "Trage getauscht", "einsatzbereit", "Wache", "kommen"],
         "Hier Rotkreuz Neuhaus 71/1 – Trage getauscht, wieder einsatzbereit auf der Wache – kommen.",
@@ -427,8 +427,8 @@ s.radio("n_polizei",
         f"{ILS} „Notruf verstanden, Polizei ist unterwegs. Bleiben Sie im Fahrzeug, verriegeln Sie – kommen.“\n\n"
         "Nach vier Minuten ist die Polizei da und nimmt den Mann fest. **Niemand von Ihnen ist verletzt.** Der Mann hat eine Schnittwunde an der Hand, die Sie jetzt versorgen.\n\nMelden Sie die Lage.",
         "Lage nach Eintreffen der Polizei",
-        ["Leitstelle Neuhaus", "71/1", "Polizei", "Lage", "keine Verletzten", "Einsatzkräften", "versorgen", "kommen"],
-        "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.",
+        ["Leitstelle Nürnberg", "71/1", "Polizei", "Lage", "keine Verletzten", "Einsatzkräften", "versorgen", "kommen"],
+        "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.",
         "Anruf . Polizei vor Ort . Lage unter Kontrolle . keine Verletzten bei den Einsatzkräften . was Sie jetzt tun (Patient versorgen) . „kommen“",
         "n_end",
         "Entwarnung klar gegeben – die Leitstelle kann den Notruf schließen.",

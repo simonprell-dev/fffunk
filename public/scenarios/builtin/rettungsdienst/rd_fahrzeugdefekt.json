@@ -61,7 +61,7 @@
           "label": "📞 Ausfall melden",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
               "Trage defekt",
               "nicht einsatzbereit",
@@ -69,7 +69,7 @@
               "30 Minuten",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Trage defekt, Fahrzeug nicht einsatzbereit, fahren zur Wache zum Tausch, etwa 30 Minuten – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Trage defekt, Fahrzeug nicht einsatzbereit, fahren zur Wache zum Tausch, etwa 30 Minuten – kommen.",
             "briefing": "Anruf . was (Trage defekt) . Folge (nicht einsatzbereit) . was Sie tun (zur Wache, Tausch) . wie lange (30 Minuten) . „kommen“",
             "onSuccess": "n_wieder",
             "onFailure": "n_sprechwunsch_fail",
@@ -82,7 +82,7 @@
     "n_sprechwunsch_fail": {
       "id": "n_sprechwunsch_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Mit der **Dauer** kann die Leitstelle planen, ob ein anderes Fahrzeug Ihren Bereich abdecken muss.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Trage defekt, Fahrzeug nicht einsatzbereit, fahren zur Wache zum Tausch, etwa 30 Minuten – kommen.“*",
+      "narrative": "**Feedback:** Mit der **Dauer** kann die Leitstelle planen, ob ein anderes Fahrzeug Ihren Bereich abdecken muss.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Trage defekt, Fahrzeug nicht einsatzbereit, fahren zur Wache zum Tausch, etwa 30 Minuten – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -94,7 +94,7 @@
     "n_wieder": {
       "id": "n_wieder",
       "role": "rettungsdienst",
-      "narrative": "Auf der Wache ist die Trage getauscht, der RTW ist wieder voll einsatzbereit. Die Leitstelle möchte das **auch hören**, weil sie Ihren Bereich umgeplant hatte – sie ruft Sie:\n\n**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 von Leitstelle Neuhaus – Frage Einsatzbereitschaft – kommen.“",
+      "narrative": "Auf der Wache ist die Trage getauscht, der RTW ist wieder voll einsatzbereit. Die Leitstelle möchte das **auch hören**, weil sie Ihren Bereich umgeplant hatte – sie ruft Sie:\n\n**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 von Leitstelle Nürnberg – Frage Einsatzbereitschaft – kommen.“",
       "actions": [
         {
           "id": "radio_wieder",
@@ -156,7 +156,7 @@
     "n_status2": {
       "id": "n_status2",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Neuhaus:** „Verstanden – Ende.“ Welchen Status drücken Sie jetzt?",
+      "narrative": "**Leitstelle Nürnberg:** „Verstanden – Ende.“ Welchen Status drücken Sie jetzt?",
       "actions": [
         {
           "id": "opt0",

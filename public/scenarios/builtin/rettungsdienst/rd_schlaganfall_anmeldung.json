@@ -78,7 +78,7 @@
     "n_voranmeldung": {
       "id": "n_voranmeldung",
       "role": "rettungsdienst",
-      "narrative": "Ziel ist die **Stroke Unit im Klinikum Neuhaus**. Was ist bei einem Schlaganfall-Verdacht zusätzlich wichtig?",
+      "narrative": "Ziel ist die **Stroke Unit im Uniklinikum Erlangen**. Was ist bei einem Schlaganfall-Verdacht zusätzlich wichtig?",
       "actions": [
         {
           "id": "opt0",
@@ -107,9 +107,9 @@
           "label": "📞 Stroke Unit anmelden",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
-              "Stroke Unit",
+              "Uniklinikum Erlangen",
               "anmelden",
               "weiblich",
               "Schlaganfall",
@@ -117,8 +117,8 @@
               "20 Minuten",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Klinikum Neuhaus anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.",
-            "briefing": "Anruf . „bitte für die Stroke Unit Klinikum Neuhaus anmelden“ . weiblich . Verdacht Schlaganfall . Symptombeginn 9:40 Uhr . Ankunft in 20 Minuten . „kommen“ – kein Name",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Uniklinikum Erlangen anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.",
+            "briefing": "Anruf . „bitte für die Stroke Unit Uniklinikum Erlangen anmelden“ . weiblich . Verdacht Schlaganfall . Symptombeginn 9:40 Uhr . Ankunft in 20 Minuten . „kommen“ – kein Name",
             "onSuccess": "n_status",
             "onFailure": "n_anmelden_fail",
             "feedbackSuccess": "✅ Anmeldung mit Symptombeginn – und ohne Namen.",
@@ -130,7 +130,7 @@
     "n_anmelden_fail": {
       "id": "n_anmelden_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Der **Symptombeginn** ist bei einem Schlaganfall die wichtigste Zahl: Davon hängt die Behandlung ab.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Klinikum Neuhaus anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.“*",
+      "narrative": "**Feedback:** Der **Symptombeginn** ist bei einem Schlaganfall die wichtigste Zahl: Davon hängt die Behandlung ab.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Uniklinikum Erlangen anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -142,7 +142,7 @@
     "n_status": {
       "id": "n_status",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Neuhaus:** „Hier Leitstelle Neuhaus – Stroke Unit ist verständigt – kommen.“\n\nBestätigen Sie kurz und beenden Sie den Funkverkehr.",
+      "narrative": "**Leitstelle Nürnberg:** „Hier Leitstelle Nürnberg – Stroke Unit ist verständigt – kommen.“\n\nBestätigen Sie kurz und beenden Sie den Funkverkehr.",
       "actions": [
         {
           "id": "radio_status",

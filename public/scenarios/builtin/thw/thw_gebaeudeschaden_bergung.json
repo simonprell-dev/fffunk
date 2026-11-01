@@ -187,7 +187,6 @@
           "label": "📞 Räumen befehlen",
           "radioCall": {
             "expectedPhrases": [
-              "Bergungstrupp",
               "Gruppenführer",
               "sofort",
               "räumen",
@@ -232,7 +231,6 @@
               "geräumt",
               "vollzählig",
               "Giebelwand",
-              "Abstützung",
               "kommen"
             ],
             "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – Arbeiten am Hohlraum unterbrochen, Gebäude geräumt, Gruppe vollzählig. Giebelwand in Bewegung – benötigen Abstützung der Giebelwand, bevor wir weiterarbeiten – kommen.",

@@ -39,7 +39,7 @@ k.node("h_speak", "**Richtig!** Jetzt du: Rufe vom GKW aus den Zugführer. Wie i
 k.retry("h_fail", "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – kommen.“", "h_speak")
 k.node("h_speak2", "Der Zugführer antwortet. Melde ihm, dass eure **Bergungsgruppe einsatzbereit** ist.",
        [K.call("Einsatzbereitschaft melden", "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Bergungsgruppe einsatzbereit – kommen.",
-               ["21/91", "22/51", "Bergungsgruppe", "einsatzbereit", "kommen"], "h_end", "h_fail2", "Hier Heros Neuhaus 21/91 – verstanden – Ende.")])
+               ["21/91", "22/51", "einsatzbereit", "kommen"], "h_end", "h_fail2", "Hier Heros Neuhaus 21/91 – verstanden – Ende.")])
 k.retry("h_fail2", "**Fast.** „Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Bergungsgruppe einsatzbereit – kommen.“", "h_speak2")
 k.finish("h_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Heros – Ortsverband – Einheit / Fahrzeug oder Person.** 21 Zugtrupp, 22 1. Bergungsgruppe, 51 GKW, 91 Führungskraft.")
 
@@ -174,7 +174,7 @@ s.choice("n_gefahr",
 s.radio("n_raeumen",
         "Geben Sie dem **Bergungstrupp** den Befehl, das Gebäude sofort zu räumen.",
         "Räumen befehlen",
-        ["Bergungstrupp", "Gruppenführer", "sofort", "räumen", "Giebelwand", "kommen"],
+        ["Gruppenführer", "sofort", "räumen", "Giebelwand", "kommen"],
         "Bergungstrupp von Gruppenführer – sofort räumen! Giebelwand bewegt sich – kommen.",
         "Anruf: Bergungstrupp von Gruppenführer . „sofort räumen!“ . Grund (Giebelwand bewegt sich) . „kommen“",
         "n_abweichung",
@@ -185,7 +185,7 @@ s.radio("n_abweichung",
         "**Bergungstrupp:** „Hier Bergungstrupp – verstanden, räumen.“ Kurz darauf sind **alle neun Helfer draußen**. Die Arbeit am Hohlraum ist unterbrochen.\n\n"
         "Das weicht vom Auftrag ab – melden Sie es dem Zugführer und fordern Sie an, was Sie brauchen: eine **Abstützung der Giebelwand**.",
         "Abweichung melden",
-        ["21/91", "22/91", "unterbrochen", "geräumt", "vollzählig", "Giebelwand", "Abstützung", "kommen"],
+        ["21/91", "22/91", "unterbrochen", "geräumt", "vollzählig", "Giebelwand", "kommen"],
         "Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – Arbeiten am Hohlraum unterbrochen, Gebäude geräumt, Gruppe vollzählig. Giebelwand in Bewegung – benötigen Abstützung der Giebelwand, bevor wir weiterarbeiten – kommen.",
         "Anruf . Abweichung (Arbeiten unterbrochen, geräumt) . Gruppe vollzählig . Grund (Giebelwand in Bewegung) . Bedarf (Abstützung) . „kommen“",
         "n_end",
@@ -406,7 +406,7 @@ s.choice("n_entscheid",
 s.radio("n_anmelden",
         "Melden Sie sich bei der Führungsstelle an – mit Stärke: **null / zwo / sieben / gesamt neun**.",
         "Im Bereitstellungsraum anmelden",
-        ["Heros Neuhaus 10", "22/51", "Bereitstellungsraum", "eingetroffen", "Stärke", "gesamt", "einsatzbereit", "kommen"],
+        ["Heros Neuhaus 10", "22/51", "Sportplatz", "eingetroffen", "Stärke", "gesamt", "einsatzbereit", "kommen"],
         "Heros Neuhaus 10 von Heros Neuhaus 22/51 – im Bereitstellungsraum Sportplatz Altdorf eingetroffen, Stärke null – zwo – sieben – gesamt neun, einsatzbereit – kommen.",
         "Anruf: Heros Neuhaus 10 von Heros Neuhaus 22/51 . eingetroffen (Bereitstellungsraum) . Stärke vierteilig . „einsatzbereit“ . „kommen“",
         "n_end",

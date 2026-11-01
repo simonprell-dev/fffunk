@@ -8,7 +8,7 @@
     "n_auftrag": {
       "id": "n_auftrag",
       "role": "rettungsdienst",
-      "narrative": "Sie sind Notfallsanitäter auf dem RTW **Rotkreuz Neuhaus 71/1**, Status 2 auf der Wache. Der Melder geht, das Display zeigt **C – melden für Einsatzauftrag**. Sie haben die Leitstelle gerufen:\n\n**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 – Einsatz: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person, kommt nicht mehr hoch – kommen.“\n\nWiederholen Sie den Einsatzauftrag.\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "narrative": "Sie sind Notfallsanitäter auf dem RTW **Rotkreuz Neuhaus 71/1**, Status 2 auf der Wache. Der Melder geht, das Display zeigt **C – melden für Einsatzauftrag**. Sie haben die Leitstelle gerufen:\n\n**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 – Einsatz: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person, kommt nicht mehr hoch – kommen.“\n\nWiederholen Sie den Einsatzauftrag.\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
       "actions": [
         {
           "id": "radio_auftrag",
@@ -146,14 +146,14 @@
           "label": "📞 Rückmeldung geben",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
               "Oberschenkelhalsfraktur",
               "stabil",
               "kein Notarzt",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.",
             "briefing": "Anruf . Patientin (weiblich, kein Name) . Verdacht (Oberschenkelhalsfraktur) . Zustand (stabil) . „kein Notarzt erforderlich“ . „kommen“",
             "onSuccess": "n_status7",
             "onFailure": "n_rueckmeldung_fail",
@@ -166,7 +166,7 @@
     "n_rueckmeldung_fail": {
       "id": "n_rueckmeldung_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Mit „**kein Notarzt erforderlich**“ kann die Leitstelle das NEF für andere Einsätze freihalten.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.“*",
+      "narrative": "**Feedback:** Mit „**kein Notarzt erforderlich**“ kann die Leitstelle das NEF für andere Einsätze freihalten.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -224,24 +224,24 @@
     "n_anmeldung": {
       "id": "n_anmeldung",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Neuhaus:** sendet **d – Transportziel durchgeben**. Sie fahren ins **Klinikum Neuhaus**, Ankunft in etwa **15 Minuten**.\n\nMelden Sie Ziel und Patientin an – ohne Namen.",
+      "narrative": "**Leitstelle Nürnberg:** sendet **d – Transportziel durchgeben**. Sie fahren ins **Uniklinikum Erlangen**, Ankunft in etwa **15 Minuten**.\n\nMelden Sie Ziel und Patientin an – ohne Namen.",
       "actions": [
         {
           "id": "radio_anmeldung",
           "label": "📞 Zielklinik anmelden",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
-              "Klinikum Neuhaus",
+              "Uniklinikum Erlangen",
               "anmelden",
               "weiblich",
               "Oberschenkelhalsfraktur",
               "15 Minuten",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.",
-            "briefing": "Anruf . „bitte für das Klinikum Neuhaus anmelden“ . Geschlecht . Verdacht . Ankunftszeit . „kommen“",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.",
+            "briefing": "Anruf . „bitte für das Uniklinikum Erlangen anmelden“ . Geschlecht . Verdacht . Ankunftszeit . „kommen“",
             "onSuccess": "n_status8",
             "onFailure": "n_anmeldung_fail",
             "feedbackSuccess": "✅ Anmeldung vollständig und ohne Namen.",
@@ -253,7 +253,7 @@
     "n_anmeldung_fail": {
       "id": "n_anmeldung_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Klinik, Geschlecht, Verdacht und Ankunftszeit reichen. Der **Name** gehört nicht in den Funk.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.“*",
+      "narrative": "**Feedback:** Klinik, Geschlecht, Verdacht und Ankunftszeit reichen. Der **Name** gehört nicht in den Funk.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.“*",
       "actions": [
         {
           "id": "retry",

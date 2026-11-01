@@ -107,14 +107,14 @@
     "n_polizei": {
       "id": "n_polizei",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Neuhaus:** „Notruf verstanden, Polizei ist unterwegs. Bleiben Sie im Fahrzeug, verriegeln Sie – kommen.“\n\nNach vier Minuten ist die Polizei da und nimmt den Mann fest. **Niemand von Ihnen ist verletzt.** Der Mann hat eine Schnittwunde an der Hand, die Sie jetzt versorgen.\n\nMelden Sie die Lage.",
+      "narrative": "**Leitstelle Nürnberg:** „Notruf verstanden, Polizei ist unterwegs. Bleiben Sie im Fahrzeug, verriegeln Sie – kommen.“\n\nNach vier Minuten ist die Polizei da und nimmt den Mann fest. **Niemand von Ihnen ist verletzt.** Der Mann hat eine Schnittwunde an der Hand, die Sie jetzt versorgen.\n\nMelden Sie die Lage.",
       "actions": [
         {
           "id": "radio_polizei",
           "label": "📞 Lage nach Eintreffen der Polizei",
           "radioCall": {
             "expectedPhrases": [
-              "Leitstelle Neuhaus",
+              "Leitstelle Nürnberg",
               "71/1",
               "Polizei",
               "Lage",
@@ -123,7 +123,7 @@
               "versorgen",
               "kommen"
             ],
-            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.",
             "briefing": "Anruf . Polizei vor Ort . Lage unter Kontrolle . keine Verletzten bei den Einsatzkräften . was Sie jetzt tun (Patient versorgen) . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_polizei_fail",
@@ -136,7 +136,7 @@
     "n_polizei_fail": {
       "id": "n_polizei_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Nach einem Notruf wartet die Leitstelle **dringend** auf Entwarnung: Sind die Einsatzkräfte unverletzt?\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.“*",
+      "narrative": "**Feedback:** Nach einem Notruf wartet die Leitstelle **dringend** auf Entwarnung: Sind die Einsatzkräfte unverletzt?\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -148,7 +148,7 @@
     "n_end": {
       "id": "n_end",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Neuhaus:** „Verstanden – gut, dass Ihnen nichts passiert ist – Ende.“\n\nEigenschutz zuerst, Notruftaste statt Status, knapper Notruf und eine klare Entwarnung. Melden Sie den Vorfall danach auch schriftlich.\n\n**Übung abgeschlossen! 🏆**",
+      "narrative": "**Leitstelle Nürnberg:** „Verstanden – gut, dass Ihnen nichts passiert ist – Ende.“\n\nEigenschutz zuerst, Notruftaste statt Status, knapper Notruf und eine klare Entwarnung. Melden Sie den Vorfall danach auch schriftlich.\n\n**Übung abgeschlossen! 🏆**",
       "actions": [
         {
           "id": "restart",
