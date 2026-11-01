@@ -32,7 +32,7 @@
     "n_name": {
       "id": "n_name",
       "role": "rettungsdienst",
-      "narrative": "Einsatz in Neuhaus: Eine Frau kann den **rechten Arm nicht heben**, spricht **verwaschen**, der Mundwinkel hängt. Der Ehemann sagt: Es begann um **9:40 Uhr**. Sie sind auf **Rotkreuz Neuhaus 71/1**.\n\nDer Ehemann drängt: „Sagen Sie denen gleich, dass es **Frau Maier** ist, sie war schon mal dort!“ Was antworten Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "narrative": "Einsatz in Neuhaus: Eine Frau kann den **rechten Arm nicht heben**, spricht **verwaschen**, der Mundwinkel hängt. Der Ehemann sagt: Es begann um **9:40 Uhr**. Sie sind auf **Rotkreuz Höchstadt 71/1**.\n\nDer Ehemann drängt: „Sagen Sie denen gleich, dass es **Frau Maier** ist, sie war schon mal dort!“ Was antworten Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
       "actions": [
         {
           "id": "opt0",
@@ -117,7 +117,7 @@
               "20 Minuten",
               "kommen"
             ],
-            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Uniklinikum Erlangen anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – bitte für die Stroke Unit Uniklinikum Erlangen anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.",
             "briefing": "Anruf . „bitte für die Stroke Unit Uniklinikum Erlangen anmelden“ . weiblich . Verdacht Schlaganfall . Symptombeginn 9:40 Uhr . Ankunft in 20 Minuten . „kommen“ – kein Name",
             "onSuccess": "n_status",
             "onFailure": "n_anmelden_fail",
@@ -130,7 +130,7 @@
     "n_anmelden_fail": {
       "id": "n_anmelden_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Der **Symptombeginn** ist bei einem Schlaganfall die wichtigste Zahl: Davon hängt die Behandlung ab.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Uniklinikum Erlangen anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.“*",
+      "narrative": "**Feedback:** Der **Symptombeginn** ist bei einem Schlaganfall die wichtigste Zahl: Davon hängt die Behandlung ab.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – bitte für die Stroke Unit Uniklinikum Erlangen anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -153,8 +153,8 @@
               "verstanden",
               "Ende"
             ],
-            "hint": "Hier Rotkreuz Neuhaus 71/1 – verstanden – Ende.",
-            "briefing": "„hier Rotkreuz Neuhaus 71/1“ . „verstanden“ . „Ende“",
+            "hint": "Hier Rotkreuz Höchstadt 71/1 – verstanden – Ende.",
+            "briefing": "„hier Rotkreuz Höchstadt 71/1“ . „verstanden“ . „Ende“",
             "onSuccess": "n_end",
             "onFailure": "n_status_fail",
             "feedbackSuccess": "✅ Kurz bestätigt – der Kanal ist wieder frei.",
@@ -166,7 +166,7 @@
     "n_status_fail": {
       "id": "n_status_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Mehr braucht es nicht: **verstanden – Ende** gibt den Kanal frei.\n\nBeispiel: *„Hier Rotkreuz Neuhaus 71/1 – verstanden – Ende.“*",
+      "narrative": "**Feedback:** Mehr braucht es nicht: **verstanden – Ende** gibt den Kanal frei.\n\nBeispiel: *„Hier Rotkreuz Höchstadt 71/1 – verstanden – Ende.“*",
       "actions": [
         {
           "id": "retry",

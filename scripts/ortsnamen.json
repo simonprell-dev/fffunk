@@ -1,0 +1,23 @@
+[
+  { "name": "Florian Neuhaus 17/42/1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 17/42/1", "bedeutung": "Funkrufname des eigenen Löschfahrzeugs (LF/HLF), mit dem die Übenden ausrücken" },
+  { "name": "Florian Neuhaus 11/1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 11/1", "bedeutung": "Einsatzleiter / Einsatzleitwagen der eigenen Wehr oder Gemeinde (Kommandowagen bzw. ELW)" },
+  { "name": "Florian Neuhaus 33/1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 33/1", "bedeutung": "Drehleiter, die zur eigenen Wehr mit ausrückt (kann auch von der Stützpunktwehr kommen)" },
+  { "name": "Florian Neuhaus 1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 1", "bedeutung": "Funktionsrufname des Kommandanten bzw. der Feuerwehr-Einsatzleitung am Ort" },
+  { "name": "Florian Neuhaus", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort]", "bedeutung": "Kennwort und Ort der eigenen Wehr – für weitere Rufnamen wie „Florian Neuhaus Einsatzleitung“" },
+  { "name": "Florian Adelsdorf 44/1", "gruppe": "Nachbarwehr", "platzhalter": "Florian [Nachbarort] 44/1", "bedeutung": "Fahrzeug einer benachbarten Feuerwehr, die nachalarmiert wird" },
+  { "name": "Florian Adelsdorf", "gruppe": "Nachbarwehr", "platzhalter": "Florian [Nachbarort]", "bedeutung": "Kennwort und Ort der benachbarten Feuerwehr" },
+  { "name": "Neuhaus", "gruppe": "Orte", "platzhalter": "[Ort]", "bedeutung": "Eigener Ort – hier liegen die Einsatzstellen (Straßen wie Lindenweg sind frei erfunden und bleiben)" },
+  { "name": "Adelsdorf", "gruppe": "Orte", "platzhalter": "[Nachbarort]", "bedeutung": "Direkter Nachbarort bzw. Hauptort der Gemeinde (Kreisstraße „Neuhaus – Adelsdorf“, Sportplatz als Bereitstellungsraum)" },
+  { "name": "Gremsdorf", "gruppe": "Orte", "platzhalter": "[zweiter Nachbarort]", "bedeutung": "Weiterer Nachbarort an der nahen Bundesstraße" },
+  { "name": "Aisch", "gruppe": "Gewässer und Straßen", "platzhalter": "[Fluss]", "bedeutung": "Fluss oder größerer Bach am Ort (Hochwasser, Deich, Einleitstelle für Pumpen) – nur der Name, ohne Artikel" },
+  { "name": "B 470", "gruppe": "Gewässer und Straßen", "platzhalter": "[Bundesstraße]", "bedeutung": "Nahe Bundesstraße (z. B. Busunfall zwischen den Nachbarorten), Schreibweise „B 123“" },
+  { "name": "A 3", "gruppe": "Gewässer und Straßen", "platzhalter": "[Autobahn]", "bedeutung": "Nächstgelegene Autobahn, Schreibweise „A 9“" },
+  { "name": "Anschlussstelle Höchstadt-Ost", "gruppe": "Gewässer und Straßen", "platzhalter": "Anschlussstelle [Name]", "bedeutung": "Autobahn-Anschlussstelle in der Nähe" },
+  { "name": "Leitstelle Nürnberg", "gruppe": "Leitstelle und Rettungsdienst", "platzhalter": "Leitstelle [Bereich]", "bedeutung": "Funkrufname der zuständigen Integrierten Leitstelle (in Bayern „Leitstelle <Bereich>“)" },
+  { "name": "Rotkreuz Höchstadt 71/1", "gruppe": "Leitstelle und Rettungsdienst", "platzhalter": "[Kennwort] [Wache] 71/1", "bedeutung": "Rettungswagen (RTW) der nächstgelegenen Rettungswache – Kennwort der Hilfsorganisation (Rotkreuz, Sama, Akkon, Johannes), Wachort, Kennzahl 71" },
+  { "name": "Rotkreuz Höchstadt 76/1", "gruppe": "Leitstelle und Rettungsdienst", "platzhalter": "[Kennwort] [Standort] 76/1", "bedeutung": "Notarzteinsatzfahrzeug (NEF) des nächstgelegenen Notarztstandorts, Kennzahl 76" },
+  { "name": "Rettungswache Höchstadt", "gruppe": "Leitstelle und Rettungsdienst", "platzhalter": "Rettungswache [Wache]", "bedeutung": "Name der nächstgelegenen Rettungswache (Wache des RTW oben)" },
+  { "name": "Uniklinikum Erlangen", "gruppe": "Leitstelle und Rettungsdienst", "platzhalter": "[Klinik]", "bedeutung": "Nächstes Krankenhaus mit Stroke Unit, Herzkatheterlabor und Unfallchirurgie – so, wie es im Funk genannt wird" },
+  { "name": "Heros Erlangen", "gruppe": "THW", "platzhalter": "Heros [Ortsverband]", "bedeutung": "Kennwort und Ortsverband des zuständigen THW (die Kennzahlen dahinter sind bundeseinheitlich und bleiben)" },
+  { "name": "Ortsverband Erlangen", "gruppe": "THW", "platzhalter": "Ortsverband [Ortsverband]", "bedeutung": "Name des zuständigen THW-Ortsverbands" }
+]

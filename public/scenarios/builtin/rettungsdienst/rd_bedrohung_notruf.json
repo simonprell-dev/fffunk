@@ -32,7 +32,7 @@
     "n_lage": {
       "id": "n_lage",
       "role": "rettungsdienst",
-      "narrative": "Einsatz **hilflose Person**, Neuhaus, Gartenstraße 8. Sie sind mit Ihrer Kollegin auf **Rotkreuz Neuhaus 71/1** in der Wohnung. Ein Mann ist stark alkoholisiert, wird plötzlich **aggressiv** und greift nach einem **Küchenmesser**.\n\nWas tun Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "narrative": "Einsatz **hilflose Person**, Neuhaus, Gartenstraße 8. Sie sind mit Ihrer Kollegin auf **Rotkreuz Höchstadt 71/1** in der Wohnung. Ein Mann ist stark alkoholisiert, wird plötzlich **aggressiv** und greift nach einem **Küchenmesser**.\n\nWas tun Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
       "actions": [
         {
           "id": "opt0",
@@ -82,8 +82,8 @@
               "Polizei",
               "kommen"
             ],
-            "hint": "Notruf – Rotkreuz Neuhaus 71/1 – Gartenstraße 8 – Bedrohung durch Mann mit Messer – sind am Fahrzeug, brauchen sofort Polizei – kommen.",
-            "briefing": "„Notruf“ . wer (Rotkreuz Neuhaus 71/1) . wo (Gartenstraße 8) . was (Bedrohung, Messer) . wo Sie sind (am Fahrzeug) . was Sie brauchen (Polizei) . „kommen“",
+            "hint": "Notruf – Rotkreuz Höchstadt 71/1 – Gartenstraße 8 – Bedrohung durch Mann mit Messer – sind am Fahrzeug, brauchen sofort Polizei – kommen.",
+            "briefing": "„Notruf“ . wer (Rotkreuz Höchstadt 71/1) . wo (Gartenstraße 8) . was (Bedrohung, Messer) . wo Sie sind (am Fahrzeug) . was Sie brauchen (Polizei) . „kommen“",
             "onSuccess": "n_polizei",
             "onFailure": "n_notruf_fail",
             "feedbackSuccess": "✅ Notruf knapp und vollständig – die Polizei ist alarmiert.",
@@ -95,7 +95,7 @@
     "n_notruf_fail": {
       "id": "n_notruf_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Im Notruf zählt: **wer – wo – was – was gebraucht wird**. Kein Satz zu viel – jede Sekunde zählt.\n\nBeispiel: *„Notruf – Rotkreuz Neuhaus 71/1 – Gartenstraße 8 – Bedrohung durch Mann mit Messer – sind am Fahrzeug, brauchen sofort Polizei – kommen.“*",
+      "narrative": "**Feedback:** Im Notruf zählt: **wer – wo – was – was gebraucht wird**. Kein Satz zu viel – jede Sekunde zählt.\n\nBeispiel: *„Notruf – Rotkreuz Höchstadt 71/1 – Gartenstraße 8 – Bedrohung durch Mann mit Messer – sind am Fahrzeug, brauchen sofort Polizei – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -123,7 +123,7 @@
               "versorgen",
               "kommen"
             ],
-            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.",
             "briefing": "Anruf . Polizei vor Ort . Lage unter Kontrolle . keine Verletzten bei den Einsatzkräften . was Sie jetzt tun (Patient versorgen) . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_polizei_fail",
@@ -136,7 +136,7 @@
     "n_polizei_fail": {
       "id": "n_polizei_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Nach einem Notruf wartet die Leitstelle **dringend** auf Entwarnung: Sind die Einsatzkräfte unverletzt?\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.“*",
+      "narrative": "**Feedback:** Nach einem Notruf wartet die Leitstelle **dringend** auf Entwarnung: Sind die Einsatzkräfte unverletzt?\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.“*",
       "actions": [
         {
           "id": "retry",

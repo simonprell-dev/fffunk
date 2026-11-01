@@ -32,7 +32,7 @@
     "n_sickerstelle": {
       "id": "n_sickerstelle",
       "role": "thw_helfer",
-      "narrative": "Hochwasser an der Neu. Ihr Trupp kontrolliert den Deich bei **Kilometer 2,4**. Sie führen den Trupp, Ihr Gruppenführer steht am Sandsacklager.\n\nAuf der **Landseite** tritt am Deichfuß **trübes Wasser** aus, das mitläuft und Sand mitbringt. Was ist das?\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "narrative": "Hochwasser an der Aisch. Ihr Trupp kontrolliert den Deich bei **Kilometer 2,4**. Sie führen den Trupp, Ihr Gruppenführer steht am Sandsacklager.\n\nAuf der **Landseite** tritt am Deichfuß **trübes Wasser** aus, das mitläuft und Sand mitbringt. Was ist das?\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
       "actions": [
         {
           "id": "opt0",

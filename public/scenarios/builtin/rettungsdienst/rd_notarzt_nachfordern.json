@@ -32,7 +32,7 @@
     "n_dringend": {
       "id": "n_dringend",
       "role": "rettungsdienst",
-      "narrative": "Einsatz **Brustschmerz**, Neuhaus, Bahnhofstraße 12, 2. Obergeschoss. Sie sind mit dem RTW **Rotkreuz Neuhaus 71/1** allein am Patienten, ein Notarzt war nicht alarmiert.\n\nDas EKG zeigt einen **Herzinfarkt (STEMI)**, der Blutdruck fällt, der Patient wird **kaltschweißig**. Sie brauchen **sofort einen Notarzt**. Was drücken Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "narrative": "Einsatz **Brustschmerz**, Neuhaus, Bahnhofstraße 12, 2. Obergeschoss. Sie sind mit dem RTW **Rotkreuz Höchstadt 71/1** allein am Patienten, ein Notarzt war nicht alarmiert.\n\nDas EKG zeigt einen **Herzinfarkt (STEMI)**, der Blutdruck fällt, der Patient wird **kaltschweißig**. Sie brauchen **sofort einen Notarzt**. Was drücken Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
       "actions": [
         {
           "id": "opt0",
@@ -54,7 +54,7 @@
     "n_nachfordern": {
       "id": "n_nachfordern",
       "role": "rettungsdienst",
-      "narrative": "**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 – kommen.“\n\nFordern Sie den Notarzt nach: Ort, Grund, Zustand.",
+      "narrative": "**Leitstelle Nürnberg:** „Rotkreuz Höchstadt 71/1 – kommen.“\n\nFordern Sie den Notarzt nach: Ort, Grund, Zustand.",
       "actions": [
         {
           "id": "radio_nachfordern",
@@ -68,8 +68,8 @@
               "instabil",
               "kommen"
             ],
-            "hint": "Hier Rotkreuz Neuhaus 71/1 – Notarzt nachfordern zur Bahnhofstraße 12, 2. Obergeschoss, Patient männlich, Herzinfarkt, Kreislauf instabil – kommen.",
-            "briefing": "„hier Rotkreuz Neuhaus 71/1“ . „Notarzt nachfordern“ . wohin (Bahnhofstraße 12, 2. OG) . Patient männlich . Grund (Herzinfarkt) . Zustand (instabil) . „kommen“",
+            "hint": "Hier Rotkreuz Höchstadt 71/1 – Notarzt nachfordern zur Bahnhofstraße 12, 2. Obergeschoss, Patient männlich, Herzinfarkt, Kreislauf instabil – kommen.",
+            "briefing": "„hier Rotkreuz Höchstadt 71/1“ . „Notarzt nachfordern“ . wohin (Bahnhofstraße 12, 2. OG) . Patient männlich . Grund (Herzinfarkt) . Zustand (instabil) . „kommen“",
             "onSuccess": "n_alarm",
             "onFailure": "n_nachfordern_fail",
             "feedbackSuccess": "✅ Nachforderung mit Ort, Grund und Dringlichkeit.",
@@ -81,7 +81,7 @@
     "n_nachfordern_fail": {
       "id": "n_nachfordern_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Die Leitstelle entscheidet, **welches** Notarztmittel kommt – Sie liefern Ort, Grund und Zustand.\n\nBeispiel: *„Hier Rotkreuz Neuhaus 71/1 – Notarzt nachfordern zur Bahnhofstraße 12, 2. Obergeschoss, Patient männlich, Herzinfarkt, Kreislauf instabil – kommen.“*",
+      "narrative": "**Feedback:** Die Leitstelle entscheidet, **welches** Notarztmittel kommt – Sie liefern Ort, Grund und Zustand.\n\nBeispiel: *„Hier Rotkreuz Höchstadt 71/1 – Notarzt nachfordern zur Bahnhofstraße 12, 2. Obergeschoss, Patient männlich, Herzinfarkt, Kreislauf instabil – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -93,7 +93,7 @@
     "n_alarm": {
       "id": "n_alarm",
       "role": "rettungsdienst",
-      "narrative": "Das Display zeigt **A – Notarzt alarmiert**.\n\n**Leitstelle Nürnberg:** „Notarzt ist alarmiert: **Rotkreuz Neuhaus 76/1**, Eintreffen in etwa **8 Minuten** – kommen.“\n\nBestätigen Sie und sagen Sie, wo der Notarzt hin muss.",
+      "narrative": "Das Display zeigt **A – Notarzt alarmiert**.\n\n**Leitstelle Nürnberg:** „Notarzt ist alarmiert: **Rotkreuz Höchstadt 76/1**, Eintreffen in etwa **8 Minuten** – kommen.“\n\nBestätigen Sie und sagen Sie, wo der Notarzt hin muss.",
       "actions": [
         {
           "id": "radio_alarm",
@@ -107,8 +107,8 @@
               "2. Obergeschoss",
               "Ende"
             ],
-            "hint": "Hier Rotkreuz Neuhaus 71/1 – verstanden, 76/1 in 8 Minuten. Wir sind im 2. Obergeschoss, Haustür ist offen – Ende.",
-            "briefing": "„hier Rotkreuz Neuhaus 71/1“ . „verstanden“ . was angekommen ist (76/1, 8 Minuten) . Hinweis für die Anfahrt (2. OG, Haustür offen) . „Ende“",
+            "hint": "Hier Rotkreuz Höchstadt 71/1 – verstanden, 76/1 in 8 Minuten. Wir sind im 2. Obergeschoss, Haustür ist offen – Ende.",
+            "briefing": "„hier Rotkreuz Höchstadt 71/1“ . „verstanden“ . was angekommen ist (76/1, 8 Minuten) . Hinweis für die Anfahrt (2. OG, Haustür offen) . „Ende“",
             "onSuccess": "n_voranmeldung",
             "onFailure": "n_alarm_fail",
             "feedbackSuccess": "✅ Bestätigt und mit einem nützlichen Anfahrtshinweis ergänzt.",
@@ -120,7 +120,7 @@
     "n_alarm_fail": {
       "id": "n_alarm_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Ein kurzer **Anfahrtshinweis** (Stockwerk, offene Tür) spart dem Notarzt Suchzeit.\n\nBeispiel: *„Hier Rotkreuz Neuhaus 71/1 – verstanden, 76/1 in 8 Minuten. Wir sind im 2. Obergeschoss, Haustür ist offen – Ende.“*",
+      "narrative": "**Feedback:** Ein kurzer **Anfahrtshinweis** (Stockwerk, offene Tür) spart dem Notarzt Suchzeit.\n\nBeispiel: *„Hier Rotkreuz Höchstadt 71/1 – verstanden, 76/1 in 8 Minuten. Wir sind im 2. Obergeschoss, Haustür ist offen – Ende.“*",
       "actions": [
         {
           "id": "retry",
@@ -196,7 +196,7 @@
               "telefonisch",
               "kommen"
             ],
-            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.",
             "briefing": "Anruf . „bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden“ . männlich . Herzinfarkt . mit Notarzt . Ankunft in 25 Minuten . telefonisch vorangemeldet . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_anmelden_fail",
@@ -209,7 +209,7 @@
     "n_anmelden_fail": {
       "id": "n_anmelden_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** „Telefonisch vorangemeldet“ zeigt der Leitstelle, dass die Klinik Bescheid weiß – sie muss nicht noch einmal anrufen.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.“*",
+      "narrative": "**Feedback:** „Telefonisch vorangemeldet“ zeigt der Leitstelle, dass die Klinik Bescheid weiß – sie muss nicht noch einmal anrufen.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – bitte für das Uniklinikum Erlangen, Herzkatheter, anmelden: männlich, Herzinfarkt, mit Notarzt, Ankunft in 25 Minuten, telefonisch vorangemeldet – kommen.“*",
       "actions": [
         {
           "id": "retry",

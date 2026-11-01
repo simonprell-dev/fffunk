@@ -8,7 +8,7 @@
     "n_anmelden": {
       "id": "n_anmelden",
       "role": "thw_gruppenführer",
-      "narrative": "Starkregen in Neuhaus: Die **Unterführung Bahnhofstraße** steht 1,5 m unter Wasser. Die Feuerwehr hat das THW angefordert – das THW ist der **Einsatzleitung der Feuerwehr** unterstellt.\n\nSie sind **Gruppenführer der Fachgruppe Wasserschaden/Pumpen** (**Heros Neuhaus 47/91**) mit einer **Großpumpe** (5000 l/min). Stärke: **null / drei / neun / gesamt zwölf**.\n\nMelden Sie sich bei der Einsatzleitung **Florian Neuhaus 1** an und erbitten Sie einen Auftrag.\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "narrative": "Starkregen in Neuhaus: Die **Unterführung Bahnhofstraße** steht 1,5 m unter Wasser. Die Feuerwehr hat das THW angefordert – das THW ist der **Einsatzleitung der Feuerwehr** unterstellt.\n\nSie sind **Gruppenführer der Fachgruppe Wasserschaden/Pumpen** (**Heros Erlangen 47/91**) mit einer **Großpumpe** (5000 l/min). Stärke: **null / drei / neun / gesamt zwölf**.\n\nMelden Sie sich bei der Einsatzleitung **Florian Neuhaus 1** an und erbitten Sie einen Auftrag.\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
       "actions": [
         {
           "id": "radio_anmelden",
@@ -23,8 +23,8 @@
               "Auftrag",
               "kommen"
             ],
-            "hint": "Florian Neuhaus 1 von Heros Neuhaus 47/91 – Fachgruppe Wasserschaden Pumpen mit Großpumpe eingetroffen, Stärke null – drei – neun – gesamt zwölf – erbitten Auftrag – kommen.",
-            "briefing": "Anruf: Florian Neuhaus 1 von Heros Neuhaus 47/91 . Einheit + Großpumpe eingetroffen . Stärke vierteilig . „erbitten Auftrag“ . „kommen“",
+            "hint": "Florian Neuhaus 1 von Heros Erlangen 47/91 – Fachgruppe Wasserschaden Pumpen mit Großpumpe eingetroffen, Stärke null – drei – neun – gesamt zwölf – erbitten Auftrag – kommen.",
+            "briefing": "Anruf: Florian Neuhaus 1 von Heros Erlangen 47/91 . Einheit + Großpumpe eingetroffen . Stärke vierteilig . „erbitten Auftrag“ . „kommen“",
             "onSuccess": "n_auftrag",
             "onFailure": "n_anmelden_fail",
             "feedbackSuccess": "✅ Bei der Einsatzleitung angemeldet – mit Einheit, Gerät und Stärke.",
@@ -36,7 +36,7 @@
     "n_anmelden_fail": {
       "id": "n_anmelden_fail",
       "role": "thw_gruppenführer",
-      "narrative": "**Feedback:** Das THW arbeitet dem **Bedarfsträger** zu – hier der Feuerwehr. Die Einsatzleitung braucht Einheit, Gerät und Stärke, um Sie richtig einzusetzen.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Neuhaus 47/91 – Fachgruppe Wasserschaden Pumpen mit Großpumpe eingetroffen, Stärke null – drei – neun – gesamt zwölf – erbitten Auftrag – kommen.“*",
+      "narrative": "**Feedback:** Das THW arbeitet dem **Bedarfsträger** zu – hier der Feuerwehr. Die Einsatzleitung braucht Einheit, Gerät und Stärke, um Sie richtig einzusetzen.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Erlangen 47/91 – Fachgruppe Wasserschaden Pumpen mit Großpumpe eingetroffen, Stärke null – drei – neun – gesamt zwölf – erbitten Auftrag – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -48,7 +48,7 @@
     "n_auftrag": {
       "id": "n_auftrag",
       "role": "thw_gruppenführer",
-      "narrative": "**Florian Neuhaus 1:** „Heros Neuhaus 47/91 – Auftrag: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Neu hinter dem Deich. Melden, wenn die Pumpe läuft – kommen.“\n\nWiederholen Sie den Auftrag.",
+      "narrative": "**Florian Neuhaus 1:** „Heros Erlangen 47/91 – Auftrag: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Aisch hinter dem Deich. Melden, wenn die Pumpe läuft – kommen.“\n\nWiederholen Sie den Auftrag.",
       "actions": [
         {
           "id": "radio_auftrag",
@@ -63,8 +63,8 @@
               "Deich",
               "kommen"
             ],
-            "hint": "Hier Heros Neuhaus 47/91 – verstanden: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Neu hinter dem Deich, melden wenn Pumpe läuft – kommen.",
-            "briefing": "„hier Heros Neuhaus 47/91“ . „verstanden“ . Auftrag wiederholen (Unterführung leerpumpen, Einleitung hinter dem Deich, Meldung bei Pumpenstart) . „kommen“",
+            "hint": "Hier Heros Erlangen 47/91 – verstanden: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Aisch hinter dem Deich, melden wenn Pumpe läuft – kommen.",
+            "briefing": "„hier Heros Erlangen 47/91“ . „verstanden“ . Auftrag wiederholen (Unterführung leerpumpen, Einleitung hinter dem Deich, Meldung bei Pumpenstart) . „kommen“",
             "onSuccess": "n_aufstellen",
             "onFailure": "n_auftrag_fail",
             "feedbackSuccess": "✅ Auftrag vollständig wiederholt.",
@@ -76,7 +76,7 @@
     "n_auftrag_fail": {
       "id": "n_auftrag_fail",
       "role": "thw_gruppenführer",
-      "narrative": "**Feedback:** Durch die Wiederholung merkt die Einsatzleitung sofort, wenn etwas falsch angekommen ist – etwa eine falsche Einleitstelle.\n\nBeispiel: *„Hier Heros Neuhaus 47/91 – verstanden: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Neu hinter dem Deich, melden wenn Pumpe läuft – kommen.“*",
+      "narrative": "**Feedback:** Durch die Wiederholung merkt die Einsatzleitung sofort, wenn etwas falsch angekommen ist – etwa eine falsche Einleitstelle.\n\nBeispiel: *„Hier Heros Erlangen 47/91 – verstanden: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Aisch hinter dem Deich, melden wenn Pumpe läuft – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -150,7 +150,7 @@
               "sinkt",
               "kommen"
             ],
-            "hint": "Florian Neuhaus 1 von Heros Neuhaus 47/91 – Großpumpe läuft seit 14:10 Uhr mit 5000 Liter pro Minute, Wasserstand sinkt – kommen.",
+            "hint": "Florian Neuhaus 1 von Heros Erlangen 47/91 – Großpumpe läuft seit 14:10 Uhr mit 5000 Liter pro Minute, Wasserstand sinkt – kommen.",
             "briefing": "Anruf . Pumpe läuft seit 14:10 . Leistung (5000 l/min) . Wirkung (Wasserstand sinkt) . „kommen“",
             "onSuccess": "n_diesel",
             "onFailure": "n_laeuft_fail",
@@ -163,7 +163,7 @@
     "n_laeuft_fail": {
       "id": "n_laeuft_fail",
       "role": "thw_gruppenführer",
-      "narrative": "**Feedback:** Die Ausführung des Auftrags ist **meldepflichtig**. Mit Leistung und Wirkung kann die Einsatzleitung abschätzen, wie lange es dauert.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Neuhaus 47/91 – Großpumpe läuft seit 14:10 Uhr mit 5000 Liter pro Minute, Wasserstand sinkt – kommen.“*",
+      "narrative": "**Feedback:** Die Ausführung des Auftrags ist **meldepflichtig**. Mit Leistung und Wirkung kann die Einsatzleitung abschätzen, wie lange es dauert.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Erlangen 47/91 – Großpumpe läuft seit 14:10 Uhr mit 5000 Liter pro Minute, Wasserstand sinkt – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -175,7 +175,7 @@
     "n_diesel": {
       "id": "n_diesel",
       "role": "thw_gruppenführer",
-      "narrative": "Am Abend: Der Diesel reicht noch etwa **bis 18 Uhr**. Für die Nacht brauchen Sie **200 Liter Diesel**. Für Betriebsstoff ist Ihr eigener Zugtrupp zuständig: **Heros Neuhaus 21/10**.\n\nFordern Sie den Betriebsstoff an.",
+      "narrative": "Am Abend: Der Diesel reicht noch etwa **bis 18 Uhr**. Für die Nacht brauchen Sie **200 Liter Diesel**. Für Betriebsstoff ist Ihr eigener Zugtrupp zuständig: **Heros Erlangen 21/10**.\n\nFordern Sie den Betriebsstoff an.",
       "actions": [
         {
           "id": "radio_diesel",
@@ -191,8 +191,8 @@
               "18 Uhr",
               "kommen"
             ],
-            "hint": "Heros Neuhaus 21/10 von Heros Neuhaus 47/91 – Zuführung von Betriebsstoff erforderlich: 200 Liter Diesel zur Unterführung Bahnhofstraße bis 18 Uhr – kommen.",
-            "briefing": "Anruf: Heros Neuhaus 21/10 von Heros Neuhaus 47/91 . „Zuführung von Betriebsstoff erforderlich“ . Was und wie viel (200 l Diesel) . Wohin . Bis wann (18 Uhr) . „kommen“",
+            "hint": "Heros Erlangen 21/10 von Heros Erlangen 47/91 – Zuführung von Betriebsstoff erforderlich: 200 Liter Diesel zur Unterführung Bahnhofstraße bis 18 Uhr – kommen.",
+            "briefing": "Anruf: Heros Erlangen 21/10 von Heros Erlangen 47/91 . „Zuführung von Betriebsstoff erforderlich“ . Was und wie viel (200 l Diesel) . Wohin . Bis wann (18 Uhr) . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_diesel_fail",
             "feedbackSuccess": "✅ Nachforderung mit Menge, Ort und Zeitpunkt.",
@@ -204,7 +204,7 @@
     "n_diesel_fail": {
       "id": "n_diesel_fail",
       "role": "thw_gruppenführer",
-      "narrative": "**Feedback:** Eine Anforderung braucht **was – wie viel – wohin – bis wann**. Fehlt der Zeitpunkt, steht die Pumpe womöglich trocken.\n\nBeispiel: *„Heros Neuhaus 21/10 von Heros Neuhaus 47/91 – Zuführung von Betriebsstoff erforderlich: 200 Liter Diesel zur Unterführung Bahnhofstraße bis 18 Uhr – kommen.“*",
+      "narrative": "**Feedback:** Eine Anforderung braucht **was – wie viel – wohin – bis wann**. Fehlt der Zeitpunkt, steht die Pumpe womöglich trocken.\n\nBeispiel: *„Heros Erlangen 21/10 von Heros Erlangen 47/91 – Zuführung von Betriebsstoff erforderlich: 200 Liter Diesel zur Unterführung Bahnhofstraße bis 18 Uhr – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -216,7 +216,7 @@
     "n_end": {
       "id": "n_end",
       "role": "thw_gruppenführer",
-      "narrative": "**Heros Neuhaus 21/10:** „Hier 21/10 – verstanden, Diesel kommt bis 17:30 Uhr – Ende.“\n\nSauber angemeldet, Auftrag wiederholt, Pumpe sicher aufgestellt und rechtzeitig nachgefordert – die Unterführung ist am Morgen wieder frei.\n\n**Übung abgeschlossen! 🏆**",
+      "narrative": "**Heros Erlangen 21/10:** „Hier 21/10 – verstanden, Diesel kommt bis 17:30 Uhr – Ende.“\n\nSauber angemeldet, Auftrag wiederholt, Pumpe sicher aufgestellt und rechtzeitig nachgefordert – die Unterführung ist am Morgen wieder frei.\n\n**Übung abgeschlossen! 🏆**",
       "actions": [
         {
           "id": "restart",

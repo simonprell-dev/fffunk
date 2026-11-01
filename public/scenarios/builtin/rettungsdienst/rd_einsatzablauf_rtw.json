@@ -8,7 +8,7 @@
     "n_auftrag": {
       "id": "n_auftrag",
       "role": "rettungsdienst",
-      "narrative": "Sie sind Notfallsanitäter auf dem RTW **Rotkreuz Neuhaus 71/1**, Status 2 auf der Wache. Der Melder geht, das Display zeigt **C – melden für Einsatzauftrag**. Sie haben die Leitstelle gerufen:\n\n**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 – Einsatz: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person, kommt nicht mehr hoch – kommen.“\n\nWiederholen Sie den Einsatzauftrag.\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "narrative": "Sie sind Notfallsanitäter auf dem RTW **Rotkreuz Höchstadt 71/1**, Status 2 auf der Wache. Der Melder geht, das Display zeigt **C – melden für Einsatzauftrag**. Sie haben die Leitstelle gerufen:\n\n**Leitstelle Nürnberg:** „Rotkreuz Höchstadt 71/1 – Einsatz: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person, kommt nicht mehr hoch – kommen.“\n\nWiederholen Sie den Einsatzauftrag.\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
       "actions": [
         {
           "id": "radio_auftrag",
@@ -22,8 +22,8 @@
               "gestürzte Person",
               "kommen"
             ],
-            "hint": "Hier Rotkreuz Neuhaus 71/1 – verstanden: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person – kommen.",
-            "briefing": "„hier Rotkreuz Neuhaus 71/1“ . „verstanden“ . Einsatzort (Lindenweg 3, Erdgeschoss) . Stichwort (gestürzte Person) . „kommen“",
+            "hint": "Hier Rotkreuz Höchstadt 71/1 – verstanden: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person – kommen.",
+            "briefing": "„hier Rotkreuz Höchstadt 71/1“ . „verstanden“ . Einsatzort (Lindenweg 3, Erdgeschoss) . Stichwort (gestürzte Person) . „kommen“",
             "onSuccess": "n_status3",
             "onFailure": "n_auftrag_fail",
             "feedbackSuccess": "✅ Einsatzort und Stichwort wiederholt – Hörfehler beim Ort wären sonst teuer.",
@@ -35,7 +35,7 @@
     "n_auftrag_fail": {
       "id": "n_auftrag_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Die Wiederholung des **Einsatzorts** schützt vor der teuersten Verwechslung: einer falschen Adresse.\n\nBeispiel: *„Hier Rotkreuz Neuhaus 71/1 – verstanden: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person – kommen.“*",
+      "narrative": "**Feedback:** Die Wiederholung des **Einsatzorts** schützt vor der teuersten Verwechslung: einer falschen Adresse.\n\nBeispiel: *„Hier Rotkreuz Höchstadt 71/1 – verstanden: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -153,7 +153,7 @@
               "kein Notarzt",
               "kommen"
             ],
-            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.",
             "briefing": "Anruf . Patientin (weiblich, kein Name) . Verdacht (Oberschenkelhalsfraktur) . Zustand (stabil) . „kein Notarzt erforderlich“ . „kommen“",
             "onSuccess": "n_status7",
             "onFailure": "n_rueckmeldung_fail",
@@ -166,7 +166,7 @@
     "n_rueckmeldung_fail": {
       "id": "n_rueckmeldung_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Mit „**kein Notarzt erforderlich**“ kann die Leitstelle das NEF für andere Einsätze freihalten.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.“*",
+      "narrative": "**Feedback:** Mit „**kein Notarzt erforderlich**“ kann die Leitstelle das NEF für andere Einsätze freihalten.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -240,7 +240,7 @@
               "15 Minuten",
               "kommen"
             ],
-            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – bitte für das Uniklinikum Erlangen anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.",
             "briefing": "Anruf . „bitte für das Uniklinikum Erlangen anmelden“ . Geschlecht . Verdacht . Ankunftszeit . „kommen“",
             "onSuccess": "n_status8",
             "onFailure": "n_anmeldung_fail",
@@ -253,7 +253,7 @@
     "n_anmeldung_fail": {
       "id": "n_anmeldung_fail",
       "role": "rettungsdienst",
-      "narrative": "**Feedback:** Klinik, Geschlecht, Verdacht und Ankunftszeit reichen. Der **Name** gehört nicht in den Funk.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.“*",
+      "narrative": "**Feedback:** Klinik, Geschlecht, Verdacht und Ankunftszeit reichen. Der **Name** gehört nicht in den Funk.\n\nBeispiel: *„Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – bitte für das Uniklinikum Erlangen anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.“*",
       "actions": [
         {
           "id": "retry",

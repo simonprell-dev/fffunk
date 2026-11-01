@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,9 +12,13 @@ import {
   USAGE_EVENTS, getUsageStats,
 } from './license-db.mjs';
 import { listScenarios, getScenario as getCommunityScenario, isDbAvailable, deleteScenario } from './community-db.mjs';
+import { buildOrtsnamenPrompt, parseOrtsnamenAntwort } from './ortsnamen-prompt.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
+// Ortsabhängige Beispielnamen der Szenarien (Rufnamen, Leitstelle, Klinik, Orte) – Grundlage für den KI-Prompt.
+const ORTSNAMEN = JSON.parse(readFileSync(path.join(__dirname, 'ortsnamen.json'), 'utf8'));
+const ORTSNAMEN_PLATZHALTER = Object.fromEntries(ORTSNAMEN.map(k => [k.name, k.platzhalter]));
 const scenariosDir = path.join(rootDir, 'public', 'scenarios');
 
 // ── Session auth ──────────────────────────────────────────────────────────────
@@ -91,15 +96,78 @@ function rufToText(rufnamen) {
 }
 
 function defaultWildcardText() {
-  return [
-    'Florian Neuhaus 17/42/1=Florian [Ort] 17/42/1',
-    'Florian Neuhaus 33/1=Florian [Ort] 33/1',
-    'Florian Neuhaus 11/1=Florian [Ort] 11/1',
-    'Florian Adelsdorf 44/1=Florian [Nachbarort] 44/1',
-    'Florian Neuhaus=Florian [Ort]',
-    'Neuhaus=[Ort]',
-    'Leitstelle=ILS [Region]',
-  ].join('\n');
+  return rufToText(ORTSNAMEN_PLATZHALTER);
+}
+
+// Karte im Lizenzformular: Prompt für eine KI erzeugen, deren JavaScript-Antwort in die Rufnamen übernehmen.
+function ortsnamenCard() {
+  return `
+        <div class="card">
+          <h3>Echte Namen der Umgebung per KI</h3>
+          <p style="font-size:.8rem;color:#a3a3a3;margin:0 0 .75rem;">
+            1. Standort eintragen und Prompt erzeugen · 2. Prompt in eine KI (z. B. Claude) kopieren ·
+            3. deren JavaScript-Antwort unten einfügen und übernehmen · 4. Namen prüfen und speichern.
+            Der Prompt enthält alle ${ORTSNAMEN.length} ortsabhängigen Namen aus Szenarien, Lernbereich und Quiz.
+          </p>
+          <label for="ortsStandort">Standort (Ort, Gemeinde, Landkreis, Bundesland)</label>
+          <input id="ortsStandort" placeholder="z.B. Neuhaus an der Aisch, Gemeinde Adelsdorf, Landkreis Erlangen-Höchstadt, Bayern">
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="ortsPromptErzeugen()">Prompt erzeugen</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="ortsPromptKopieren" onclick="kopiereOrtsPrompt()" hidden>Prompt kopieren</button>
+          </div>
+          <textarea id="ortsPrompt" rows="16" class="mono" readonly hidden aria-label="KI-Prompt"></textarea>
+          <label for="ortsAntwort" style="margin-top:.75rem;display:block;">Antwort der KI (JavaScript)</label>
+          <textarea id="ortsAntwort" rows="8" class="mono" placeholder="const rufnamen = { &quot;Florian Neuhaus 17/42/1&quot;: &quot;…&quot;, … };"></textarea>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.75rem;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="ortsAntwortUebernehmen()">In Rufnamen übernehmen</button>
+            <span id="ortsMeldung" style="font-size:.85rem;color:#a3a3a3;"></span>
+          </div>
+        </div>
+        <script>
+          const ORTSNAMEN = ${JSON.stringify(ORTSNAMEN).replace(/</g, '\\u003c')};
+          ${buildOrtsnamenPrompt.toString()}
+          ${parseOrtsnamenAntwort.toString()}
+          function ortsPromptErzeugen() {
+            const feld = document.getElementById('ortsPrompt');
+            feld.value = buildOrtsnamenPrompt({
+              ort: document.getElementById('ortsStandort').value.trim(),
+              organisation: document.querySelector('[name=organizationName]').value.trim(),
+              katalog: ORTSNAMEN,
+            });
+            feld.hidden = false;
+            document.getElementById('ortsPromptKopieren').hidden = false;
+            feld.focus(); feld.select();
+          }
+          function kopiereOrtsPrompt() {
+            const feld = document.getElementById('ortsPrompt');
+            navigator.clipboard.writeText(feld.value)
+              .then(() => { document.getElementById('ortsMeldung').textContent = 'Prompt kopiert.'; })
+              .catch(() => { feld.select(); document.execCommand('copy'); });
+          }
+          function ortsAntwortUebernehmen() {
+            const neu = parseOrtsnamenAntwort(document.getElementById('ortsAntwort').value);
+            const meldung = document.getElementById('ortsMeldung');
+            const keys = Object.keys(neu);
+            if (!keys.length) { meldung.textContent = 'Keine Namen gefunden – bitte die komplette KI-Antwort einfügen.'; return; }
+            const feld = document.querySelector('[name=rufnamen]');
+            const map = new Map();
+            for (const line of feld.value.split(/\\r?\\n/)) {
+              const i = line.indexOf('=');
+              if (i > 0) map.set(line.slice(0, i).trim(), line.slice(i + 1).trim());
+            }
+            keys.forEach(k => map.set(k, neu[k]));
+            // Übrig gebliebene Platzhalter („[Ort]“) würden wörtlich in der App stehen – dort bleibt der Beispielname.
+            for (const [k, v] of [...map]) if (/\\[[^\\]]+\\]/.test(v)) map.delete(k);
+            feld.value = [...map].map(([k, v]) => k + '=' + v).join('\\n');
+            const bekannt = new Set(ORTSNAMEN.map(o => o.name));
+            const fremd = keys.filter(k => !bekannt.has(k));
+            const offen = ORTSNAMEN.filter(o => !(o.name in neu)).map(o => o.name);
+            meldung.textContent = keys.length + ' Namen übernommen.'
+              + (offen.length ? ' Ohne Wert (Beispielname bleibt): ' + offen.join(', ') + '.' : '')
+              + (fremd.length ? ' Nicht im Katalog: ' + fremd.join(', ') + '.' : '')
+              + ' Bitte prüfen und speichern.';
+          }
+        </script>`;
 }
 
 function parseRufText(text) {
@@ -840,15 +908,7 @@ async function licensesPage(flash = '') {
 function licenseFormPage(l, err = '') {
   const isEdit = l != null;
   const v = (f, fb = '') => esc(l?.[f] ?? fb);
-  const rufText = esc(rufToText(l?.rufnamen ?? {
-    'Florian Neuhaus 17/42/1': 'Florian [Ort] 17/42/1',
-    'Florian Neuhaus 33/1': 'Florian [Ort] 33/1',
-    'Florian Neuhaus 11/1': 'Florian [Ort] 11/1',
-    'Florian Adelsdorf 44/1': 'Florian [Nachbarort] 44/1',
-    'Florian Neuhaus': 'Florian [Ort]',
-    'Neuhaus': '[Ort]',
-    'Leitstelle': 'ILS [Region]',
-  }));
+  const rufText = esc(rufToText(l?.rufnamen ?? ORTSNAMEN_PLATZHALTER));
 
   return page(isEdit ? 'Lizenz bearbeiten' : 'Neue Lizenz', `
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
@@ -902,8 +962,9 @@ function licenseFormPage(l, err = '') {
             Die App ersetzt diese Texte automatisch in Szenarien und in der Sprachausgabe.
             Längere Begriffe werden zuerst ersetzt.
           </p>
-          <textarea name="rufnamen" rows="10" class="mono" placeholder="Florian Neuhaus 17/42/1=Florian Musterstadt 17/42/1&#10;Neuhaus=Musterstadt&#10;Leitstelle=ILS München">${rufText}</textarea>
+          <textarea name="rufnamen" rows="10" class="mono" placeholder="Florian Neuhaus 17/42/1=Florian Musterstadt 17/42/1&#10;Neuhaus=Musterstadt&#10;Leitstelle Nürnberg=Leitstelle München">${rufText}</textarea>
         </div>
+${ortsnamenCard()}
 
         <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
           <button type="submit" class="btn btn-primary">${isEdit ? 'Änderungen speichern' : 'Lizenz erstellen & Code generieren'}</button>

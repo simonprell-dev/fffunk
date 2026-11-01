@@ -72,8 +72,8 @@ describe('THW- und Rettungsdienst-Ordner', () => {
   }
 
   it('THW funkt mit Heros-Rufnamen', () => {
-    for (const s of thw) expect(JSON.stringify(hints(s)), s.id).toMatch(/Heros Neuhaus \d+\/\d+|Gruppenführer|Truppführer/);
-    expect(hints(thw.find(s => s.id === 'thw_grundausbildung')!).some(rc => rc.hint.includes('Heros Neuhaus 22/51'))).toBe(true);
+    for (const s of thw) expect(JSON.stringify(hints(s)), s.id).toMatch(/Heros Erlangen \d+\/\d+|Gruppenführer|Truppführer/);
+    expect(hints(thw.find(s => s.id === 'thw_grundausbildung')!).some(rc => rc.hint.includes('Heros Erlangen 22/51'))).toBe(true);
   });
 
   it('Rettungsdienst nennt im Funk keine Patientennamen', () => {

@@ -40,7 +40,7 @@
     "h_start": {
       "id": "h_start",
       "role": "thw_helfer",
-      "narrative": "Dienstabend im **THW-Ortsverband Neuhaus**. Du bist Helfer in der **1. Bergungsgruppe**, euer Fahrzeug ist der Gerätekraftwagen (GKW).\n\n**Gruppenführer:** „Beim THW beginnt jeder Funkrufname mit **Heros**, dann der Ortsverband, dann zwei Zahlen: **Einheit / Fahrzeug oder Person**. Unser GKW ist **Heros Neuhaus 22/51** – 22 ist die 1. Bergungsgruppe, 51 der GKW. **21** ist der Zugtrupp, die **91** steht für die Führungskraft. Gesprochen wird jede Zahl einzeln: „zweiundzwanzig – einundfünfzig“.“\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "narrative": "Dienstabend im **THW-Ortsverband Erlangen**. Du bist Helfer in der **1. Bergungsgruppe**, euer Fahrzeug ist der Gerätekraftwagen (GKW).\n\n**Gruppenführer:** „Beim THW beginnt jeder Funkrufname mit **Heros**, dann der Ortsverband, dann zwei Zahlen: **Einheit / Fahrzeug oder Person**. Unser GKW ist **Heros Erlangen 22/51** – 22 ist die 1. Bergungsgruppe, 51 der GKW. **21** ist der Zugtrupp, die **91** steht für die Führungskraft. Gesprochen wird jede Zahl einzeln: „zweiundzwanzig – einundfünfzig“.“\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
       "actions": [
         {
           "id": "ok",
@@ -52,7 +52,7 @@
     "h_choice": {
       "id": "h_choice",
       "role": "thw_helfer",
-      "narrative": "Wer meldet sich mit **Heros Neuhaus 21/91**?",
+      "narrative": "Wer meldet sich mit **Heros Erlangen 21/91**?",
       "actions": [
         {
           "id": "opt0",
@@ -104,7 +104,7 @@
           "id": "funk",
           "label": "Zugführer anfunken",
           "radioCall": {
-            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – kommen.",
+            "hint": "Heros Erlangen 21/91 von Heros Erlangen 22/51 – kommen.",
             "expectedPhrases": [
               "Heros",
               "21/91",
@@ -113,7 +113,7 @@
             ],
             "onSuccess": "h_speak2",
             "onFailure": "h_fail",
-            "response": "Hier Heros Neuhaus 21/91 – kommen."
+            "response": "Hier Heros Erlangen 21/91 – kommen."
           }
         }
       ]
@@ -121,7 +121,7 @@
     "h_fail": {
       "id": "h_fail",
       "role": "thw_helfer",
-      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – kommen.“",
+      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Heros Erlangen 21/91 von Heros Erlangen 22/51 – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -139,7 +139,7 @@
           "id": "funk",
           "label": "Einsatzbereitschaft melden",
           "radioCall": {
-            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Bergungsgruppe einsatzbereit – kommen.",
+            "hint": "Heros Erlangen 21/91 von Heros Erlangen 22/51 – Bergungsgruppe einsatzbereit – kommen.",
             "expectedPhrases": [
               "21/91",
               "22/51",
@@ -148,7 +148,7 @@
             ],
             "onSuccess": "h_end",
             "onFailure": "h_fail2",
-            "response": "Hier Heros Neuhaus 21/91 – verstanden – Ende."
+            "response": "Hier Heros Erlangen 21/91 – verstanden – Ende."
           }
         }
       ]
@@ -156,7 +156,7 @@
     "h_fail2": {
       "id": "h_fail2",
       "role": "thw_helfer",
-      "narrative": "**Fast.** „Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Bergungsgruppe einsatzbereit – kommen.“",
+      "narrative": "**Fast.** „Heros Erlangen 21/91 von Heros Erlangen 22/51 – Bergungsgruppe einsatzbereit – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -243,13 +243,13 @@
     "s_speak": {
       "id": "s_speak",
       "role": "thw_helfer",
-      "narrative": "**Richtig!** Der Zugführer fragt:\n\n**Zugführer:** „Heros Neuhaus 22/51 von Heros Neuhaus 21/91 – Frage Stärkemeldung – kommen.“\n\nAntworte mit eurer Stärke.",
+      "narrative": "**Richtig!** Der Zugführer fragt:\n\n**Zugführer:** „Heros Erlangen 22/51 von Heros Erlangen 21/91 – Frage Stärkemeldung – kommen.“\n\nAntworte mit eurer Stärke.",
       "actions": [
         {
           "id": "funk",
           "label": "Stärke melden",
           "radioCall": {
-            "hint": "Hier Heros Neuhaus 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.",
+            "hint": "Hier Heros Erlangen 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.",
             "expectedPhrases": [
               "22/51",
               "Stärke",
@@ -262,7 +262,7 @@
             ],
             "onSuccess": "s_end",
             "onFailure": "s_fail",
-            "response": "Hier Heros Neuhaus 21/91 – verstanden – Ende."
+            "response": "Hier Heros Erlangen 21/91 – verstanden – Ende."
           }
         }
       ]
@@ -270,7 +270,7 @@
     "s_fail": {
       "id": "s_fail",
       "role": "thw_helfer",
-      "narrative": "**Noch nicht ganz.** „Hier Heros Neuhaus 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.“",
+      "narrative": "**Noch nicht ganz.** „Hier Heros Erlangen 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -412,7 +412,7 @@
     "b_start": {
       "id": "b_start",
       "role": "thw_helfer",
-      "narrative": "Großübung mit mehreren Ortsverbänden. Den Funkverkehr leitet die **Führungsstelle Heros Neuhaus 10** – sie ist die **Betriebsleitung** eures Sprechfunkverkehrskreises.\n\n**Gruppenführer:** „Kommst du in einen fremden Sprechfunkverkehrskreis, **meldest du dich bei der Betriebsleitung an**. Verlässt du ihn, **meldest du dich ab**. So weiß sie immer, wer da ist.“\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "narrative": "Großübung mit mehreren Ortsverbänden. Den Funkverkehr leitet die **Führungsstelle Heros Erlangen 10** – sie ist die **Betriebsleitung** eures Sprechfunkverkehrskreises.\n\n**Gruppenführer:** „Kommst du in einen fremden Sprechfunkverkehrskreis, **meldest du dich bei der Betriebsleitung an**. Verlässt du ihn, **meldest du dich ab**. So weiß sie immer, wer da ist.“\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
       "actions": [
         {
           "id": "ok",
@@ -438,7 +438,7 @@
         },
         {
           "id": "opt2",
-          "label": "Bei der Betriebsleitung Heros Neuhaus 10 anmelden",
+          "label": "Bei der Betriebsleitung Heros Erlangen 10 anmelden",
           "nextNodeId": "b_speak"
         }
       ]
@@ -476,16 +476,16 @@
           "id": "funk",
           "label": "Anmelden",
           "radioCall": {
-            "hint": "Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.",
+            "hint": "Heros Erlangen 10 von Heros Erlangen 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.",
             "expectedPhrases": [
-              "Heros Neuhaus 10",
+              "Heros Erlangen 10",
               "22/51",
               "melde mich an",
               "kommen"
             ],
             "onSuccess": "b_speak2",
             "onFailure": "b_fail",
-            "response": "Hier Heros Neuhaus 10 – verstanden – Ende."
+            "response": "Hier Heros Erlangen 10 – verstanden – Ende."
           }
         }
       ]
@@ -493,7 +493,7 @@
     "b_fail": {
       "id": "b_fail",
       "role": "thw_helfer",
-      "narrative": "**Noch nicht ganz.** „Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.“",
+      "narrative": "**Noch nicht ganz.** „Heros Erlangen 10 von Heros Erlangen 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -511,16 +511,16 @@
           "id": "funk",
           "label": "Abmelden",
           "radioCall": {
-            "hint": "Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.",
+            "hint": "Heros Erlangen 10 von Heros Erlangen 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.",
             "expectedPhrases": [
-              "Heros Neuhaus 10",
+              "Heros Erlangen 10",
               "22/51",
               "melde mich ab",
               "kommen"
             ],
             "onSuccess": "b_end",
             "onFailure": "b_fail2",
-            "response": "Hier Heros Neuhaus 10 – verstanden – Ende."
+            "response": "Hier Heros Erlangen 10 – verstanden – Ende."
           }
         }
       ]
@@ -528,7 +528,7 @@
     "b_fail2": {
       "id": "b_fail2",
       "role": "thw_helfer",
-      "narrative": "**Fast.** „Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.“",
+      "narrative": "**Fast.** „Heros Erlangen 10 von Heros Erlangen 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.“",
       "actions": [
         {
           "id": "retry",

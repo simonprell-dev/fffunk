@@ -21,12 +21,12 @@ GF = "**Gruppenführer:**"
 
 # ---------- Kapitel 1: Heros-Rufnamen ----------
 k.node("h_start",
-       "Dienstabend im **THW-Ortsverband Neuhaus**. Du bist Helfer in der **1. Bergungsgruppe**, euer Fahrzeug ist der Gerätekraftwagen (GKW).\n\n"
+       "Dienstabend im **THW-Ortsverband Erlangen**. Du bist Helfer in der **1. Bergungsgruppe**, euer Fahrzeug ist der Gerätekraftwagen (GKW).\n\n"
        f"{GF} „Beim THW beginnt jeder Funkrufname mit **Heros**, dann der Ortsverband, dann zwei Zahlen: **Einheit / Fahrzeug oder Person**. "
-       "Unser GKW ist **Heros Neuhaus 22/51** – 22 ist die 1. Bergungsgruppe, 51 der GKW. **21** ist der Zugtrupp, die **91** steht für die Führungskraft. "
+       "Unser GKW ist **Heros Erlangen 22/51** – 22 ist die 1. Bergungsgruppe, 51 der GKW. **21** ist der Zugtrupp, die **91** steht für die Führungskraft. "
        "Gesprochen wird jede Zahl einzeln: „zweiundzwanzig – einundfünfzig“.“" + HINWEIS,
        [K.go("ok", "👍 Verstanden", "h_choice")])
-k.ask("h", "Wer meldet sich mit **Heros Neuhaus 21/91**?",
+k.ask("h", "Wer meldet sich mit **Heros Erlangen 21/91**?",
       "Der Zugführer (Zugtrupp 21, Führungskraft 91)",
       [("Der GKW der 1. Bergungsgruppe",
         "**Nicht ganz.** Der GKW ist **22/51** – Einheit 22, Fahrzeug 51. Bei **21/91** steht 21 für den **Zugtrupp** und 91 für die **Führungskraft** – also den Zugführer."),
@@ -34,13 +34,13 @@ k.ask("h", "Wer meldet sich mit **Heros Neuhaus 21/91**?",
         "**Nicht ganz.** Der Ortsverband hat eine eigene Kennzahl. **21/91** ist der **Zugführer**: Zugtrupp (21), Führungskraft (91).")],
       "h_speak", [1, 0, 2])
 k.node("h_speak", "**Richtig!** Jetzt du: Rufe vom GKW aus den Zugführer. Wie immer: **Wen rufst du – von wem – kommen.**",
-       [K.call("Zugführer anfunken", "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – kommen.",
-               ["Heros", "21/91", "22/51", "kommen"], "h_speak2", "h_fail", "Hier Heros Neuhaus 21/91 – kommen.")])
-k.retry("h_fail", "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – kommen.“", "h_speak")
+       [K.call("Zugführer anfunken", "Heros Erlangen 21/91 von Heros Erlangen 22/51 – kommen.",
+               ["Heros", "21/91", "22/51", "kommen"], "h_speak2", "h_fail", "Hier Heros Erlangen 21/91 – kommen.")])
+k.retry("h_fail", "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Heros Erlangen 21/91 von Heros Erlangen 22/51 – kommen.“", "h_speak")
 k.node("h_speak2", "Der Zugführer antwortet. Melde ihm, dass eure **Bergungsgruppe einsatzbereit** ist.",
-       [K.call("Einsatzbereitschaft melden", "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Bergungsgruppe einsatzbereit – kommen.",
-               ["21/91", "22/51", "einsatzbereit", "kommen"], "h_end", "h_fail2", "Hier Heros Neuhaus 21/91 – verstanden – Ende.")])
-k.retry("h_fail2", "**Fast.** „Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Bergungsgruppe einsatzbereit – kommen.“", "h_speak2")
+       [K.call("Einsatzbereitschaft melden", "Heros Erlangen 21/91 von Heros Erlangen 22/51 – Bergungsgruppe einsatzbereit – kommen.",
+               ["21/91", "22/51", "einsatzbereit", "kommen"], "h_end", "h_fail2", "Hier Heros Erlangen 21/91 – verstanden – Ende.")])
+k.retry("h_fail2", "**Fast.** „Heros Erlangen 21/91 von Heros Erlangen 22/51 – Bergungsgruppe einsatzbereit – kommen.“", "h_speak2")
 k.finish("h_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Heros – Ortsverband – Einheit / Fahrzeug oder Person.** 21 Zugtrupp, 22 1. Bergungsgruppe, 51 GKW, 91 Führungskraft.")
 
 # ---------- Kapitel 2: Stärkemeldung ----------
@@ -56,10 +56,10 @@ k.ask("s", "Heute seid ihr **ein Gruppenführer, ein Truppführer und sechs Helf
        ("„zwo – sechs – acht“",
         "**Fast.** Es fehlt die erste Stelle: die **Führer** (Zugführer). Auch wenn keiner dabei ist, sagst du **null**.")],
       "s_speak", [2, 0, 1])
-k.node("s_speak", f"**Richtig!** Der Zugführer fragt:\n\n**Zugführer:** „Heros Neuhaus 22/51 von Heros Neuhaus 21/91 – Frage Stärkemeldung – kommen.“\n\nAntworte mit eurer Stärke.",
-       [K.call("Stärke melden", "Hier Heros Neuhaus 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.",
-               ["22/51", "Stärke", "null", "zwo", "sechs", "gesamt", "acht", "kommen"], "s_end", "s_fail", "Hier Heros Neuhaus 21/91 – verstanden – Ende.")])
-k.retry("s_fail", "**Noch nicht ganz.** „Hier Heros Neuhaus 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.“", "s_speak")
+k.node("s_speak", f"**Richtig!** Der Zugführer fragt:\n\n**Zugführer:** „Heros Erlangen 22/51 von Heros Erlangen 21/91 – Frage Stärkemeldung – kommen.“\n\nAntworte mit eurer Stärke.",
+       [K.call("Stärke melden", "Hier Heros Erlangen 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.",
+               ["22/51", "Stärke", "null", "zwo", "sechs", "gesamt", "acht", "kommen"], "s_end", "s_fail", "Hier Heros Erlangen 21/91 – verstanden – Ende.")])
+k.retry("s_fail", "**Noch nicht ganz.** „Hier Heros Erlangen 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.“", "s_speak")
 k.finish("s_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: Stärke = **Führer / Unterführer / Helfer / gesamt** – auch eine Null wird gesprochen.")
 
 # ---------- Kapitel 3: Meldung nach den 5 W ----------
@@ -84,24 +84,24 @@ k.finish("w_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Wo – Wann – Wa
 
 # ---------- Kapitel 4: An- und Abmelden ----------
 k.node("b_start",
-       "Großübung mit mehreren Ortsverbänden. Den Funkverkehr leitet die **Führungsstelle Heros Neuhaus 10** – sie ist die **Betriebsleitung** eures Sprechfunkverkehrskreises.\n\n"
+       "Großübung mit mehreren Ortsverbänden. Den Funkverkehr leitet die **Führungsstelle Heros Erlangen 10** – sie ist die **Betriebsleitung** eures Sprechfunkverkehrskreises.\n\n"
        f"{GF} „Kommst du in einen fremden Sprechfunkverkehrskreis, **meldest du dich bei der Betriebsleitung an**. Verlässt du ihn, **meldest du dich ab**. So weiß sie immer, wer da ist.“" + HINWEIS,
        [K.go("ok", "👍 Verstanden", "b_choice")])
 k.ask("b", "Ihr seid mit dem GKW an der Übungsstelle angekommen. Was machst du zuerst über Funk?",
-      "Bei der Betriebsleitung Heros Neuhaus 10 anmelden",
+      "Bei der Betriebsleitung Heros Erlangen 10 anmelden",
       [("Gleich die anderen Gruppen anfunken und Material absprechen",
         "**Nicht ganz.** Erst **anmelden** – die Betriebsleitung muss wissen, dass ihr im Kreis seid, bevor ihr dort funkt."),
        ("Gar nichts – die sehen uns ja",
         "**Nicht ganz.** Gesehen ist nicht gemeldet. Ohne Anmeldung fehlt ihr in der Übersicht der Betriebsleitung.")],
       "b_speak", [2, 1, 0])
 k.node("b_speak", "**Richtig!** Melde dich mit dem GKW bei der Betriebsleitung an.",
-       [K.call("Anmelden", "Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.",
-               ["Heros Neuhaus 10", "22/51", "melde mich an", "kommen"], "b_speak2", "b_fail", "Hier Heros Neuhaus 10 – verstanden – Ende.")])
-k.retry("b_fail", "**Noch nicht ganz.** „Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.“", "b_speak")
+       [K.call("Anmelden", "Heros Erlangen 10 von Heros Erlangen 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.",
+               ["Heros Erlangen 10", "22/51", "melde mich an", "kommen"], "b_speak2", "b_fail", "Hier Heros Erlangen 10 – verstanden – Ende.")])
+k.retry("b_fail", "**Noch nicht ganz.** „Heros Erlangen 10 von Heros Erlangen 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.“", "b_speak")
 k.node("b_speak2", "Die Übung ist vorbei, ihr fahrt zurück zur Unterkunft. Melde dich bei der Betriebsleitung ab.",
-       [K.call("Abmelden", "Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.",
-               ["Heros Neuhaus 10", "22/51", "melde mich ab", "kommen"], "b_end", "b_fail2", "Hier Heros Neuhaus 10 – verstanden – Ende.")])
-k.retry("b_fail2", "**Fast.** „Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.“", "b_speak2")
+       [K.call("Abmelden", "Heros Erlangen 10 von Heros Erlangen 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.",
+               ["Heros Erlangen 10", "22/51", "melde mich ab", "kommen"], "b_end", "b_fail2", "Hier Heros Erlangen 10 – verstanden – Ende.")])
+k.retry("b_fail2", "**Fast.** „Heros Erlangen 10 von Heros Erlangen 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.“", "b_speak2")
 k.finish("b_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: Neuer Sprechfunkverkehrskreis? **Anmelden.** Weg? **Abmelden.**")
 
 # ---------- Kapitel 5: Gefahr melden ----------
@@ -136,12 +136,12 @@ s = S("thw_gebaeudeschaden_bergung", "THW: Gebäudeschaden – Bergung mit Einst
       GFR, "n_ankunft")
 s.radio("n_ankunft",
         "Nach einer Gasexplosion ist ein Wohnhaus in Neuhaus, Mühlweg 7, **teilweise eingestürzt**. Die Feuerwehr hat das THW angefordert.\n\n"
-        "Sie sind **Gruppenführer der 1. Bergungsgruppe** (Ihr Rufname: **Heros Neuhaus 22/91**). Ihr Zugführer ist **Heros Neuhaus 21/91**. Ihre Gruppe ist vollständig: **null / zwo / sieben / gesamt neun**.\n\n"
+        "Sie sind **Gruppenführer der 1. Bergungsgruppe** (Ihr Rufname: **Heros Erlangen 22/91**). Ihr Zugführer ist **Heros Erlangen 21/91**. Ihre Gruppe ist vollständig: **null / zwo / sieben / gesamt neun**.\n\n"
         "Melden Sie dem Zugführer das Eintreffen mit Stärke." + HINWEIS,
         "Eintreffen melden",
         ["21/91", "22/91", "eingetroffen", "Stärke", "gesamt", "kommen"],
-        "Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – 1. Bergungsgruppe an der Einsatzstelle eingetroffen, Stärke null – zwo – sieben – gesamt neun – kommen.",
-        "Anruf: Heros Neuhaus 21/91 von Heros Neuhaus 22/91 . Bergungsgruppe eingetroffen . Stärke vierteilig (0/2/7/9) . „kommen“",
+        "Heros Erlangen 21/91 von Heros Erlangen 22/91 – 1. Bergungsgruppe an der Einsatzstelle eingetroffen, Stärke null – zwo – sieben – gesamt neun – kommen.",
+        "Anruf: Heros Erlangen 21/91 von Heros Erlangen 22/91 . Bergungsgruppe eingetroffen . Stärke vierteilig (0/2/7/9) . „kommen“",
         "n_sichern",
         "Eintreffen mit vierteiliger Stärke gemeldet.",
         "Melden Sie das Eintreffen und die Stärke: null – zwo – sieben – gesamt neun.",
@@ -158,7 +158,7 @@ s.radio("n_lage",
         "Melden Sie die Lage nach den 5 W – und kennzeichnen Sie, was **festgestellt** und was **vermutet** ist.",
         "Lage melden",
         ["21/91", "22/91", "Hohlraum", "Klopfzeichen", "vermutlich", "Person", "Abstützen", "kommen"],
-        "Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – 10:40 Uhr – Rückseite Erdgeschoss Hohlraum festgestellt, Klopfzeichen gehört, vermutlich eine Person verschüttet – beginnen mit Abstützen und Freiräumen – kommen.",
+        "Heros Erlangen 21/91 von Heros Erlangen 22/91 – 10:40 Uhr – Rückseite Erdgeschoss Hohlraum festgestellt, Klopfzeichen gehört, vermutlich eine Person verschüttet – beginnen mit Abstützen und Freiräumen – kommen.",
         "Anruf . Wann (10:40) . Wo (Rückseite EG) . Was festgestellt (Hohlraum, Klopfzeichen) . Vermutung (vermutlich eine Person) . Maßnahme (Abstützen, Freiräumen) . „kommen“",
         "n_gefahr",
         "Lage vollständig gemeldet – Feststellung und Vermutung sauber getrennt.",
@@ -186,7 +186,7 @@ s.radio("n_abweichung",
         "Das weicht vom Auftrag ab – melden Sie es dem Zugführer und fordern Sie an, was Sie brauchen: eine **Abstützung der Giebelwand**.",
         "Abweichung melden",
         ["21/91", "22/91", "unterbrochen", "geräumt", "vollzählig", "Giebelwand", "kommen"],
-        "Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – Arbeiten am Hohlraum unterbrochen, Gebäude geräumt, Gruppe vollzählig. Giebelwand in Bewegung – benötigen Abstützung der Giebelwand, bevor wir weiterarbeiten – kommen.",
+        "Heros Erlangen 21/91 von Heros Erlangen 22/91 – Arbeiten am Hohlraum unterbrochen, Gebäude geräumt, Gruppe vollzählig. Giebelwand in Bewegung – benötigen Abstützung der Giebelwand, bevor wir weiterarbeiten – kommen.",
         "Anruf . Abweichung (Arbeiten unterbrochen, geräumt) . Gruppe vollzählig . Grund (Giebelwand in Bewegung) . Bedarf (Abstützung) . „kommen“",
         "n_end",
         "Abweichung, Vollzähligkeit und Bedarf gemeldet.",
@@ -202,23 +202,23 @@ s = S("thw_hochwasser_pumpen", "THW: Hochwasser – Großpumpe in der Unterführ
       GFR, "n_anmelden")
 s.radio("n_anmelden",
         "Starkregen in Neuhaus: Die **Unterführung Bahnhofstraße** steht 1,5 m unter Wasser. Die Feuerwehr hat das THW angefordert – das THW ist der **Einsatzleitung der Feuerwehr** unterstellt.\n\n"
-        "Sie sind **Gruppenführer der Fachgruppe Wasserschaden/Pumpen** (**Heros Neuhaus 47/91**) mit einer **Großpumpe** (5000 l/min). Stärke: **null / drei / neun / gesamt zwölf**.\n\n"
+        "Sie sind **Gruppenführer der Fachgruppe Wasserschaden/Pumpen** (**Heros Erlangen 47/91**) mit einer **Großpumpe** (5000 l/min). Stärke: **null / drei / neun / gesamt zwölf**.\n\n"
         "Melden Sie sich bei der Einsatzleitung **Florian Neuhaus 1** an und erbitten Sie einen Auftrag." + HINWEIS,
         "Bei der Einsatzleitung anmelden",
         ["Florian Neuhaus 1", "47/91", "Wasserschaden", "Großpumpe", "Stärke", "Auftrag", "kommen"],
-        "Florian Neuhaus 1 von Heros Neuhaus 47/91 – Fachgruppe Wasserschaden Pumpen mit Großpumpe eingetroffen, Stärke null – drei – neun – gesamt zwölf – erbitten Auftrag – kommen.",
-        "Anruf: Florian Neuhaus 1 von Heros Neuhaus 47/91 . Einheit + Großpumpe eingetroffen . Stärke vierteilig . „erbitten Auftrag“ . „kommen“",
+        "Florian Neuhaus 1 von Heros Erlangen 47/91 – Fachgruppe Wasserschaden Pumpen mit Großpumpe eingetroffen, Stärke null – drei – neun – gesamt zwölf – erbitten Auftrag – kommen.",
+        "Anruf: Florian Neuhaus 1 von Heros Erlangen 47/91 . Einheit + Großpumpe eingetroffen . Stärke vierteilig . „erbitten Auftrag“ . „kommen“",
         "n_auftrag",
         "Bei der Einsatzleitung angemeldet – mit Einheit, Gerät und Stärke.",
         "Melden Sie: Fachgruppe mit Großpumpe eingetroffen, Stärke, erbitten Auftrag.",
         "Das THW arbeitet dem **Bedarfsträger** zu – hier der Feuerwehr. Die Einsatzleitung braucht Einheit, Gerät und Stärke, um Sie richtig einzusetzen.")
 s.radio("n_auftrag",
-        "**Florian Neuhaus 1:** „Heros Neuhaus 47/91 – Auftrag: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Neu hinter dem Deich. Melden, wenn die Pumpe läuft – kommen.“\n\n"
+        "**Florian Neuhaus 1:** „Heros Erlangen 47/91 – Auftrag: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Aisch hinter dem Deich. Melden, wenn die Pumpe läuft – kommen.“\n\n"
         "Wiederholen Sie den Auftrag.",
         "Auftrag wiederholen",
         ["47/91", "verstanden", "Unterführung", "Bahnhofstraße", "leerpumpen", "Deich", "kommen"],
-        "Hier Heros Neuhaus 47/91 – verstanden: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Neu hinter dem Deich, melden wenn Pumpe läuft – kommen.",
-        "„hier Heros Neuhaus 47/91“ . „verstanden“ . Auftrag wiederholen (Unterführung leerpumpen, Einleitung hinter dem Deich, Meldung bei Pumpenstart) . „kommen“",
+        "Hier Heros Erlangen 47/91 – verstanden: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Aisch hinter dem Deich, melden wenn Pumpe läuft – kommen.",
+        "„hier Heros Erlangen 47/91“ . „verstanden“ . Auftrag wiederholen (Unterführung leerpumpen, Einleitung hinter dem Deich, Meldung bei Pumpenstart) . „kommen“",
         "n_aufstellen",
         "Auftrag vollständig wiederholt.",
         "Wiederholen Sie Ziel, Einleitstelle und die Meldepflicht.",
@@ -234,24 +234,24 @@ s.radio("n_laeuft",
         "Die Großpumpe läuft seit **14:10 Uhr** mit voller Leistung, der Wasserstand sinkt. Melden Sie das der Einsatzleitung.",
         "Ausführung melden",
         ["Florian Neuhaus 1", "47/91", "Großpumpe", "14:10", "5000", "Wasserstand", "sinkt", "kommen"],
-        "Florian Neuhaus 1 von Heros Neuhaus 47/91 – Großpumpe läuft seit 14:10 Uhr mit 5000 Liter pro Minute, Wasserstand sinkt – kommen.",
+        "Florian Neuhaus 1 von Heros Erlangen 47/91 – Großpumpe läuft seit 14:10 Uhr mit 5000 Liter pro Minute, Wasserstand sinkt – kommen.",
         "Anruf . Pumpe läuft seit 14:10 . Leistung (5000 l/min) . Wirkung (Wasserstand sinkt) . „kommen“",
         "n_diesel",
         "Ausführungsmeldung mit Zeit, Leistung und Wirkung.",
         "Melden Sie Startzeit, Leistung und dass der Wasserstand sinkt.",
         "Die Ausführung des Auftrags ist **meldepflichtig**. Mit Leistung und Wirkung kann die Einsatzleitung abschätzen, wie lange es dauert.")
 s.radio("n_diesel",
-        "Am Abend: Der Diesel reicht noch etwa **bis 18 Uhr**. Für die Nacht brauchen Sie **200 Liter Diesel**. Für Betriebsstoff ist Ihr eigener Zugtrupp zuständig: **Heros Neuhaus 21/10**.\n\n"
+        "Am Abend: Der Diesel reicht noch etwa **bis 18 Uhr**. Für die Nacht brauchen Sie **200 Liter Diesel**. Für Betriebsstoff ist Ihr eigener Zugtrupp zuständig: **Heros Erlangen 21/10**.\n\n"
         "Fordern Sie den Betriebsstoff an.",
         "Betriebsstoff anfordern",
         ["21/10", "47/91", "Betriebsstoff", "200", "Diesel", "Unterführung", "18 Uhr", "kommen"],
-        "Heros Neuhaus 21/10 von Heros Neuhaus 47/91 – Zuführung von Betriebsstoff erforderlich: 200 Liter Diesel zur Unterführung Bahnhofstraße bis 18 Uhr – kommen.",
-        "Anruf: Heros Neuhaus 21/10 von Heros Neuhaus 47/91 . „Zuführung von Betriebsstoff erforderlich“ . Was und wie viel (200 l Diesel) . Wohin . Bis wann (18 Uhr) . „kommen“",
+        "Heros Erlangen 21/10 von Heros Erlangen 47/91 – Zuführung von Betriebsstoff erforderlich: 200 Liter Diesel zur Unterführung Bahnhofstraße bis 18 Uhr – kommen.",
+        "Anruf: Heros Erlangen 21/10 von Heros Erlangen 47/91 . „Zuführung von Betriebsstoff erforderlich“ . Was und wie viel (200 l Diesel) . Wohin . Bis wann (18 Uhr) . „kommen“",
         "n_end",
         "Nachforderung mit Menge, Ort und Zeitpunkt.",
         "Fordern Sie an: was, wie viel, wohin, bis wann.",
         "Eine Anforderung braucht **was – wie viel – wohin – bis wann**. Fehlt der Zeitpunkt, steht die Pumpe womöglich trocken.")
-s.end("**Heros Neuhaus 21/10:** „Hier 21/10 – verstanden, Diesel kommt bis 17:30 Uhr – Ende.“\n\n"
+s.end("**Heros Erlangen 21/10:** „Hier 21/10 – verstanden, Diesel kommt bis 17:30 Uhr – Ende.“\n\n"
       "Sauber angemeldet, Auftrag wiederholt, Pumpe sicher aufgestellt und rechtzeitig nachgefordert – die Unterführung ist am Morgen wieder frei.\n\n**Übung abgeschlossen! 🏆**")
 OUT.append(("thw", s))
 
@@ -261,22 +261,22 @@ s = S("thw_beleuchtung_feuerwehr", "THW: Einsatzstelle ausleuchten für die Feue
       GFR, "n_anmelden")
 s.radio("n_anmelden",
         "Nachts, Verkehrsunfall mit Lkw auf der Kreisstraße bei Neuhaus. Die Bergung wird Stunden dauern. Die Feuerwehr hat das THW zur **Ausleuchtung** angefordert.\n\n"
-        "Sie sind **Gruppenführer der Fachgruppe Notversorgung** (**Heros Neuhaus 24/91**) mit Lichtmast und Stromerzeuger. Einsatzleitung ist **Florian Neuhaus 1**.\n\n"
+        "Sie sind **Gruppenführer der Fachgruppe Notversorgung** (**Heros Erlangen 24/91**) mit Lichtmast und Stromerzeuger. Einsatzleitung ist **Florian Neuhaus 1**.\n\n"
         "Melden Sie sich an." + HINWEIS,
         "Anmelden",
         ["Florian Neuhaus 1", "24/91", "Notversorgung", "eingetroffen", "Lichtmast", "kommen"],
-        "Florian Neuhaus 1 von Heros Neuhaus 24/91 – Fachgruppe Notversorgung mit Lichtmast und Stromerzeuger eingetroffen – erbitten Auftrag – kommen.",
-        "Anruf: Florian Neuhaus 1 von Heros Neuhaus 24/91 . Einheit + Gerät eingetroffen . „erbitten Auftrag“ . „kommen“",
+        "Florian Neuhaus 1 von Heros Erlangen 24/91 – Fachgruppe Notversorgung mit Lichtmast und Stromerzeuger eingetroffen – erbitten Auftrag – kommen.",
+        "Anruf: Florian Neuhaus 1 von Heros Erlangen 24/91 . Einheit + Gerät eingetroffen . „erbitten Auftrag“ . „kommen“",
         "n_frage",
         "Angemeldet mit Einheit und Gerät.",
         "Melden Sie: Fachgruppe Notversorgung mit Lichtmast eingetroffen, erbitten Auftrag.",
         "Auch als Unterstützung für die Feuerwehr gilt: erst **anmelden**, dann arbeiten.")
 s.radio("n_frage",
-        "**Florian Neuhaus 1:** „Heros Neuhaus 24/91 – Auftrag: Unfallstelle und Arbeitsbereich am Lkw ausleuchten – kommen.“\n\n"
+        "**Florian Neuhaus 1:** „Heros Erlangen 24/91 – Auftrag: Unfallstelle und Arbeitsbereich am Lkw ausleuchten – kommen.“\n\n"
         "Unklar ist, **wo der Stromerzeuger stehen darf** – auf der Straße wird gearbeitet. Stellen Sie eine Frage.",
         "Rückfrage stellen",
         ["Florian Neuhaus 1", "24/91", "verstanden", "Frage", "Stromerzeuger", "kommen"],
-        "Florian Neuhaus 1 von Heros Neuhaus 24/91 – verstanden, Unfallstelle ausleuchten. Frage: Wo darf der Stromerzeuger aufgestellt werden? – kommen.",
+        "Florian Neuhaus 1 von Heros Erlangen 24/91 – verstanden, Unfallstelle ausleuchten. Frage: Wo darf der Stromerzeuger aufgestellt werden? – kommen.",
         "Auftrag bestätigen (verstanden, ausleuchten) . „Frage“ + Ihre Frage (Standort Stromerzeuger) . „kommen“",
         "n_blenden",
         "Auftrag bestätigt und Frage klar gekennzeichnet.",
@@ -293,18 +293,18 @@ s.radio("n_meldung",
         "Lichtmast steht, die Einsatzstelle ist hell, der Stromerzeuger läuft auf dem Feldweg. Mit einer Tankfüllung läuft er etwa **8 Stunden**.\n\nMelden Sie die Ausführung.",
         "Ausführung melden",
         ["Florian Neuhaus 1", "24/91", "ausgeleuchtet", "Stromerzeuger", "8 Stunden", "kommen"],
-        "Florian Neuhaus 1 von Heros Neuhaus 24/91 – Einsatzstelle ausgeleuchtet, Stromerzeuger läuft auf dem Feldweg, Betriebsdauer 8 Stunden – kommen.",
+        "Florian Neuhaus 1 von Heros Erlangen 24/91 – Einsatzstelle ausgeleuchtet, Stromerzeuger läuft auf dem Feldweg, Betriebsdauer 8 Stunden – kommen.",
         "Anruf . Auftrag ausgeführt (ausgeleuchtet) . Standort Stromerzeuger . Betriebsdauer . „kommen“",
         "n_abmelden",
         "Ausführung mit Betriebsdauer gemeldet.",
         "Melden Sie: ausgeleuchtet, Stromerzeuger läuft, Betriebsdauer 8 Stunden.",
         "Mit der **Betriebsdauer** weiß die Einsatzleitung, ob und wann nachgetankt werden muss.")
 s.radio("n_abmelden",
-        "Gegen 4 Uhr ist der Lkw geborgen. **Florian Neuhaus 1:** „Heros Neuhaus 24/91 – Ausleuchtung kann abgebaut werden – kommen.“\n\n"
+        "Gegen 4 Uhr ist der Lkw geborgen. **Florian Neuhaus 1:** „Heros Erlangen 24/91 – Ausleuchtung kann abgebaut werden – kommen.“\n\n"
         "Bestätigen Sie und melden Sie sich ab.",
         "Abmelden",
         ["Florian Neuhaus 1", "24/91", "verstanden", "rücken ein", "melde mich ab", "kommen"],
-        "Florian Neuhaus 1 von Heros Neuhaus 24/91 – verstanden, bauen ab und rücken ein, ich melde mich ab – kommen.",
+        "Florian Neuhaus 1 von Heros Erlangen 24/91 – verstanden, bauen ab und rücken ein, ich melde mich ab – kommen.",
         "„verstanden“ . was Sie tun (abbauen, einrücken) . „ich melde mich ab“ . „kommen“",
         "n_end",
         "Sauber abgemeldet.",
@@ -319,7 +319,7 @@ s = S("thw_deich_sandsack", "THW: Deichverteidigung mit Sandsäcken",
       "Mittel: Als Helfer und Truppführer beim Sandsackverbau eine Sickerstelle melden, Material nachfordern, den Wasserstand durchgeben und die Ablösung mit Stärke übergeben. 4 Funk-Schritte.",
       "thw_helfer", "n_sickerstelle")
 s.choice("n_sickerstelle",
-         "Hochwasser an der Neu. Ihr Trupp kontrolliert den Deich bei **Kilometer 2,4**. Sie führen den Trupp, Ihr Gruppenführer steht am Sandsacklager.\n\n"
+         "Hochwasser an der Aisch. Ihr Trupp kontrolliert den Deich bei **Kilometer 2,4**. Sie führen den Trupp, Ihr Gruppenführer steht am Sandsacklager.\n\n"
          "Auf der **Landseite** tritt am Deichfuß **trübes Wasser** aus, das mitläuft und Sand mitbringt. Was ist das?" + HINWEIS,
          [("⚠️ Eine Sickerstelle mit Materialaustrag – Gefahr für den Deich, sofort melden", "n_melden"),
           ("💧 Regenwasser – kein Problem", None,
@@ -374,45 +374,45 @@ s = S("thw_anmarsch_verband", "THW: Anmarsch im Verband zum Bereitstellungsraum"
       "Einsteiger: Als Fahrzeugführer des GKW im Verband die Verständigung prüfen, einen Ausfall unterwegs melden und sich im Bereitstellungsraum bei der Führungsstelle anmelden. 4 Funk-Schritte.",
       GFR, "n_pruefung")
 s.radio("n_pruefung",
-        "Überörtlicher Hochwassereinsatz. Ihr Technischer Zug fährt **im Verband** zum Bereitstellungsraum am **Sportplatz Altdorf**. Sie führen den **GKW (Heros Neuhaus 22/51)**, der Zugführer fährt vorn im MTW (**Heros Neuhaus 21/91**).\n\n"
+        "Überörtlicher Hochwassereinsatz. Ihr Technischer Zug fährt **im Verband** zum Bereitstellungsraum am **Sportplatz Adelsdorf**. Sie führen den **GKW (Heros Erlangen 22/51)**, der Zugführer fährt vorn im MTW (**Heros Erlangen 21/91**).\n\n"
         "Vor dem Abmarsch: Prüfen Sie die Verständigung zum Zugführer." + HINWEIS,
         "Verständigung prüfen",
         ["21/91", "22/51", "Frage Verständigung", "kommen"],
-        "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Frage Verständigung – kommen.",
-        "Anruf: Heros Neuhaus 21/91 von Heros Neuhaus 22/51 . „Frage Verständigung“ . „kommen“",
+        "Heros Erlangen 21/91 von Heros Erlangen 22/51 – Frage Verständigung – kommen.",
+        "Anruf: Heros Erlangen 21/91 von Heros Erlangen 22/51 . „Frage Verständigung“ . „kommen“",
         "n_panne",
         "Verständigungsprüfung korrekt.",
         "Fragen Sie: „Frage Verständigung – kommen.“",
         "Vor einer Fahrt im Verband prüft man, ob die **Funkverbindung steht** – unterwegs ist es zu spät.")
 s.radio("n_panne",
-        "**Heros Neuhaus 21/91:** „Hier 21/91 – Verständigung gut – kommen.“ Der Verband fährt los.\n\n"
-        "Auf der B 12 bei **Kilometer 34** meldet Ihre Bordanzeige einen **Reifenschaden** hinten rechts. Sie müssen anhalten – der Verband fährt weiter. Der Wechsel dauert etwa **30 Minuten**.\n\nMelden Sie das dem Zugführer.",
+        "**Heros Erlangen 21/91:** „Hier 21/91 – Verständigung gut – kommen.“ Der Verband fährt los.\n\n"
+        "Auf der **A 3** kurz vor der Anschlussstelle **Höchstadt-Ost** meldet Ihre Bordanzeige einen **Reifenschaden** hinten rechts. Sie müssen anhalten – der Verband fährt weiter. Der Wechsel dauert etwa **30 Minuten**.\n\nMelden Sie das dem Zugführer.",
         "Ausfall melden",
-        ["21/91", "22/51", "Reifenschaden", "B 12", "34", "30 Minuten", "kommen"],
-        "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Reifenschaden, halten auf der B 12 bei Kilometer 34, Radwechsel etwa 30 Minuten, kommen selbstständig nach – kommen.",
-        "Anruf . was (Reifenschaden) . wo (B 12, km 34) . wie lange (ca. 30 min) . was Sie tun (kommen selbstständig nach) . „kommen“",
+        ["21/91", "22/51", "Reifenschaden", "A 3", "Höchstadt", "30 Minuten", "kommen"],
+        "Heros Erlangen 21/91 von Heros Erlangen 22/51 – Reifenschaden, halten auf der A 3 vor der Anschlussstelle Höchstadt-Ost, Radwechsel etwa 30 Minuten, kommen selbstständig nach – kommen.",
+        "Anruf . was (Reifenschaden) . wo (A 3, vor Anschlussstelle Höchstadt-Ost) . wie lange (ca. 30 min) . was Sie tun (kommen selbstständig nach) . „kommen“",
         "n_entscheid",
         "Ausfall mit Ort, Dauer und Absicht gemeldet.",
         "Melden Sie: Reifenschaden, Ort, Dauer, dass Sie nachkommen.",
         "Wer den Verband verlässt, muss das **sofort** melden – sonst fehlt ein Fahrzeug, ohne dass es jemand merkt.")
 s.choice("n_entscheid",
-         "**Heros Neuhaus 21/91:** „Verstanden – Verband fährt weiter. Melden Sie sich direkt im Bereitstellungsraum bei **Heros Neuhaus 10** an.“\n\n"
-         "Nach dem Radwechsel kommen Sie am Sportplatz Altdorf an. Wen funken Sie an?",
-         [("📻 Die Führungsstelle Heros Neuhaus 10 – sie leitet den Bereitstellungsraum", "n_anmelden"),
+         "**Heros Erlangen 21/91:** „Verstanden – Verband fährt weiter. Melden Sie sich direkt im Bereitstellungsraum bei **Heros Erlangen 10** an.“\n\n"
+         "Nach dem Radwechsel kommen Sie am Sportplatz Adelsdorf an. Wen funken Sie an?",
+         [("📻 Die Führungsstelle Heros Erlangen 10 – sie leitet den Bereitstellungsraum", "n_anmelden"),
           ("📻 Den Zugführer, der ist ja schon da", None,
-           "Der Zugführer hat Sie ausdrücklich an **Heros Neuhaus 10** verwiesen. Der Bereitstellungsraum wird von der **Führungsstelle** geführt – dort melden Sie sich an."),
+           "Der Zugführer hat Sie ausdrücklich an **Heros Erlangen 10** verwiesen. Der Bereitstellungsraum wird von der **Führungsstelle** geführt – dort melden Sie sich an."),
           ("🤐 Niemanden – einfach neben die anderen Fahrzeuge stellen", None,
            "Im Bereitstellungsraum muss die Führung wissen, **welche Kräfte verfügbar** sind. Ohne Anmeldung werden Sie nicht eingeplant.")])
 s.radio("n_anmelden",
         "Melden Sie sich bei der Führungsstelle an – mit Stärke: **null / zwo / sieben / gesamt neun**.",
         "Im Bereitstellungsraum anmelden",
-        ["Heros Neuhaus 10", "22/51", "Sportplatz", "eingetroffen", "Stärke", "gesamt", "einsatzbereit", "kommen"],
-        "Heros Neuhaus 10 von Heros Neuhaus 22/51 – im Bereitstellungsraum Sportplatz Altdorf eingetroffen, Stärke null – zwo – sieben – gesamt neun, einsatzbereit – kommen.",
-        "Anruf: Heros Neuhaus 10 von Heros Neuhaus 22/51 . eingetroffen (Bereitstellungsraum) . Stärke vierteilig . „einsatzbereit“ . „kommen“",
+        ["Heros Erlangen 10", "22/51", "Sportplatz", "eingetroffen", "Stärke", "gesamt", "einsatzbereit", "kommen"],
+        "Heros Erlangen 10 von Heros Erlangen 22/51 – im Bereitstellungsraum Sportplatz Adelsdorf eingetroffen, Stärke null – zwo – sieben – gesamt neun, einsatzbereit – kommen.",
+        "Anruf: Heros Erlangen 10 von Heros Erlangen 22/51 . eingetroffen (Bereitstellungsraum) . Stärke vierteilig . „einsatzbereit“ . „kommen“",
         "n_end",
         "Im Bereitstellungsraum mit Stärke und Einsatzbereitschaft angemeldet.",
         "Melden Sie: eingetroffen, Stärke, einsatzbereit.",
         "Im Bereitstellungsraum zählt für die Führung: **wer ist da, wie stark, einsatzbereit?**")
-s.end("**Heros Neuhaus 10:** „Hier Heros Neuhaus 10 – verstanden, warten Sie auf Einsatzauftrag – Ende.“\n\n"
+s.end("**Heros Erlangen 10:** „Hier Heros Erlangen 10 – verstanden, warten Sie auf Einsatzauftrag – Ende.“\n\n"
       "Verbindung geprüft, Ausfall sofort gemeldet und richtig im Bereitstellungsraum angemeldet.\n\n**Übung abgeschlossen! 🏆**")
 OUT.append(("thw", s))

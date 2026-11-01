@@ -40,7 +40,7 @@
     "r_start": {
       "id": "r_start",
       "role": "rettungsdienst",
-      "narrative": "Dein erster Dienst auf der **Rettungswache Neuhaus** des Roten Kreuzes. Dein Praxisanleiter zeigt dir den Rettungswagen.\n\n**Praxisanleiter:** „Unser RTW heißt **Rotkreuz Neuhaus 71/1**. Das Kennwort sagt, wer das Fahrzeug betreibt: **Rotkreuz** (BRK/DRK), **Sama** (ASB), **Akkon** (Johanniter), **Johannes** (Malteser). Die **71** ist der RTW, **72** der KTW, **76** das Notarzteinsatzfahrzeug, **79** First Responder. Die Leitstelle ist einfach **Leitstelle Nürnberg**.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
+      "narrative": "Dein erster Dienst auf der **Rettungswache Höchstadt** des Roten Kreuzes. Dein Praxisanleiter zeigt dir den Rettungswagen.\n\n**Praxisanleiter:** „Unser RTW heißt **Rotkreuz Höchstadt 71/1**. Das Kennwort sagt, wer das Fahrzeug betreibt: **Rotkreuz** (BRK/DRK), **Sama** (ASB), **Akkon** (Johanniter), **Johannes** (Malteser). Die **71** ist der RTW, **72** der KTW, **76** das Notarzteinsatzfahrzeug, **79** First Responder. Die Leitstelle ist einfach **Leitstelle Nürnberg**.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
       "actions": [
         {
           "id": "ok",
@@ -52,7 +52,7 @@
     "r_choice": {
       "id": "r_choice",
       "role": "rettungsdienst",
-      "narrative": "Über Funk hörst du **Akkon Neuhaus 76/1**. Wer ist das?",
+      "narrative": "Über Funk hörst du **Akkon Erlangen 76/1**. Wer ist das?",
       "actions": [
         {
           "id": "opt0",
@@ -104,7 +104,7 @@
           "id": "funk",
           "label": "Leitstelle anfunken",
           "radioCall": {
-            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – kommen.",
             "expectedPhrases": [
               "Leitstelle Nürnberg",
               "Rotkreuz",
@@ -121,7 +121,7 @@
     "r_fail": {
       "id": "r_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – kommen.“",
+      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -133,13 +133,13 @@
     "r_speak2": {
       "id": "r_speak2",
       "role": "rettungsdienst",
-      "narrative": "Jetzt ruft die Leitstelle **euch**:\n\n**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 von Leitstelle Nürnberg – kommen.“\n\nAntworte: **Hier** – dein Rufname – **kommen**.",
+      "narrative": "Jetzt ruft die Leitstelle **euch**:\n\n**Leitstelle Nürnberg:** „Rotkreuz Höchstadt 71/1 von Leitstelle Nürnberg – kommen.“\n\nAntworte: **Hier** – dein Rufname – **kommen**.",
       "actions": [
         {
           "id": "funk",
           "label": "Anruf beantworten",
           "radioCall": {
-            "hint": "Hier Rotkreuz Neuhaus 71/1 – kommen.",
+            "hint": "Hier Rotkreuz Höchstadt 71/1 – kommen.",
             "expectedPhrases": [
               "hier",
               "Rotkreuz",
@@ -156,7 +156,7 @@
     "r_fail2": {
       "id": "r_fail2",
       "role": "rettungsdienst",
-      "narrative": "**Fast.** „Hier Rotkreuz Neuhaus 71/1 – kommen.“ – „hört“ ist kein Funkwort.",
+      "narrative": "**Fast.** „Hier Rotkreuz Höchstadt 71/1 – kommen.“ – „hört“ ist kein Funkwort.",
       "actions": [
         {
           "id": "retry",
@@ -289,13 +289,13 @@
     "s_speak": {
       "id": "s_speak",
       "role": "rettungsdienst",
-      "narrative": "**Richtig!** Nach Status 7 fragt die Leitstelle oft nach dem Ziel:\n\n**Leitstelle Nürnberg:** „Rotkreuz Neuhaus 71/1 – Transportziel durchgeben – kommen.“\n\nIhr fahrt ins **Uniklinikum Erlangen**.",
+      "narrative": "**Richtig!** Nach Status 7 fragt die Leitstelle oft nach dem Ziel:\n\n**Leitstelle Nürnberg:** „Rotkreuz Höchstadt 71/1 – Transportziel durchgeben – kommen.“\n\nIhr fahrt ins **Uniklinikum Erlangen**.",
       "actions": [
         {
           "id": "funk",
           "label": "Transportziel durchgeben",
           "radioCall": {
-            "hint": "Hier Rotkreuz Neuhaus 71/1 – Transportziel Uniklinikum Erlangen – kommen.",
+            "hint": "Hier Rotkreuz Höchstadt 71/1 – Transportziel Uniklinikum Erlangen – kommen.",
             "expectedPhrases": [
               "71/1",
               "Transportziel",
@@ -312,7 +312,7 @@
     "s_fail": {
       "id": "s_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** „Hier Rotkreuz Neuhaus 71/1 – Transportziel Uniklinikum Erlangen – kommen.“",
+      "narrative": "**Noch nicht ganz.** „Hier Rotkreuz Höchstadt 71/1 – Transportziel Uniklinikum Erlangen – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -405,7 +405,7 @@
           "id": "funk",
           "label": "Nach J sprechen",
           "radioCall": {
-            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.",
             "expectedPhrases": [
               "Leitstelle Nürnberg",
               "71/1",
@@ -425,7 +425,7 @@
     "w_fail": {
       "id": "w_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.“",
+      "narrative": "**Noch nicht ganz.** „Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -564,7 +564,7 @@
           "id": "funk",
           "label": "Patienten anmelden",
           "radioCall": {
-            "hint": "Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.",
+            "hint": "Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – bitte für das Uniklinikum Erlangen anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.",
             "expectedPhrases": [
               "Leitstelle Nürnberg",
               "71/1",
@@ -585,7 +585,7 @@
     "a_fail": {
       "id": "a_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** Klinik – Geschlecht – Verdacht – Ankunft, aber **kein Name**: „Leitstelle Nürnberg von Rotkreuz Neuhaus 71/1 – bitte für das Uniklinikum Erlangen anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.“",
+      "narrative": "**Noch nicht ganz.** Klinik – Geschlecht – Verdacht – Ankunft, aber **kein Name**: „Leitstelle Nürnberg von Rotkreuz Höchstadt 71/1 – bitte für das Uniklinikum Erlangen anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -737,7 +737,7 @@
           "id": "funk",
           "label": "Notruf sprechen",
           "radioCall": {
-            "hint": "Notruf – Rotkreuz Neuhaus 71/1 – Lindenweg 3 – Bedrohung durch Person mit Messer – ziehen uns zum Fahrzeug zurück – brauchen Polizei – kommen.",
+            "hint": "Notruf – Rotkreuz Höchstadt 71/1 – Lindenweg 3 – Bedrohung durch Person mit Messer – ziehen uns zum Fahrzeug zurück – brauchen Polizei – kommen.",
             "expectedPhrases": [
               "Notruf",
               "71/1",
@@ -757,7 +757,7 @@
     "n_fail": {
       "id": "n_fail",
       "role": "rettungsdienst",
-      "narrative": "**Noch nicht ganz.** **Notruf** – wer – wo – was – was ihr braucht: „Notruf – Rotkreuz Neuhaus 71/1 – Lindenweg 3 – Bedrohung durch Person mit Messer – ziehen uns zum Fahrzeug zurück – brauchen Polizei – kommen.“",
+      "narrative": "**Noch nicht ganz.** **Notruf** – wer – wo – was – was ihr braucht: „Notruf – Rotkreuz Höchstadt 71/1 – Lindenweg 3 – Bedrohung durch Person mit Messer – ziehen uns zum Fahrzeug zurück – brauchen Polizei – kommen.“",
       "actions": [
         {
           "id": "retry",

@@ -8,7 +8,7 @@
     "n_ankunft": {
       "id": "n_ankunft",
       "role": "thw_gruppenführer",
-      "narrative": "Nach einer Gasexplosion ist ein Wohnhaus in Neuhaus, Mühlweg 7, **teilweise eingestürzt**. Die Feuerwehr hat das THW angefordert.\n\nSie sind **Gruppenführer der 1. Bergungsgruppe** (Ihr Rufname: **Heros Neuhaus 22/91**). Ihr Zugführer ist **Heros Neuhaus 21/91**. Ihre Gruppe ist vollständig: **null / zwo / sieben / gesamt neun**.\n\nMelden Sie dem Zugführer das Eintreffen mit Stärke.\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "narrative": "Nach einer Gasexplosion ist ein Wohnhaus in Neuhaus, Mühlweg 7, **teilweise eingestürzt**. Die Feuerwehr hat das THW angefordert.\n\nSie sind **Gruppenführer der 1. Bergungsgruppe** (Ihr Rufname: **Heros Erlangen 22/91**). Ihr Zugführer ist **Heros Erlangen 21/91**. Ihre Gruppe ist vollständig: **null / zwo / sieben / gesamt neun**.\n\nMelden Sie dem Zugführer das Eintreffen mit Stärke.\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
       "actions": [
         {
           "id": "radio_ankunft",
@@ -22,8 +22,8 @@
               "gesamt",
               "kommen"
             ],
-            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – 1. Bergungsgruppe an der Einsatzstelle eingetroffen, Stärke null – zwo – sieben – gesamt neun – kommen.",
-            "briefing": "Anruf: Heros Neuhaus 21/91 von Heros Neuhaus 22/91 . Bergungsgruppe eingetroffen . Stärke vierteilig (0/2/7/9) . „kommen“",
+            "hint": "Heros Erlangen 21/91 von Heros Erlangen 22/91 – 1. Bergungsgruppe an der Einsatzstelle eingetroffen, Stärke null – zwo – sieben – gesamt neun – kommen.",
+            "briefing": "Anruf: Heros Erlangen 21/91 von Heros Erlangen 22/91 . Bergungsgruppe eingetroffen . Stärke vierteilig (0/2/7/9) . „kommen“",
             "onSuccess": "n_sichern",
             "onFailure": "n_ankunft_fail",
             "feedbackSuccess": "✅ Eintreffen mit vierteiliger Stärke gemeldet.",
@@ -35,7 +35,7 @@
     "n_ankunft_fail": {
       "id": "n_ankunft_fail",
       "role": "thw_gruppenführer",
-      "narrative": "**Feedback:** Beim THW wird die Stärke **vierteilig** gemeldet: Führer / Unterführer / Helfer / gesamt.\n\nBeispiel: *„Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – 1. Bergungsgruppe an der Einsatzstelle eingetroffen, Stärke null – zwo – sieben – gesamt neun – kommen.“*",
+      "narrative": "**Feedback:** Beim THW wird die Stärke **vierteilig** gemeldet: Führer / Unterführer / Helfer / gesamt.\n\nBeispiel: *„Heros Erlangen 21/91 von Heros Erlangen 22/91 – 1. Bergungsgruppe an der Einsatzstelle eingetroffen, Stärke null – zwo – sieben – gesamt neun – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -109,7 +109,7 @@
               "Abstützen",
               "kommen"
             ],
-            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – 10:40 Uhr – Rückseite Erdgeschoss Hohlraum festgestellt, Klopfzeichen gehört, vermutlich eine Person verschüttet – beginnen mit Abstützen und Freiräumen – kommen.",
+            "hint": "Heros Erlangen 21/91 von Heros Erlangen 22/91 – 10:40 Uhr – Rückseite Erdgeschoss Hohlraum festgestellt, Klopfzeichen gehört, vermutlich eine Person verschüttet – beginnen mit Abstützen und Freiräumen – kommen.",
             "briefing": "Anruf . Wann (10:40) . Wo (Rückseite EG) . Was festgestellt (Hohlraum, Klopfzeichen) . Vermutung (vermutlich eine Person) . Maßnahme (Abstützen, Freiräumen) . „kommen“",
             "onSuccess": "n_gefahr",
             "onFailure": "n_lage_fail",
@@ -122,7 +122,7 @@
     "n_lage_fail": {
       "id": "n_lage_fail",
       "role": "thw_gruppenführer",
-      "narrative": "**Feedback:** Der Zugführer muss wissen, was **sicher** ist und was **vermutet**: Davon hängt ab, ob er z. B. Rettungshunde oder Ortungsgeräte nachfordert.\n\nBeispiel: *„Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – 10:40 Uhr – Rückseite Erdgeschoss Hohlraum festgestellt, Klopfzeichen gehört, vermutlich eine Person verschüttet – beginnen mit Abstützen und Freiräumen – kommen.“*",
+      "narrative": "**Feedback:** Der Zugführer muss wissen, was **sicher** ist und was **vermutet**: Davon hängt ab, ob er z. B. Rettungshunde oder Ortungsgeräte nachfordert.\n\nBeispiel: *„Heros Erlangen 21/91 von Heros Erlangen 22/91 – 10:40 Uhr – Rückseite Erdgeschoss Hohlraum festgestellt, Klopfzeichen gehört, vermutlich eine Person verschüttet – beginnen mit Abstützen und Freiräumen – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -233,7 +233,7 @@
               "Giebelwand",
               "kommen"
             ],
-            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – Arbeiten am Hohlraum unterbrochen, Gebäude geräumt, Gruppe vollzählig. Giebelwand in Bewegung – benötigen Abstützung der Giebelwand, bevor wir weiterarbeiten – kommen.",
+            "hint": "Heros Erlangen 21/91 von Heros Erlangen 22/91 – Arbeiten am Hohlraum unterbrochen, Gebäude geräumt, Gruppe vollzählig. Giebelwand in Bewegung – benötigen Abstützung der Giebelwand, bevor wir weiterarbeiten – kommen.",
             "briefing": "Anruf . Abweichung (Arbeiten unterbrochen, geräumt) . Gruppe vollzählig . Grund (Giebelwand in Bewegung) . Bedarf (Abstützung) . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_abweichung_fail",
@@ -246,7 +246,7 @@
     "n_abweichung_fail": {
       "id": "n_abweichung_fail",
       "role": "thw_gruppenführer",
-      "narrative": "**Feedback:** Abweichungen vom Auftrag sind **sofort** zu melden. Mit „vollzählig“ weiß der Zugführer, dass niemand vermisst wird.\n\nBeispiel: *„Heros Neuhaus 21/91 von Heros Neuhaus 22/91 – Arbeiten am Hohlraum unterbrochen, Gebäude geräumt, Gruppe vollzählig. Giebelwand in Bewegung – benötigen Abstützung der Giebelwand, bevor wir weiterarbeiten – kommen.“*",
+      "narrative": "**Feedback:** Abweichungen vom Auftrag sind **sofort** zu melden. Mit „vollzählig“ weiß der Zugführer, dass niemand vermisst wird.\n\nBeispiel: *„Heros Erlangen 21/91 von Heros Erlangen 22/91 – Arbeiten am Hohlraum unterbrochen, Gebäude geräumt, Gruppe vollzählig. Giebelwand in Bewegung – benötigen Abstützung der Giebelwand, bevor wir weiterarbeiten – kommen.“*",
       "actions": [
         {
           "id": "retry",
