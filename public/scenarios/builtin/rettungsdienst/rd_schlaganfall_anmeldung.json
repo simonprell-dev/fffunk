@@ -1,0 +1,196 @@
+{
+  "id": "rd_schlaganfall_anmeldung",
+  "title": "Rettungsdienst: Schlaganfall – Zeit ist Hirn",
+  "description": "Mittel: Eine Patientin mit Schlaganfall-Verdacht ohne Namen, aber mit Symptombeginn in der Stroke Unit anmelden – auch wenn Angehörige den Namen durchgeben wollen. 2 Funk-Schritte.",
+  "startingNodeId": "n_name",
+  "playerRole": "rettungsdienst",
+  "nodes": {
+    "n_name_x1": {
+      "id": "n_name_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Funk kann **jeder mit einem Scanner mithören**. Namen und Geburtsdaten gehören nicht in den Funk – die Klinik bekommt sie bei der **Übergabe** oder **telefonisch**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_name"
+        }
+      ]
+    },
+    "n_name_x2": {
+      "id": "n_name_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Der Ehemann meint es gut. Erklären Sie kurz, **warum** der Name nicht in den Funk gehört – dann fühlt er sich ernst genommen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_name"
+        }
+      ]
+    },
+    "n_name": {
+      "id": "n_name",
+      "role": "rettungsdienst",
+      "narrative": "Einsatz in Neuhaus: Eine Frau kann den **rechten Arm nicht heben**, spricht **verwaschen**, der Mundwinkel hängt. Der Ehemann sagt: Es begann um **9:40 Uhr**. Sie sind auf **Rotkreuz Neuhaus 71/1**.\n\nDer Ehemann drängt: „Sagen Sie denen gleich, dass es **Frau Maier** ist, sie war schon mal dort!“ Was antworten Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🤝 „Den Namen geben wir in der Klinik direkt weiter – über Funk hört jeder mit.“",
+          "nextNodeId": "n_voranmeldung"
+        },
+        {
+          "id": "opt1",
+          "label": "📻 Den Namen mit in den Funkspruch nehmen – dann findet die Klinik die Akte schneller",
+          "nextNodeId": "n_name_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🙈 Gar nichts sagen",
+          "nextNodeId": "n_name_x2"
+        }
+      ]
+    },
+    "n_voranmeldung_x1": {
+      "id": "n_voranmeldung_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Ob eine Lyse oder Katheter-Behandlung infrage kommt, hängt vom **Zeitfenster** ab. Der **Symptombeginn** gehört schon in die Anmeldung.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_voranmeldung"
+        }
+      ]
+    },
+    "n_voranmeldung_x2": {
+      "id": "n_voranmeldung_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Ohne Anmeldung steht kein Stroke-Team bereit, und das CT ist vielleicht belegt. **Zeit ist Hirn** – die Anmeldung spart Minuten.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_voranmeldung"
+        }
+      ]
+    },
+    "n_voranmeldung": {
+      "id": "n_voranmeldung",
+      "role": "rettungsdienst",
+      "narrative": "Ziel ist die **Stroke Unit im Klinikum Neuhaus**. Was ist bei einem Schlaganfall-Verdacht zusätzlich wichtig?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "☎️ Telefonische Voranmeldung – und die Uhrzeit des Symptombeginns nennen",
+          "nextNodeId": "n_anmelden"
+        },
+        {
+          "id": "opt1",
+          "label": "⏱️ Erst in der Klinik sagen, wann es losging",
+          "nextNodeId": "n_voranmeldung_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚑 Gar nicht anmelden, einfach schnell fahren",
+          "nextNodeId": "n_voranmeldung_x2"
+        }
+      ]
+    },
+    "n_anmelden": {
+      "id": "n_anmelden",
+      "role": "rettungsdienst",
+      "narrative": "Ihr Kollege meldet telefonisch vor. Sie haben Status 5 gedrückt, die Leitstelle hat Sie aufgefordert. Ankunft in etwa **20 Minuten**.\n\nMelden Sie die Patientin über Funk an.",
+      "actions": [
+        {
+          "id": "radio_anmelden",
+          "label": "📞 Stroke Unit anmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Stroke Unit",
+              "anmelden",
+              "weiblich",
+              "Schlaganfall",
+              "9:40",
+              "20 Minuten",
+              "kommen"
+            ],
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Klinikum Neuhaus anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.",
+            "briefing": "Anruf . „bitte für die Stroke Unit Klinikum Neuhaus anmelden“ . weiblich . Verdacht Schlaganfall . Symptombeginn 9:40 Uhr . Ankunft in 20 Minuten . „kommen“ – kein Name",
+            "onSuccess": "n_status",
+            "onFailure": "n_anmelden_fail",
+            "feedbackSuccess": "✅ Anmeldung mit Symptombeginn – und ohne Namen.",
+            "feedbackFailure": "❌ Melden Sie: Stroke Unit, weiblich, Verdacht Schlaganfall, Symptombeginn, Ankunft in 20 Minuten."
+          }
+        }
+      ]
+    },
+    "n_anmelden_fail": {
+      "id": "n_anmelden_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Der **Symptombeginn** ist bei einem Schlaganfall die wichtigste Zahl: Davon hängt die Behandlung ab.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für die Stroke Unit Klinikum Neuhaus anmelden: weiblich, Verdacht Schlaganfall, Symptombeginn 9:40 Uhr, Ankunft in 20 Minuten – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anmelden"
+        }
+      ]
+    },
+    "n_status": {
+      "id": "n_status",
+      "role": "rettungsdienst",
+      "narrative": "**Leitstelle Neuhaus:** „Hier Leitstelle Neuhaus – Stroke Unit ist verständigt – kommen.“\n\nBestätigen Sie kurz und beenden Sie den Funkverkehr.",
+      "actions": [
+        {
+          "id": "radio_status",
+          "label": "📞 Bestätigen",
+          "radioCall": {
+            "expectedPhrases": [
+              "71/1",
+              "verstanden",
+              "Ende"
+            ],
+            "hint": "Hier Rotkreuz Neuhaus 71/1 – verstanden – Ende.",
+            "briefing": "„hier Rotkreuz Neuhaus 71/1“ . „verstanden“ . „Ende“",
+            "onSuccess": "n_end",
+            "onFailure": "n_status_fail",
+            "feedbackSuccess": "✅ Kurz bestätigt – der Kanal ist wieder frei.",
+            "feedbackFailure": "❌ Bestätigen Sie mit „verstanden – Ende“."
+          }
+        }
+      ]
+    },
+    "n_status_fail": {
+      "id": "n_status_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Mehr braucht es nicht: **verstanden – Ende** gibt den Kanal frei.\n\nBeispiel: *„Hier Rotkreuz Neuhaus 71/1 – verstanden – Ende.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_status"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "rettungsdienst",
+      "narrative": "Status 7 ist gedrückt, die Stroke Unit wartet schon. Den Namen gibt der Ehemann an der Aufnahme an.\n\nDatenschutz gewahrt, Symptombeginn gemeldet, telefonisch vorangemeldet – so zählt jede Minute für die Patientin.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_name"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

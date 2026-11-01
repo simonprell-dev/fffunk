@@ -1,0 +1,190 @@
+{
+  "id": "thw_anmarsch_verband",
+  "title": "THW: Anmarsch im Verband zum Bereitstellungsraum",
+  "description": "Einsteiger: Als Fahrzeugführer des GKW im Verband die Verständigung prüfen, einen Ausfall unterwegs melden und sich im Bereitstellungsraum bei der Führungsstelle anmelden. 4 Funk-Schritte.",
+  "startingNodeId": "n_pruefung",
+  "playerRole": "thw_gruppenführer",
+  "nodes": {
+    "n_pruefung": {
+      "id": "n_pruefung",
+      "role": "thw_gruppenführer",
+      "narrative": "Überörtlicher Hochwassereinsatz. Ihr Technischer Zug fährt **im Verband** zum Bereitstellungsraum am **Sportplatz Altdorf**. Sie führen den **GKW (Heros Neuhaus 22/51)**, der Zugführer fährt vorn im MTW (**Heros Neuhaus 21/91**).\n\nVor dem Abmarsch: Prüfen Sie die Verständigung zum Zugführer.\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "actions": [
+        {
+          "id": "radio_pruefung",
+          "label": "📞 Verständigung prüfen",
+          "radioCall": {
+            "expectedPhrases": [
+              "21/91",
+              "22/51",
+              "Frage Verständigung",
+              "kommen"
+            ],
+            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Frage Verständigung – kommen.",
+            "briefing": "Anruf: Heros Neuhaus 21/91 von Heros Neuhaus 22/51 . „Frage Verständigung“ . „kommen“",
+            "onSuccess": "n_panne",
+            "onFailure": "n_pruefung_fail",
+            "feedbackSuccess": "✅ Verständigungsprüfung korrekt.",
+            "feedbackFailure": "❌ Fragen Sie: „Frage Verständigung – kommen.“"
+          }
+        }
+      ]
+    },
+    "n_pruefung_fail": {
+      "id": "n_pruefung_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Vor einer Fahrt im Verband prüft man, ob die **Funkverbindung steht** – unterwegs ist es zu spät.\n\nBeispiel: *„Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Frage Verständigung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_pruefung"
+        }
+      ]
+    },
+    "n_panne": {
+      "id": "n_panne",
+      "role": "thw_gruppenführer",
+      "narrative": "**Heros Neuhaus 21/91:** „Hier 21/91 – Verständigung gut – kommen.“ Der Verband fährt los.\n\nAuf der B 12 bei **Kilometer 34** meldet Ihre Bordanzeige einen **Reifenschaden** hinten rechts. Sie müssen anhalten – der Verband fährt weiter. Der Wechsel dauert etwa **30 Minuten**.\n\nMelden Sie das dem Zugführer.",
+      "actions": [
+        {
+          "id": "radio_panne",
+          "label": "📞 Ausfall melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "21/91",
+              "22/51",
+              "Reifenschaden",
+              "B 12",
+              "34",
+              "30 Minuten",
+              "kommen"
+            ],
+            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Reifenschaden, halten auf der B 12 bei Kilometer 34, Radwechsel etwa 30 Minuten, kommen selbstständig nach – kommen.",
+            "briefing": "Anruf . was (Reifenschaden) . wo (B 12, km 34) . wie lange (ca. 30 min) . was Sie tun (kommen selbstständig nach) . „kommen“",
+            "onSuccess": "n_entscheid",
+            "onFailure": "n_panne_fail",
+            "feedbackSuccess": "✅ Ausfall mit Ort, Dauer und Absicht gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Reifenschaden, Ort, Dauer, dass Sie nachkommen."
+          }
+        }
+      ]
+    },
+    "n_panne_fail": {
+      "id": "n_panne_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Wer den Verband verlässt, muss das **sofort** melden – sonst fehlt ein Fahrzeug, ohne dass es jemand merkt.\n\nBeispiel: *„Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Reifenschaden, halten auf der B 12 bei Kilometer 34, Radwechsel etwa 30 Minuten, kommen selbstständig nach – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_panne"
+        }
+      ]
+    },
+    "n_entscheid_x1": {
+      "id": "n_entscheid_x1",
+      "role": "thw_gruppenführer",
+      "narrative": "**Nicht richtig.** Der Zugführer hat Sie ausdrücklich an **Heros Neuhaus 10** verwiesen. Der Bereitstellungsraum wird von der **Führungsstelle** geführt – dort melden Sie sich an.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_entscheid"
+        }
+      ]
+    },
+    "n_entscheid_x2": {
+      "id": "n_entscheid_x2",
+      "role": "thw_gruppenführer",
+      "narrative": "**Nicht richtig.** Im Bereitstellungsraum muss die Führung wissen, **welche Kräfte verfügbar** sind. Ohne Anmeldung werden Sie nicht eingeplant.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_entscheid"
+        }
+      ]
+    },
+    "n_entscheid": {
+      "id": "n_entscheid",
+      "role": "thw_gruppenführer",
+      "narrative": "**Heros Neuhaus 21/91:** „Verstanden – Verband fährt weiter. Melden Sie sich direkt im Bereitstellungsraum bei **Heros Neuhaus 10** an.“\n\nNach dem Radwechsel kommen Sie am Sportplatz Altdorf an. Wen funken Sie an?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📻 Die Führungsstelle Heros Neuhaus 10 – sie leitet den Bereitstellungsraum",
+          "nextNodeId": "n_anmelden"
+        },
+        {
+          "id": "opt1",
+          "label": "📻 Den Zugführer, der ist ja schon da",
+          "nextNodeId": "n_entscheid_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🤐 Niemanden – einfach neben die anderen Fahrzeuge stellen",
+          "nextNodeId": "n_entscheid_x2"
+        }
+      ]
+    },
+    "n_anmelden": {
+      "id": "n_anmelden",
+      "role": "thw_gruppenführer",
+      "narrative": "Melden Sie sich bei der Führungsstelle an – mit Stärke: **null / zwo / sieben / gesamt neun**.",
+      "actions": [
+        {
+          "id": "radio_anmelden",
+          "label": "📞 Im Bereitstellungsraum anmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Heros Neuhaus 10",
+              "22/51",
+              "Bereitstellungsraum",
+              "eingetroffen",
+              "Stärke",
+              "gesamt",
+              "einsatzbereit",
+              "kommen"
+            ],
+            "hint": "Heros Neuhaus 10 von Heros Neuhaus 22/51 – im Bereitstellungsraum Sportplatz Altdorf eingetroffen, Stärke null – zwo – sieben – gesamt neun, einsatzbereit – kommen.",
+            "briefing": "Anruf: Heros Neuhaus 10 von Heros Neuhaus 22/51 . eingetroffen (Bereitstellungsraum) . Stärke vierteilig . „einsatzbereit“ . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_anmelden_fail",
+            "feedbackSuccess": "✅ Im Bereitstellungsraum mit Stärke und Einsatzbereitschaft angemeldet.",
+            "feedbackFailure": "❌ Melden Sie: eingetroffen, Stärke, einsatzbereit."
+          }
+        }
+      ]
+    },
+    "n_anmelden_fail": {
+      "id": "n_anmelden_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Im Bereitstellungsraum zählt für die Führung: **wer ist da, wie stark, einsatzbereit?**\n\nBeispiel: *„Heros Neuhaus 10 von Heros Neuhaus 22/51 – im Bereitstellungsraum Sportplatz Altdorf eingetroffen, Stärke null – zwo – sieben – gesamt neun, einsatzbereit – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anmelden"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "thw_gruppenführer",
+      "narrative": "**Heros Neuhaus 10:** „Hier Heros Neuhaus 10 – verstanden, warten Sie auf Einsatzauftrag – Ende.“\n\nVerbindung geprüft, Ausfall sofort gemeldet und richtig im Bereitstellungsraum angemeldet.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_pruefung"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "id": "thw_hochwasser_pumpen",
+  "title": "THW: Hochwasser – Großpumpe in der Unterführung",
+  "description": "Mittel: Als Gruppenführer der Fachgruppe Wasserschaden/Pumpen bei der Feuerwehr-Einsatzleitung anmelden, den Auftrag wiederholen, Leistung melden und Betriebsstoff nachfordern. 4 Funk-Schritte.",
+  "startingNodeId": "n_anmelden",
+  "playerRole": "thw_gruppenführer",
+  "nodes": {
+    "n_anmelden": {
+      "id": "n_anmelden",
+      "role": "thw_gruppenführer",
+      "narrative": "Starkregen in Neuhaus: Die **Unterführung Bahnhofstraße** steht 1,5 m unter Wasser. Die Feuerwehr hat das THW angefordert – das THW ist der **Einsatzleitung der Feuerwehr** unterstellt.\n\nSie sind **Gruppenführer der Fachgruppe Wasserschaden/Pumpen** (**Heros Neuhaus 47/91**) mit einer **Großpumpe** (5000 l/min). Stärke: **null / drei / neun / gesamt zwölf**.\n\nMelden Sie sich bei der Einsatzleitung **Florian Neuhaus 1** an und erbitten Sie einen Auftrag.\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "actions": [
+        {
+          "id": "radio_anmelden",
+          "label": "📞 Bei der Einsatzleitung anmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus 1",
+              "47/91",
+              "Wasserschaden",
+              "Großpumpe",
+              "Stärke",
+              "Auftrag",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 1 von Heros Neuhaus 47/91 – Fachgruppe Wasserschaden Pumpen mit Großpumpe eingetroffen, Stärke null – drei – neun – gesamt zwölf – erbitten Auftrag – kommen.",
+            "briefing": "Anruf: Florian Neuhaus 1 von Heros Neuhaus 47/91 . Einheit + Großpumpe eingetroffen . Stärke vierteilig . „erbitten Auftrag“ . „kommen“",
+            "onSuccess": "n_auftrag",
+            "onFailure": "n_anmelden_fail",
+            "feedbackSuccess": "✅ Bei der Einsatzleitung angemeldet – mit Einheit, Gerät und Stärke.",
+            "feedbackFailure": "❌ Melden Sie: Fachgruppe mit Großpumpe eingetroffen, Stärke, erbitten Auftrag."
+          }
+        }
+      ]
+    },
+    "n_anmelden_fail": {
+      "id": "n_anmelden_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Das THW arbeitet dem **Bedarfsträger** zu – hier der Feuerwehr. Die Einsatzleitung braucht Einheit, Gerät und Stärke, um Sie richtig einzusetzen.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Neuhaus 47/91 – Fachgruppe Wasserschaden Pumpen mit Großpumpe eingetroffen, Stärke null – drei – neun – gesamt zwölf – erbitten Auftrag – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anmelden"
+        }
+      ]
+    },
+    "n_auftrag": {
+      "id": "n_auftrag",
+      "role": "thw_gruppenführer",
+      "narrative": "**Florian Neuhaus 1:** „Heros Neuhaus 47/91 – Auftrag: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Neu hinter dem Deich. Melden, wenn die Pumpe läuft – kommen.“\n\nWiederholen Sie den Auftrag.",
+      "actions": [
+        {
+          "id": "radio_auftrag",
+          "label": "📞 Auftrag wiederholen",
+          "radioCall": {
+            "expectedPhrases": [
+              "47/91",
+              "verstanden",
+              "Unterführung",
+              "Bahnhofstraße",
+              "leerpumpen",
+              "Deich",
+              "kommen"
+            ],
+            "hint": "Hier Heros Neuhaus 47/91 – verstanden: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Neu hinter dem Deich, melden wenn Pumpe läuft – kommen.",
+            "briefing": "„hier Heros Neuhaus 47/91“ . „verstanden“ . Auftrag wiederholen (Unterführung leerpumpen, Einleitung hinter dem Deich, Meldung bei Pumpenstart) . „kommen“",
+            "onSuccess": "n_aufstellen",
+            "onFailure": "n_auftrag_fail",
+            "feedbackSuccess": "✅ Auftrag vollständig wiederholt.",
+            "feedbackFailure": "❌ Wiederholen Sie Ziel, Einleitstelle und die Meldepflicht."
+          }
+        }
+      ]
+    },
+    "n_auftrag_fail": {
+      "id": "n_auftrag_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Durch die Wiederholung merkt die Einsatzleitung sofort, wenn etwas falsch angekommen ist – etwa eine falsche Einleitstelle.\n\nBeispiel: *„Hier Heros Neuhaus 47/91 – verstanden: Unterführung Bahnhofstraße leerpumpen, Einleitung in die Neu hinter dem Deich, melden wenn Pumpe läuft – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_auftrag"
+        }
+      ]
+    },
+    "n_aufstellen_x1": {
+      "id": "n_aufstellen_x1",
+      "role": "thw_gruppenführer",
+      "narrative": "**Nicht richtig.** Steigt das Wasser oder rutscht der Untergrund, ist die Pumpe **verloren** und die Helfer stehen im Gefahrenbereich. Die Pumpe gehört auf **festen, erhöhten Grund**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_aufstellen"
+        }
+      ]
+    },
+    "n_aufstellen_x2": {
+      "id": "n_aufstellen_x2",
+      "role": "thw_gruppenführer",
+      "narrative": "**Nicht richtig.** Pumpen **saugen** nur über begrenzte Höhe und Länge – lange Saugleitungen kosten Leistung. Die Pumpe steht **nah am Wasser**, gefördert wird über die **Druckleitung**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_aufstellen"
+        }
+      ]
+    },
+    "n_aufstellen": {
+      "id": "n_aufstellen",
+      "role": "thw_gruppenführer",
+      "narrative": "Wo stellen Sie die Großpumpe auf?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🛻 Am Rand der Unterführung auf festem, erhöhtem Grund – Saugleitung ins Wasser, Druckleitung zum Deich",
+          "nextNodeId": "n_laeuft"
+        },
+        {
+          "id": "opt1",
+          "label": "🌊 Direkt unten in der Unterführung, möglichst nah am Wasser",
+          "nextNodeId": "n_aufstellen_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🏘️ Am Deich, und die Saugleitung 200 m lang verlegen",
+          "nextNodeId": "n_aufstellen_x2"
+        }
+      ]
+    },
+    "n_laeuft": {
+      "id": "n_laeuft",
+      "role": "thw_gruppenführer",
+      "narrative": "Die Großpumpe läuft seit **14:10 Uhr** mit voller Leistung, der Wasserstand sinkt. Melden Sie das der Einsatzleitung.",
+      "actions": [
+        {
+          "id": "radio_laeuft",
+          "label": "📞 Ausführung melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus 1",
+              "47/91",
+              "Großpumpe",
+              "14:10",
+              "5000",
+              "Wasserstand",
+              "sinkt",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 1 von Heros Neuhaus 47/91 – Großpumpe läuft seit 14:10 Uhr mit 5000 Liter pro Minute, Wasserstand sinkt – kommen.",
+            "briefing": "Anruf . Pumpe läuft seit 14:10 . Leistung (5000 l/min) . Wirkung (Wasserstand sinkt) . „kommen“",
+            "onSuccess": "n_diesel",
+            "onFailure": "n_laeuft_fail",
+            "feedbackSuccess": "✅ Ausführungsmeldung mit Zeit, Leistung und Wirkung.",
+            "feedbackFailure": "❌ Melden Sie Startzeit, Leistung und dass der Wasserstand sinkt."
+          }
+        }
+      ]
+    },
+    "n_laeuft_fail": {
+      "id": "n_laeuft_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Die Ausführung des Auftrags ist **meldepflichtig**. Mit Leistung und Wirkung kann die Einsatzleitung abschätzen, wie lange es dauert.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Neuhaus 47/91 – Großpumpe läuft seit 14:10 Uhr mit 5000 Liter pro Minute, Wasserstand sinkt – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_laeuft"
+        }
+      ]
+    },
+    "n_diesel": {
+      "id": "n_diesel",
+      "role": "thw_gruppenführer",
+      "narrative": "Am Abend: Der Diesel reicht noch etwa **bis 18 Uhr**. Für die Nacht brauchen Sie **200 Liter Diesel**. Für Betriebsstoff ist Ihr eigener Zugtrupp zuständig: **Heros Neuhaus 21/10**.\n\nFordern Sie den Betriebsstoff an.",
+      "actions": [
+        {
+          "id": "radio_diesel",
+          "label": "📞 Betriebsstoff anfordern",
+          "radioCall": {
+            "expectedPhrases": [
+              "21/10",
+              "47/91",
+              "Betriebsstoff",
+              "200",
+              "Diesel",
+              "Unterführung",
+              "18 Uhr",
+              "kommen"
+            ],
+            "hint": "Heros Neuhaus 21/10 von Heros Neuhaus 47/91 – Zuführung von Betriebsstoff erforderlich: 200 Liter Diesel zur Unterführung Bahnhofstraße bis 18 Uhr – kommen.",
+            "briefing": "Anruf: Heros Neuhaus 21/10 von Heros Neuhaus 47/91 . „Zuführung von Betriebsstoff erforderlich“ . Was und wie viel (200 l Diesel) . Wohin . Bis wann (18 Uhr) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_diesel_fail",
+            "feedbackSuccess": "✅ Nachforderung mit Menge, Ort und Zeitpunkt.",
+            "feedbackFailure": "❌ Fordern Sie an: was, wie viel, wohin, bis wann."
+          }
+        }
+      ]
+    },
+    "n_diesel_fail": {
+      "id": "n_diesel_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Eine Anforderung braucht **was – wie viel – wohin – bis wann**. Fehlt der Zeitpunkt, steht die Pumpe womöglich trocken.\n\nBeispiel: *„Heros Neuhaus 21/10 von Heros Neuhaus 47/91 – Zuführung von Betriebsstoff erforderlich: 200 Liter Diesel zur Unterführung Bahnhofstraße bis 18 Uhr – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_diesel"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "thw_gruppenführer",
+      "narrative": "**Heros Neuhaus 21/10:** „Hier 21/10 – verstanden, Diesel kommt bis 17:30 Uhr – Ende.“\n\nSauber angemeldet, Auftrag wiederholt, Pumpe sicher aufgestellt und rechtzeitig nachgefordert – die Unterführung ist am Morgen wieder frei.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anmelden"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

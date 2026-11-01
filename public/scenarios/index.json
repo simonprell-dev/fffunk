@@ -21,11 +21,11 @@
       "builtin/wasser/wasserfoerderung_lange_wegstrecke.json"
     ],
     "funk": [
-      "builtin/funk/grundausbildung.json",
       "builtin/funk/alarm_ausruecken.json",
       "builtin/funk/buchstabieren_din5009.json",
       "builtin/funk/einsatzabschnitte_bilden.json",
       "builtin/funk/funkdisziplin_mayday_fremd.json",
+      "builtin/funk/grundausbildung.json",
       "builtin/funk/koordination_nachkraefte.json",
       "builtin/funk/lagemeldung_nachalarmierung.json",
       "builtin/funk/mayday_atemschutznotfall.json",
@@ -38,6 +38,23 @@
       "builtin/sonstige/manv_erstmeldung.json",
       "builtin/sonstige/unwetter_einsatzserie.json",
       "builtin/sonstige/vermisstensuche.json"
+    ],
+    "thw": [
+      "builtin/thw/thw_anmarsch_verband.json",
+      "builtin/thw/thw_beleuchtung_feuerwehr.json",
+      "builtin/thw/thw_deich_sandsack.json",
+      "builtin/thw/thw_gebaeudeschaden_bergung.json",
+      "builtin/thw/thw_grundausbildung.json",
+      "builtin/thw/thw_hochwasser_pumpen.json"
+    ],
+    "rettungsdienst": [
+      "builtin/rettungsdienst/rd_bedrohung_notruf.json",
+      "builtin/rettungsdienst/rd_einsatzablauf_rtw.json",
+      "builtin/rettungsdienst/rd_fahrzeugdefekt.json",
+      "builtin/rettungsdienst/rd_grundausbildung.json",
+      "builtin/rettungsdienst/rd_manv_ersteintreffend.json",
+      "builtin/rettungsdienst/rd_notarzt_nachfordern.json",
+      "builtin/rettungsdienst/rd_schlaganfall_anmeldung.json"
     ]
   },
   "community": {

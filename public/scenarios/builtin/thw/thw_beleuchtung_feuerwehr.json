@@ -1,0 +1,228 @@
+{
+  "id": "thw_beleuchtung_feuerwehr",
+  "title": "THW: Einsatzstelle ausleuchten für die Feuerwehr",
+  "description": "Einsteiger: Als Gruppenführer der Fachgruppe Notversorgung bei der Feuerwehr-Einsatzleitung anmelden, eine Rückfrage stellen, die Ausleuchtung melden und sich am Ende wieder abmelden. 4 Funk-Schritte.",
+  "startingNodeId": "n_anmelden",
+  "playerRole": "thw_gruppenführer",
+  "nodes": {
+    "n_anmelden": {
+      "id": "n_anmelden",
+      "role": "thw_gruppenführer",
+      "narrative": "Nachts, Verkehrsunfall mit Lkw auf der Kreisstraße bei Neuhaus. Die Bergung wird Stunden dauern. Die Feuerwehr hat das THW zur **Ausleuchtung** angefordert.\n\nSie sind **Gruppenführer der Fachgruppe Notversorgung** (**Heros Neuhaus 24/91**) mit Lichtmast und Stromerzeuger. Einsatzleitung ist **Florian Neuhaus 1**.\n\nMelden Sie sich an.\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "actions": [
+        {
+          "id": "radio_anmelden",
+          "label": "📞 Anmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus 1",
+              "24/91",
+              "Notversorgung",
+              "eingetroffen",
+              "Lichtmast",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 1 von Heros Neuhaus 24/91 – Fachgruppe Notversorgung mit Lichtmast und Stromerzeuger eingetroffen – erbitten Auftrag – kommen.",
+            "briefing": "Anruf: Florian Neuhaus 1 von Heros Neuhaus 24/91 . Einheit + Gerät eingetroffen . „erbitten Auftrag“ . „kommen“",
+            "onSuccess": "n_frage",
+            "onFailure": "n_anmelden_fail",
+            "feedbackSuccess": "✅ Angemeldet mit Einheit und Gerät.",
+            "feedbackFailure": "❌ Melden Sie: Fachgruppe Notversorgung mit Lichtmast eingetroffen, erbitten Auftrag."
+          }
+        }
+      ]
+    },
+    "n_anmelden_fail": {
+      "id": "n_anmelden_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Auch als Unterstützung für die Feuerwehr gilt: erst **anmelden**, dann arbeiten.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Neuhaus 24/91 – Fachgruppe Notversorgung mit Lichtmast und Stromerzeuger eingetroffen – erbitten Auftrag – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anmelden"
+        }
+      ]
+    },
+    "n_frage": {
+      "id": "n_frage",
+      "role": "thw_gruppenführer",
+      "narrative": "**Florian Neuhaus 1:** „Heros Neuhaus 24/91 – Auftrag: Unfallstelle und Arbeitsbereich am Lkw ausleuchten – kommen.“\n\nUnklar ist, **wo der Stromerzeuger stehen darf** – auf der Straße wird gearbeitet. Stellen Sie eine Frage.",
+      "actions": [
+        {
+          "id": "radio_frage",
+          "label": "📞 Rückfrage stellen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus 1",
+              "24/91",
+              "verstanden",
+              "Frage",
+              "Stromerzeuger",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 1 von Heros Neuhaus 24/91 – verstanden, Unfallstelle ausleuchten. Frage: Wo darf der Stromerzeuger aufgestellt werden? – kommen.",
+            "briefing": "Auftrag bestätigen (verstanden, ausleuchten) . „Frage“ + Ihre Frage (Standort Stromerzeuger) . „kommen“",
+            "onSuccess": "n_blenden",
+            "onFailure": "n_frage_fail",
+            "feedbackSuccess": "✅ Auftrag bestätigt und Frage klar gekennzeichnet.",
+            "feedbackFailure": "❌ Bestätigen Sie den Auftrag und stellen Sie Ihre Frage mit „Frage“."
+          }
+        }
+      ]
+    },
+    "n_frage_fail": {
+      "id": "n_frage_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Mit **„Frage“** weiß die Einsatzleitung sofort, dass eine Antwort erwartet wird.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Neuhaus 24/91 – verstanden, Unfallstelle ausleuchten. Frage: Wo darf der Stromerzeuger aufgestellt werden? – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_frage"
+        }
+      ]
+    },
+    "n_blenden_x1": {
+      "id": "n_blenden_x1",
+      "role": "thw_gruppenführer",
+      "narrative": "**Nicht richtig.** Flaches Licht **blendet** Einsatzkräfte und Verkehr und wirft lange Schatten. Hoch montiert und **von oben** leuchtet es gleichmäßig aus.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_blenden"
+        }
+      ]
+    },
+    "n_blenden_x2": {
+      "id": "n_blenden_x2",
+      "role": "thw_gruppenführer",
+      "narrative": "**Nicht richtig.** Auch **Wege, Rettungsplatz und Absperrung** müssen hell sein – sonst stolpern die Kräfte zwischen Fahrzeugen und Einsatzstelle.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_blenden"
+        }
+      ]
+    },
+    "n_blenden": {
+      "id": "n_blenden",
+      "role": "thw_gruppenführer",
+      "narrative": "**Florian Neuhaus 1:** „Stromerzeuger auf den Feldweg rechts, 30 Meter hinter der Einsatzstelle – kommen.“\n\nWie richten Sie den Lichtmast aus?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "💡 Hoch und von oben/hinten auf den Arbeitsbereich – Gegenverkehr und Kräfte nicht blenden",
+          "nextNodeId": "n_meldung"
+        },
+        {
+          "id": "opt1",
+          "label": "🔦 Flach direkt in Fahrtrichtung, damit möglichst weit Licht ist",
+          "nextNodeId": "n_blenden_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🌟 Alle Scheinwerfer auf den Lkw, der Rest bleibt dunkel",
+          "nextNodeId": "n_blenden_x2"
+        }
+      ]
+    },
+    "n_meldung": {
+      "id": "n_meldung",
+      "role": "thw_gruppenführer",
+      "narrative": "Lichtmast steht, die Einsatzstelle ist hell, der Stromerzeuger läuft auf dem Feldweg. Mit einer Tankfüllung läuft er etwa **8 Stunden**.\n\nMelden Sie die Ausführung.",
+      "actions": [
+        {
+          "id": "radio_meldung",
+          "label": "📞 Ausführung melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus 1",
+              "24/91",
+              "ausgeleuchtet",
+              "Stromerzeuger",
+              "8 Stunden",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 1 von Heros Neuhaus 24/91 – Einsatzstelle ausgeleuchtet, Stromerzeuger läuft auf dem Feldweg, Betriebsdauer 8 Stunden – kommen.",
+            "briefing": "Anruf . Auftrag ausgeführt (ausgeleuchtet) . Standort Stromerzeuger . Betriebsdauer . „kommen“",
+            "onSuccess": "n_abmelden",
+            "onFailure": "n_meldung_fail",
+            "feedbackSuccess": "✅ Ausführung mit Betriebsdauer gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: ausgeleuchtet, Stromerzeuger läuft, Betriebsdauer 8 Stunden."
+          }
+        }
+      ]
+    },
+    "n_meldung_fail": {
+      "id": "n_meldung_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Mit der **Betriebsdauer** weiß die Einsatzleitung, ob und wann nachgetankt werden muss.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Neuhaus 24/91 – Einsatzstelle ausgeleuchtet, Stromerzeuger läuft auf dem Feldweg, Betriebsdauer 8 Stunden – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_meldung"
+        }
+      ]
+    },
+    "n_abmelden": {
+      "id": "n_abmelden",
+      "role": "thw_gruppenführer",
+      "narrative": "Gegen 4 Uhr ist der Lkw geborgen. **Florian Neuhaus 1:** „Heros Neuhaus 24/91 – Ausleuchtung kann abgebaut werden – kommen.“\n\nBestätigen Sie und melden Sie sich ab.",
+      "actions": [
+        {
+          "id": "radio_abmelden",
+          "label": "📞 Abmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Florian Neuhaus 1",
+              "24/91",
+              "verstanden",
+              "rücken ein",
+              "melde mich ab",
+              "kommen"
+            ],
+            "hint": "Florian Neuhaus 1 von Heros Neuhaus 24/91 – verstanden, bauen ab und rücken ein, ich melde mich ab – kommen.",
+            "briefing": "„verstanden“ . was Sie tun (abbauen, einrücken) . „ich melde mich ab“ . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_abmelden_fail",
+            "feedbackSuccess": "✅ Sauber abgemeldet.",
+            "feedbackFailure": "❌ Bestätigen Sie, dass Sie abbauen und einrücken, und melden Sie sich ab."
+          }
+        }
+      ]
+    },
+    "n_abmelden_fail": {
+      "id": "n_abmelden_fail",
+      "role": "thw_gruppenführer",
+      "narrative": "**Feedback:** Ohne Abmeldung führt die Einsatzleitung Sie weiter als **an der Einsatzstelle**.\n\nBeispiel: *„Florian Neuhaus 1 von Heros Neuhaus 24/91 – verstanden, bauen ab und rücken ein, ich melde mich ab – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_abmelden"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "thw_gruppenführer",
+      "narrative": "**Florian Neuhaus 1:** „Hier Florian Neuhaus 1 – verstanden, danke für die Unterstützung – Ende.“\n\nAngemeldet, nachgefragt statt geraten, blendfrei ausgeleuchtet und sauber abgemeldet.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anmelden"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

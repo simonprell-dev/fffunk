@@ -29,3 +29,4 @@ android/keystore.properties
 
 # Vosk-Modell (node scripts/fetch-vosk-model.mjs)
 android/app/src/main/assets/model-de/
+__pycache__/

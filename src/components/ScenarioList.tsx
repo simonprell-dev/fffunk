@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Copy, Folder, FolderOpen, Heart } from 'lucide-react';
 import { ApiScenarioEntry, Scenario, PlayerRole } from '../types/story';
 import { getCategoryLabel } from '../lib/community-scenarios';
+import { sortFolderScenarios } from '../lib/scenario-order';
 import { buildShareUrl, hasThankd, markThanked, thankScenario } from '../lib/community-api';
 
 interface Props {
@@ -29,6 +30,9 @@ function getRoleBadge(role: PlayerRole): { label: string; cls: string } {
   if (role === 'truppmann') return { label: 'Truppmann', cls: 'bg-amber-900/40 text-amber-300 border border-amber-800' };
   if (role === 'atemschutzüberwachung') return { label: 'Atemschutz', cls: 'bg-blue-900/40 text-blue-300 border border-blue-800' };
   if (role === 'einsatzleit') return { label: 'Leitstelle', cls: 'bg-purple-900/40 text-purple-300 border border-purple-800' };
+  if (role === 'thw_helfer') return { label: 'THW-Helfer', cls: 'bg-sky-900/40 text-sky-300 border border-sky-800' };
+  if (role === 'thw_gruppenführer') return { label: 'THW-Gruppenführer', cls: 'bg-sky-900/40 text-sky-300 border border-sky-800' };
+  if (role === 'rettungsdienst') return { label: 'Rettungsdienst', cls: 'bg-rose-900/40 text-rose-300 border border-rose-800' };
   return { label: role, cls: 'bg-[#333] text-[#a3a3a3]' };
 }
 
@@ -86,7 +90,7 @@ export default function ScenarioList({ scenarios, apiScenarios, onSelect, onCrea
       .map(([id, folderScenarios]) => ({
         id,
         label: getCategoryLabel(id),
-        scenarios: folderScenarios.sort((a, b) => a.title.localeCompare(b.title, 'de')),
+        scenarios: sortFolderScenarios(folderScenarios),
       }))
       .sort((a, b) => a.label.localeCompare(b.label, 'de'));
   }, [scenarios]);

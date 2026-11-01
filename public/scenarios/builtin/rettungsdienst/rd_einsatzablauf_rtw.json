@@ -1,0 +1,375 @@
+{
+  "id": "rd_einsatzablauf_rtw",
+  "title": "Rettungsdienst: Ein RTW-Einsatz von Alarm bis frei",
+  "description": "Einsteiger: Mit dem RTW einen kompletten Einsatz fahren – Einsatzauftrag wiederholen, Status 3, 4, 7, 8 und 1 richtig drücken, Rückmeldung geben und die Patientin ohne Namen in der Klinik anmelden. 3 Funk-Schritte.",
+  "startingNodeId": "n_auftrag",
+  "playerRole": "rettungsdienst",
+  "nodes": {
+    "n_auftrag": {
+      "id": "n_auftrag",
+      "role": "rettungsdienst",
+      "narrative": "Sie sind Notfallsanitäter auf dem RTW **Rotkreuz Neuhaus 71/1**, Status 2 auf der Wache. Der Melder geht, das Display zeigt **C – melden für Einsatzauftrag**. Sie haben die Leitstelle gerufen:\n\n**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 – Einsatz: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person, kommt nicht mehr hoch – kommen.“\n\nWiederholen Sie den Einsatzauftrag.\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "radio_auftrag",
+          "label": "📞 Einsatzauftrag wiederholen",
+          "radioCall": {
+            "expectedPhrases": [
+              "71/1",
+              "verstanden",
+              "Lindenweg 3",
+              "Erdgeschoss",
+              "gestürzte Person",
+              "kommen"
+            ],
+            "hint": "Hier Rotkreuz Neuhaus 71/1 – verstanden: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person – kommen.",
+            "briefing": "„hier Rotkreuz Neuhaus 71/1“ . „verstanden“ . Einsatzort (Lindenweg 3, Erdgeschoss) . Stichwort (gestürzte Person) . „kommen“",
+            "onSuccess": "n_status3",
+            "onFailure": "n_auftrag_fail",
+            "feedbackSuccess": "✅ Einsatzort und Stichwort wiederholt – Hörfehler beim Ort wären sonst teuer.",
+            "feedbackFailure": "❌ Wiederholen Sie Ort, Stockwerk und Stichwort."
+          }
+        }
+      ]
+    },
+    "n_auftrag_fail": {
+      "id": "n_auftrag_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Die Wiederholung des **Einsatzorts** schützt vor der teuersten Verwechslung: einer falschen Adresse.\n\nBeispiel: *„Hier Rotkreuz Neuhaus 71/1 – verstanden: Neuhaus, Lindenweg 3, Erdgeschoss, gestürzte Person – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_auftrag"
+        }
+      ]
+    },
+    "n_status3_x1": {
+      "id": "n_status3_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **4** kommt erst **am Einsatzort**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status3"
+        }
+      ]
+    },
+    "n_status3_x2": {
+      "id": "n_status3_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **1** heißt frei über Funk – Sie sind aber im Einsatz.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status3"
+        }
+      ]
+    },
+    "n_status3": {
+      "id": "n_status3",
+      "role": "rettungsdienst",
+      "narrative": "Sie sitzen im RTW und fahren los. Welchen Status drücken Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 3 – Einsatz übernommen",
+          "nextNodeId": "n_status4"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 4",
+          "nextNodeId": "n_status3_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Status 1",
+          "nextNodeId": "n_status3_x2"
+        }
+      ]
+    },
+    "n_status4_x1": {
+      "id": "n_status4_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **7** heißt Patient aufgenommen – Sie haben die Patientin noch nicht gesehen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status4"
+        }
+      ]
+    },
+    "n_status4_x2": {
+      "id": "n_status4_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Die Leitstelle braucht den **Status 4** – davon hängen Zeiten, Statistik und die Disposition anderer Fahrzeuge ab.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status4"
+        }
+      ]
+    },
+    "n_status4": {
+      "id": "n_status4",
+      "role": "rettungsdienst",
+      "narrative": "**Status 3** ist gesetzt. Nach sechs Minuten halten Sie vor dem Lindenweg 3. Welcher Status?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 4 – am Einsatzort",
+          "nextNodeId": "n_rueckmeldung"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 7",
+          "nextNodeId": "n_status4_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Kein Status, die Leitstelle sieht uns ja auf dem Navi",
+          "nextNodeId": "n_status4_x2"
+        }
+      ]
+    },
+    "n_rueckmeldung": {
+      "id": "n_rueckmeldung",
+      "role": "rettungsdienst",
+      "narrative": "In der Wohnung finden Sie eine **ältere Dame**, gestürzt, das **rechte Bein ist verkürzt und nach außen gedreht** – Verdacht auf **Oberschenkelhalsbruch**. Kreislauf stabil, ein Notarzt ist **nicht** nötig.\n\nSie drücken Status 5, die Leitstelle schickt **J**. Geben Sie eine kurze Rückmeldung.",
+      "actions": [
+        {
+          "id": "radio_rueckmeldung",
+          "label": "📞 Rückmeldung geben",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Oberschenkelhalsfraktur",
+              "stabil",
+              "kein Notarzt",
+              "kommen"
+            ],
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.",
+            "briefing": "Anruf . Patientin (weiblich, kein Name) . Verdacht (Oberschenkelhalsfraktur) . Zustand (stabil) . „kein Notarzt erforderlich“ . „kommen“",
+            "onSuccess": "n_status7",
+            "onFailure": "n_rueckmeldung_fail",
+            "feedbackSuccess": "✅ Kurze, namenlose Rückmeldung mit der wichtigsten Information: kein Notarzt nötig.",
+            "feedbackFailure": "❌ Melden Sie: weiblich, Verdacht, stabil, kein Notarzt erforderlich."
+          }
+        }
+      ]
+    },
+    "n_rueckmeldung_fail": {
+      "id": "n_rueckmeldung_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Mit „**kein Notarzt erforderlich**“ kann die Leitstelle das NEF für andere Einsätze freihalten.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Patientin weiblich, Verdacht Oberschenkelhalsfraktur, Kreislauf stabil, kein Notarzt erforderlich – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_rueckmeldung"
+        }
+      ]
+    },
+    "n_status7_x1": {
+      "id": "n_status7_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **8** heißt am **Zielort** – Sie sind noch unterwegs.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status7"
+        }
+      ]
+    },
+    "n_status7_x2": {
+      "id": "n_status7_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **3** war die Anfahrt zum Einsatz.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status7"
+        }
+      ]
+    },
+    "n_status7": {
+      "id": "n_status7",
+      "role": "rettungsdienst",
+      "narrative": "Die Patientin ist auf der Trage im RTW, Sie fahren los. Welcher Status?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 7 – Patient aufgenommen",
+          "nextNodeId": "n_anmeldung"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 8",
+          "nextNodeId": "n_status7_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Status 3",
+          "nextNodeId": "n_status7_x2"
+        }
+      ]
+    },
+    "n_anmeldung": {
+      "id": "n_anmeldung",
+      "role": "rettungsdienst",
+      "narrative": "**Leitstelle Neuhaus:** sendet **d – Transportziel durchgeben**. Sie fahren ins **Klinikum Neuhaus**, Ankunft in etwa **15 Minuten**.\n\nMelden Sie Ziel und Patientin an – ohne Namen.",
+      "actions": [
+        {
+          "id": "radio_anmeldung",
+          "label": "📞 Zielklinik anmelden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Klinikum Neuhaus",
+              "anmelden",
+              "weiblich",
+              "Oberschenkelhalsfraktur",
+              "15 Minuten",
+              "kommen"
+            ],
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.",
+            "briefing": "Anruf . „bitte für das Klinikum Neuhaus anmelden“ . Geschlecht . Verdacht . Ankunftszeit . „kommen“",
+            "onSuccess": "n_status8",
+            "onFailure": "n_anmeldung_fail",
+            "feedbackSuccess": "✅ Anmeldung vollständig und ohne Namen.",
+            "feedbackFailure": "❌ Melden Sie: Klinik, weiblich, Verdacht, Ankunft in 15 Minuten."
+          }
+        }
+      ]
+    },
+    "n_anmeldung_fail": {
+      "id": "n_anmeldung_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Klinik, Geschlecht, Verdacht und Ankunftszeit reichen. Der **Name** gehört nicht in den Funk.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: weiblich, Verdacht Oberschenkelhalsfraktur, Ankunft in 15 Minuten – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anmeldung"
+        }
+      ]
+    },
+    "n_status8_x1": {
+      "id": "n_status8_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Noch nicht – erst übergeben. Am Zielort: **8**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status8"
+        }
+      ]
+    },
+    "n_status8_x2": {
+      "id": "n_status8_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **4** ist der **Einsatzort**, nicht die Klinik.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status8"
+        }
+      ]
+    },
+    "n_status8": {
+      "id": "n_status8",
+      "role": "rettungsdienst",
+      "narrative": "Die Leitstelle sendet **h – Zielort verständigt**. Sie fahren in die Liegendanfahrt des Klinikums. Welcher Status?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 8 – am Zielort",
+          "nextNodeId": "n_status1"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 1",
+          "nextNodeId": "n_status8_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Status 4",
+          "nextNodeId": "n_status8_x2"
+        }
+      ]
+    },
+    "n_status1_x1": {
+      "id": "n_status1_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **2** heißt frei **auf der Wache** – Sie sind aber noch am Klinikum. Einsatzbereit unterwegs: **1**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status1"
+        }
+      ]
+    },
+    "n_status1_x2": {
+      "id": "n_status1_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **6** heißt nicht einsatzbereit – Sie sind aber wieder einsatzbereit.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status1"
+        }
+      ]
+    },
+    "n_status1": {
+      "id": "n_status1",
+      "role": "rettungsdienst",
+      "narrative": "Übergabe in der Notaufnahme erledigt, der RTW ist wieder bestückt, Sie sitzen im Fahrzeug. Welcher Status?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 1 – frei über Funk",
+          "nextNodeId": "n_end"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 2",
+          "nextNodeId": "n_status1_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Status 6",
+          "nextNodeId": "n_status1_x2"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "rettungsdienst",
+      "narrative": "Die Leitstelle sieht **Status 1** – Sie können sofort zum nächsten Einsatz.\n\nAuftrag wiederholt, Status lückenlos gedrückt, Rückmeldung und Anmeldung ohne Namen – ein sauberer Einsatz.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_auftrag"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

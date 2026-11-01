@@ -39,6 +39,8 @@ export const categoryOptions = [
   { value: 'verkehr', label: 'Verkehr' },
   { value: 'wasser', label: 'Wasseraufbau' },
   { value: 'funk', label: 'Funkgrundlagen' },
+  { value: 'thw', label: 'THW' },
+  { value: 'rettungsdienst', label: 'Rettungsdienst' },
   { value: 'sonstige', label: 'Sonstige' },
   { value: 'eigene', label: 'Eigene Kategorie' },
 ];

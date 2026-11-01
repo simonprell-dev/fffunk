@@ -8,7 +8,10 @@ export type PlayerRole =
   | 'truppführer'
   | 'truppmann'
   | 'atemschutzüberwachung'
-  | 'einsatzleit';
+  | 'einsatzleit'
+  | 'thw_helfer'
+  | 'thw_gruppenführer'
+  | 'rettungsdienst';
 
 export interface StoryNode {
   id: string;

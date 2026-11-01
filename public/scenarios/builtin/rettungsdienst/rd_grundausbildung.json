@@ -1,0 +1,787 @@
+{
+  "id": "rd_grundausbildung",
+  "title": "Rettungsdienst Grundausbildung Sprechfunk",
+  "description": "Für Neue im Rettungsdienst: In 5 Kapiteln lernst du Rufnamen, Status, Sprechwunsch, die Klinikanmeldung ohne Namen und wann Status 0 oder die Notruftaste dran ist.",
+  "startingNodeId": "r_start",
+  "playerRole": "rettungsdienst",
+  "chapters": [
+    {
+      "id": "rufnamen",
+      "title": "Rufnamen im Rettungsdienst",
+      "startNodeId": "r_start",
+      "endNodeId": "r_end"
+    },
+    {
+      "id": "status",
+      "title": "Status drücken",
+      "startNodeId": "s_start",
+      "endNodeId": "s_end"
+    },
+    {
+      "id": "sprechwunsch",
+      "title": "Sprechwunsch: Status 5 und J",
+      "startNodeId": "w_start",
+      "endNodeId": "w_end"
+    },
+    {
+      "id": "anmeldung",
+      "title": "Klinikanmeldung ohne Namen",
+      "startNodeId": "a_start",
+      "endNodeId": "a_end"
+    },
+    {
+      "id": "notfall",
+      "title": "Status 0 oder Notruftaste",
+      "startNodeId": "n_start",
+      "endNodeId": "n_end"
+    }
+  ],
+  "nodes": {
+    "r_start": {
+      "id": "r_start",
+      "role": "rettungsdienst",
+      "narrative": "Dein erster Dienst auf der **Rettungswache Neuhaus** des Roten Kreuzes. Dein Praxisanleiter zeigt dir den Rettungswagen.\n\n**Praxisanleiter:** „Unser RTW heißt **Rotkreuz Neuhaus 71/1**. Das Kennwort sagt, wer das Fahrzeug betreibt: **Rotkreuz** (BRK/DRK), **Sama** (ASB), **Akkon** (Johanniter), **Johannes** (Malteser). Die **71** ist der RTW, **72** der KTW, **76** das Notarzteinsatzfahrzeug, **79** First Responder. Die Leitstelle ist einfach **Leitstelle Neuhaus**.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_choice": {
+      "id": "r_choice",
+      "role": "rettungsdienst",
+      "narrative": "Über Funk hörst du **Akkon Neuhaus 76/1**. Wer ist das?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Ein Krankentransportwagen der Johanniter",
+          "nextNodeId": "r_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "Das Notarzteinsatzfahrzeug der Johanniter",
+          "nextNodeId": "r_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "Ein RTW der Malteser",
+          "nextNodeId": "r_x1"
+        }
+      ]
+    },
+    "r_x1": {
+      "id": "r_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht ganz.** **Akkon** sind die **Johanniter** (die Malteser heißen **Johannes**), und **76** ist das **NEF** – der RTW wäre 71.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_x2": {
+      "id": "r_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Fast.** Akkon = Johanniter stimmt. Aber der KTW hat die **72** – die **76** ist das **Notarzteinsatzfahrzeug**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_speak": {
+      "id": "r_speak",
+      "role": "rettungsdienst",
+      "narrative": "**Richtig!** Jetzt du: Rufe die Leitstelle. Wie immer: **Wen rufst du – von wem – kommen.**",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Leitstelle anfunken",
+          "radioCall": {
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – kommen.",
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "Rotkreuz",
+              "71/1",
+              "kommen"
+            ],
+            "onSuccess": "r_speak2",
+            "onFailure": "r_fail",
+            "response": "Hier Leitstelle Neuhaus – kommen."
+          }
+        }
+      ]
+    },
+    "r_fail": {
+      "id": "r_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "r_speak"
+        }
+      ]
+    },
+    "r_speak2": {
+      "id": "r_speak2",
+      "role": "rettungsdienst",
+      "narrative": "Jetzt ruft die Leitstelle **euch**:\n\n**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 von Leitstelle Neuhaus – kommen.“\n\nAntworte: **Hier** – dein Rufname – **kommen**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Anruf beantworten",
+          "radioCall": {
+            "hint": "Hier Rotkreuz Neuhaus 71/1 – kommen.",
+            "expectedPhrases": [
+              "hier",
+              "Rotkreuz",
+              "71/1",
+              "kommen"
+            ],
+            "onSuccess": "r_end",
+            "onFailure": "r_fail2",
+            "response": "Hier Leitstelle Neuhaus – Funkprobe, danke – Ende."
+          }
+        }
+      ]
+    },
+    "r_fail2": {
+      "id": "r_fail2",
+      "role": "rettungsdienst",
+      "narrative": "**Fast.** „Hier Rotkreuz Neuhaus 71/1 – kommen.“ – „hört“ ist kein Funkwort.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "r_speak2"
+        }
+      ]
+    },
+    "r_end": {
+      "id": "r_end",
+      "role": "rettungsdienst",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Kennwort – Ort – Kennzahl.** 71 RTW, 72 KTW, 76 NEF, 79 First Responder.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "s_start": {
+      "id": "s_start",
+      "role": "rettungsdienst",
+      "narrative": "Im RTW zeigt dir der Praxisanleiter das Bedienteil.\n\n**Praxisanleiter:** „Das Meiste sagen wir der Leitstelle **ohne Worte – mit Status**: **1** frei über Funk · **2** frei auf Wache · **3** Einsatz übernommen · **4** am Einsatzort · **6** nicht einsatzbereit · **7** Patient aufgenommen · **8** am Zielort. Ein gedrückter Status spart dem Funkkanal viele Sprüche.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "s_choice"
+        }
+      ]
+    },
+    "s_choice": {
+      "id": "s_choice",
+      "role": "rettungsdienst",
+      "narrative": "Alarm! Ihr sitzt im RTW und fahrt von der Wache los. Welchen Status drückst du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Status 4",
+          "nextNodeId": "s_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Status 3 – Einsatz übernommen",
+          "nextNodeId": "s2_choice"
+        },
+        {
+          "id": "opt2",
+          "label": "Status 1",
+          "nextNodeId": "s_x2"
+        }
+      ]
+    },
+    "s_x1": {
+      "id": "s_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Zu früh.** **4** heißt: am Einsatzort angekommen. Beim Losfahren drückst du **3** – Einsatz übernommen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "s_choice"
+        }
+      ]
+    },
+    "s_x2": {
+      "id": "s_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht ganz.** **1** heißt: frei über Funk – also einsatzbereit für den **nächsten** Einsatz. Ihr seid aber gerade unterwegs: **3**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "s_choice"
+        }
+      ]
+    },
+    "s2_choice": {
+      "id": "s2_choice",
+      "role": "rettungsdienst",
+      "narrative": "**Richtig!** Ihr habt die Patientin versorgt, sie liegt im RTW, ihr fahrt ins Krankenhaus. Welcher Status?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Status 3",
+          "nextNodeId": "s2_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "Status 8",
+          "nextNodeId": "s2_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "Status 7 – Patient aufgenommen",
+          "nextNodeId": "s_speak"
+        }
+      ]
+    },
+    "s2_x1": {
+      "id": "s2_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Noch nicht.** **8** drückst du erst **am Zielort**, also in der Klinik. Mit Patient an Bord unterwegs: **7**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "s2_choice"
+        }
+      ]
+    },
+    "s2_x2": {
+      "id": "s2_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht ganz.** **3** war die Anfahrt zum Einsatz. Mit Patient an Bord: **7** – Patient aufgenommen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "s2_choice"
+        }
+      ]
+    },
+    "s_speak": {
+      "id": "s_speak",
+      "role": "rettungsdienst",
+      "narrative": "**Richtig!** Nach Status 7 fragt die Leitstelle oft nach dem Ziel:\n\n**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 – Transportziel durchgeben – kommen.“\n\nIhr fahrt ins **Klinikum Neuhaus**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Transportziel durchgeben",
+          "radioCall": {
+            "hint": "Hier Rotkreuz Neuhaus 71/1 – Transportziel Klinikum Neuhaus – kommen.",
+            "expectedPhrases": [
+              "71/1",
+              "Transportziel",
+              "Klinikum Neuhaus",
+              "kommen"
+            ],
+            "onSuccess": "s_end",
+            "onFailure": "s_fail",
+            "response": "Hier Leitstelle Neuhaus – verstanden – Ende."
+          }
+        }
+      ]
+    },
+    "s_fail": {
+      "id": "s_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Noch nicht ganz.** „Hier Rotkreuz Neuhaus 71/1 – Transportziel Klinikum Neuhaus – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "s_speak"
+        }
+      ]
+    },
+    "s_end": {
+      "id": "s_end",
+      "role": "rettungsdienst",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **3** los – **4** da – **7** Patient an Bord – **8** am Ziel – **1** wieder frei.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "w_start": {
+      "id": "w_start",
+      "role": "rettungsdienst",
+      "narrative": "Zurück auf der Wache. Der Praxisanleiter erklärt, wie man der Leitstelle etwas sagt.\n\n**Praxisanleiter:** „Die Leitstelle spricht mit vielen Fahrzeugen gleichzeitig. Willst du etwas sagen, drückst du **Status 5 – Sprechwunsch** und **wartest**. Hat die Leitstelle Zeit, schickt sie dir ein **J – Sprechaufforderung** oder ruft dich. Erst **dann** sprichst du.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "w_choice"
+        }
+      ]
+    },
+    "w_choice": {
+      "id": "w_choice",
+      "role": "rettungsdienst",
+      "narrative": "Nach einem Transport ist euer RTW **stark verschmutzt** und muss auf der Wache desinfiziert werden. Das muss die Leitstelle wissen. Was machst du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Einfach lossprechen: „Leitstelle Neuhaus von …“",
+          "nextNodeId": "w_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Status 5 drücken und auf J warten",
+          "nextNodeId": "w_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "Gar nichts sagen und einfach zur Wache fahren",
+          "nextNodeId": "w_x2"
+        }
+      ]
+    },
+    "w_x1": {
+      "id": "w_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht ganz.** Vielleicht spricht die Leitstelle gerade mit einem anderen Fahrzeug über einen Notfall. Mit **Status 5** meldest du dich an – sie ruft dich, sobald sie kann.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "w_choice"
+        }
+      ]
+    },
+    "w_x2": {
+      "id": "w_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht gut.** Die Leitstelle hält euch sonst für einsatzbereit und schickt euch womöglich zum nächsten Notfall.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "w_choice"
+        }
+      ]
+    },
+    "w_speak": {
+      "id": "w_speak",
+      "role": "rettungsdienst",
+      "narrative": "**Richtig!** Auf dem Display erscheint **J**. Sprich jetzt: was los ist, was ihr tut, wie lange es dauert.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Nach J sprechen",
+          "radioCall": {
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.",
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "verschmutzt",
+              "Desinfektion",
+              "30 Minuten",
+              "nicht einsatzbereit",
+              "kommen"
+            ],
+            "onSuccess": "w2_choice",
+            "onFailure": "w_fail",
+            "response": "Hier Leitstelle Neuhaus – verstanden, Status 6 – Ende."
+          }
+        }
+      ]
+    },
+    "w_fail": {
+      "id": "w_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Noch nicht ganz.** „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Fahrzeug stark verschmutzt, fahren zur Desinfektion auf die Wache, etwa 30 Minuten nicht einsatzbereit – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "w_speak"
+        }
+      ]
+    },
+    "w2_choice": {
+      "id": "w2_choice",
+      "role": "rettungsdienst",
+      "narrative": "Die Leitstelle sagt „Status 6“. Nach der Desinfektion steht der RTW sauber auf der Wache. Welchen Status drückst du jetzt?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Status 2 – frei auf Wache",
+          "nextNodeId": "w_end"
+        },
+        {
+          "id": "opt1",
+          "label": "Status 5",
+          "nextNodeId": "w2_x2"
+        },
+        {
+          "id": "opt2",
+          "label": "Status 6",
+          "nextNodeId": "w2_x1"
+        }
+      ]
+    },
+    "w2_x1": {
+      "id": "w2_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht mehr.** **6** heißt nicht einsatzbereit – das seid ihr ja nicht mehr. Auf der Wache und bereit: **2**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "w2_choice"
+        }
+      ]
+    },
+    "w2_x2": {
+      "id": "w2_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht nötig.** Für „wieder einsatzbereit“ gibt es einen eigenen Status – das spart den Funkspruch: **2**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "w2_choice"
+        }
+      ]
+    },
+    "w_end": {
+      "id": "w_end",
+      "role": "rettungsdienst",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Status 5 – warten auf J – dann sprechen.**\n\n> *In manchen Leitstellen sprichst du nach J ohne neuen Anruf sofort los – frag nach, wie es bei euch üblich ist.*",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "a_start": {
+      "id": "a_start",
+      "role": "rettungsdienst",
+      "narrative": "Unterwegs zur Klinik. Der Praxisanleiter erklärt die Anmeldung.\n\n**Praxisanleiter:** „Funk kann **jeder mithören**. Deshalb nennen wir **nie Namen oder Geburtsdaten**. Für die Klinik reicht: **Wunschklinik, Geschlecht, Verdachtsdiagnose, Ankunftszeit**. Viele Bereiche nutzen statt der Diagnose einen **PZC** (Patientenzuweisungscode). Bei **Schockraum, Schlaganfall, Herzinfarkt oder Reanimation** meldest du zusätzlich **telefonisch** vor.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_choice": {
+      "id": "a_choice",
+      "role": "rettungsdienst",
+      "narrative": "Euer Patient: **Herr Max Berger**, geboren 1950, Sturz vom Fahrrad, Verdacht auf **Unterschenkelbruch**. In etwa **20 Minuten** seid ihr im Klinikum Neuhaus. Was gehört in den Funkspruch?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„… Herr Max Berger, geboren 1950, Unterschenkelbruch …“",
+          "nextNodeId": "a_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "„… männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten …“",
+          "nextNodeId": "a_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "„… wir kommen gleich mit einem Patienten …“",
+          "nextNodeId": "a_x2"
+        }
+      ]
+    },
+    "a_x1": {
+      "id": "a_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Datenschutz!** Über Funk hört jeder mit, der einen Scanner hat. **Keine Namen, keine Geburtsdaten** – Geschlecht und Verdachtsdiagnose reichen der Klinik.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_x2": {
+      "id": "a_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Zu wenig.** Die Klinik muss wissen, **was** kommt und **wann** – sonst steht kein passendes Team bereit.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_speak": {
+      "id": "a_speak",
+      "role": "rettungsdienst",
+      "narrative": "**Richtig!** Die Leitstelle hat euch nach Status 5 aufgefordert. Melde den Patienten über die Leitstelle beim Klinikum an.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Patienten anmelden",
+          "radioCall": {
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.",
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Klinikum Neuhaus",
+              "anmelden",
+              "männlich",
+              "Unterschenkelfraktur",
+              "20 Minuten",
+              "kommen"
+            ],
+            "onSuccess": "a_end",
+            "onFailure": "a_fail",
+            "response": "Hier Leitstelle Neuhaus – verstanden, Klinikum Neuhaus, männlich, Unterschenkelfraktur, 20 Minuten – Ende."
+          }
+        }
+      ]
+    },
+    "a_fail": {
+      "id": "a_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Noch nicht ganz.** Klinik – Geschlecht – Verdacht – Ankunft, aber **kein Name**: „Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – bitte für das Klinikum Neuhaus anmelden: männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "a_speak"
+        }
+      ]
+    },
+    "a_end": {
+      "id": "a_end",
+      "role": "rettungsdienst",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Klinik – Geschlecht – Verdacht – Ankunft.** Namen gibt es nur am Telefon oder bei der Übergabe.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "rettungsdienst",
+      "narrative": "Letzte Lektion für heute: die dringenden Fälle.\n\n**Praxisanleiter:** „**Status 5** ist ein normaler Sprechwunsch. Ist es **dringend für den Patienten** – zum Beispiel ihr braucht sofort einen Notarzt – drückst du im Digitalfunk **Status 0: dringender Sprechwunsch**. Status 0 ist **kein Notruf**! Seid **ihr selbst in Gefahr**, drückst du die rote **Notruftaste** mindestens drei Sekunden – dann ist dein Mikrofon offen und du hast Vorrang vor allen.“\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in deinem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n_choice": {
+      "id": "n_choice",
+      "role": "rettungsdienst",
+      "narrative": "Euer Patient wird plötzlich **bewusstlos**, ihr braucht **sofort einen Notarzt**. Was drückst du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Die rote Notruftaste",
+          "nextNodeId": "n_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Status 5 und warten",
+          "nextNodeId": "n_x2"
+        },
+        {
+          "id": "opt2",
+          "label": "Status 0 – dringender Sprechwunsch",
+          "nextNodeId": "n2_choice"
+        }
+      ]
+    },
+    "n_x1": {
+      "id": "n_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht ganz.** Die Notruftaste ist für **eure eigene Lebensgefahr**. Für den Patienten: **Status 0** – dringender Sprechwunsch.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n_x2": {
+      "id": "n_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Zu langsam.** Bei Status 5 kann es dauern, bis die Leitstelle Zeit hat. Für einen Notfall des Patienten: **Status 0**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n2_choice": {
+      "id": "n2_choice",
+      "role": "rettungsdienst",
+      "narrative": "**Richtig!** Nächster Einsatz: In der Wohnung zieht ein **Angehöriger plötzlich ein Messer** und bedroht euch. Ihr zieht euch sofort zurück. Was jetzt?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Erst einmal abwarten, ob er sich beruhigt",
+          "nextNodeId": "n2_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "🆘 Notruftaste drücken",
+          "nextNodeId": "n_sos"
+        },
+        {
+          "id": "opt2",
+          "label": "Status 0 drücken",
+          "nextNodeId": "n2_x1"
+        }
+      ]
+    },
+    "n2_x1": {
+      "id": "n2_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht ganz.** Status 0 ist ein Sprechwunsch – ihr müsstet warten. Bei **eigener Lebensgefahr**: **Notruftaste**, dann sofort sprechen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "n2_choice"
+        }
+      ]
+    },
+    "n2_x2": {
+      "id": "n2_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Gefährlich.** Bei Bedrohung zählt jede Sekunde – Polizei braucht Zeit zur Anfahrt. Sofort **Notruftaste**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "n2_choice"
+        }
+      ]
+    },
+    "n_sos": {
+      "id": "n_sos",
+      "role": "rettungsdienst",
+      "narrative": "**Richtig!** Drück jetzt die **Notruftaste** deines Funkgeräts.",
+      "actions": [
+        {
+          "id": "sos",
+          "label": "🆘 Notruftaste drücken",
+          "nextNodeId": "n_speak",
+          "key": "sos"
+        }
+      ]
+    },
+    "n_speak": {
+      "id": "n_speak",
+      "role": "rettungsdienst",
+      "narrative": "Die Notruftaste ist ausgelöst, dein Mikrofon ist offen. Sprich sofort: **Notruf – wer – wo – was – was ihr braucht.**",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Notruf sprechen",
+          "radioCall": {
+            "hint": "Notruf – Rotkreuz Neuhaus 71/1 – Lindenweg 3 – Bedrohung durch Person mit Messer – ziehen uns zum Fahrzeug zurück – brauchen Polizei – kommen.",
+            "expectedPhrases": [
+              "Notruf",
+              "71/1",
+              "Lindenweg 3",
+              "Bedrohung",
+              "Messer",
+              "Polizei",
+              "kommen"
+            ],
+            "onSuccess": "n_end",
+            "onFailure": "n_fail",
+            "response": "Hier Leitstelle Neuhaus – Notruf verstanden, Polizei ist alarmiert. Bleiben Sie im Fahrzeug – kommen."
+          }
+        }
+      ]
+    },
+    "n_fail": {
+      "id": "n_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Noch nicht ganz.** **Notruf** – wer – wo – was – was ihr braucht: „Notruf – Rotkreuz Neuhaus 71/1 – Lindenweg 3 – Bedrohung durch Person mit Messer – ziehen uns zum Fahrzeug zurück – brauchen Polizei – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "n_speak"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "rettungsdienst",
+      "narrative": "**Geschafft – die Polizei ist unterwegs, ihr seid in Sicherheit.** 🎉\n\nDu kennst jetzt die Grundlagen: Rufnamen, Status, Sprechwunsch, Klinikanmeldung ohne Namen, Status 0 und Notruftaste. **Willkommen im Rettungsdienst-Funk!**",
+      "actions": [
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        },
+        {
+          "id": "exit",
+          "label": "🏁 Beenden",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

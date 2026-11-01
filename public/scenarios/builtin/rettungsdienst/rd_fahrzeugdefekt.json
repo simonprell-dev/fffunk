@@ -1,0 +1,196 @@
+{
+  "id": "rd_fahrzeugdefekt",
+  "title": "Rettungsdienst: Defekt am RTW – Status 6",
+  "description": "Einsteiger: Nach einem Einsatz fällt die Trage aus – den richtigen Status wählen, den Ausfall über Sprechwunsch melden und später die Einsatzbereitschaft mit dem Ersatzfahrzeug zurückmelden. 2 Funk-Schritte.",
+  "startingNodeId": "n_defekt",
+  "playerRole": "rettungsdienst",
+  "nodes": {
+    "n_defekt_x1": {
+      "id": "n_defekt_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Mit defekter Trage sind Sie **nicht** einsatzbereit – die Leitstelle würde Sie zum nächsten Notfall schicken.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_defekt"
+        }
+      ]
+    },
+    "n_defekt_x2": {
+      "id": "n_defekt_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Den hatten Sie bei der Ankunft – jetzt geht es um die **Einsatzbereitschaft**: **6**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_defekt"
+        }
+      ]
+    },
+    "n_defekt": {
+      "id": "n_defekt",
+      "role": "rettungsdienst",
+      "narrative": "Nach der Übergabe im Klinikum merken Sie: Das **Fahrgestell der Trage klemmt** – sie lässt sich nicht mehr absenken. Ohne Trage können Sie keinen liegenden Patienten transportieren.\n\nWelchen Status drücken Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 6 – nicht einsatzbereit",
+          "nextNodeId": "n_sprechwunsch"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 1",
+          "nextNodeId": "n_defekt_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Status 8",
+          "nextNodeId": "n_defekt_x2"
+        }
+      ]
+    },
+    "n_sprechwunsch": {
+      "id": "n_sprechwunsch",
+      "role": "rettungsdienst",
+      "narrative": "Die Leitstelle soll wissen, **warum** und **wie lange**. Sie drücken Status 5, das Display zeigt **J**. Die Ersatztrage liegt auf der Wache, Tausch etwa **30 Minuten**.",
+      "actions": [
+        {
+          "id": "radio_sprechwunsch",
+          "label": "📞 Ausfall melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Trage defekt",
+              "nicht einsatzbereit",
+              "Wache",
+              "30 Minuten",
+              "kommen"
+            ],
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Trage defekt, Fahrzeug nicht einsatzbereit, fahren zur Wache zum Tausch, etwa 30 Minuten – kommen.",
+            "briefing": "Anruf . was (Trage defekt) . Folge (nicht einsatzbereit) . was Sie tun (zur Wache, Tausch) . wie lange (30 Minuten) . „kommen“",
+            "onSuccess": "n_wieder",
+            "onFailure": "n_sprechwunsch_fail",
+            "feedbackSuccess": "✅ Ausfall mit Grund, Maßnahme und Dauer gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Trage defekt, nicht einsatzbereit, zur Wache, etwa 30 Minuten."
+          }
+        }
+      ]
+    },
+    "n_sprechwunsch_fail": {
+      "id": "n_sprechwunsch_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Mit der **Dauer** kann die Leitstelle planen, ob ein anderes Fahrzeug Ihren Bereich abdecken muss.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Trage defekt, Fahrzeug nicht einsatzbereit, fahren zur Wache zum Tausch, etwa 30 Minuten – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_sprechwunsch"
+        }
+      ]
+    },
+    "n_wieder": {
+      "id": "n_wieder",
+      "role": "rettungsdienst",
+      "narrative": "Auf der Wache ist die Trage getauscht, der RTW ist wieder voll einsatzbereit. Die Leitstelle möchte das **auch hören**, weil sie Ihren Bereich umgeplant hatte – sie ruft Sie:\n\n**Leitstelle Neuhaus:** „Rotkreuz Neuhaus 71/1 von Leitstelle Neuhaus – Frage Einsatzbereitschaft – kommen.“",
+      "actions": [
+        {
+          "id": "radio_wieder",
+          "label": "📞 Einsatzbereitschaft melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "71/1",
+              "Trage getauscht",
+              "einsatzbereit",
+              "Wache",
+              "kommen"
+            ],
+            "hint": "Hier Rotkreuz Neuhaus 71/1 – Trage getauscht, wieder einsatzbereit auf der Wache – kommen.",
+            "briefing": "„hier Rotkreuz Neuhaus 71/1“ . was erledigt ist (Trage getauscht) . „wieder einsatzbereit“ . wo (auf der Wache) . „kommen“",
+            "onSuccess": "n_status2",
+            "onFailure": "n_wieder_fail",
+            "feedbackSuccess": "✅ Einsatzbereitschaft klar zurückgemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Trage getauscht, wieder einsatzbereit auf der Wache."
+          }
+        }
+      ]
+    },
+    "n_wieder_fail": {
+      "id": "n_wieder_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Kurz und eindeutig: **was** behoben ist und **dass** Sie wieder einsatzbereit sind.\n\nBeispiel: *„Hier Rotkreuz Neuhaus 71/1 – Trage getauscht, wieder einsatzbereit auf der Wache – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_wieder"
+        }
+      ]
+    },
+    "n_status2_x1": {
+      "id": "n_status2_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** **1** heißt frei **über Funk** (unterwegs). Sie stehen auf der Wache: **2**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status2"
+        }
+      ]
+    },
+    "n_status2_x2": {
+      "id": "n_status2_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Die **6** ist vorbei – Sie sind wieder einsatzbereit.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status2"
+        }
+      ]
+    },
+    "n_status2": {
+      "id": "n_status2",
+      "role": "rettungsdienst",
+      "narrative": "**Leitstelle Neuhaus:** „Verstanden – Ende.“ Welchen Status drücken Sie jetzt?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 2 – frei auf Wache",
+          "nextNodeId": "n_end"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 1",
+          "nextNodeId": "n_status2_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Status 6",
+          "nextNodeId": "n_status2_x2"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "rettungsdienst",
+      "narrative": "Die Leitstelle sieht **Status 2** und plant Sie wieder ein.\n\nRichtiger Status, Sprechwunsch statt Dazwischenfunken und eine klare Rückmeldung.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_defekt"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

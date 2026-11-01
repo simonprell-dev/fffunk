@@ -11,6 +11,7 @@ import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community
 import { apiUrl } from './lib/api-base';
 import { CompactSetting, getCompactSetting, setCompactSetting } from './lib/display-mode';
 import { trackEvent } from './lib/usage-stats';
+import { handlesSosKey } from './lib/sos-key';
 import { onRadioKey } from './lib/radio-keys';
 
 interface LicenseData {
@@ -260,7 +261,7 @@ function App() {
   const sosRef = useRef<() => void>(() => {});
   sosRef.current = () => {
     const mayday = scenarios.find(sc => sc.id === 'mayday_atemschutznotfall');
-    if (view === 'practice' && selectedScenario?.chapters) return; // Kapitel-Szenario wertet die Taste selbst aus
+    if (view === 'practice' && handlesSosKey(selectedScenario)) return; // Szenario wertet die Taste selbst aus
     if (mayday && selectedScenario?.id !== mayday.id) { audio.stop(); startScenario(mayday); }
   };
   useEffect(() => onRadioKey((key, pressed) => { if (key === 'sos' && pressed) sosRef.current(); }), []);
@@ -454,7 +455,7 @@ function App() {
           </div>
         ) : view === 'training' ? (
           <ScenarioList
-            scenarios={scenarios.filter(s => s.id !== GRUNDAUSBILDUNG_ID)} // Muster-Funkspruch ist dort verborgen – nichts für Einsteiger
+            scenarios={scenarios.filter(s => !s.chapters)} // Grundausbildungen: Muster-Funkspruch ist dort verborgen – nichts für Einsteiger
             apiScenarios={apiScenarios}
             mode="training"
             onSelect={(s) => startScenario(s, 'training')}

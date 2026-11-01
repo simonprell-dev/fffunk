@@ -26,6 +26,9 @@ const roleOptions: Array<{ value: PlayerRole; label: string }> = [
   { value: 'truppmann', label: 'Truppmann' },
   { value: 'atemschutzüberwachung', label: 'Atemschutzüberwachung' },
   { value: 'einsatzleit', label: 'Einsatzleitung' },
+  { value: 'thw_helfer', label: 'THW-Helfer' },
+  { value: 'thw_gruppenführer', label: 'THW-Gruppenführer' },
+  { value: 'rettungsdienst', label: 'Rettungsdienst (RTW)' },
 ];
 
 const emptyStep = {
@@ -35,7 +38,7 @@ const emptyStep = {
   feedbackFailure: '',
 };
 
-const KNOWN_CATEGORIES = new Set(['brand', 'thl', 'verkehr', 'wasser', 'funk', 'sonstige']);
+const KNOWN_CATEGORIES = new Set(['brand', 'thl', 'verkehr', 'wasser', 'funk', 'sonstige', 'thw', 'rettungsdienst']);
 
 function scenarioToDraft(scenario: Scenario): ScenarioDraft {
   const steps: ScenarioDraft['steps'] = [];
@@ -77,10 +80,10 @@ function createInitialDraft(): ScenarioDraft {
     authorName: '',
     steps: [
       {
-        prompt: '**Gruppenführer:** Gruppenführer für Wassertrupp.\n\nAntworten Sie korrekt auf den Anruf.',
-        expectedPhrases: 'Wassertrupp, hört',
-        hint: 'Wassertrupp hört.',
-        feedbackFailure: 'Antworten Sie mit Rufname und „hört".',
+        prompt: '**Gruppenführer:** „Wassertrupp von Gruppenführer – kommen.“\n\nAntworten Sie korrekt auf den Anruf.',
+        expectedPhrases: 'hier, Wassertrupp, kommen',
+        hint: 'Hier Wassertrupp – kommen.',
+        feedbackFailure: 'Antworten Sie mit „hier“, Ihrem Rufnamen und „kommen“.',
       },
       { ...emptyStep },
     ],
@@ -326,7 +329,7 @@ export default function ScenarioEditor({ onSave, onImport, onClose, onPublished,
             </label>
             <label className="block">
               <span className="text-sm text-[#a3a3a3]">Erwartete Schlüsselbegriffe, kommagetrennt</span>
-              <textarea value={step.expectedPhrases} onChange={e => updateStep(index, { expectedPhrases: e.target.value })} rows={2} placeholder="z.B. Wassertrupp, hört, Verteiler" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
+              <textarea value={step.expectedPhrases} onChange={e => updateStep(index, { expectedPhrases: e.target.value })} rows={2} placeholder="z.B. Wassertrupp, verstanden, Verteiler" className="mt-1 w-full bg-[#111] border border-[#444] rounded-lg px-3 py-2" />
             </label>
             <label className="block">
               <span className="text-sm text-[#a3a3a3]">Beispiel-Funkspruch</span>

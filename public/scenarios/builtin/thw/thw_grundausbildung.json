@@ -1,0 +1,708 @@
+{
+  "id": "thw_grundausbildung",
+  "title": "THW Grundausbildung Sprechfunk",
+  "description": "Für neue THW-Helferinnen und -Helfer: In 5 Kapiteln lernst du Heros-Rufnamen, Stärkemeldung, Meldungen nach den 5 W, An- und Abmelden und das Melden von Gefahren.",
+  "startingNodeId": "h_start",
+  "playerRole": "thw_helfer",
+  "chapters": [
+    {
+      "id": "rufnamen",
+      "title": "Heros-Rufnamen lesen",
+      "startNodeId": "h_start",
+      "endNodeId": "h_end"
+    },
+    {
+      "id": "staerke",
+      "title": "Die Stärkemeldung",
+      "startNodeId": "s_start",
+      "endNodeId": "s_end"
+    },
+    {
+      "id": "meldung",
+      "title": "Meldung nach den 5 W",
+      "startNodeId": "w_start",
+      "endNodeId": "w_end"
+    },
+    {
+      "id": "anmelden",
+      "title": "An- und Abmelden",
+      "startNodeId": "b_start",
+      "endNodeId": "b_end"
+    },
+    {
+      "id": "gefahr",
+      "title": "Gefahr melden",
+      "startNodeId": "g_start",
+      "endNodeId": "g_end"
+    }
+  ],
+  "nodes": {
+    "h_start": {
+      "id": "h_start",
+      "role": "thw_helfer",
+      "narrative": "Dienstabend im **THW-Ortsverband Neuhaus**. Du bist Helfer in der **1. Bergungsgruppe**, euer Fahrzeug ist der Gerätekraftwagen (GKW).\n\n**Gruppenführer:** „Beim THW beginnt jeder Funkrufname mit **Heros**, dann der Ortsverband, dann zwei Zahlen: **Einheit / Fahrzeug oder Person**. Unser GKW ist **Heros Neuhaus 22/51** – 22 ist die 1. Bergungsgruppe, 51 der GKW. **21** ist der Zugtrupp, die **91** steht für die Führungskraft. Gesprochen wird jede Zahl einzeln: „zweiundzwanzig – einundfünfzig“.“\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "h_choice"
+        }
+      ]
+    },
+    "h_choice": {
+      "id": "h_choice",
+      "role": "thw_helfer",
+      "narrative": "Wer meldet sich mit **Heros Neuhaus 21/91**?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Der GKW der 1. Bergungsgruppe",
+          "nextNodeId": "h_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Der Zugführer (Zugtrupp 21, Führungskraft 91)",
+          "nextNodeId": "h_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "Der Ortsverband selbst",
+          "nextNodeId": "h_x2"
+        }
+      ]
+    },
+    "h_x1": {
+      "id": "h_x1",
+      "role": "thw_helfer",
+      "narrative": "**Nicht ganz.** Der GKW ist **22/51** – Einheit 22, Fahrzeug 51. Bei **21/91** steht 21 für den **Zugtrupp** und 91 für die **Führungskraft** – also den Zugführer.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "h_choice"
+        }
+      ]
+    },
+    "h_x2": {
+      "id": "h_x2",
+      "role": "thw_helfer",
+      "narrative": "**Nicht ganz.** Der Ortsverband hat eine eigene Kennzahl. **21/91** ist der **Zugführer**: Zugtrupp (21), Führungskraft (91).",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "h_choice"
+        }
+      ]
+    },
+    "h_speak": {
+      "id": "h_speak",
+      "role": "thw_helfer",
+      "narrative": "**Richtig!** Jetzt du: Rufe vom GKW aus den Zugführer. Wie immer: **Wen rufst du – von wem – kommen.**",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Zugführer anfunken",
+          "radioCall": {
+            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – kommen.",
+            "expectedPhrases": [
+              "Heros",
+              "21/91",
+              "22/51",
+              "kommen"
+            ],
+            "onSuccess": "h_speak2",
+            "onFailure": "h_fail",
+            "response": "Hier Heros Neuhaus 21/91 – kommen."
+          }
+        }
+      ]
+    },
+    "h_fail": {
+      "id": "h_fail",
+      "role": "thw_helfer",
+      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "h_speak"
+        }
+      ]
+    },
+    "h_speak2": {
+      "id": "h_speak2",
+      "role": "thw_helfer",
+      "narrative": "Der Zugführer antwortet. Melde ihm, dass eure **Bergungsgruppe einsatzbereit** ist.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Einsatzbereitschaft melden",
+          "radioCall": {
+            "hint": "Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Bergungsgruppe einsatzbereit – kommen.",
+            "expectedPhrases": [
+              "21/91",
+              "22/51",
+              "Bergungsgruppe",
+              "einsatzbereit",
+              "kommen"
+            ],
+            "onSuccess": "h_end",
+            "onFailure": "h_fail2",
+            "response": "Hier Heros Neuhaus 21/91 – verstanden – Ende."
+          }
+        }
+      ]
+    },
+    "h_fail2": {
+      "id": "h_fail2",
+      "role": "thw_helfer",
+      "narrative": "**Fast.** „Heros Neuhaus 21/91 von Heros Neuhaus 22/51 – Bergungsgruppe einsatzbereit – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "h_speak2"
+        }
+      ]
+    },
+    "h_end": {
+      "id": "h_end",
+      "role": "thw_helfer",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Heros – Ortsverband – Einheit / Fahrzeug oder Person.** 21 Zugtrupp, 22 1. Bergungsgruppe, 51 GKW, 91 Führungskraft.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "s_start": {
+      "id": "s_start",
+      "role": "thw_helfer",
+      "narrative": "Vor dem Einsatz will der Zugführer wissen, wie viele Kräfte ihr seid.\n\n**Gruppenführer:** „Die **Stärke** meldet man beim THW **vierteilig**: **Führer / Unterführer / Helfer / gesamt**. Eine volle Bergungsgruppe ist **null – zwo – sieben – gesamt neun**: kein Zugführer dabei, zwei Unterführer (Gruppenführer und Truppführer), sieben Helfer.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "s_choice"
+        }
+      ]
+    },
+    "s_choice": {
+      "id": "s_choice",
+      "role": "thw_helfer",
+      "narrative": "Heute seid ihr **ein Gruppenführer, ein Truppführer und sechs Helfer**. Wie lautet die Stärke?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„zwo – sechs – acht“",
+          "nextNodeId": "s_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "„null – zwo – sechs – gesamt acht“",
+          "nextNodeId": "s_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "„Wir sind acht Mann.“",
+          "nextNodeId": "s_x1"
+        }
+      ]
+    },
+    "s_x1": {
+      "id": "s_x1",
+      "role": "thw_helfer",
+      "narrative": "**Nicht ganz.** Die Gesamtzahl allein reicht nicht – die Führung muss wissen, **wie viele Führungskräfte** dabei sind. Immer vierteilig: Führer / Unterführer / Helfer / gesamt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "s_choice"
+        }
+      ]
+    },
+    "s_x2": {
+      "id": "s_x2",
+      "role": "thw_helfer",
+      "narrative": "**Fast.** Es fehlt die erste Stelle: die **Führer** (Zugführer). Auch wenn keiner dabei ist, sagst du **null**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "s_choice"
+        }
+      ]
+    },
+    "s_speak": {
+      "id": "s_speak",
+      "role": "thw_helfer",
+      "narrative": "**Richtig!** Der Zugführer fragt:\n\n**Zugführer:** „Heros Neuhaus 22/51 von Heros Neuhaus 21/91 – Frage Stärkemeldung – kommen.“\n\nAntworte mit eurer Stärke.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Stärke melden",
+          "radioCall": {
+            "hint": "Hier Heros Neuhaus 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.",
+            "expectedPhrases": [
+              "22/51",
+              "Stärke",
+              "null",
+              "zwo",
+              "sechs",
+              "gesamt",
+              "acht",
+              "kommen"
+            ],
+            "onSuccess": "s_end",
+            "onFailure": "s_fail",
+            "response": "Hier Heros Neuhaus 21/91 – verstanden – Ende."
+          }
+        }
+      ]
+    },
+    "s_fail": {
+      "id": "s_fail",
+      "role": "thw_helfer",
+      "narrative": "**Noch nicht ganz.** „Hier Heros Neuhaus 22/51 – Stärke null – zwo – sechs – gesamt acht – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "s_speak"
+        }
+      ]
+    },
+    "s_end": {
+      "id": "s_end",
+      "role": "thw_helfer",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: Stärke = **Führer / Unterführer / Helfer / gesamt** – auch eine Null wird gesprochen.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "w_start": {
+      "id": "w_start",
+      "role": "thw_helfer",
+      "narrative": "Übung am Trümmerkegel. Du bist mit deinem Truppführer an einem Gebäude eingesetzt.\n\n**Gruppenführer:** „Eine gute Meldung beantwortet die **5 W: Wo – Wann – Was – Wie – Wer**. Und sag dazu, ob du es **selbst festgestellt** hast, ob es dir **berichtet** wurde oder ob du es nur **vermutest**. Sofort melden musst du **Gefahren** und alles, was **vom Auftrag abweicht**.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "w_choice"
+        }
+      ]
+    },
+    "w_choice": {
+      "id": "w_choice",
+      "role": "thw_helfer",
+      "narrative": "Du siehst an der **Giebelwand auf der Nordseite** einen **Riss**, der breiter wird. Welche Meldung ist gut?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„… da ist was an der Wand – kommen.“",
+          "nextNodeId": "w_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "„… an der Giebelwand Nordseite einen Riss festgestellt, wird breiter – kommen.“",
+          "nextNodeId": "w_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "„… das Gebäude stürzt gleich ein – kommen.“",
+          "nextNodeId": "w_x2"
+        }
+      ]
+    },
+    "w_x1": {
+      "id": "w_x1",
+      "role": "thw_helfer",
+      "narrative": "**Zu ungenau.** **Wo** an der Wand? **Was** genau? Ändert es sich? Die Führung muss aus deiner Meldung entscheiden können.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "w_choice"
+        }
+      ]
+    },
+    "w_x2": {
+      "id": "w_x2",
+      "role": "thw_helfer",
+      "narrative": "**Vorsicht.** Das ist eine **Vermutung**, als Tatsache gemeldet. Melde, was du **festgestellt** hast – und kennzeichne Vermutungen als „vermutlich“.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "w_choice"
+        }
+      ]
+    },
+    "w_speak": {
+      "id": "w_speak",
+      "role": "thw_helfer",
+      "narrative": "**Richtig!** Melde jetzt deinem Gruppenführer: Es ist **10:20 Uhr**, Riss an der **Giebelwand Nordseite**, **festgestellt**, er **wird breiter**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Meldung absetzen",
+          "radioCall": {
+            "hint": "Gruppenführer von Truppführer – 10:20 Uhr – an der Giebelwand Nordseite einen Riss festgestellt, wird breiter – kommen.",
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Truppführer",
+              "Giebelwand",
+              "Riss",
+              "festgestellt",
+              "breiter",
+              "kommen"
+            ],
+            "onSuccess": "w_end",
+            "onFailure": "w_fail",
+            "response": "Hier Gruppenführer – verstanden, Beobachtungsposten wird aufgestellt – Ende."
+          }
+        }
+      ]
+    },
+    "w_fail": {
+      "id": "w_fail",
+      "role": "thw_helfer",
+      "narrative": "**Noch nicht ganz.** Wann – wo – was – festgestellt – wie: „Gruppenführer von Truppführer – 10:20 Uhr – an der Giebelwand Nordseite einen Riss festgestellt, wird breiter – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "w_speak"
+        }
+      ]
+    },
+    "w_end": {
+      "id": "w_end",
+      "role": "thw_helfer",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Wo – Wann – Was – Wie – Wer** – und sagen, ob **festgestellt, berichtet oder vermutet**.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "b_start": {
+      "id": "b_start",
+      "role": "thw_helfer",
+      "narrative": "Großübung mit mehreren Ortsverbänden. Den Funkverkehr leitet die **Führungsstelle Heros Neuhaus 10** – sie ist die **Betriebsleitung** eures Sprechfunkverkehrskreises.\n\n**Gruppenführer:** „Kommst du in einen fremden Sprechfunkverkehrskreis, **meldest du dich bei der Betriebsleitung an**. Verlässt du ihn, **meldest du dich ab**. So weiß sie immer, wer da ist.“\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "b_choice"
+        }
+      ]
+    },
+    "b_choice": {
+      "id": "b_choice",
+      "role": "thw_helfer",
+      "narrative": "Ihr seid mit dem GKW an der Übungsstelle angekommen. Was machst du zuerst über Funk?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Gar nichts – die sehen uns ja",
+          "nextNodeId": "b_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "Gleich die anderen Gruppen anfunken und Material absprechen",
+          "nextNodeId": "b_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "Bei der Betriebsleitung Heros Neuhaus 10 anmelden",
+          "nextNodeId": "b_speak"
+        }
+      ]
+    },
+    "b_x1": {
+      "id": "b_x1",
+      "role": "thw_helfer",
+      "narrative": "**Nicht ganz.** Erst **anmelden** – die Betriebsleitung muss wissen, dass ihr im Kreis seid, bevor ihr dort funkt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "b_choice"
+        }
+      ]
+    },
+    "b_x2": {
+      "id": "b_x2",
+      "role": "thw_helfer",
+      "narrative": "**Nicht ganz.** Gesehen ist nicht gemeldet. Ohne Anmeldung fehlt ihr in der Übersicht der Betriebsleitung.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "b_choice"
+        }
+      ]
+    },
+    "b_speak": {
+      "id": "b_speak",
+      "role": "thw_helfer",
+      "narrative": "**Richtig!** Melde dich mit dem GKW bei der Betriebsleitung an.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Anmelden",
+          "radioCall": {
+            "hint": "Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.",
+            "expectedPhrases": [
+              "Heros Neuhaus 10",
+              "22/51",
+              "melde mich an",
+              "kommen"
+            ],
+            "onSuccess": "b_speak2",
+            "onFailure": "b_fail",
+            "response": "Hier Heros Neuhaus 10 – verstanden – Ende."
+          }
+        }
+      ]
+    },
+    "b_fail": {
+      "id": "b_fail",
+      "role": "thw_helfer",
+      "narrative": "**Noch nicht ganz.** „Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich an Ihrem Sprechfunkverkehrskreis an – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "b_speak"
+        }
+      ]
+    },
+    "b_speak2": {
+      "id": "b_speak2",
+      "role": "thw_helfer",
+      "narrative": "Die Übung ist vorbei, ihr fahrt zurück zur Unterkunft. Melde dich bei der Betriebsleitung ab.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Abmelden",
+          "radioCall": {
+            "hint": "Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.",
+            "expectedPhrases": [
+              "Heros Neuhaus 10",
+              "22/51",
+              "melde mich ab",
+              "kommen"
+            ],
+            "onSuccess": "b_end",
+            "onFailure": "b_fail2",
+            "response": "Hier Heros Neuhaus 10 – verstanden – Ende."
+          }
+        }
+      ]
+    },
+    "b_fail2": {
+      "id": "b_fail2",
+      "role": "thw_helfer",
+      "narrative": "**Fast.** „Heros Neuhaus 10 von Heros Neuhaus 22/51 – ich melde mich aus Ihrem Sprechfunkverkehrskreis ab – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "b_speak2"
+        }
+      ]
+    },
+    "b_end": {
+      "id": "b_end",
+      "role": "thw_helfer",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: Neuer Sprechfunkverkehrskreis? **Anmelden.** Weg? **Abmelden.**",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "g_start": {
+      "id": "g_start",
+      "role": "thw_helfer",
+      "narrative": "Zurück am Trümmerkegel. Du stehst als **Beobachtungsposten** vor dem beschädigten Gebäude, im Inneren arbeitet die Bergungsgruppe.\n\n**Gruppenführer:** „Der Beobachtungsposten hat nur eine Aufgabe: das Gebäude beobachten. Siehst du eine **Gefahr**, meldest du **sofort** – bei Gefahr für Leib und Leben darfst du dafür auch einen laufenden Funkverkehr **unterbrechen**.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "g_choice"
+        }
+      ]
+    },
+    "g_choice": {
+      "id": "g_choice",
+      "role": "thw_helfer",
+      "narrative": "Gerade sprechen zwei Trupps über Werkzeug. Da siehst du: **Die Giebelwand bewegt sich.** Was tust du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Warten, bis der Funkverkehr fertig ist",
+          "nextNodeId": "g_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Sofort dazwischen funken: Gefahr melden",
+          "nextNodeId": "g_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "Ins Gebäude laufen und Bescheid sagen",
+          "nextNodeId": "g_x2"
+        }
+      ]
+    },
+    "g_x1": {
+      "id": "g_x1",
+      "role": "thw_helfer",
+      "narrative": "**Zu spät.** Bei Gefahr für Leib und Leben zählt jede Sekunde – du **unterbrichst** den laufenden Funkverkehr.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "g_choice"
+        }
+      ]
+    },
+    "g_x2": {
+      "id": "g_x2",
+      "role": "thw_helfer",
+      "narrative": "**Gefährlich.** Du bringst dich selbst in den Gefahrenbereich und verlierst Zeit. Melde **über Funk** – sofort.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "g_choice"
+        }
+      ]
+    },
+    "g_speak": {
+      "id": "g_speak",
+      "role": "thw_helfer",
+      "narrative": "**Richtig!** Funke deinen Gruppenführer an – kurz und klar: **Gefahr**, was du siehst, was zu tun ist.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Gefahr melden",
+          "radioCall": {
+            "hint": "Gruppenführer von Beobachtungsposten – Gefahr! Giebelwand bewegt sich – sofort räumen – kommen.",
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Beobachtungsposten",
+              "Gefahr",
+              "Giebelwand",
+              "räumen",
+              "kommen"
+            ],
+            "onSuccess": "g_speak2",
+            "onFailure": "g_fail",
+            "response": "Hier Gruppenführer – verstanden. An alle: Gebäude sofort räumen! – kommen."
+          }
+        }
+      ]
+    },
+    "g_fail": {
+      "id": "g_fail",
+      "role": "thw_helfer",
+      "narrative": "**Noch nicht ganz.** „Gruppenführer von Beobachtungsposten – Gefahr! Giebelwand bewegt sich – sofort räumen – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "g_speak"
+        }
+      ]
+    },
+    "g_speak2": {
+      "id": "g_speak2",
+      "role": "thw_helfer",
+      "narrative": "Alle Helfer verlassen das Gebäude. Du zählst mit: **alle neun sind draußen**. Melde das.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Vollzählig melden",
+          "radioCall": {
+            "hint": "Gruppenführer von Beobachtungsposten – Gebäude geräumt, alle neun Helfer draußen – kommen.",
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Beobachtungsposten",
+              "geräumt",
+              "neun",
+              "draußen",
+              "kommen"
+            ],
+            "onSuccess": "g_end",
+            "onFailure": "g_fail2",
+            "response": "Hier Gruppenführer – verstanden – Ende."
+          }
+        }
+      ]
+    },
+    "g_fail2": {
+      "id": "g_fail2",
+      "role": "thw_helfer",
+      "narrative": "**Fast.** „Gruppenführer von Beobachtungsposten – Gebäude geräumt, alle neun Helfer draußen – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "g_speak2"
+        }
+      ]
+    },
+    "g_end": {
+      "id": "g_end",
+      "role": "thw_helfer",
+      "narrative": "**Übung beendet – alle sind in Sicherheit.** 🎉\n\nDu kennst jetzt die Grundlagen: Heros-Rufnamen, Stärkemeldung, Meldung nach den 5 W, An- und Abmelden und Gefahrenmeldung. **Willkommen im THW-Funk!**",
+      "actions": [
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        },
+        {
+          "id": "exit",
+          "label": "🏁 Beenden",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

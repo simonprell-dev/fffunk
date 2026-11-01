@@ -1,0 +1,244 @@
+{
+  "id": "rd_manv_ersteintreffend",
+  "title": "Rettungsdienst: MANV – erster RTW an der Einsatzstelle",
+  "description": "Profi: Als erster RTW an einem Busunfall nicht sofort behandeln, sondern Lage melden und Kräfte anfordern, das Sichtungsergebnis durchgeben und die Einsatzleitung an LNA und OrgL übergeben. 3 Funk-Schritte.",
+  "startingNodeId": "n_erster",
+  "playerRole": "rettungsdienst",
+  "nodes": {
+    "n_erster_x1": {
+      "id": "n_erster_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Verständlich – aber wenn der **erste RTW** behandelt, fehlt die Lagemeldung, und alle weiteren Kräfte kommen **zu spät**. Erst melden und ordnen, dann helfen (kurze Blutstillung durch den Kollegen ist okay).",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_erster"
+        }
+      ]
+    },
+    "n_erster_x2": {
+      "id": "n_erster_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Dann steht die Einsatzstelle **ohne Rettungsdienst** da. Der erste RTW bleibt, **meldet** und **ordnet**, bis die Führung eintrifft.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_erster"
+        }
+      ]
+    },
+    "n_erster": {
+      "id": "n_erster",
+      "role": "rettungsdienst",
+      "narrative": "Alarm: **Verkehrsunfall mit Bus**, Kreisstraße 7 zwischen Neuhaus und Altdorf. Sie sind mit **Rotkreuz Neuhaus 71/1** als **erstes Rettungsmittel** vor Ort.\n\nEin **Linienbus** ist gegen einen Baum gefahren. Überall sitzen und liegen Verletzte, Sie schätzen **etwa 20**. Direkt vor Ihnen schreit ein Mann mit stark blutendem Arm. Was tun Sie zuerst?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📻 Überblick verschaffen und Lage an die Leitstelle melden – vorläufige Einsatzleitung übernehmen",
+          "nextNodeId": "n_lage"
+        },
+        {
+          "id": "opt1",
+          "label": "🩹 Sofort den blutenden Mann versorgen",
+          "nextNodeId": "n_erster_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚑 Den schwersten Patienten einladen und in die Klinik fahren",
+          "nextNodeId": "n_erster_x2"
+        }
+      ]
+    },
+    "n_lage": {
+      "id": "n_lage",
+      "role": "rettungsdienst",
+      "narrative": "Geben Sie die erste Lagemeldung: Ort, was passiert ist, geschätzte Zahl der Verletzten, was Sie brauchen.",
+      "actions": [
+        {
+          "id": "radio_lage",
+          "label": "📞 Erste Lagemeldung",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Kreisstraße 7",
+              "Bus",
+              "20 Verletzte",
+              "MANV",
+              "Notarzt",
+              "LNA",
+              "OrgL",
+              "Einsatzleitung",
+              "kommen"
+            ],
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Lagemeldung: Kreisstraße 7, Linienbus gegen Baum, geschätzt 20 Verletzte, MANV. Fordern weitere Rettungsmittel, Notärzte, LNA und OrgL an. Übernehmen vorläufige Einsatzleitung – kommen.",
+            "briefing": "Anruf . „Lagemeldung“ . wo (Kreisstraße 7) . was (Bus gegen Baum) . wie viele (geschätzt 20 Verletzte) . „MANV“ . Anforderung (Rettungsmittel, Notärzte, LNA, OrgL) . „übernehmen vorläufige Einsatzleitung“ . „kommen“",
+            "onSuccess": "n_sichtung",
+            "onFailure": "n_lage_fail",
+            "feedbackSuccess": "✅ Lagemeldung vollständig – die Leitstelle kann groß nachalarmieren.",
+            "feedbackFailure": "❌ Melden Sie: Ort, Bus gegen Baum, geschätzt 20 Verletzte, MANV, Anforderung, vorläufige Einsatzleitung."
+          }
+        }
+      ]
+    },
+    "n_lage_fail": {
+      "id": "n_lage_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Die **erste Lagemeldung** bestimmt, wie groß die Leitstelle nachalarmiert. Fordern Sie **Einsatzmittel** an – wer kommt, entscheidet die Leitstelle.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Lagemeldung: Kreisstraße 7, Linienbus gegen Baum, geschätzt 20 Verletzte, MANV. Fordern weitere Rettungsmittel, Notärzte, LNA und OrgL an. Übernehmen vorläufige Einsatzleitung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_sichtung": {
+      "id": "n_sichtung",
+      "role": "rettungsdienst",
+      "narrative": "Ihr Kollege und Sie haben gesichtet: **3 rot** (lebensbedrohlich), **6 gelb** (schwer verletzt), **11 grün** (leicht verletzt). Die ersten Nachalarmierten sind unterwegs.\n\nGeben Sie das Sichtungsergebnis durch.",
+      "actions": [
+        {
+          "id": "radio_sichtung",
+          "label": "📞 Sichtungsergebnis melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Sichtungsergebnis",
+              "3 rot",
+              "6 gelb",
+              "11 grün",
+              "20",
+              "kommen"
+            ],
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Sichtungsergebnis: 3 rot, 6 gelb, 11 grün, gesamt 20 – kommen.",
+            "briefing": "Anruf . „Sichtungsergebnis“ . Zahlen je Kategorie (3 rot, 6 gelb, 11 grün) . gesamt 20 . „kommen“",
+            "onSuccess": "n_uebergabe",
+            "onFailure": "n_sichtung_fail",
+            "feedbackSuccess": "✅ Sichtungsergebnis klar nach Kategorien gemeldet.",
+            "feedbackFailure": "❌ Melden Sie die Zahlen: 3 rot, 6 gelb, 11 grün, gesamt 20."
+          }
+        }
+      ]
+    },
+    "n_sichtung_fail": {
+      "id": "n_sichtung_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Mit den **Zahlen je Kategorie** plant die Leitstelle Transportmittel und verteilt die Patienten auf die Kliniken.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Sichtungsergebnis: 3 rot, 6 gelb, 11 grün, gesamt 20 – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_sichtung"
+        }
+      ]
+    },
+    "n_uebergabe_x1": {
+      "id": "n_uebergabe_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Die Übergabe an die Führung geschieht **persönlich** – kurz, aber vollständig. Funk ist für Nachfragen da, nicht für die Übergabe auf 20 Metern.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_uebergabe"
+        }
+      ]
+    },
+    "n_uebergabe_x2": {
+      "id": "n_uebergabe_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Ohne Übergabe beginnt die Führung **bei null**: Sie kennt weder die Sichtung noch die Anforderungen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_uebergabe"
+        }
+      ]
+    },
+    "n_uebergabe": {
+      "id": "n_uebergabe",
+      "role": "rettungsdienst",
+      "narrative": "Der **Leitende Notarzt (LNA)** und der **Organisatorische Leiter (OrgL)** treffen ein. Wie übergeben Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🗣️ Persönlich: Lage, Sichtungsergebnis, was angefordert ist – dann zurück an die Patienten",
+          "nextNodeId": "n_melden"
+        },
+        {
+          "id": "opt1",
+          "label": "📻 Über Funk, dann muss ich nicht von den Patienten weg",
+          "nextNodeId": "n_uebergabe_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🚑 Gar nicht – die sehen ja, was los ist",
+          "nextNodeId": "n_uebergabe_x2"
+        }
+      ]
+    },
+    "n_melden": {
+      "id": "n_melden",
+      "role": "rettungsdienst",
+      "narrative": "Die Übergabe ist erledigt. Melden Sie der Leitstelle, dass LNA und OrgL die Einsatzleitung übernommen haben und Sie in die Versorgung gehen.",
+      "actions": [
+        {
+          "id": "radio_melden",
+          "label": "📞 Übergabe melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Einsatzleitung",
+              "übergeben",
+              "LNA",
+              "OrgL",
+              "Versorgung",
+              "kommen"
+            ],
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Einsatzleitung an LNA und OrgL übergeben, übernehmen Patientenversorgung – kommen.",
+            "briefing": "Anruf . Einsatzleitung übergeben (an LNA und OrgL) . was Sie jetzt tun (Patientenversorgung) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_melden_fail",
+            "feedbackSuccess": "✅ Übergabe der Einsatzleitung gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Einsatzleitung an LNA und OrgL übergeben, übernehmen Versorgung."
+          }
+        }
+      ]
+    },
+    "n_melden_fail": {
+      "id": "n_melden_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Die Leitstelle muss wissen, **wer** jetzt die Einsatzstelle führt – ab sofort laufen Rückfragen über LNA und OrgL.\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Einsatzleitung an LNA und OrgL übergeben, übernehmen Patientenversorgung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_melden"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "rettungsdienst",
+      "narrative": "**Leitstelle Neuhaus:** „Verstanden – Ende.“\n\nNicht sofort behandelt, sondern gemeldet und geordnet, nach Kategorien gesichtet und sauber übergeben – genau das rettet beim MANV die meisten Leben.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_erster"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

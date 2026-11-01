@@ -6,7 +6,7 @@ gleichen Logik wie RadioCallModal.tsx erfuellt."""
 import json, os, re, sys, unicodedata
 
 sys.path.insert(0, os.path.dirname(__file__))
-import gen_funk, gen_trupp, gen_neu, gen_erw_a, gen_erw_b, gen_erw_c
+import gen_funk, gen_trupp, gen_neu, gen_erw_a, gen_erw_b, gen_erw_c, gen_grund, gen_thw, gen_rd
 from gen_lib import REPO
 
 
@@ -35,9 +35,9 @@ def matches(spoken, phrase):
 idx_path = os.path.join(REPO, "public", "scenarios", "index.json")
 with open(idx_path, encoding="utf-8") as f:
     idx = json.load(f)
-builtin = {k: [] for k in ["brand", "thl", "verkehr", "wasser", "funk", "sonstige"]}
+builtin = {k: [] for k in ["brand", "thl", "verkehr", "wasser", "funk", "sonstige", "thw", "rettungsdienst"]}
 problems = 0
-for mod in (gen_funk, gen_trupp, gen_neu, gen_erw_a, gen_erw_b, gen_erw_c):
+for mod in (gen_funk, gen_trupp, gen_neu, gen_erw_a, gen_erw_b, gen_erw_c, gen_grund, gen_thw, gen_rd):
     for folder, s in mod.OUT:
         builtin[folder].append(s.save(folder))
         for n in s.d["nodes"].values():

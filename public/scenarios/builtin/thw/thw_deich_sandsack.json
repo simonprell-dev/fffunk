@@ -1,0 +1,235 @@
+{
+  "id": "thw_deich_sandsack",
+  "title": "THW: Deichverteidigung mit Sandsäcken",
+  "description": "Mittel: Als Helfer und Truppführer beim Sandsackverbau eine Sickerstelle melden, Material nachfordern, den Wasserstand durchgeben und die Ablösung mit Stärke übergeben. 4 Funk-Schritte.",
+  "startingNodeId": "n_sickerstelle",
+  "playerRole": "thw_helfer",
+  "nodes": {
+    "n_sickerstelle_x1": {
+      "id": "n_sickerstelle_x1",
+      "role": "thw_helfer",
+      "narrative": "**Nicht richtig.** Trübes Wasser, das **Sand mitbringt**, kommt **durch** den Deich. Das ist ein Zeichen, dass der Deich innen ausgespült wird – **Gefahr eines Deichbruchs**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_sickerstelle"
+        }
+      ]
+    },
+    "n_sickerstelle_x2": {
+      "id": "n_sickerstelle_x2",
+      "role": "thw_helfer",
+      "narrative": "**Nicht richtig.** Gefahren werden **sofort** gemeldet. Der Gruppenführer muss Kräfte und Material dorthin lenken – und weiß ohne Meldung nichts davon.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_sickerstelle"
+        }
+      ]
+    },
+    "n_sickerstelle": {
+      "id": "n_sickerstelle",
+      "role": "thw_helfer",
+      "narrative": "Hochwasser an der Neu. Ihr Trupp kontrolliert den Deich bei **Kilometer 2,4**. Sie führen den Trupp, Ihr Gruppenführer steht am Sandsacklager.\n\nAuf der **Landseite** tritt am Deichfuß **trübes Wasser** aus, das mitläuft und Sand mitbringt. Was ist das?\n\n> *Beispiel – Kennzahlen und Abläufe können je nach Ortsverband abweichen.*",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "⚠️ Eine Sickerstelle mit Materialaustrag – Gefahr für den Deich, sofort melden",
+          "nextNodeId": "n_melden"
+        },
+        {
+          "id": "opt1",
+          "label": "💧 Regenwasser – kein Problem",
+          "nextNodeId": "n_sickerstelle_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🧺 Erst einmal selbst ein paar Sandsäcke drauflegen, melden später",
+          "nextNodeId": "n_sickerstelle_x2"
+        }
+      ]
+    },
+    "n_melden": {
+      "id": "n_melden",
+      "role": "thw_helfer",
+      "narrative": "Melden Sie Ihrem Gruppenführer die Sickerstelle: Ort, was Sie festgestellt haben, was Sie tun.",
+      "actions": [
+        {
+          "id": "radio_melden",
+          "label": "📞 Sickerstelle melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Truppführer",
+              "Kilometer 2,4",
+              "Sickerstelle",
+              "Sand",
+              "festgestellt",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Truppführer – Gefahr: Deich Kilometer 2,4 Landseite Sickerstelle festgestellt, trübes Wasser mit Sand – beginnen mit Quellkade – kommen.",
+            "briefing": "Anruf: Gruppenführer von Truppführer . „Gefahr“ . Wo (km 2,4, Landseite) . Was festgestellt (Sickerstelle, trübes Wasser mit Sand) . Maßnahme (Quellkade) . „kommen“",
+            "onSuccess": "n_material",
+            "onFailure": "n_melden_fail",
+            "feedbackSuccess": "✅ Gefahr mit Ort, Feststellung und Maßnahme gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Gefahr, Kilometer 2,4 Landseite, Sickerstelle mit Sand, Ihre Maßnahme."
+          }
+        }
+      ]
+    },
+    "n_melden_fail": {
+      "id": "n_melden_fail",
+      "role": "thw_helfer",
+      "narrative": "**Feedback:** Bei Sickerstellen zählt die **genaue Lage** (Kilometer, Land- oder Wasserseite) und ob **Material mitgeführt** wird – das entscheidet über die Dringlichkeit.\n\nBeispiel: *„Gruppenführer von Truppführer – Gefahr: Deich Kilometer 2,4 Landseite Sickerstelle festgestellt, trübes Wasser mit Sand – beginnen mit Quellkade – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_melden"
+        }
+      ]
+    },
+    "n_material": {
+      "id": "n_material",
+      "role": "thw_helfer",
+      "narrative": "**Gruppenführer:** „Verstanden – Quellkade setzen.“ Für den Ring um die Sickerstelle brauchen Sie etwa **150 gefüllte Sandsäcke** und eine **Schubkarre**.\n\nFordern Sie das Material an.",
+      "actions": [
+        {
+          "id": "radio_material",
+          "label": "📞 Material anfordern",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Truppführer",
+              "150",
+              "Sandsäcke",
+              "Schubkarre",
+              "Kilometer 2,4",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Truppführer – benötigen 150 gefüllte Sandsäcke und eine Schubkarre an Kilometer 2,4 Landseite – kommen.",
+            "briefing": "Anruf . was und wie viel (150 Sandsäcke, Schubkarre) . wohin (km 2,4 Landseite) . „kommen“",
+            "onSuccess": "n_pegel",
+            "onFailure": "n_material_fail",
+            "feedbackSuccess": "✅ Material mit Menge und Ort angefordert.",
+            "feedbackFailure": "❌ Fordern Sie an: 150 Sandsäcke, Schubkarre, an Kilometer 2,4."
+          }
+        }
+      ]
+    },
+    "n_material_fail": {
+      "id": "n_material_fail",
+      "role": "thw_helfer",
+      "narrative": "**Feedback:** Mit **Menge und Ort** kann das Lager gezielt liefern – ohne Rückfrage.\n\nBeispiel: *„Gruppenführer von Truppführer – benötigen 150 gefüllte Sandsäcke und eine Schubkarre an Kilometer 2,4 Landseite – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_material"
+        }
+      ]
+    },
+    "n_pegel": {
+      "id": "n_pegel",
+      "role": "thw_helfer",
+      "narrative": "Die Quellkade steht, das austretende Wasser ist jetzt **klar**. Der Gruppenführer fragt:\n\n**Gruppenführer:** „Truppführer von Gruppenführer – Frage Wasserstand an der Messlatte – kommen.“\n\nDie Latte zeigt **4 Meter 20**, steigend um etwa **5 Zentimeter pro Stunde**.",
+      "actions": [
+        {
+          "id": "radio_pegel",
+          "label": "📞 Wasserstand durchgeben",
+          "radioCall": {
+            "expectedPhrases": [
+              "Truppführer",
+              "Wasserstand",
+              "4 Meter 20",
+              "steigend",
+              "5 Zentimeter",
+              "klar",
+              "kommen"
+            ],
+            "hint": "Hier Truppführer – Wasserstand 4 Meter 20, steigend um 5 Zentimeter pro Stunde. Quellkade steht, Wasser tritt jetzt klar aus – kommen.",
+            "briefing": "„hier Truppführer“ . Wasserstand (4,20 m) . Tendenz (steigend, 5 cm/h) . Lage an der Sickerstelle (Wasser klar) . „kommen“",
+            "onSuccess": "n_abloesung",
+            "onFailure": "n_pegel_fail",
+            "feedbackSuccess": "✅ Messwert mit Tendenz und Lage gemeldet.",
+            "feedbackFailure": "❌ Geben Sie Wasserstand, Tendenz und den Zustand der Sickerstelle durch."
+          }
+        }
+      ]
+    },
+    "n_pegel_fail": {
+      "id": "n_pegel_fail",
+      "role": "thw_helfer",
+      "narrative": "**Feedback:** Ein Messwert ohne **Tendenz** sagt wenig. Und „Wasser klar“ zeigt, dass die Quellkade wirkt – kein Sand mehr.\n\nBeispiel: *„Hier Truppführer – Wasserstand 4 Meter 20, steigend um 5 Zentimeter pro Stunde. Quellkade steht, Wasser tritt jetzt klar aus – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_pegel"
+        }
+      ]
+    },
+    "n_abloesung": {
+      "id": "n_abloesung",
+      "role": "thw_helfer",
+      "narrative": "Um Mitternacht kommt die Ablösung. Ihr Trupp: **ein Truppführer und drei Helfer**, alle wohlauf. Melden Sie dem Gruppenführer die Übergabe mit Stärke.",
+      "actions": [
+        {
+          "id": "radio_abloesung",
+          "label": "📞 Ablösung melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Gruppenführer",
+              "Truppführer",
+              "übergeben",
+              "Stärke",
+              "null",
+              "eins",
+              "drei",
+              "gesamt",
+              "vier",
+              "kommen"
+            ],
+            "hint": "Gruppenführer von Truppführer – Kilometer 2,4 an Ablösung übergeben, Stärke null – eins – drei – gesamt vier, alle wohlauf, rücken zum Lager ab – kommen.",
+            "briefing": "Anruf . übergeben (an Ablösung) . Stärke vierteilig (0/1/3/4) . alle wohlauf . was Sie tun . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_abloesung_fail",
+            "feedbackSuccess": "✅ Übergabe mit vierteiliger Stärke gemeldet.",
+            "feedbackFailure": "❌ Melden Sie Übergabe, Stärke null – eins – drei – gesamt vier und dass alle wohlauf sind."
+          }
+        }
+      ]
+    },
+    "n_abloesung_fail": {
+      "id": "n_abloesung_fail",
+      "role": "thw_helfer",
+      "narrative": "**Feedback:** Bei jeder Ablösung muss die Führung wissen, **wer wo ist** – die vierteilige Stärke macht das eindeutig.\n\nBeispiel: *„Gruppenführer von Truppführer – Kilometer 2,4 an Ablösung übergeben, Stärke null – eins – drei – gesamt vier, alle wohlauf, rücken zum Lager ab – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_abloesung"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "thw_helfer",
+      "narrative": "**Gruppenführer:** „Verstanden – Ende.“\n\nSickerstelle erkannt, sofort gemeldet, gezielt nachgefordert und mit Tendenz gemessen – der Deich hält.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_sickerstelle"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "id": "rd_bedrohung_notruf",
+  "title": "Rettungsdienst: Bedrohung im Einsatz – Notruftaste",
+  "description": "Mittel: Im Einsatz wird die Besatzung mit einem Messer bedroht – zurückziehen, die Notruftaste auslösen, den Notruf sprechen und die Lage nach Eintreffen der Polizei melden. 2 Funk-Schritte.",
+  "startingNodeId": "n_lage",
+  "playerRole": "rettungsdienst",
+  "nodes": {
+    "n_lage_x1": {
+      "id": "n_lage_x1",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Mit einem Messer in Reichweite geht **Eigenschutz vor**. Erst Abstand gewinnen – deeskalieren können Sie, wenn Sie sicher sind.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_lage_x2": {
+      "id": "n_lage_x2",
+      "role": "rettungsdienst",
+      "narrative": "**Nicht richtig.** Das ist Aufgabe der **Polizei**. Ein Zugriff bringt Sie und Ihre Kollegin in **Lebensgefahr**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_lage": {
+      "id": "n_lage",
+      "role": "rettungsdienst",
+      "narrative": "Einsatz **hilflose Person**, Neuhaus, Gartenstraße 8. Sie sind mit Ihrer Kollegin auf **Rotkreuz Neuhaus 71/1** in der Wohnung. Ein Mann ist stark alkoholisiert, wird plötzlich **aggressiv** und greift nach einem **Küchenmesser**.\n\nWas tun Sie?\n\n> *Beispiel nach bayerischer Regelung – Status und Abläufe können in Ihrem Rettungsdienstbereich abweichen.*",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "🚪 Sofort gemeinsam raus – Abstand, zum Fahrzeug zurückziehen",
+          "nextNodeId": "n_sos"
+        },
+        {
+          "id": "opt1",
+          "label": "🗣️ Ruhig auf ihn einreden und weiter versorgen",
+          "nextNodeId": "n_lage_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "🤼 Ihm das Messer abnehmen",
+          "nextNodeId": "n_lage_x2"
+        }
+      ]
+    },
+    "n_sos": {
+      "id": "n_sos",
+      "role": "rettungsdienst",
+      "narrative": "Sie sind draußen am Fahrzeug, der Mann steht mit dem Messer in der Haustür. **Drücken Sie jetzt die Notruftaste** Ihres Funkgeräts (mindestens drei Sekunden) – danach ist das Mikrofon offen und Ihr Ruf hat Vorrang vor allen anderen.",
+      "actions": [
+        {
+          "id": "sos",
+          "label": "🆘 Notruftaste drücken",
+          "nextNodeId": "n_notruf",
+          "key": "sos"
+        }
+      ]
+    },
+    "n_notruf": {
+      "id": "n_notruf",
+      "role": "rettungsdienst",
+      "narrative": "Der Notruf ist ausgelöst. Sprechen Sie sofort: **Notruf – wer – wo – was – was Sie brauchen.**",
+      "actions": [
+        {
+          "id": "radio_notruf",
+          "label": "📞 Notruf sprechen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Notruf",
+              "71/1",
+              "Gartenstraße 8",
+              "Bedrohung",
+              "Messer",
+              "Polizei",
+              "kommen"
+            ],
+            "hint": "Notruf – Rotkreuz Neuhaus 71/1 – Gartenstraße 8 – Bedrohung durch Mann mit Messer – sind am Fahrzeug, brauchen sofort Polizei – kommen.",
+            "briefing": "„Notruf“ . wer (Rotkreuz Neuhaus 71/1) . wo (Gartenstraße 8) . was (Bedrohung, Messer) . wo Sie sind (am Fahrzeug) . was Sie brauchen (Polizei) . „kommen“",
+            "onSuccess": "n_polizei",
+            "onFailure": "n_notruf_fail",
+            "feedbackSuccess": "✅ Notruf knapp und vollständig – die Polizei ist alarmiert.",
+            "feedbackFailure": "❌ Sprechen Sie: Notruf, wer, wo, Bedrohung mit Messer, wo Sie sind, Polizei."
+          }
+        }
+      ]
+    },
+    "n_notruf_fail": {
+      "id": "n_notruf_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Im Notruf zählt: **wer – wo – was – was gebraucht wird**. Kein Satz zu viel – jede Sekunde zählt.\n\nBeispiel: *„Notruf – Rotkreuz Neuhaus 71/1 – Gartenstraße 8 – Bedrohung durch Mann mit Messer – sind am Fahrzeug, brauchen sofort Polizei – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_notruf"
+        }
+      ]
+    },
+    "n_polizei": {
+      "id": "n_polizei",
+      "role": "rettungsdienst",
+      "narrative": "**Leitstelle Neuhaus:** „Notruf verstanden, Polizei ist unterwegs. Bleiben Sie im Fahrzeug, verriegeln Sie – kommen.“\n\nNach vier Minuten ist die Polizei da und nimmt den Mann fest. **Niemand von Ihnen ist verletzt.** Der Mann hat eine Schnittwunde an der Hand, die Sie jetzt versorgen.\n\nMelden Sie die Lage.",
+      "actions": [
+        {
+          "id": "radio_polizei",
+          "label": "📞 Lage nach Eintreffen der Polizei",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Neuhaus",
+              "71/1",
+              "Polizei",
+              "Lage",
+              "keine Verletzten",
+              "Einsatzkräften",
+              "versorgen",
+              "kommen"
+            ],
+            "hint": "Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.",
+            "briefing": "Anruf . Polizei vor Ort . Lage unter Kontrolle . keine Verletzten bei den Einsatzkräften . was Sie jetzt tun (Patient versorgen) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_polizei_fail",
+            "feedbackSuccess": "✅ Entwarnung klar gegeben – die Leitstelle kann den Notruf schließen.",
+            "feedbackFailure": "❌ Melden Sie: Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei Ihnen, Sie versorgen jetzt."
+          }
+        }
+      ]
+    },
+    "n_polizei_fail": {
+      "id": "n_polizei_fail",
+      "role": "rettungsdienst",
+      "narrative": "**Feedback:** Nach einem Notruf wartet die Leitstelle **dringend** auf Entwarnung: Sind die Einsatzkräfte unverletzt?\n\nBeispiel: *„Leitstelle Neuhaus von Rotkreuz Neuhaus 71/1 – Polizei vor Ort, Lage unter Kontrolle, keine Verletzten bei den Einsatzkräften, versorgen jetzt den Patienten – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_polizei"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "rettungsdienst",
+      "narrative": "**Leitstelle Neuhaus:** „Verstanden – gut, dass Ihnen nichts passiert ist – Ende.“\n\nEigenschutz zuerst, Notruftaste statt Status, knapper Notruf und eine klare Entwarnung. Melden Sie den Vorfall danach auch schriftlich.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_lage"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}
