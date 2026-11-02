@@ -337,6 +337,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
           {deviceHilfe && (
             <div className="text-xs text-[#cbd5e1] bg-[#1f2a37] border border-[#2f4256] rounded p-2 space-y-1">
               {device.state.locked && <div><strong>Tastensperre:</strong> {KONZEPTE[geraet].anleitung.entsperren}</div>}
+              {deviceActions.length > 0 && deviceAufgabe === 'gruppe' && <div><strong>Gruppe wählen:</strong> {KONZEPTE[geraet].anleitung.gruppe}</div>}
               <div><strong>{deviceActions.length ? (deviceAufgabe === 'gruppe' ? 'Gruppe/DMO' : 'Status') : 'Notruf'}:</strong> {KONZEPTE[geraet].anleitung[deviceActions.length ? (deviceAufgabe === 'gruppe' ? 'dmo' : 'status') : 'notruf']}</div>
             </div>
           )}
