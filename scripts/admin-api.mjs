@@ -675,6 +675,7 @@ function page(title, content, active = '') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
   <title>${esc(title)} – FFFunk Admin</title>
   <style>${CSS}</style>
 </head>
@@ -712,6 +713,7 @@ function loginPage(err = '') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
   <title>FFFunk Admin – Login</title>
   <style>${CSS}</style>
 </head>

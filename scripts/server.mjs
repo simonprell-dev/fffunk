@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import http from 'node:http';
+import zlib from 'node:zlib';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -43,7 +44,29 @@ const mimeTypes = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.ico': 'image/x-icon',
+  '.txt': 'text/plain; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8',
+  '.webmanifest': 'application/manifest+json',
 };
+
+// Text wird gzip-komprimiert; Dateien unter /assets/ tragen einen Hash im Namen und dürfen lange gecacht werden.
+const COMPRESSIBLE = new Set(['.html', '.js', '.css', '.json', '.svg', '.txt', '.xml', '.webmanifest']);
+
+const gzipCache = new Map(); // Datei + Änderungszeit → komprimierter Inhalt
+function gzipCached(file, content) {
+  const key = `${file}:${fs.statSync(file).mtimeMs}`;
+  if (!gzipCache.has(key)) gzipCache.set(key, zlib.gzipSync(content));
+  return gzipCache.get(key);
+}
+
+function staticHeaders(file) {
+  const ext = path.extname(file);
+  const headers = { 'content-type': mimeTypes[ext] || 'application/octet-stream' };
+  if (file.startsWith(path.join(dist, 'assets') + path.sep)) headers['cache-control'] = 'public, max-age=31536000, immutable';
+  else if (['.png', '.jpg', '.jpeg', '.ico'].includes(ext)) headers['cache-control'] = 'public, max-age=86400';
+  else headers['cache-control'] = 'no-cache';
+  return headers;
+}
 
 function sendJson(res, status, body) {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' });
@@ -208,8 +231,15 @@ const server = http.createServer(async (req, res) => {
 
   fs.readFile(file, (error, content) => {
     if (error) { res.writeHead(500); res.end('Server error'); return; }
-    const ext = path.extname(file);
-    res.writeHead(200, { 'content-type': mimeTypes[ext] || 'application/octet-stream' });
+    const headers = staticHeaders(file);
+    if (COMPRESSIBLE.has(path.extname(file)) && (req.headers['accept-encoding'] || '').includes('gzip') && content.length > 1024) {
+      headers['content-encoding'] = 'gzip';
+      headers.vary = 'Accept-Encoding';
+      res.writeHead(200, headers);
+      res.end(gzipCached(file, content));
+      return;
+    }
+    res.writeHead(200, headers);
     res.end(content);
   });
 });
