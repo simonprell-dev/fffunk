@@ -42,10 +42,10 @@ k.ask("f", "Deine Gruppe im **Abschnitt Nord** braucht mehr Sandsäcke. Wen rufs
        ("Die Leitstelle Nürnberg",
         "**Nicht im Katastrophenfall.** Die Leitstelle hat jetzt hunderte Notrufe. Im Einsatzgebiet führt die **Einsatzleitung** – und für dich dein **Abschnitt**.")],
       "f_speak", [1, 0, 2])
-k.node("f_speak", "**Richtig!** Rufe den Abschnitt Nord. Ihr seid **Florian Neuhaus 17/42/1**.",
-       [K.call("Abschnitt anfunken", "Abschnitt Nord von Florian Neuhaus 17/42/1 – kommen.",
-               ["Abschnitt Nord", "17/42/1", "kommen"], "f_end", "f_fail", "Hier Abschnitt Nord – kommen.")])
-k.retry("f_fail", "**Noch nicht ganz.** „Abschnitt Nord von Florian Neuhaus 17/42/1 – kommen.“", "f_speak")
+k.node("f_speak", "**Richtig!** Rufe den Abschnitt Nord. Ihr seid **Florian Neuhaus 42/1**.",
+       [K.call("Abschnitt anfunken", "Abschnitt Nord von Florian Neuhaus 42/1 – kommen.",
+               ["Abschnitt Nord", "42/1", "kommen"], "f_end", "f_fail", "Hier Abschnitt Nord – kommen.")])
+k.retry("f_fail", "**Noch nicht ganz.** „Abschnitt Nord von Florian Neuhaus 42/1 – kommen.“", "f_speak")
 k.finish("f_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Landratsamt (FüGK) → Einsatzleitung (ÖEL) → Abschnitt → Einheit.** Gemeldet wird an die nächsthöhere Stelle.")
 
 # ---------- Kapitel 2: Lagemeldung ----------
@@ -63,10 +63,10 @@ k.ask("l", "Welche Meldung ist eine gute Lagemeldung?",
       "l_speak", [2, 1, 0])
 k.node("l_speak", "**Richtig!** Gib jetzt die Lagemeldung an den Abschnitt Nord: **14 Uhr**, **Aisch am Sportplatz Adelsdorf über die Ufer**, **eine Gruppe** vor Ort, **verbauen Sandsäcke**, brauchen **500 Sandsäcke**.",
        [K.call("Lage melden",
-               "Abschnitt Nord von Florian Neuhaus 17/42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.",
-               ["Abschnitt Nord", "17/42/1", "Lage", "14 Uhr", "Sportplatz Adelsdorf", "eine Gruppe", "Sandsäcke", "500", "kommen"],
+               "Abschnitt Nord von Florian Neuhaus 42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.",
+               ["Abschnitt Nord", "42/1", "Lage", "14 Uhr", "Sportplatz Adelsdorf", "eine Gruppe", "Sandsäcke", "500", "kommen"],
                "l_end", "l_fail", "Hier Abschnitt Nord – verstanden, Sandsäcke werden angefordert – Ende.")])
-k.retry("l_fail", "**Noch nicht ganz.** Lage – Kräfte – Maßnahmen – Nachforderung: „Abschnitt Nord von Florian Neuhaus 17/42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.“", "l_speak")
+k.retry("l_fail", "**Noch nicht ganz.** Lage – Kräfte – Maßnahmen – Nachforderung: „Abschnitt Nord von Florian Neuhaus 42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.“", "l_speak")
 k.finish("l_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Uhrzeit – Lage – Kräfte – Maßnahmen – Nachforderung.**")
 
 # ---------- Kapitel 3: Nachforderung ----------
@@ -81,12 +81,12 @@ k.ask("n", "Was fehlt in dieser Nachforderung: „Wir brauchen Pumpen.“?",
        ("Nur der Grund, warum wir Pumpen brauchen",
         "**Der Grund hilft, aber es fehlt mehr:** **wie viele**, **wohin**, **bis wann** und **wer** sie übernimmt.")],
       "n_speak", [0, 2, 1])
-k.node("n_speak", "**Richtig!** Fordere beim Abschnitt Nord an: **zwei große Pumpen**, zur **Kläranlage Adelsdorf**, **in einer Stunde**, Einweisung durch **Florian Neuhaus 17/42/1** an der Zufahrt.",
+k.node("n_speak", "**Richtig!** Fordere beim Abschnitt Nord an: **zwei große Pumpen**, zur **Kläranlage Adelsdorf**, **in einer Stunde**, Einweisung durch **Florian Neuhaus 42/1** an der Zufahrt.",
        [K.call("Nachfordern",
-               "Abschnitt Nord von Florian Neuhaus 17/42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.",
-               ["Abschnitt Nord", "17/42/1", "Nachforderung", "zwei große Pumpen", "Kläranlage Adelsdorf", "in einer Stunde", "Zufahrt", "kommen"],
+               "Abschnitt Nord von Florian Neuhaus 42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.",
+               ["Abschnitt Nord", "42/1", "Nachforderung", "zwei große Pumpen", "Kläranlage Adelsdorf", "in einer Stunde", "Zufahrt", "kommen"],
                "n_end", "n_fail", "Hier Abschnitt Nord – verstanden, THW wird mit zwei Pumpen geschickt – Ende.")])
-k.retry("n_fail", "**Fast.** Was – wie viel – wohin – bis wann – wer übernimmt: „Abschnitt Nord von Florian Neuhaus 17/42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.“", "n_speak")
+k.retry("n_fail", "**Fast.** Was – wie viel – wohin – bis wann – wer übernimmt: „Abschnitt Nord von Florian Neuhaus 42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.“", "n_speak")
 k.finish("n_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Was – wie viel – wohin – bis wann – wer übernimmt.**")
 
 # ---------- Kapitel 4: Netzausfall ----------
@@ -104,10 +104,10 @@ k.ask("a", "Dein Funkgerät zeigt **Fallback**, der Abschnitt antwortet nicht me
       "a_speak", [1, 0, 2])
 k.node("a_speak", "**Richtig!** Du bist in der DMO-Gruppe aus dem Einsatzbefehl. Rufe dort den Abschnitt Nord und melde: **Netz im Fallback**, ihr seid **jetzt im Direktbetrieb erreichbar**.",
        [K.call("Im Direktbetrieb melden",
-               "Abschnitt Nord von Florian Neuhaus 17/42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.",
-               ["Abschnitt Nord", "17/42/1", "Fallback", "Direktbetrieb", "kommen"],
+               "Abschnitt Nord von Florian Neuhaus 42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.",
+               ["Abschnitt Nord", "42/1", "Fallback", "Direktbetrieb", "kommen"],
                "a_end", "a_fail", "Hier Abschnitt Nord – verstanden, bleiben im Direktbetrieb – Ende.")])
-k.retry("a_fail", "**Fast.** „Abschnitt Nord von Florian Neuhaus 17/42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.“", "a_speak")
+k.retry("a_fail", "**Fast.** „Abschnitt Nord von Florian Neuhaus 42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.“", "a_speak")
 k.finish("a_end", "**Kapitel geschafft!** 🎉\n\nMerksatz: **Fallback = Leitstelle weg, Gruppenwechsel weg.** Vereinbarte DMO-Gruppe, wichtige Meldungen per Melder.\n\n"
          "**Du hast die Grundausbildung Katastrophenschutz abgeschlossen!** 🏆", last=True)
 OUT.append(("katastrophenschutz", k))
@@ -168,10 +168,10 @@ s = S("kats_stromausfall", "Katastrophenschutz: Stromausfall – Funk im Fallbac
       KS, "n_anlauf")
 s.radio("n_anlauf",
         "Seit zwei Stunden ist im ganzen Landkreis der **Strom weg**. Telefon und Handy funktionieren kaum noch. Ihr **Feuerwehrhaus Neuhaus** ist laut Alarmplan **Anlaufstelle** für die Bevölkerung, das Notstromaggregat läuft.\n\n"
-        "Sie sind **Florian Neuhaus 17/42/1**. Melden Sie dem **Abschnitt Süd**, dass die Anlaufstelle **besetzt** ist." + HINWEIS_SIE,
+        "Sie sind **Florian Neuhaus 42/1**. Melden Sie dem **Abschnitt Süd**, dass die Anlaufstelle **besetzt** ist." + HINWEIS_SIE,
         "Anlaufstelle melden",
-        ["Abschnitt Süd", "17/42/1", "Anlaufstelle", "Feuerwehrhaus Neuhaus", "besetzt", "Notstrom", "kommen"],
-        "Abschnitt Süd von Florian Neuhaus 17/42/1 – Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft – kommen.",
+        ["Abschnitt Süd", "42/1", "Anlaufstelle", "Feuerwehrhaus Neuhaus", "besetzt", "Notstrom", "kommen"],
+        "Abschnitt Süd von Florian Neuhaus 42/1 – Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft – kommen.",
         "Anruf . was (Anlaufstelle Feuerwehrhaus Neuhaus) . Zustand (besetzt, Notstrom läuft) . „kommen“",
         "n_fallback",
         "Die Führung weiß jetzt, wo die Bevölkerung Hilfe bekommt.",
@@ -185,8 +185,8 @@ s.choice("n_fallback",
 s.radio("n_dmo",
         "Sie sind in **DMO 307**. Der Abschnitt Süd ist nur **zwei Kilometer** entfernt – in DMO reicht das gerade so. Melden Sie sich.",
         "Im Direktbetrieb melden",
-        ["Abschnitt Süd", "17/42/1", "Fallback", "Direktbetrieb", "Anlaufstelle", "kommen"],
-        "Abschnitt Süd von Florian Neuhaus 17/42/1 – Netz im Fallback, sind im Direktbetrieb erreichbar, Anlaufstelle weiter besetzt – kommen.",
+        ["Abschnitt Süd", "42/1", "Fallback", "Direktbetrieb", "Anlaufstelle", "kommen"],
+        "Abschnitt Süd von Florian Neuhaus 42/1 – Netz im Fallback, sind im Direktbetrieb erreichbar, Anlaufstelle weiter besetzt – kommen.",
         "Anruf . „Netz im Fallback“ . „im Direktbetrieb erreichbar“ . Anlaufstelle weiter besetzt . „kommen“",
         "n_notruf",
         "Erreichbarkeit im Direktbetrieb gemeldet.",
@@ -195,8 +195,8 @@ s.radio("n_dmo",
 s.radio("n_notruf",
         "Ein Mann kommt ins Feuerwehrhaus: Seine Frau ist zu Hause **im Lindenweg 3** **gestürzt**, sie **blutet am Kopf** und ist **ansprechbar**. Ein Telefon geht nicht. Geben Sie den Notruf an den Abschnitt weiter, damit der Rettungsdienst kommt.",
         "Notruf weitergeben",
-        ["Abschnitt Süd", "17/42/1", "Notruf", "Lindenweg 3", "gestürzt", "blutet am Kopf", "ansprechbar", "Rettungsdienst", "kommen"],
-        "Abschnitt Süd von Florian Neuhaus 17/42/1 – Notruf: Neuhaus, Lindenweg 3, Frau gestürzt, blutet am Kopf, ansprechbar, bitte Rettungsdienst – kommen.",
+        ["Abschnitt Süd", "42/1", "Notruf", "Lindenweg 3", "gestürzt", "blutet am Kopf", "ansprechbar", "Rettungsdienst", "kommen"],
+        "Abschnitt Süd von Florian Neuhaus 42/1 – Notruf: Neuhaus, Lindenweg 3, Frau gestürzt, blutet am Kopf, ansprechbar, bitte Rettungsdienst – kommen.",
         "Anruf . „Notruf“ . wo (Neuhaus, Lindenweg 3) . was (gestürzt, blutet am Kopf) . Zustand (ansprechbar) . „bitte Rettungsdienst“ . „kommen“",
         "n_end",
         "Notruf vollständig weitergegeben – der Abschnitt kann den Rettungsdienst schicken.",

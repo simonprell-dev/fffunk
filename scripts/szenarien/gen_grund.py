@@ -16,7 +16,7 @@ GF = '**Gruppenführer:**'
 
 # ---------- Kapitel 1: Wer ruft wen? ----------
 k.node('r_start',
- 'Erster Übungsabend bei der Feuerwehr Neuhaus. Du bist **Truppmann im Angriffstrupp** des Löschfahrzeugs **Florian Neuhaus 17/42/1**. Dein Gruppenführer drückt dir ein Funkgerät in die Hand.\n\n'
+ 'Erster Übungsabend bei der Feuerwehr Neuhaus. Du bist **Truppmann im Angriffstrupp** des Löschfahrzeugs **Florian Neuhaus 42/1**. Dein Gruppenführer drückt dir ein Funkgerät in die Hand.\n\n'
  f'{GF} „Beim Funk gilt immer dieselbe Reihenfolge: **Wen rufst du – von wem – kommen.** Zuerst der Gerufene, dann „von“ und du selbst. „Kommen“ heißt: Jetzt bist du dran.“',
  [K.go('ok', '👍 Verstanden', 'r_choice')])
 k.ask('r', 'Du willst deinen **Gruppenführer** anfunken. Welcher Funkspruch ist richtig?',
@@ -140,8 +140,8 @@ k.ask('m', 'Plötzlich stürzt dein Truppführer im **Schlafzimmer** und reagier
  'm_sos', [0, 2, 1])
 k.node('m_sos', '**Richtig!** Drück jetzt die **Notruftaste** deines Funkgeräts.',
  [K.go('sos', '🆘 Notruftaste drücken', 'm_speak', key='sos')])
-k.node('m_speak', 'Notruf ist ausgelöst. Jetzt sprich den Mayday: **wer** (Angriffstrupp Florian Neuhaus 17/42/1), **wo** (Obergeschoss, Schlafzimmer), **was** (Truppführer bewusstlos, Atemluft 150 bar).',
- [K.call('Mayday rufen', 'Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 17/42/1 – Obergeschoss, Schlafzimmer – Truppführer bewusstlos, Atemluft 150 bar – Mayday, kommen!',
+k.node('m_speak', 'Notruf ist ausgelöst. Jetzt sprich den Mayday: **wer** (Angriffstrupp Florian Neuhaus 42/1), **wo** (Obergeschoss, Schlafzimmer), **was** (Truppführer bewusstlos, Atemluft 150 bar).',
+ [K.call('Mayday rufen', 'Mayday, Mayday, Mayday – hier Angriffstrupp Florian Neuhaus 42/1 – Obergeschoss, Schlafzimmer – Truppführer bewusstlos, Atemluft 150 bar – Mayday, kommen!',
        ['Mayday', 'Angriffstrupp', 'Obergeschoss', 'Schlafzimmer', 'bewusstlos', 'kommen'],
        'm_speak2', 'm_fail', 'Hier Gruppenführer – Mayday verstanden, Sicherheitstrupp kommt zu euch ins Obergeschoss – kommen.')])
 k.retry('m_fail', '**Noch nicht ganz.** Dreimal **Mayday** – **hier** wer – **wo** – **was** – **Mayday, kommen!**', 'm_speak')

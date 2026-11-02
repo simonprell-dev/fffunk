@@ -7,7 +7,7 @@ describe('ttsText', () => {
   });
 
   it('liest dreiteilige Funkrufnamen ohne Bruch', () => {
-    expect(ttsText('Florian Neuhaus 17/42/1')).toBe('Florian Neuhaus 17 42 1');
+    expect(ttsText('Florian Musterstadt 17/42/1')).toBe('Florian Musterstadt 17 42 1');
   });
 
   it('trennt auch mit Leerzeichen um den Schrägstrich', () => {

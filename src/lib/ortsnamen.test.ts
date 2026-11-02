@@ -55,14 +55,14 @@ describe('parseOrtsnamenAntwort', () => {
       'Hier ist das Ergebnis:',
       '```js',
       'const rufnamen = {',
-      '  "Florian Neuhaus 17/42/1": "Florian Forchheim 40/1", // eigenes LF',
+      '  "Florian Neuhaus 42/1": "Florian Forchheim 40/1", // eigenes LF',
       "  'Leitstelle Nürnberg': 'Leitstelle Bamberg', // unsicher",
       '  "Aisch": "Regnitz",',
       '};',
       '```',
     ].join('\n');
     expect(parseOrtsnamenAntwort(antwort)).toEqual({
-      'Florian Neuhaus 17/42/1': 'Florian Forchheim 40/1',
+      'Florian Neuhaus 42/1': 'Florian Forchheim 40/1',
       'Leitstelle Nürnberg': 'Leitstelle Bamberg',
       Aisch: 'Regnitz',
     });

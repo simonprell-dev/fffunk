@@ -1,6 +1,8 @@
 // Frühere Rufnamen der Szenarien → heutige. Ältere Lizenzen ordnen noch den alten Namen zu.
 const RENAMED: Record<string, string> = {
-  'Florian Neuhaus 44/1': 'Florian Neuhaus 17/42/1',
+  // Die Standortnummer 17 stand doppelt zum Ortsnamen Neuhaus. Die neuere Zuordnung zuerst, sie gewinnt.
+  'Florian Neuhaus 17/42/1': 'Florian Neuhaus 42/1',
+  'Florian Neuhaus 44/1': 'Florian Neuhaus 42/1',
   // Früher stand nur „Leitstelle“ im Text; heute heißt sie „Leitstelle Nürnberg“.
   Leitstelle: 'Leitstelle Nürnberg',
 };

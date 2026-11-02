@@ -1,5 +1,5 @@
 [
-  { "name": "Florian Neuhaus 17/42/1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 17/42/1", "bedeutung": "Funkrufname des eigenen Löschfahrzeugs (LF/HLF), mit dem die Übenden ausrücken" },
+  { "name": "Florian Neuhaus 42/1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 42/1", "bedeutung": "Funkrufname des eigenen Löschfahrzeugs (LF/HLF), mit dem die Übenden ausrücken" },
   { "name": "Florian Neuhaus 11/1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 11/1", "bedeutung": "Einsatzleiter / Einsatzleitwagen der eigenen Wehr oder Gemeinde (Kommandowagen bzw. ELW)" },
   { "name": "Florian Neuhaus 33/1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 33/1", "bedeutung": "Drehleiter, die zur eigenen Wehr mit ausrückt (kann auch von der Stützpunktwehr kommen)" },
   { "name": "Florian Neuhaus 1", "gruppe": "Eigene Feuerwehr", "platzhalter": "Florian [Ort] 1", "bedeutung": "Funktionsrufname des Kommandanten bzw. der Feuerwehr-Einsatzleitung am Ort" },

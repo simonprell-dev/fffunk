@@ -8,7 +8,7 @@
     "n_anlauf": {
       "id": "n_anlauf",
       "role": "katastrophenschutz",
-      "narrative": "Seit zwei Stunden ist im ganzen Landkreis der **Strom weg**. Telefon und Handy funktionieren kaum noch. Ihr **Feuerwehrhaus Neuhaus** ist laut Alarmplan **Anlaufstelle** für die Bevölkerung, das Notstromaggregat läuft.\n\nSie sind **Florian Neuhaus 17/42/1**. Melden Sie dem **Abschnitt Süd**, dass die Anlaufstelle **besetzt** ist.\n\n> *Beispiel – Führungsstruktur und Funkrufnamen legt Ihr Landkreis fest.*",
+      "narrative": "Seit zwei Stunden ist im ganzen Landkreis der **Strom weg**. Telefon und Handy funktionieren kaum noch. Ihr **Feuerwehrhaus Neuhaus** ist laut Alarmplan **Anlaufstelle** für die Bevölkerung, das Notstromaggregat läuft.\n\nSie sind **Florian Neuhaus 42/1**. Melden Sie dem **Abschnitt Süd**, dass die Anlaufstelle **besetzt** ist.\n\n> *Beispiel – Führungsstruktur und Funkrufnamen legt Ihr Landkreis fest.*",
       "actions": [
         {
           "id": "radio_anlauf",
@@ -16,14 +16,14 @@
           "radioCall": {
             "expectedPhrases": [
               "Abschnitt Süd",
-              "17/42/1",
+              "42/1",
               "Anlaufstelle",
               "Feuerwehrhaus Neuhaus",
               "besetzt",
               "Notstrom",
               "kommen"
             ],
-            "hint": "Abschnitt Süd von Florian Neuhaus 17/42/1 – Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft – kommen.",
+            "hint": "Abschnitt Süd von Florian Neuhaus 42/1 – Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft – kommen.",
             "briefing": "Anruf . was (Anlaufstelle Feuerwehrhaus Neuhaus) . Zustand (besetzt, Notstrom läuft) . „kommen“",
             "onSuccess": "n_fallback",
             "onFailure": "n_anlauf_fail",
@@ -36,7 +36,7 @@
     "n_anlauf_fail": {
       "id": "n_anlauf_fail",
       "role": "katastrophenschutz",
-      "narrative": "**Feedback:** Bei Stromausfall ist das **Feuerwehrhaus** oft der einzige Ort, an dem Bürger einen Notruf absetzen können.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 17/42/1 – Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft – kommen.“*",
+      "narrative": "**Feedback:** Bei Stromausfall ist das **Feuerwehrhaus** oft der einzige Ort, an dem Bürger einen Notruf absetzen können.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 42/1 – Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -102,13 +102,13 @@
           "radioCall": {
             "expectedPhrases": [
               "Abschnitt Süd",
-              "17/42/1",
+              "42/1",
               "Fallback",
               "Direktbetrieb",
               "Anlaufstelle",
               "kommen"
             ],
-            "hint": "Abschnitt Süd von Florian Neuhaus 17/42/1 – Netz im Fallback, sind im Direktbetrieb erreichbar, Anlaufstelle weiter besetzt – kommen.",
+            "hint": "Abschnitt Süd von Florian Neuhaus 42/1 – Netz im Fallback, sind im Direktbetrieb erreichbar, Anlaufstelle weiter besetzt – kommen.",
             "briefing": "Anruf . „Netz im Fallback“ . „im Direktbetrieb erreichbar“ . Anlaufstelle weiter besetzt . „kommen“",
             "onSuccess": "n_notruf",
             "onFailure": "n_dmo_fail",
@@ -121,7 +121,7 @@
     "n_dmo_fail": {
       "id": "n_dmo_fail",
       "role": "katastrophenschutz",
-      "narrative": "**Feedback:** Jetzt weiß der Abschnitt, **wie** er Sie erreicht.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 17/42/1 – Netz im Fallback, sind im Direktbetrieb erreichbar, Anlaufstelle weiter besetzt – kommen.“*",
+      "narrative": "**Feedback:** Jetzt weiß der Abschnitt, **wie** er Sie erreicht.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 42/1 – Netz im Fallback, sind im Direktbetrieb erreichbar, Anlaufstelle weiter besetzt – kommen.“*",
       "actions": [
         {
           "id": "retry",
@@ -141,7 +141,7 @@
           "radioCall": {
             "expectedPhrases": [
               "Abschnitt Süd",
-              "17/42/1",
+              "42/1",
               "Notruf",
               "Lindenweg 3",
               "gestürzt",
@@ -150,7 +150,7 @@
               "Rettungsdienst",
               "kommen"
             ],
-            "hint": "Abschnitt Süd von Florian Neuhaus 17/42/1 – Notruf: Neuhaus, Lindenweg 3, Frau gestürzt, blutet am Kopf, ansprechbar, bitte Rettungsdienst – kommen.",
+            "hint": "Abschnitt Süd von Florian Neuhaus 42/1 – Notruf: Neuhaus, Lindenweg 3, Frau gestürzt, blutet am Kopf, ansprechbar, bitte Rettungsdienst – kommen.",
             "briefing": "Anruf . „Notruf“ . wo (Neuhaus, Lindenweg 3) . was (gestürzt, blutet am Kopf) . Zustand (ansprechbar) . „bitte Rettungsdienst“ . „kommen“",
             "onSuccess": "n_end",
             "onFailure": "n_notruf_fail",
@@ -163,7 +163,7 @@
     "n_notruf_fail": {
       "id": "n_notruf_fail",
       "role": "katastrophenschutz",
-      "narrative": "**Feedback:** Bei Stromausfall sind Sie **das Telefon** der Bürger – die Meldung muss so vollständig sein wie ein Notruf bei 112.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 17/42/1 – Notruf: Neuhaus, Lindenweg 3, Frau gestürzt, blutet am Kopf, ansprechbar, bitte Rettungsdienst – kommen.“*",
+      "narrative": "**Feedback:** Bei Stromausfall sind Sie **das Telefon** der Bürger – die Meldung muss so vollständig sein wie ein Notruf bei 112.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 42/1 – Notruf: Neuhaus, Lindenweg 3, Frau gestürzt, blutet am Kopf, ansprechbar, bitte Rettungsdienst – kommen.“*",
       "actions": [
         {
           "id": "retry",

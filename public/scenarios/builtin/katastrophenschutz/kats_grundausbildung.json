@@ -92,16 +92,16 @@
     "f_speak": {
       "id": "f_speak",
       "role": "katastrophenschutz",
-      "narrative": "**Richtig!** Rufe den Abschnitt Nord. Ihr seid **Florian Neuhaus 17/42/1**.",
+      "narrative": "**Richtig!** Rufe den Abschnitt Nord. Ihr seid **Florian Neuhaus 42/1**.",
       "actions": [
         {
           "id": "funk",
           "label": "Abschnitt anfunken",
           "radioCall": {
-            "hint": "Abschnitt Nord von Florian Neuhaus 17/42/1 – kommen.",
+            "hint": "Abschnitt Nord von Florian Neuhaus 42/1 – kommen.",
             "expectedPhrases": [
               "Abschnitt Nord",
-              "17/42/1",
+              "42/1",
               "kommen"
             ],
             "onSuccess": "f_end",
@@ -114,7 +114,7 @@
     "f_fail": {
       "id": "f_fail",
       "role": "katastrophenschutz",
-      "narrative": "**Noch nicht ganz.** „Abschnitt Nord von Florian Neuhaus 17/42/1 – kommen.“",
+      "narrative": "**Noch nicht ganz.** „Abschnitt Nord von Florian Neuhaus 42/1 – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -207,10 +207,10 @@
           "id": "funk",
           "label": "Lage melden",
           "radioCall": {
-            "hint": "Abschnitt Nord von Florian Neuhaus 17/42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.",
+            "hint": "Abschnitt Nord von Florian Neuhaus 42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.",
             "expectedPhrases": [
               "Abschnitt Nord",
-              "17/42/1",
+              "42/1",
               "Lage",
               "14 Uhr",
               "Sportplatz Adelsdorf",
@@ -229,7 +229,7 @@
     "l_fail": {
       "id": "l_fail",
       "role": "katastrophenschutz",
-      "narrative": "**Noch nicht ganz.** Lage – Kräfte – Maßnahmen – Nachforderung: „Abschnitt Nord von Florian Neuhaus 17/42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.“",
+      "narrative": "**Noch nicht ganz.** Lage – Kräfte – Maßnahmen – Nachforderung: „Abschnitt Nord von Florian Neuhaus 42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -316,16 +316,16 @@
     "n_speak": {
       "id": "n_speak",
       "role": "katastrophenschutz",
-      "narrative": "**Richtig!** Fordere beim Abschnitt Nord an: **zwei große Pumpen**, zur **Kläranlage Adelsdorf**, **in einer Stunde**, Einweisung durch **Florian Neuhaus 17/42/1** an der Zufahrt.",
+      "narrative": "**Richtig!** Fordere beim Abschnitt Nord an: **zwei große Pumpen**, zur **Kläranlage Adelsdorf**, **in einer Stunde**, Einweisung durch **Florian Neuhaus 42/1** an der Zufahrt.",
       "actions": [
         {
           "id": "funk",
           "label": "Nachfordern",
           "radioCall": {
-            "hint": "Abschnitt Nord von Florian Neuhaus 17/42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.",
+            "hint": "Abschnitt Nord von Florian Neuhaus 42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.",
             "expectedPhrases": [
               "Abschnitt Nord",
-              "17/42/1",
+              "42/1",
               "Nachforderung",
               "zwei große Pumpen",
               "Kläranlage Adelsdorf",
@@ -343,7 +343,7 @@
     "n_fail": {
       "id": "n_fail",
       "role": "katastrophenschutz",
-      "narrative": "**Fast.** Was – wie viel – wohin – bis wann – wer übernimmt: „Abschnitt Nord von Florian Neuhaus 17/42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.“",
+      "narrative": "**Fast.** Was – wie viel – wohin – bis wann – wer übernimmt: „Abschnitt Nord von Florian Neuhaus 42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.“",
       "actions": [
         {
           "id": "retry",
@@ -436,10 +436,10 @@
           "id": "funk",
           "label": "Im Direktbetrieb melden",
           "radioCall": {
-            "hint": "Abschnitt Nord von Florian Neuhaus 17/42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.",
+            "hint": "Abschnitt Nord von Florian Neuhaus 42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.",
             "expectedPhrases": [
               "Abschnitt Nord",
-              "17/42/1",
+              "42/1",
               "Fallback",
               "Direktbetrieb",
               "kommen"
@@ -454,7 +454,7 @@
     "a_fail": {
       "id": "a_fail",
       "role": "katastrophenschutz",
-      "narrative": "**Fast.** „Abschnitt Nord von Florian Neuhaus 17/42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.“",
+      "narrative": "**Fast.** „Abschnitt Nord von Florian Neuhaus 42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.“",
       "actions": [
         {
           "id": "retry",
