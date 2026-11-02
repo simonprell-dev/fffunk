@@ -383,6 +383,8 @@ async function migrateScenarioValue(client, kind, oldValue, newValue, newLabel =
 // Nur aggregierte Tageszähler pro Ereignis – keine IP, keine Geräte-ID, kein
 // Cookie. Damit entsteht kein Personenbezug (DSGVO) und es wird nichts auf dem
 // Endgerät gespeichert (TTDSG § 25), eine Einwilligung ist nicht nötig.
+// Szenario-Ereignisse zählen zusätzlich je Szenario und Lizenzcode – der Code
+// steht für eine Organisation (Wehr, Ortsverband, Wache), nicht für eine Person.
 
 export const USAGE_EVENTS = {
   app_open: 'App geöffnet',
@@ -405,32 +407,81 @@ export async function initUsageStatsDb() {
       PRIMARY KEY (day, event)
     )
   `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS usage_plays (
+      day          DATE    NOT NULL,
+      event        TEXT    NOT NULL,
+      scenario_id  TEXT    NOT NULL,
+      license_code TEXT    NOT NULL DEFAULT '',
+      count        INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (day, event, scenario_id, license_code)
+    )
+  `);
 }
 
-export async function countUsageEvent(event) {
+export const PLAY_EVENTS = ['scenario_start', 'training_start', 'scenario_complete'];
+// Eigene, lokale und Community-Szenarien werden ohne ihre (frei wählbare) ID gezählt.
+export const OTHER_SCENARIO = '(eigenes)';
+
+/**
+ * Zählt ein Ereignis. Szenario-Ereignisse zusätzlich je Szenario und Lizenz: nur bekannte
+ * Szenario-IDs (eingebaut oder Admin-Szenario) und nur aktive Lizenzcodes werden übernommen.
+ */
+export async function countUsageEvent(event, { scenarioId = '', licenseCode = '', builtinIds = [] } = {}) {
   if (!pool || !Object.hasOwn(USAGE_EVENTS, event)) return false;
   await pool.query(
     `INSERT INTO usage_daily (day, event, count) VALUES (CURRENT_DATE, $1, 1)
      ON CONFLICT (day, event) DO UPDATE SET count = usage_daily.count + 1`,
     [event]
   );
+  if (PLAY_EVENTS.includes(event) && scenarioId) {
+    await pool.query(
+      `INSERT INTO usage_plays (day, event, scenario_id, license_code, count)
+       SELECT CURRENT_DATE, $1,
+              CASE WHEN $2 = ANY($3::text[]) OR EXISTS (SELECT 1 FROM admin_scenarios WHERE scenario_id = $2)
+                   THEN $2 ELSE $5 END,
+              COALESCE((SELECT code FROM licenses WHERE code = $4 AND active = TRUE), ''),
+              1
+       ON CONFLICT (day, event, scenario_id, license_code) DO UPDATE SET count = usage_plays.count + 1`,
+      [event, String(scenarioId).slice(0, 200), builtinIds, String(licenseCode).trim().toUpperCase().slice(0, 40), OTHER_SCENARIO]
+    );
+  }
   return true;
 }
 
-export async function getUsageStats(days = 30) {
-  if (!pool) return { totals: [], daily: [] };
-  const totals = await pool.query(
-    `SELECT event,
-            SUM(count)::int AS total,
-            SUM(count) FILTER (WHERE day >= CURRENT_DATE - 6)::int AS last7,
-            SUM(count) FILTER (WHERE day >= CURRENT_DATE - 29)::int AS last30
-       FROM usage_daily GROUP BY event`
-  );
-  const daily = await pool.query(
-    `SELECT to_char(day, 'YYYY-MM-DD') AS day, event, count
-       FROM usage_daily WHERE day >= CURRENT_DATE - ($1::int - 1)
-      ORDER BY day DESC`,
-    [days]
-  );
-  return { totals: totals.rows, daily: daily.rows };
+/**
+ * Gespielte Szenarien im Zeitraum (from/to inklusive, null = offen), optional nur eine Lizenz
+ * ('' = ohne Lizenz). bucket 'day' | 'month' für den Verlauf.
+ */
+export async function getPlayStats({ from = null, to = null, licenseCode = null, bucket = 'day' } = {}) {
+  if (!pool) return { byLicense: [], byScenario: [], trend: [], events: [] };
+  const where = `($1::date IS NULL OR day >= $1) AND ($2::date IS NULL OR day <= $2)`;
+  const sums = `SUM(count) FILTER (WHERE event IN ('scenario_start','training_start'))::int AS started,
+                SUM(count) FILTER (WHERE event = 'training_start')::int AS training,
+                SUM(count) FILTER (WHERE event = 'scenario_complete')::int AS completed`;
+  const params = [from, to, licenseCode];
+  const plays = `${where} AND ($3::text IS NULL OR license_code = $3)`;
+  const [byLicense, byScenario, trend, events] = await Promise.all([
+    pool.query(
+      `SELECT p.license_code, l.organization_name, ${sums}
+         FROM usage_plays p LEFT JOIN licenses l ON l.code = p.license_code
+        WHERE ${plays} GROUP BY p.license_code, l.organization_name ORDER BY started DESC NULLS LAST, p.license_code`, params),
+    pool.query(
+      `SELECT p.scenario_id, a.title, ${sums}
+         FROM usage_plays p LEFT JOIN admin_scenarios a ON a.scenario_id = p.scenario_id
+        WHERE ${plays} GROUP BY p.scenario_id, a.title ORDER BY started DESC NULLS LAST, p.scenario_id`, params),
+    pool.query(
+      `SELECT to_char(day, $4) AS bucket, ${sums}
+         FROM usage_plays WHERE ${plays} GROUP BY 1 ORDER BY 1`, [...params, bucket === 'month' ? 'YYYY-MM' : 'YYYY-MM-DD']),
+    pool.query(
+      `SELECT event, SUM(count)::int AS total FROM usage_daily WHERE ${where} GROUP BY event`, [from, to]),
+  ]);
+  return { byLicense: byLicense.rows, byScenario: byScenario.rows, trend: trend.rows, events: events.rows };
+}
+
+/** Jahre mit Daten (für die Filterauswahl), neueste zuerst. */
+export async function listUsageYears() {
+  if (!pool) return [];
+  const r = await pool.query(`SELECT DISTINCT EXTRACT(YEAR FROM day)::int AS y FROM usage_daily ORDER BY y DESC`);
+  return r.rows.map(x => x.y);
 }

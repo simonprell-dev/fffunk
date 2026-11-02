@@ -11,13 +11,21 @@ export type UsageEvent =
   | 'lern_open';
 
 /**
- * Anonymer Nutzungszähler: sendet nur den Ereignisnamen, keine IDs, keine
- * Inhalte, nichts wird lokal gespeichert. Fehler werden ignoriert.
+ * Nutzungszähler: sendet den Ereignisnamen, bei Szenario-Ereignissen zusätzlich die
+ * Szenario-ID und den Lizenzcode der Organisation. Keine Geräte-ID, keine Inhalte,
+ * nichts wird lokal gespeichert. Fehler werden ignoriert.
  */
-export function trackEvent(event: UsageEvent): void {
+export function trackEvent(event: UsageEvent, scenarioId?: string): void {
   if (import.meta.env.DEV) return;
   try {
-    fetch(apiUrl(`/api/stats/${event}`), { method: 'POST', keepalive: true, credentials: 'omit' })
+    const params = new URLSearchParams();
+    if (scenarioId) {
+      params.set('scenario', scenarioId);
+      const license = localStorage.getItem('fffunk_license_code');
+      if (license) params.set('license', license);
+    }
+    const query = params.toString();
+    fetch(apiUrl(`/api/stats/${event}${query ? `?${query}` : ''}`), { method: 'POST', keepalive: true, credentials: 'omit' })
       .catch(() => {});
   } catch { /* ignore */ }
 }

@@ -210,7 +210,7 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
     const isEnd = currentNode.actions.every(a => a.nextNodeId === '__exit__' && !a.radioCall);
     if (isEnd && !completionTrackedRef.current) {
       completionTrackedRef.current = true;
-      trackEvent('scenario_complete');
+      trackEvent('scenario_complete', scenario.id);
     }
   }, [currentNode]);
 

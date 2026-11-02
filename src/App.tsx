@@ -252,7 +252,7 @@ function App() {
 
   const startScenario = (scenario: Scenario, scenarioMode: 'guided' | 'training' = 'guided') => {
     const eng = new StoryEngine(scenario);
-    trackEvent(scenarioMode === 'training' ? 'training_start' : 'scenario_start');
+    trackEvent(scenarioMode === 'training' ? 'training_start' : 'scenario_start', scenario.id);
     setEngine(eng); setSelectedScenario(scenario); setPracticeMode(scenarioMode); setView('practice');
     window.history.replaceState(null, '', '#practice');
   };

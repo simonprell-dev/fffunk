@@ -14,6 +14,19 @@ const root = path.resolve(__dirname, '..');
 const dist = path.join(root, 'dist');
 const PORT = Number(process.env.PORT || 3000);
 
+// IDs der eingebauten Szenarien (Dateiname = ID) – nur diese zählt die Statistik namentlich.
+function loadBuiltinScenarioIds() {
+  try {
+    // Lokal aus public/, im Docker-Image gibt es nur dist/.
+    const dir = ['public', 'dist'].map(d => path.join(root, d, 'scenarios')).find(d => fs.existsSync(d));
+    const index = JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8'));
+    return Object.values(index).flatMap(groups => Object.values(groups).flat()).map(p => path.basename(p, '.json'));
+  } catch {
+    return [];
+  }
+}
+const BUILTIN_SCENARIO_IDS = loadBuiltinScenarioIds();
+
 const PIPER_DIR = process.env.PIPER_DIR || '/opt/piper';
 const PIPER_BIN = path.join(PIPER_DIR, 'piper');
 const PIPER_MODEL = process.env.PIPER_MODEL || '/app/voices/de_DE-thorsten-medium.onnx';
@@ -158,14 +171,20 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.url?.startsWith('/api/stats/')) {
-    // POST /api/stats/:event – anonymer Zähler, es wird nichts außer Ereignis + Datum gespeichert
+    // POST /api/stats/:event[?scenario=…&license=…] – Tageszähler; Szenario-Ereignisse
+    // zusätzlich je Szenario und Lizenzcode. Keine IP, keine Geräte-ID.
     res.setHeader('access-control-allow-origin', '*');
     res.setHeader('access-control-allow-methods', 'POST, OPTIONS');
     if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
     if (req.method !== 'POST') { res.writeHead(405); res.end(); return; }
-    const event = req.url.slice('/api/stats/'.length).split('?')[0];
+    const url = new URL(req.url, 'http://localhost');
+    const event = url.pathname.slice('/api/stats/'.length);
     try {
-      await countUsageEvent(event);
+      await countUsageEvent(event, {
+        scenarioId: url.searchParams.get('scenario') || '',
+        licenseCode: url.searchParams.get('license') || '',
+        builtinIds: BUILTIN_SCENARIO_IDS,
+      });
     } catch {}
     res.writeHead(204); res.end();
     return;

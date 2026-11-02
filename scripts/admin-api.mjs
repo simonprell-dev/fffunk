@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,17 +9,20 @@ import {
   listAdminScenarios, getAdminScenario, createAdminScenario,
   updateAdminScenario, deleteAdminScenario, setScenarioLicenses, upsertAdminScenario,
   listTaxonomy, getTaxonomyItem, createTaxonomyItem, updateTaxonomyItem, deleteTaxonomyItem,
-  USAGE_EVENTS, getUsageStats,
+  USAGE_EVENTS, getPlayStats, listUsageYears, OTHER_SCENARIO,
 } from './license-db.mjs';
 import { listScenarios, getScenario as getCommunityScenario, isDbAvailable, deleteScenario } from './community-db.mjs';
 import { buildOrtsnamenPrompt, parseOrtsnamenAntwort } from './ortsnamen-prompt.mjs';
+import { resolvePeriod, toCsv } from './usage-period.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 // Ortsabhängige Beispielnamen der Szenarien (Rufnamen, Leitstelle, Klinik, Orte) – Grundlage für den KI-Prompt.
 const ORTSNAMEN = JSON.parse(readFileSync(path.join(__dirname, 'ortsnamen.json'), 'utf8'));
 const ORTSNAMEN_PLATZHALTER = Object.fromEntries(ORTSNAMEN.map(k => [k.name, k.platzhalter]));
-const scenariosDir = path.join(rootDir, 'public', 'scenarios');
+// Lokal aus public/, im Docker-Image gibt es nur dist/.
+const scenariosDir = ['public', 'dist'].map(d => path.join(rootDir, d, 'scenarios')).find(d => existsSync(d))
+  ?? path.join(rootDir, 'public', 'scenarios');
 
 // ── Session auth ──────────────────────────────────────────────────────────────
 
@@ -785,71 +788,164 @@ async function dashboardPage() {
 
 // ── Usage stats page ──────────────────────────────────────────────────────────
 
-async function statsPage() {
-  const days = 30;
-  const { totals, daily } = await getUsageStats(days);
-  const events = Object.keys(USAGE_EVENTS);
-  const byEvent = Object.fromEntries(totals.map(t => [t.event, t]));
+const NO_LICENSE = '-';
+let builtinTitles = null;
 
-  const dayKeys = [];
-  for (let i = 0; i < days; i++) {
-    const d = new Date(Date.now() - i * 86400000);
-    dayKeys.push(d.toISOString().slice(0, 10));
+async function scenarioTitle(id, adminTitle) {
+  if (id === OTHER_SCENARIO) return 'Eigene, lokale und Community-Szenarien';
+  builtinTitles ??= Object.fromEntries((await listDefaultScenarios()).map(e => [e.scenario.id, e.scenario.title]));
+  return adminTitle || builtinTitles[id] || id;
+}
+
+/** Filter aus der Adresse lesen – gemeinsam für Seite und CSV-Export. */
+async function loadStats(searchParams) {
+  const q = Object.fromEntries(searchParams);
+  const period = resolvePeriod(q, new Date().toISOString().slice(0, 10));
+  const lizenz = q.lizenz ?? '';
+  const licenseCode = lizenz === NO_LICENSE ? '' : lizenz || null;
+  const stats = await getPlayStats({ from: period.from, to: period.to, licenseCode, bucket: period.bucket });
+  for (const s of stats.byScenario) s.title = await scenarioTitle(s.scenario_id, s.title);
+  return { q, period, lizenz, stats };
+}
+
+const quote = (started, completed) => (started ? `${Math.round((100 * (completed ?? 0)) / started)} %` : '–');
+const licenseLabel = r => (r.license_code ? `${r.organization_name ?? 'gelöschte Lizenz'} (${r.license_code})` : 'Ohne Lizenz');
+
+/** Alle Abschnitte des Verlaufs, auch die ohne Daten. */
+function trendBuckets(period, trend) {
+  if (!period.from) return trend.map(t => t.bucket);
+  const keys = [];
+  const step = period.bucket === 'month' ? 7 : 10;
+  for (let d = new Date(period.from + 'T00:00:00Z'); d <= new Date(period.to + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + 1)) {
+    const key = d.toISOString().slice(0, step);
+    if (keys.at(-1) !== key) keys.push(key);
   }
-  const grid = {};
-  for (const r of daily) (grid[r.day] ??= {})[r.event] = r.count;
-  const opensPerDay = dayKeys.map(d => grid[d]?.app_open ?? 0);
-  const maxOpens = Math.max(1, ...opensPerDay);
+  return keys;
+}
 
-  const bars = dayKeys.slice().reverse().map(d => {
-    const v = grid[d]?.app_open ?? 0;
-    const h = Math.round((v / maxOpens) * 100);
-    return `<div title="${esc(d)}: ${v}" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;">
-      <div style="height:${h}%;min-height:${v ? 2 : 0}px;background:#dc2626;border-radius:2px 2px 0 0;"></div>
+async function statsPage(searchParams) {
+  const { q, period, lizenz, stats } = await loadStats(searchParams);
+  const [licenses, years] = await Promise.all([listLicenses(), listUsageYears()]);
+  const thisYear = new Date().getUTCFullYear();
+  if (!years.includes(thisYear)) years.unshift(thisYear);
+
+  const sum = (rows, k) => rows.reduce((n, r) => n + (r[k] ?? 0), 0);
+  const started = sum(stats.byLicense, 'started');
+  const completed = sum(stats.byLicense, 'completed');
+  const training = sum(stats.byLicense, 'training');
+  const events = Object.fromEntries(stats.events.map(e => [e.event, e.total]));
+
+  const byBucket = Object.fromEntries(stats.trend.map(t => [t.bucket, t]));
+  const buckets = trendBuckets(period, stats.trend);
+  const max = Math.max(1, ...buckets.map(b => byBucket[b]?.started ?? 0));
+  const bars = buckets.map(b => {
+    const v = byBucket[b]?.started ?? 0;
+    const c = byBucket[b]?.completed ?? 0;
+    return `<div title="${esc(b)}: ${v} gestartet, ${c} abgeschlossen" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;">
+      <div style="height:${Math.round((v / max) * 100)}%;min-height:${v ? 2 : 0}px;background:#dc2626;border-radius:2px 2px 0 0;"></div>
     </div>`;
   }).join('');
 
-  const totalRows = events.map(e => {
-    const t = byEvent[e] ?? {};
-    return `<tr><td>${esc(USAGE_EVENTS[e])}</td>
-      <td style="text-align:right;">${t.last7 ?? 0}</td>
-      <td style="text-align:right;">${t.last30 ?? 0}</td>
-      <td style="text-align:right;">${t.total ?? 0}</td></tr>`;
-  }).join('');
+  const filterUrl = extra => '/admin/stats?' + new URLSearchParams({ ...q, ...extra }).toString();
+  const csvUrl = tabelle => '/admin/stats.csv?' + new URLSearchParams({ ...q, tabelle }).toString();
+  const num = v => `<td style="text-align:right;">${v ?? 0}</td>`;
 
-  const dayRows = dayKeys.filter(d => grid[d]).map(d => `<tr><td>${esc(d)}</td>${
-    events.map(e => `<td style="text-align:right;">${grid[d][e] ?? 0}</td>`).join('')
-  }</tr>`).join('');
+  const licenseRows = stats.byLicense.map(r => `<tr>
+      <td><a href="${esc(filterUrl({ lizenz: r.license_code || NO_LICENSE }))}" style="color:#60a5fa;">${esc(licenseLabel(r))}</a></td>
+      ${num(r.started)}${num(r.training)}${num(r.completed)}<td style="text-align:right;">${quote(r.started, r.completed)}</td></tr>`).join('');
+  const scenarioRows = stats.byScenario.map(r => `<tr>
+      <td>${esc(r.title)}${r.title !== r.scenario_id && r.scenario_id !== OTHER_SCENARIO ? ` <span class="mono" style="color:#666;">${esc(r.scenario_id)}</span>` : ''}</td>
+      ${num(r.started)}${num(r.training)}${num(r.completed)}<td style="text-align:right;">${quote(r.started, r.completed)}</td></tr>`).join('');
+  const tableHead = first => `<thead><tr><th>${first}</th><th style="text-align:right;">Gestartet</th><th style="text-align:right;">davon Training</th><th style="text-align:right;">Abgeschlossen</th><th style="text-align:right;">Quote</th></tr></thead>`;
+
+  const sel = (a, b) => (a === b ? ' selected' : '');
+  const tile = (label, value) => `<div class="card" style="padding:1rem;"><div style="color:#a3a3a3;font-size:.75rem;">${label}</div><div style="font-size:1.6rem;font-weight:700;">${value}</div></div>`;
+  const leer = '<p style="color:#a3a3a3;">Keine Daten im gewählten Zeitraum.</p>';
 
   return page('Statistik', `
     <h2>Nutzungsstatistik</h2>
     <p style="color:#a3a3a3;font-size:.85rem;margin-top:-.5rem;">
-      Anonyme Tageszähler – es werden weder IP-Adressen noch Geräte-IDs oder Cookies gespeichert,
-      nur Ereignis und Datum.
+      Tageszähler ohne IP-Adressen, Geräte-IDs oder Cookies. Gespielte Szenarien werden je Szenario und
+      Lizenzcode (Organisation) gezählt – erst seit dem Update vom 02.11.2026.
     </p>
     ${isLicenseDbAvailable() ? '' : '<div class="flash-err">Datenbank nicht verfügbar – es wird nichts gezählt.</div>'}
+    <form method="GET" action="/admin/stats" class="card" style="margin-bottom:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;">
+      <div><label for="zeitraum">Zeitraum</label>
+        <select id="zeitraum" name="zeitraum" onchange="statsFilter()">
+          <option value="monat"${sel(period.zeitraum, 'monat')}>Monat</option>
+          <option value="jahr"${sel(period.zeitraum, 'jahr')}>Jahr</option>
+          <option value="7"${sel(period.zeitraum, '7')}>Letzte 7 Tage</option>
+          <option value="30"${sel(period.zeitraum, '30')}>Letzte 30 Tage</option>
+          <option value="gesamt"${sel(period.zeitraum, 'gesamt')}>Gesamt</option>
+          <option value="frei"${sel(period.zeitraum, 'frei')}>Von – bis</option>
+        </select></div>
+      <div data-f="monat"><label for="monat">Monat</label><input type="month" id="monat" name="monat" value="${esc(period.monat ?? new Date().toISOString().slice(0, 7))}"></div>
+      <div data-f="jahr"><label for="jahr">Jahr</label><select id="jahr" name="jahr">${years.map(y => `<option${sel(String(y), period.jahr ?? String(thisYear))}>${y}</option>`).join('')}</select></div>
+      <div data-f="frei"><label for="von">Von</label><input type="date" id="von" name="von" value="${esc(period.zeitraum === 'frei' ? period.from : '')}"></div>
+      <div data-f="frei"><label for="bis">Bis</label><input type="date" id="bis" name="bis" value="${esc(period.zeitraum === 'frei' ? period.to : '')}"></div>
+      <div><label for="lizenz">Lizenz / Ortscode</label>
+        <select id="lizenz" name="lizenz">
+          <option value="">Alle</option>
+          <option value="${NO_LICENSE}"${sel(lizenz, NO_LICENSE)}>Ohne Lizenz</option>
+          ${licenses.map(l => `<option value="${esc(l.code)}"${sel(lizenz, l.code)}>${esc(l.organization_name)} (${esc(l.code)})</option>`).join('')}
+        </select></div>
+      <button type="submit" class="btn btn-primary btn-sm">Anzeigen</button>
+    </form>
+    <script>
+      function statsFilter() {
+        const z = document.getElementById('zeitraum').value;
+        document.querySelectorAll('[data-f]').forEach(el => {
+          const an = el.dataset.f === z;
+          el.hidden = !an;
+          el.querySelectorAll('input,select').forEach(i => { i.disabled = !an; });
+        });
+      }
+      statsFilter();
+    </script>
+    <h3 style="margin-bottom:.75rem;">${esc(period.label)}${lizenz ? ' · ' + esc(lizenz === NO_LICENSE ? 'Ohne Lizenz' : licenseLabel(stats.byLicense[0] ?? { license_code: lizenz, organization_name: licenses.find(l => l.code === lizenz)?.organization_name })) : ''}</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-bottom:1.5rem;">
+      ${tile('Szenarien gestartet', started)}
+      ${tile('davon Training', training)}
+      ${tile('Abgeschlossen', completed)}
+      ${tile('Abschlussquote', quote(started, completed))}
+      ${lizenz ? '' : tile('App geöffnet', events.app_open ?? 0)}
+    </div>
     <div class="card" style="margin-bottom:1.5rem;">
-      <h3>App geöffnet – letzte ${days} Tage</h3>
-      <div style="display:flex;gap:2px;align-items:flex-end;height:120px;">${bars}</div>
+      <h3>Gestartete Szenarien pro ${period.bucket === 'month' ? 'Monat' : 'Tag'}</h3>
+      ${buckets.length ? `<div style="display:flex;gap:2px;align-items:flex-end;height:120px;">${bars}</div>
       <div style="display:flex;justify-content:space-between;color:#a3a3a3;font-size:.75rem;margin-top:.25rem;">
-        <span>${esc(dayKeys[days - 1])}</span><span>Max: ${maxOpens}</span><span>${esc(dayKeys[0])}</span>
-      </div>
+        <span>${esc(buckets[0])}</span><span>Max: ${max}</span><span>${esc(buckets.at(-1))}</span>
+      </div>` : leer}
     </div>
-    <div class="card" style="margin-bottom:1.5rem;">
-      <h3>Summen</h3>
+    <div class="card" style="margin-bottom:1.5rem;overflow-x:auto;">
+      <div style="display:flex;justify-content:space-between;gap:1rem;"><h3>Nach Lizenz / Ortscode</h3>
+        <a href="${esc(csvUrl('lizenzen'))}" class="btn btn-secondary btn-sm">CSV</a></div>
+      ${licenseRows ? `<table>${tableHead('Lizenz')}<tbody>${licenseRows}</tbody></table>` : leer}
+    </div>
+    <div class="card" style="margin-bottom:1.5rem;overflow-x:auto;">
+      <div style="display:flex;justify-content:space-between;gap:1rem;"><h3>Nach Szenario</h3>
+        <a href="${esc(csvUrl('szenarien'))}" class="btn btn-secondary btn-sm">CSV</a></div>
+      ${scenarioRows ? `<table>${tableHead('Szenario')}<tbody>${scenarioRows}</tbody></table>` : leer}
+    </div>
+    ${lizenz ? '' : `<div class="card" style="overflow-x:auto;">
+      <h3>Alle Ereignisse</h3>
       <table>
-        <thead><tr><th>Ereignis</th><th style="text-align:right;">7 Tage</th><th style="text-align:right;">30 Tage</th><th style="text-align:right;">Gesamt</th></tr></thead>
-        <tbody>${totalRows}</tbody>
+        <thead><tr><th>Ereignis</th><th style="text-align:right;">Anzahl</th></tr></thead>
+        <tbody>${Object.keys(USAGE_EVENTS).map(e => `<tr><td>${esc(USAGE_EVENTS[e])}</td>${num(events[e])}</tr>`).join('')}</tbody>
       </table>
-    </div>
-    <div class="card" style="overflow-x:auto;">
-      <h3>Pro Tag</h3>
-      ${dayRows ? `<table>
-        <thead><tr><th>Tag</th>${events.map(e => `<th style="text-align:right;">${esc(USAGE_EVENTS[e])}</th>`).join('')}</tr></thead>
-        <tbody>${dayRows}</tbody>
-      </table>` : '<p style="color:#a3a3a3;">Noch keine Daten.</p>'}
-    </div>
+    </div>`}
   `, 'stats');
+}
+
+async function statsCsv(searchParams) {
+  const { period, stats } = await loadStats(searchParams);
+  const scenarios = searchParams.get('tabelle') === 'szenarien';
+  const head = [scenarios ? 'Szenario' : 'Lizenzcode', scenarios ? 'Szenario-ID' : 'Organisation', 'Gestartet', 'davon Training', 'Abgeschlossen'];
+  const rows = scenarios
+    ? stats.byScenario.map(r => [r.title, r.scenario_id, r.started ?? 0, r.training ?? 0, r.completed ?? 0])
+    : stats.byLicense.map(r => [r.license_code || 'ohne Lizenz', r.organization_name ?? '', r.started ?? 0, r.training ?? 0, r.completed ?? 0]);
+  const name = `fffunk-${scenarios ? 'szenarien' : 'lizenzen'}-${period.from ?? 'gesamt'}${period.to ? '_' + period.to : ''}.csv`;
+  return { name, csv: toCsv([[`Zeitraum: ${period.label}`], head, ...rows]) };
 }
 
 // ── License list page ─────────────────────────────────────────────────────────
@@ -1472,7 +1568,13 @@ export async function handleAdminRequest(req, res) {
     return sendHtml(res, 200, await dashboardPage());
 
   if (p === '/admin/stats' && m === 'GET')
-    return sendHtml(res, 200, await statsPage());
+    return sendHtml(res, 200, await statsPage(url.searchParams));
+
+  if (p === '/admin/stats.csv' && m === 'GET') {
+    const { name, csv } = await statsCsv(url.searchParams);
+    res.writeHead(200, { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': `attachment; filename="${name}"` });
+    return res.end(csv);
+  }
 
   if (p === '/admin/licenses' && m === 'GET')
     return sendHtml(res, 200, await licensesPage(url.searchParams.get('msg') || ''));
