@@ -23,7 +23,7 @@ describe('Ortsnamen-Katalog', () => {
   it('deckt jeden Funkrufnamen mit Ortsbezug ab', () => {
     // „Akkon Erlangen 76/1“ ist ein festes Lernbeispiel (Johanniter-NEF) und bleibt.
     const fest = ['Akkon Erlangen'];
-    const rufnamen = new Set(inhalte.match(/\b(Florian|Heros|Rotkreuz|Sama|Johannes|Akkon|Leitstelle) [A-ZÄÖÜ][a-zäöüß]+(?: \d+(?:\/\d+)*)?/g));
+    const rufnamen = new Set(inhalte.match(/\b(Florian|Heros|Rotkreuz|Sama|Johannes|Akkon|Pelikan|Leitstelle) [A-ZÄÖÜ][a-zäöüß]+(?: \d+(?:\/\d+)*)?/g));
     for (const r of rufnamen) {
       if (fest.some(f => r.startsWith(f))) continue;
       if (/^Leitstelle [A-ZÄÖÜ][a-zäöü]+$/.test(r) && r !== 'Leitstelle Nürnberg') continue; // „Leitstelle Einsatzbereitschaft“ u. ä.

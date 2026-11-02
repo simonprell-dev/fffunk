@@ -19,5 +19,10 @@
   { "name": "Rettungswache Höchstadt", "gruppe": "Leitstelle und Rettungsdienst", "platzhalter": "Rettungswache [Wache]", "bedeutung": "Name der nächstgelegenen Rettungswache (Wache des RTW oben)" },
   { "name": "Uniklinikum Erlangen", "gruppe": "Leitstelle und Rettungsdienst", "platzhalter": "[Klinik]", "bedeutung": "Nächstes Krankenhaus mit Stroke Unit, Herzkatheterlabor und Unfallchirurgie – so, wie es im Funk genannt wird" },
   { "name": "Heros Erlangen", "gruppe": "THW", "platzhalter": "Heros [Ortsverband]", "bedeutung": "Kennwort und Ortsverband des zuständigen THW (die Kennzahlen dahinter sind bundeseinheitlich und bleiben)" },
-  { "name": "Ortsverband Erlangen", "gruppe": "THW", "platzhalter": "Ortsverband [Ortsverband]", "bedeutung": "Name des zuständigen THW-Ortsverbands" }
+  { "name": "Ortsverband Erlangen", "gruppe": "THW", "platzhalter": "Ortsverband [Ortsverband]", "bedeutung": "Name des zuständigen THW-Ortsverbands" },
+  { "name": "Pelikan Erlangen", "gruppe": "Wasserrettung und Schifffahrt", "platzhalter": "[Kennwort] [Standort]", "bedeutung": "Wasserrettung mit Boot (DLRG „Pelikan“ oder Wasserwacht) am nächsten großen Gewässer – Kennwort und Standort, Kennzahlen 98/99 bleiben" },
+  { "name": "Main-Donau-Kanal", "gruppe": "Wasserrettung und Schifffahrt", "platzhalter": "[Wasserstraße]", "bedeutung": "Nächste Wasserstraße mit Berufsschifffahrt (Fluss oder Kanal), auf der die Schifffahrt-Übungen spielen" },
+  { "name": "Schleuse Erlangen", "gruppe": "Wasserrettung und Schifffahrt", "platzhalter": "Schleuse [Name]", "bedeutung": "Schleuse (oder sonst markanter Punkt wie ein Wehr) an dieser Wasserstraße" },
+  { "name": "Möhrendorf", "gruppe": "Wasserrettung und Schifffahrt", "platzhalter": "[Ort am Wasser]", "bedeutung": "Ort mit Brücke über diese Wasserstraße – Einsatzstelle „Brücke Möhrendorf“ mit Slipstelle für Boote" },
+  { "name": "Turnhalle Höchstadt", "gruppe": "Katastrophenschutz", "platzhalter": "Turnhalle [Ort]", "bedeutung": "Große Halle in einer Nachbarstadt als Betreuungsstelle für Evakuierte" }
 ]

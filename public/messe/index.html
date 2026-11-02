@@ -8,7 +8,7 @@
 <!-- Messe-Endlosschleife: erklärt FFFunk in sieben Szenen, ohne Bedienung. Bewusst ohne
      moderne CSS/JS-Features, damit sie auch auf dem Messe-Funkgerät (Chrome 72) läuft. -->
 <style>
-  :root { --rot: #dc2626; --rot-hell: #f87171; --grund: #0b0f17; --flaeche: #151b26; --rand: #273042; --text: #f1f5f9; --leise: #94a3b8; --gruen: #22c55e; --gelb: #facc15; --blau: #3b82f6; --rosa: #f43f5e; }
+  :root { --rot: #dc2626; --rot-hell: #f87171; --grund: #0b0f17; --flaeche: #151b26; --rand: #273042; --text: #f1f5f9; --leise: #94a3b8; --gruen: #22c55e; --gelb: #facc15; --blau: #3b82f6; --rosa: #f43f5e; --tuerkis: #06b6d4; --orange: #f59e0b; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; background: var(--grund); color: var(--text);
     font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; cursor: none; }
@@ -112,8 +112,9 @@
   .punkte i.an { background: var(--rot); }
 
   /* Organisationen */
-  .karte.org { border-top-width: 1vmin; }
+  .karte.org { border-top-width: 1vmin; width: 25.5vmin; }
   .karte.fw { border-top-color: var(--rot); } .karte.thw { border-top-color: var(--blau); } .karte.rd { border-top-color: var(--rosa); }
+  .karte.wr { border-top-color: var(--tuerkis); } .karte.ks { border-top-color: var(--orange); }
   .karte .ruf { font-family: Consolas, monospace; font-size: 2.3vmin; color: var(--text); margin-top: 1.4vmin; }
   .orgname { font-size: 3.4vmin; font-weight: 800; margin-bottom: 2vmin; }
 
@@ -156,7 +157,7 @@
 <section class="szene" data-dauer="7000">
   <img class="gross-logo rein" src="/icon.svg" alt="">
   <h1 class="rein d1">FF<em>Funk</em></h1>
-  <p class="unter rein d2">Der Sprechfunk-Trainer für Feuerwehr, THW und Rettungsdienst</p>
+  <p class="unter rein d2">Der Sprechfunk-Trainer für Feuerwehr, THW, Rettungsdienst, Wasserrettung und Katastrophenschutz</p>
 </section>
 
 <!-- 2: Problem -->
@@ -168,11 +169,13 @@
 
 <!-- Drei Organisationen -->
 <section class="szene" data-dauer="9000">
-  <h2 class="rein">Ein Trainer –<br><em>drei Organisationen</em></h2>
+  <h2 class="rein">Ein Trainer –<br><em>fünf Bereiche</em></h2>
   <div class="reihe">
     <div class="karte org fw rein d1"><b>Feuerwehr</b><p>Angriffstrupp, Atemschutz, Mayday, Einsatzleitung</p><div class="ruf">Florian Neuhaus 17/42/1</div></div>
     <div class="karte org thw rein d2"><b>THW</b><p>Bergung, Pumpen, Licht, Deich – mit Stärkemeldung</p><div class="ruf">Heros Erlangen 22/51</div></div>
     <div class="karte org rd rein d3"><b>Rettungsdienst</b><p>Status, Sprechwunsch, Klinikanmeldung, MANV</p><div class="ruf">Rotkreuz Höchstadt 71/1</div></div>
+    <div class="karte org wr rein d4"><b>Wasserrettung</b><p>Person im Wasser, Ortsangabe am Ufer, Schifffahrt sperren</p><div class="ruf">Pelikan Erlangen 99/1</div></div>
+    <div class="karte org ks rein d5"><b>Katastrophen&shy;schutz</b><p>Hochwasser, Lagemeldung, Stromausfall, Betreuung</p><div class="ruf">Abschnitt Nord</div></div>
   </div>
 </section>
 
@@ -228,7 +231,7 @@
 </section>
 
 <!-- Grundausbildung -->
-<section class="szene" data-dauer="21000" data-start="kapitel">
+<section class="szene" data-dauer="35000" data-start="kapitel">
   <h2 class="rein" style="margin-bottom: 2vmin;">Neu dabei?<br><em>Die Grundausbildung</em></h2>
   <div class="orgname" id="orgname"></div>
   <div class="kapitel" id="kapitel"></div>
@@ -251,7 +254,7 @@
     <div class="karte rein d2"><div class="sym">📱</div><b>Android-App</b><p>Seitentaste wird zur Sprechtaste. Sprachausgabe auch offline.</p></div>
     <div class="karte rein d3"><div class="sym">📻</div><b>Am Funkgerät</b><p>Echte PTT- und Notruftaste – so nah am Einsatz wie möglich.</p></div>
   </div>
-  <p class="unter rein d5">40 Szenarien: Feuerwehr, THW und Rettungsdienst – vom ersten Funkspruch bis zum MANV</p>
+  <p class="unter rein d5">48 Szenarien in fünf Bereichen – vom ersten Funkspruch bis zum Hochwasser</p>
 </section>
 
 <!-- 8: Mitmachen -->
@@ -319,7 +322,9 @@
       var orgs = [
         ['Feuerwehr', 'var(--rot-hell)', ['Wer ruft wen?', 'Kommen und Ende', 'Eine Frage stellen', 'Nachfragen', 'Einen Anruf beantworten', 'Mayday']],
         ['THW', 'var(--blau)', ['Heros-Rufnamen lesen', 'Die Stärkemeldung', 'Meldung nach den 5 W', 'An- und Abmelden', 'Gefahr melden']],
-        ['Rettungsdienst', 'var(--rosa)', ['Rufnamen im Rettungsdienst', 'Status drücken', 'Sprechwunsch: Status 5 und J', 'Klinikanmeldung ohne Namen', 'Status 0 oder Notruftaste']]
+        ['Rettungsdienst', 'var(--rosa)', ['Rufnamen im Rettungsdienst', 'Status drücken', 'Sprechwunsch: Status 5 und J', 'Klinikanmeldung ohne Namen', 'Status 0 oder Notruftaste']],
+        ['Wasserrettung', 'var(--tuerkis)', ['Rufnamen am Wasser', 'Ortsangaben am Wasser', 'Person im Wasser melden', 'Schifffahrt sperren lassen']],
+        ['Katastrophenschutz', 'var(--orange)', ['Wer führt im Katastrophenfall?', 'Die Lagemeldung', 'Richtig nachfordern', 'Wenn das Netz ausfällt']]
       ];
       liste.innerHTML = ''; name.textContent = '';
       orgs.forEach(function (o, n) {

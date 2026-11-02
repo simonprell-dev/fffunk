@@ -1,0 +1,191 @@
+{
+  "id": "schiff_havarie_frachter",
+  "title": "Schifffahrt: Frachter leckgeschlagen – Öl auf dem Kanal",
+  "description": "Fortgeschritten: Ein Frachter läuft voll Wasser, Öl tritt aus. Sie erkunden mit dem Boot, melden die Lage nach Schema und fordern Ölsperre und Sperrung an. 3 Funk-Schritte.",
+  "startingNodeId": "n_erkunden",
+  "playerRole": "wasserrettung",
+  "nodes": {
+    "n_erkunden_x1": {
+      "id": "n_erkunden_x1",
+      "role": "wasserrettung",
+      "narrative": "**Nicht richtig.** Das klärt die Schifffahrtsverwaltung mit dem Schiffsführer. Für die **Einsatzleitung** zählen zuerst **Menschen und Gefahren**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_erkunden"
+        }
+      ]
+    },
+    "n_erkunden_x2": {
+      "id": "n_erkunden_x2",
+      "role": "wasserrettung",
+      "narrative": "**Nicht richtig.** Das kann noch niemand sagen. Melden Sie, was Sie **sehen**: Personen, Öl, Schlagseite, Festmachen.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_erkunden"
+        }
+      ]
+    },
+    "n_erkunden": {
+      "id": "n_erkunden",
+      "role": "wasserrettung",
+      "narrative": "Einsatz für **Pelikan Erlangen 99/1**: Ein **Frachter** hat oberhalb der **Schleuse Erlangen** festgemacht, der **Maschinenraum läuft voll Wasser**. Die Feuerwehr ist an Land, Sie sollen vom Wasser aus **erkunden**.\n\nSie umrunden das Schiff. Was ist für Ihre Meldung am wichtigsten?\n\n> *Beispiel nach bayerischer Regelung – Rufnamen und Abläufe können in Ihrer Gliederung abweichen.*",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Personen an Bord, Gefahren (Öl, Schlagseite) und ob das Schiff sicher festgemacht ist",
+          "nextNodeId": "n_lage"
+        },
+        {
+          "id": "opt1",
+          "label": "Name der Reederei und Ladung im Detail",
+          "nextNodeId": "n_erkunden_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "Wie lange der Kanal gesperrt bleiben muss",
+          "nextNodeId": "n_erkunden_x2"
+        }
+      ]
+    },
+    "n_lage": {
+      "id": "n_lage",
+      "role": "wasserrettung",
+      "narrative": "Sie sehen: **zwei Personen** an Bord, unverletzt. Das Schiff hat **leichte Schlagseite**, ist aber fest vertäut. Am Heck läuft ein **Ölfilm** aus, etwa **50 Meter** lang, er treibt **Richtung Schleuse**.\n\nMelden Sie der **Einsatzleitung** die Lage.",
+      "actions": [
+        {
+          "id": "radio_lage",
+          "label": "📞 Lage melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "99/1",
+              "zwei Personen",
+              "unverletzt",
+              "Schlagseite",
+              "Ölfilm",
+              "50 Meter",
+              "Schleuse",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Pelikan Erlangen 99/1 – Lage: zwei Personen an Bord, unverletzt, leichte Schlagseite, Schiff fest vertäut, Ölfilm am Heck etwa 50 Meter, treibt Richtung Schleuse – kommen.",
+            "briefing": "Anruf . „Lage“ . Personen (zwei, unverletzt) . Schiff (Schlagseite, vertäut) . Gefahr (Ölfilm 50 Meter) . Richtung (Schleuse) . „kommen“",
+            "onSuccess": "n_oelsperre",
+            "onFailure": "n_lage_fail",
+            "feedbackSuccess": "✅ Klare Lage: Menschen, Schiff, Gefahr, Richtung.",
+            "feedbackFailure": "❌ Melden Sie: zwei Personen unverletzt, Schlagseite, Ölfilm 50 Meter, Richtung Schleuse."
+          }
+        }
+      ]
+    },
+    "n_lage_fail": {
+      "id": "n_lage_fail",
+      "role": "wasserrettung",
+      "narrative": "**Feedback:** Erst **Menschen**, dann **Schiff**, dann die **Gefahr** und **wohin** sie sich bewegt.\n\nBeispiel: *„Einsatzleitung von Pelikan Erlangen 99/1 – Lage: zwei Personen an Bord, unverletzt, leichte Schlagseite, Schiff fest vertäut, Ölfilm am Heck etwa 50 Meter, treibt Richtung Schleuse – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_oelsperre": {
+      "id": "n_oelsperre",
+      "role": "wasserrettung",
+      "narrative": "**Einsatzleitung:** „Verstanden. Was brauchen Sie?“\n\nDer Ölfilm darf **nicht in die Schleuse**. Sie brauchen eine **Ölsperre** vor der Schleuse und die Schleuse soll **nicht geöffnet** werden.",
+      "actions": [
+        {
+          "id": "radio_oelsperre",
+          "label": "📞 Nachfordern",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "99/1",
+              "Ölsperre",
+              "vor der Schleuse",
+              "nicht schleusen",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Pelikan Erlangen 99/1 – wir brauchen eine Ölsperre vor der Schleuse, bitte nicht schleusen – kommen.",
+            "briefing": "Anruf . was (Ölsperre) . wo (vor der Schleuse) . was nicht passieren darf (nicht schleusen) . „kommen“",
+            "onSuccess": "n_wache",
+            "onFailure": "n_oelsperre_fail",
+            "feedbackSuccess": "✅ Nachforderung mit Ort und Grund.",
+            "feedbackFailure": "❌ Fordern Sie an: Ölsperre vor der Schleuse, nicht schleusen."
+          }
+        }
+      ]
+    },
+    "n_oelsperre_fail": {
+      "id": "n_oelsperre_fail",
+      "role": "wasserrettung",
+      "narrative": "**Feedback:** Wird geschleust, verteilt sich das Öl kanalabwärts – darum die Bitte, **nicht zu schleusen**.\n\nBeispiel: *„Einsatzleitung von Pelikan Erlangen 99/1 – wir brauchen eine Ölsperre vor der Schleuse, bitte nicht schleusen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_oelsperre"
+        }
+      ]
+    },
+    "n_wache": {
+      "id": "n_wache",
+      "role": "wasserrettung",
+      "narrative": "Die Feuerwehr bringt die Ölsperre aus, Ihr Boot hilft beim Ziehen. Danach sollen Sie **am Frachter Wache** halten. Melden Sie der Einsatzleitung, dass die Ölsperre **liegt** und Sie **am Schiff bleiben**.",
+      "actions": [
+        {
+          "id": "radio_wache",
+          "label": "📞 Vollzug melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "99/1",
+              "Ölsperre liegt",
+              "bleiben am Schiff",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Pelikan Erlangen 99/1 – Ölsperre liegt, Öl wird gehalten, wir bleiben am Schiff zur Wache – kommen.",
+            "briefing": "Anruf . Vollzug („Ölsperre liegt“) . Wirkung (Öl wird gehalten) . was Sie jetzt tun („bleiben am Schiff“) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_wache_fail",
+            "feedbackSuccess": "✅ Vollzug gemeldet – die Einsatzleitung weiß, dass der Auftrag erledigt ist und wo Sie sind.",
+            "feedbackFailure": "❌ Melden Sie: Ölsperre liegt, Sie bleiben am Schiff."
+          }
+        }
+      ]
+    },
+    "n_wache_fail": {
+      "id": "n_wache_fail",
+      "role": "wasserrettung",
+      "narrative": "**Feedback:** Ein Auftrag ist erst fertig, wenn er **zurückgemeldet** ist.\n\nBeispiel: *„Einsatzleitung von Pelikan Erlangen 99/1 – Ölsperre liegt, Öl wird gehalten, wir bleiben am Schiff zur Wache – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_wache"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "wasserrettung",
+      "narrative": "Das Öl ist gestoppt, der Frachter wird abgepumpt.\n\nErkundet, Lage nach Schema gemeldet, gezielt nachgefordert und den Vollzug zurückgemeldet.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_erkunden"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

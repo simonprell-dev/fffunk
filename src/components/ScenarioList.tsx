@@ -33,6 +33,8 @@ function getRoleBadge(role: PlayerRole): { label: string; cls: string } {
   if (role === 'thw_helfer') return { label: 'THW-Helfer', cls: 'bg-sky-900/40 text-sky-300 border border-sky-800' };
   if (role === 'thw_gruppenführer') return { label: 'THW-Gruppenführer', cls: 'bg-sky-900/40 text-sky-300 border border-sky-800' };
   if (role === 'rettungsdienst') return { label: 'Rettungsdienst', cls: 'bg-rose-900/40 text-rose-300 border border-rose-800' };
+  if (role === 'wasserrettung') return { label: 'Wasserrettung', cls: 'bg-cyan-900/40 text-cyan-300 border border-cyan-800' };
+  if (role === 'katastrophenschutz') return { label: 'Katastrophenschutz', cls: 'bg-amber-900/40 text-amber-300 border border-amber-800' };
   return { label: role, cls: 'bg-[#333] text-[#a3a3a3]' };
 }
 

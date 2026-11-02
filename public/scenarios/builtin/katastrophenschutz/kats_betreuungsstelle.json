@@ -1,0 +1,144 @@
+{
+  "id": "kats_betreuungsstelle",
+  "title": "Katastrophenschutz: Evakuierung und Betreuungsstelle",
+  "description": "Einsteiger: Sie leiten die Betreuungsstelle in der Turnhalle Höchstadt. Ankunft melden, Personen zählen, Bedarf anfordern und abmelden. 3 Funk-Schritte.",
+  "startingNodeId": "n_bereit",
+  "playerRole": "katastrophenschutz",
+  "nodes": {
+    "n_bereit": {
+      "id": "n_bereit",
+      "role": "katastrophenschutz",
+      "narrative": "Wegen des Hochwassers wird eine Siedlung evakuiert. Sie leiten die **Betreuungsstelle** in der **Turnhalle Höchstadt**: Feldbetten, Decken, warme Getränke. Alles ist aufgebaut.\n\nMelden Sie der **Einsatzleitung**, dass die Betreuungsstelle **bereit** ist und für **wie viele** Menschen Platz hat: **120**.\n\n> *Beispiel – Führungsstruktur und Funkrufnamen legt Ihr Landkreis fest.*",
+      "actions": [
+        {
+          "id": "radio_bereit",
+          "label": "📞 Bereitschaft melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "Betreuungsstelle",
+              "Turnhalle Höchstadt",
+              "bereit",
+              "120",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Betreuungsstelle – Turnhalle Höchstadt ist bereit, Platz für 120 Personen – kommen.",
+            "briefing": "Anruf . wo (Turnhalle Höchstadt) . „bereit“ . Kapazität (Platz für 120 Personen) . „kommen“",
+            "onSuccess": "n_ankunft",
+            "onFailure": "n_bereit_fail",
+            "feedbackSuccess": "✅ Bereitschaft und Kapazität gemeldet – die Einsatzleitung kann die Busse schicken.",
+            "feedbackFailure": "❌ Melden Sie: Turnhalle Höchstadt bereit, Platz für 120 Personen."
+          }
+        }
+      ]
+    },
+    "n_bereit_fail": {
+      "id": "n_bereit_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Mit der **Kapazität** weiß die Einsatzleitung, ob sie eine zweite Betreuungsstelle braucht.\n\nBeispiel: *„Einsatzleitung von Betreuungsstelle – Turnhalle Höchstadt ist bereit, Platz für 120 Personen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_bereit"
+        }
+      ]
+    },
+    "n_ankunft": {
+      "id": "n_ankunft",
+      "role": "katastrophenschutz",
+      "narrative": "Der erste Bus ist da. Sie zählen **42 Personen**, davon **6 Kinder**. Eine ältere Frau braucht **ihre Medikamente**, die sie zu Hause vergessen hat. Namen nennen Sie **nicht** über Funk – die Liste mit Namen bleibt bei Ihnen.",
+      "actions": [
+        {
+          "id": "radio_ankunft",
+          "label": "📞 Ankunft melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "Betreuungsstelle",
+              "42 Personen",
+              "6 Kinder",
+              "Medikamente",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Betreuungsstelle – erster Bus angekommen, 42 Personen, davon 6 Kinder, eine Person braucht Medikamente – kommen.",
+            "briefing": "Anruf . was (erster Bus angekommen) . Zahl (42 Personen, 6 Kinder) . Besonderheit (eine Person braucht Medikamente) . „kommen“",
+            "onSuccess": "n_bedarf",
+            "onFailure": "n_ankunft_fail",
+            "feedbackSuccess": "✅ Zahlen ohne Namen gemeldet – richtig so.",
+            "feedbackFailure": "❌ Melden Sie: 42 Personen, 6 Kinder, eine Person braucht Medikamente."
+          }
+        }
+      ]
+    },
+    "n_ankunft_fail": {
+      "id": "n_ankunft_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Die Einsatzleitung **zählt**: Wer evakuiert wurde und wo er ist. **Namen** gehören auf die Liste, nicht in den Funk.\n\nBeispiel: *„Einsatzleitung von Betreuungsstelle – erster Bus angekommen, 42 Personen, davon 6 Kinder, eine Person braucht Medikamente – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_ankunft"
+        }
+      ]
+    },
+    "n_bedarf": {
+      "id": "n_bedarf",
+      "role": "katastrophenschutz",
+      "narrative": "Es wird eine lange Nacht. Sie brauchen für **morgen früh** **Frühstück für 120 Personen** und einen **Arzt**, der sich um die Medikamente kümmert.",
+      "actions": [
+        {
+          "id": "radio_bedarf",
+          "label": "📞 Bedarf anfordern",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "Betreuungsstelle",
+              "Nachforderung",
+              "Frühstück",
+              "120 Personen",
+              "Arzt",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Betreuungsstelle – Nachforderung: Frühstück für 120 Personen bis morgen 7 Uhr, außerdem einen Arzt in die Turnhalle – kommen.",
+            "briefing": "Anruf . „Nachforderung“ . was (Frühstück für 120 Personen, Arzt) . bis wann (morgen 7 Uhr) . wohin (Turnhalle) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_bedarf_fail",
+            "feedbackSuccess": "✅ Bedarf mit Menge, Zeit und Ort angefordert.",
+            "feedbackFailure": "❌ Fordern Sie an: Frühstück für 120 Personen bis morgen früh, einen Arzt."
+          }
+        }
+      ]
+    },
+    "n_bedarf_fail": {
+      "id": "n_bedarf_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Verpflegung für viele Menschen braucht **Vorlauf** – deshalb früh und mit **Uhrzeit** anfordern.\n\nBeispiel: *„Einsatzleitung von Betreuungsstelle – Nachforderung: Frühstück für 120 Personen bis morgen 7 Uhr, außerdem einen Arzt in die Turnhalle – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_bedarf"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "katastrophenschutz",
+      "narrative": "Die Einsatzleitung bestätigt Frühstück und Arzt.\n\nBereitschaft mit Kapazität, Zahlen ohne Namen und ein Bedarf mit Menge und Uhrzeit – so läuft eine Betreuungsstelle.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_bereit"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

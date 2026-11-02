@@ -1,0 +1,187 @@
+{
+  "id": "kats_hochwasser_aisch",
+  "title": "Katastrophenschutz: Hochwasser an der Aisch",
+  "description": "Fortgeschritten: Sie leiten den Abschnitt Nord in Adelsdorf. Lage an die Einsatzleitung, THW anfordern, eine Gefahr am Damm melden und eine Evakuierung empfehlen. 4 Funk-Schritte.",
+  "startingNodeId": "n_lage",
+  "playerRole": "katastrophenschutz",
+  "nodes": {
+    "n_lage": {
+      "id": "n_lage",
+      "role": "katastrophenschutz",
+      "narrative": "Sie leiten den **Abschnitt Nord** in **Adelsdorf**. Es ist **16 Uhr**. Die **Aisch** steht am **Sportplatz** schon auf dem Weg, **drei Feuerwehrgruppen** bauen einen Sandsackwall vor der Siedlung. Die Einsatzleitung fragt nach der Lage.\n\nGeben Sie die Lagemeldung.\n\n> *Beispiel – Führungsstruktur und Funkrufnamen legt Ihr Landkreis fest.*",
+      "actions": [
+        {
+          "id": "radio_lage",
+          "label": "📞 Lagemeldung",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "Abschnitt Nord",
+              "16 Uhr",
+              "Aisch",
+              "Sportplatz",
+              "drei Gruppen",
+              "Sandsackwall",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Abschnitt Nord – Lage 16 Uhr: Aisch am Sportplatz über den Weg, drei Gruppen im Einsatz, bauen Sandsackwall vor der Siedlung – kommen.",
+            "briefing": "Anruf . „Lage“ + Uhrzeit . was los ist (Aisch am Sportplatz) . Kräfte (drei Gruppen) . Maßnahme (Sandsackwall) . „kommen“",
+            "onSuccess": "n_thw",
+            "onFailure": "n_lage_fail",
+            "feedbackSuccess": "✅ Lagemeldung in der richtigen Reihenfolge.",
+            "feedbackFailure": "❌ Melden Sie: 16 Uhr, Aisch am Sportplatz, drei Gruppen, Sandsackwall."
+          }
+        }
+      ]
+    },
+    "n_lage_fail": {
+      "id": "n_lage_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** **Uhrzeit – Lage – Kräfte – Maßnahmen.** So kann die Einsatzleitung alle Abschnitte vergleichen.\n\nBeispiel: *„Einsatzleitung von Abschnitt Nord – Lage 16 Uhr: Aisch am Sportplatz über den Weg, drei Gruppen im Einsatz, bauen Sandsackwall vor der Siedlung – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_lage"
+        }
+      ]
+    },
+    "n_thw": {
+      "id": "n_thw",
+      "role": "katastrophenschutz",
+      "narrative": "Die Keller in der Siedlung laufen voll, Ihre Tragkraftspritzen reichen nicht. Sie brauchen das **THW** mit **zwei großen Pumpen** am **Feuerwehrhaus Adelsdorf**, möglichst **in einer Stunde**.",
+      "actions": [
+        {
+          "id": "radio_thw",
+          "label": "📞 THW anfordern",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "Abschnitt Nord",
+              "Nachforderung",
+              "THW",
+              "zwei große Pumpen",
+              "Feuerwehrhaus Adelsdorf",
+              "in einer Stunde",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Abschnitt Nord – Nachforderung: THW mit zwei großen Pumpen, Treffpunkt Feuerwehrhaus Adelsdorf, in einer Stunde – kommen.",
+            "briefing": "Anruf . „Nachforderung“ . wer/was (THW, zwei große Pumpen) . wohin (Feuerwehrhaus Adelsdorf) . bis wann (in einer Stunde) . „kommen“",
+            "onSuccess": "n_damm",
+            "onFailure": "n_thw_fail",
+            "feedbackSuccess": "✅ Nachforderung vollständig: was, wie viel, wohin, bis wann.",
+            "feedbackFailure": "❌ Fordern Sie an: THW, zwei große Pumpen, Feuerwehrhaus Adelsdorf, in einer Stunde."
+          }
+        }
+      ]
+    },
+    "n_thw_fail": {
+      "id": "n_thw_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Mit **Treffpunkt** und **Zeit** kann das THW sofort losfahren, ohne nachzufragen.\n\nBeispiel: *„Einsatzleitung von Abschnitt Nord – Nachforderung: THW mit zwei großen Pumpen, Treffpunkt Feuerwehrhaus Adelsdorf, in einer Stunde – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_thw"
+        }
+      ]
+    },
+    "n_damm": {
+      "id": "n_damm",
+      "role": "katastrophenschutz",
+      "narrative": "Ein Gruppenführer meldet Ihnen: Am **Damm hinter der Siedlung** tritt auf **20 Metern Wasser durch**, der Boden wird **weich**. Wenn der Damm bricht, steht die Siedlung unter Wasser. Das muss **sofort** zur Einsatzleitung.",
+      "actions": [
+        {
+          "id": "radio_damm",
+          "label": "📞 Gefahr melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "Abschnitt Nord",
+              "Achtung",
+              "Damm",
+              "20 Meter",
+              "Wasser tritt durch",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Abschnitt Nord – Achtung: Damm hinter der Siedlung, auf 20 Meter tritt Wasser durch, Boden wird weich – kommen.",
+            "briefing": "Anruf . „Achtung“ . wo (Damm hinter der Siedlung) . was (auf 20 Meter tritt Wasser durch, Boden weich) . „kommen“",
+            "onSuccess": "n_evakuierung",
+            "onFailure": "n_damm_fail",
+            "feedbackSuccess": "✅ Gefahr sofort, knapp und genau gemeldet.",
+            "feedbackFailure": "❌ Melden Sie sofort: Achtung, Damm, 20 Meter, Wasser tritt durch."
+          }
+        }
+      ]
+    },
+    "n_damm_fail": {
+      "id": "n_damm_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Eine **Gefahr** geht **vor** jeder anderen Meldung.\n\nBeispiel: *„Einsatzleitung von Abschnitt Nord – Achtung: Damm hinter der Siedlung, auf 20 Meter tritt Wasser durch, Boden wird weich – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_damm"
+        }
+      ]
+    },
+    "n_evakuierung": {
+      "id": "n_evakuierung",
+      "role": "katastrophenschutz",
+      "narrative": "**Einsatzleitung:** „Abschnitt Nord – verstanden. Ihre Empfehlung? – kommen.“\n\nIn der Siedlung wohnen **etwa 80 Menschen**, darunter **mehrere Ältere**, die nicht gut gehen können. Sie empfehlen die **Evakuierung** und brauchen dafür **Busse** und einen **Krankentransport**.",
+      "actions": [
+        {
+          "id": "radio_evakuierung",
+          "label": "📞 Evakuierung empfehlen",
+          "radioCall": {
+            "expectedPhrases": [
+              "Abschnitt Nord",
+              "empfehle Evakuierung",
+              "80 Personen",
+              "Busse",
+              "Krankentransport",
+              "kommen"
+            ],
+            "hint": "Hier Abschnitt Nord – empfehle Evakuierung der Siedlung, etwa 80 Personen, darunter mehrere gehbehindert, brauchen Busse und Krankentransport – kommen.",
+            "briefing": "„hier Abschnitt Nord“ . Empfehlung („empfehle Evakuierung“) . wie viele (etwa 80 Personen) . Besonderheit (gehbehindert) . Bedarf (Busse, Krankentransport) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_evakuierung_fail",
+            "feedbackSuccess": "✅ Klare Empfehlung mit Zahl und Bedarf – die Einsatzleitung kann entscheiden.",
+            "feedbackFailure": "❌ Empfehlen Sie: Evakuierung, etwa 80 Personen, Busse und Krankentransport."
+          }
+        }
+      ]
+    },
+    "n_evakuierung_fail": {
+      "id": "n_evakuierung_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Die **Entscheidung** trifft die Einsatzleitung – Ihre Meldung muss alles enthalten, was sie dafür braucht.\n\nBeispiel: *„Hier Abschnitt Nord – empfehle Evakuierung der Siedlung, etwa 80 Personen, darunter mehrere gehbehindert, brauchen Busse und Krankentransport – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_evakuierung"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "katastrophenschutz",
+      "narrative": "**Einsatzleitung:** „Evakuierung wird angeordnet, Busse kommen zum Sportplatz – Ende.“\n\nLage, Nachforderung, Gefahr und Empfehlung – jede Meldung an die richtige Stelle und vollständig.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_lage"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

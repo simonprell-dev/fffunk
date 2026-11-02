@@ -1,0 +1,144 @@
+{
+  "id": "schiff_fahrgastschiff_rauch",
+  "title": "Schifffahrt: Rauch auf dem Fahrgastschiff",
+  "description": "Fortgeschritten: Auf einem Ausflugsschiff brennt es im Maschinenraum. Ihr Boot holt Fahrgäste ab – Zahlen sauber melden, Übergabestelle nennen und eine Gefahr sofort weitergeben. 3 Funk-Schritte.",
+  "startingNodeId": "n_anfahrt",
+  "playerRole": "wasserrettung",
+  "nodes": {
+    "n_anfahrt": {
+      "id": "n_anfahrt",
+      "role": "wasserrettung",
+      "narrative": "Ein **Fahrgastschiff** mit **etwa 60 Fahrgästen** liegt **manövrierunfähig** im Kanal **unterhalb der Schleuse Erlangen**, aus dem Maschinenraum kommt **Rauch**. Sie fahren mit **Pelikan Erlangen 99/1** hin.\n\n**Einsatzleitung:** „Pelikan Erlangen 99/1 – Fahrgäste vom Heck abholen und zur Slipstelle Hafen bringen – kommen.“\n\nWiederholen Sie den Auftrag.\n\n> *Beispiel nach bayerischer Regelung – Rufnamen und Abläufe können in Ihrer Gliederung abweichen.*",
+      "actions": [
+        {
+          "id": "radio_anfahrt",
+          "label": "📞 Auftrag wiederholen",
+          "radioCall": {
+            "expectedPhrases": [
+              "99/1",
+              "verstanden",
+              "Fahrgäste",
+              "Heck",
+              "Slipstelle Hafen",
+              "kommen"
+            ],
+            "hint": "Hier Pelikan Erlangen 99/1 – verstanden: Fahrgäste vom Heck abholen, zur Slipstelle Hafen – kommen.",
+            "briefing": "„hier Pelikan Erlangen 99/1“ . „verstanden“ . Auftrag (Fahrgäste vom Heck) . Ziel (Slipstelle Hafen) . „kommen“",
+            "onSuccess": "n_zahl",
+            "onFailure": "n_anfahrt_fail",
+            "feedbackSuccess": "✅ Auftrag mit Abholort und Ziel wiederholt.",
+            "feedbackFailure": "❌ Wiederholen Sie: Fahrgäste vom Heck, zur Slipstelle Hafen."
+          }
+        }
+      ]
+    },
+    "n_anfahrt_fail": {
+      "id": "n_anfahrt_fail",
+      "role": "wasserrettung",
+      "narrative": "**Feedback:** Bei mehreren Booten ist der **Übergabeort** entscheidend – sonst landen Fahrgäste an verschiedenen Stellen.\n\nBeispiel: *„Hier Pelikan Erlangen 99/1 – verstanden: Fahrgäste vom Heck abholen, zur Slipstelle Hafen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anfahrt"
+        }
+      ]
+    },
+    "n_zahl": {
+      "id": "n_zahl",
+      "role": "wasserrettung",
+      "narrative": "Sie nehmen **acht Fahrgäste** auf, darunter **ein Kind**. Eine Frau **hustet stark**. Melden Sie der Einsatzleitung, was Sie an Bord haben.",
+      "actions": [
+        {
+          "id": "radio_zahl",
+          "label": "📞 Belegung melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "99/1",
+              "acht Personen",
+              "ein Kind",
+              "eine Person hustet",
+              "Slipstelle Hafen",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Pelikan Erlangen 99/1 – acht Personen an Bord, davon ein Kind, eine Person hustet stark, fahren zur Slipstelle Hafen – kommen.",
+            "briefing": "Anruf . Zahl (acht Personen) . Besonderheiten (ein Kind, eine Person hustet) . Ziel (Slipstelle Hafen) . „kommen“",
+            "onSuccess": "n_gefahr",
+            "onFailure": "n_zahl_fail",
+            "feedbackSuccess": "✅ Zahl und Besonderheiten gemeldet – der Rettungsdienst an Land kann sich vorbereiten.",
+            "feedbackFailure": "❌ Melden Sie: acht Personen, ein Kind, eine Person hustet, Ziel Slipstelle Hafen."
+          }
+        }
+      ]
+    },
+    "n_zahl_fail": {
+      "id": "n_zahl_fail",
+      "role": "wasserrettung",
+      "narrative": "**Feedback:** Die Einsatzleitung **zählt mit**: Nur so weiß sie am Ende, ob alle 60 Fahrgäste an Land sind.\n\nBeispiel: *„Einsatzleitung von Pelikan Erlangen 99/1 – acht Personen an Bord, davon ein Kind, eine Person hustet stark, fahren zur Slipstelle Hafen – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_zahl"
+        }
+      ]
+    },
+    "n_gefahr": {
+      "id": "n_gefahr",
+      "role": "wasserrettung",
+      "narrative": "Auf der Rückfahrt sehen Sie: Am Bug des Fahrgastschiffs **steigt jetzt Rauch aus den Fenstern** – dort warten noch Fahrgäste. Das muss die Einsatzleitung **sofort** wissen.",
+      "actions": [
+        {
+          "id": "radio_gefahr",
+          "label": "📞 Gefahr melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Einsatzleitung",
+              "99/1",
+              "Achtung",
+              "Rauch am Bug",
+              "Fahrgäste",
+              "kommen"
+            ],
+            "hint": "Einsatzleitung von Pelikan Erlangen 99/1 – Achtung: Rauch am Bug aus den Fenstern, dort warten noch Fahrgäste – kommen.",
+            "briefing": "Anruf . „Achtung“ . was (Rauch am Bug) . warum gefährlich (dort warten Fahrgäste) . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_gefahr_fail",
+            "feedbackSuccess": "✅ Gefahr sofort und knapp gemeldet.",
+            "feedbackFailure": "❌ Melden Sie sofort: Achtung, Rauch am Bug, dort warten Fahrgäste."
+          }
+        }
+      ]
+    },
+    "n_gefahr_fail": {
+      "id": "n_gefahr_fail",
+      "role": "wasserrettung",
+      "narrative": "**Feedback:** Eine **Gefahr** meldet man **sofort** – auch mitten in einem anderen Auftrag.\n\nBeispiel: *„Einsatzleitung von Pelikan Erlangen 99/1 – Achtung: Rauch am Bug aus den Fenstern, dort warten noch Fahrgäste – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_gefahr"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "wasserrettung",
+      "narrative": "Die Einsatzleitung schickt das nächste Boot zuerst an den Bug. Alle Fahrgäste kommen an Land.\n\nAuftrag wiederholt, Personen gezählt und gemeldet, Gefahr sofort weitergegeben.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anfahrt"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

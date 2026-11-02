@@ -55,6 +55,18 @@
       "builtin/rettungsdienst/rd_manv_ersteintreffend.json",
       "builtin/rettungsdienst/rd_notarzt_nachfordern.json",
       "builtin/rettungsdienst/rd_schlaganfall_anmeldung.json"
+    ],
+    "schifffahrt": [
+      "builtin/schifffahrt/schiff_fahrgastschiff_rauch.json",
+      "builtin/schifffahrt/schiff_grundausbildung.json",
+      "builtin/schifffahrt/schiff_havarie_frachter.json",
+      "builtin/schifffahrt/schiff_person_im_wasser.json"
+    ],
+    "katastrophenschutz": [
+      "builtin/katastrophenschutz/kats_betreuungsstelle.json",
+      "builtin/katastrophenschutz/kats_grundausbildung.json",
+      "builtin/katastrophenschutz/kats_hochwasser_aisch.json",
+      "builtin/katastrophenschutz/kats_stromausfall.json"
     ]
   },
   "community": {

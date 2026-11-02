@@ -1,0 +1,193 @@
+{
+  "id": "kats_stromausfall",
+  "title": "Katastrophenschutz: Stromausfall – Funk im Fallback",
+  "description": "Fortgeschritten: Großflächiger Stromausfall, das Feuerwehrhaus wird Anlaufstelle für die Bevölkerung, dann geht das Funknetz in den Fallback. Richtig reagieren und den Notruf eines Bürgers weitergeben. 3 Funk-Schritte.",
+  "startingNodeId": "n_anlauf",
+  "playerRole": "katastrophenschutz",
+  "nodes": {
+    "n_anlauf": {
+      "id": "n_anlauf",
+      "role": "katastrophenschutz",
+      "narrative": "Seit zwei Stunden ist im ganzen Landkreis der **Strom weg**. Telefon und Handy funktionieren kaum noch. Ihr **Feuerwehrhaus Neuhaus** ist laut Alarmplan **Anlaufstelle** für die Bevölkerung, das Notstromaggregat läuft.\n\nSie sind **Florian Neuhaus 17/42/1**. Melden Sie dem **Abschnitt Süd**, dass die Anlaufstelle **besetzt** ist.\n\n> *Beispiel – Führungsstruktur und Funkrufnamen legt Ihr Landkreis fest.*",
+      "actions": [
+        {
+          "id": "radio_anlauf",
+          "label": "📞 Anlaufstelle melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Abschnitt Süd",
+              "17/42/1",
+              "Anlaufstelle",
+              "Feuerwehrhaus Neuhaus",
+              "besetzt",
+              "Notstrom",
+              "kommen"
+            ],
+            "hint": "Abschnitt Süd von Florian Neuhaus 17/42/1 – Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft – kommen.",
+            "briefing": "Anruf . was (Anlaufstelle Feuerwehrhaus Neuhaus) . Zustand (besetzt, Notstrom läuft) . „kommen“",
+            "onSuccess": "n_fallback",
+            "onFailure": "n_anlauf_fail",
+            "feedbackSuccess": "✅ Die Führung weiß jetzt, wo die Bevölkerung Hilfe bekommt.",
+            "feedbackFailure": "❌ Melden Sie: Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft."
+          }
+        }
+      ]
+    },
+    "n_anlauf_fail": {
+      "id": "n_anlauf_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Bei Stromausfall ist das **Feuerwehrhaus** oft der einzige Ort, an dem Bürger einen Notruf absetzen können.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 17/42/1 – Anlaufstelle Feuerwehrhaus Neuhaus besetzt, Notstrom läuft – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_anlauf"
+        }
+      ]
+    },
+    "n_fallback_x1": {
+      "id": "n_fallback_x1",
+      "role": "katastrophenschutz",
+      "narrative": "**Nicht richtig.** Im **Fallback** erreichen Sie nur Geräte am **selben Mast**. Der Plan aus dem Einsatzbefehl gilt: **DMO-Gruppe 307**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_fallback"
+        }
+      ]
+    },
+    "n_fallback_x2": {
+      "id": "n_fallback_x2",
+      "role": "katastrophenschutz",
+      "narrative": "**Nicht richtig.** Im **Fallback** lassen sich **keine Gruppen schalten** – und es würde nichts bringen. Wechseln Sie in die **vereinbarte DMO-Gruppe**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_fallback"
+        }
+      ]
+    },
+    "n_fallback": {
+      "id": "n_fallback",
+      "role": "katastrophenschutz",
+      "narrative": "Nach einer Stunde zeigt Ihr Funkgerät **Fallback**. Der Abschnitt Süd antwortet nicht mehr. Im Einsatzbefehl steht: **Bei Netzausfall DMO-Gruppe 307**.\n\nWas tun Sie?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 In die DMO-Gruppe 307 wechseln und dort den Abschnitt rufen",
+          "nextNodeId": "n_dmo"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Weiter im Netz rufen, bis der Abschnitt antwortet",
+          "nextNodeId": "n_fallback_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Eine andere Netzgruppe einstellen",
+          "nextNodeId": "n_fallback_x2"
+        }
+      ]
+    },
+    "n_dmo": {
+      "id": "n_dmo",
+      "role": "katastrophenschutz",
+      "narrative": "Sie sind in **DMO 307**. Der Abschnitt Süd ist nur **zwei Kilometer** entfernt – in DMO reicht das gerade so. Melden Sie sich.",
+      "actions": [
+        {
+          "id": "radio_dmo",
+          "label": "📞 Im Direktbetrieb melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Abschnitt Süd",
+              "17/42/1",
+              "Fallback",
+              "Direktbetrieb",
+              "Anlaufstelle",
+              "kommen"
+            ],
+            "hint": "Abschnitt Süd von Florian Neuhaus 17/42/1 – Netz im Fallback, sind im Direktbetrieb erreichbar, Anlaufstelle weiter besetzt – kommen.",
+            "briefing": "Anruf . „Netz im Fallback“ . „im Direktbetrieb erreichbar“ . Anlaufstelle weiter besetzt . „kommen“",
+            "onSuccess": "n_notruf",
+            "onFailure": "n_dmo_fail",
+            "feedbackSuccess": "✅ Erreichbarkeit im Direktbetrieb gemeldet.",
+            "feedbackFailure": "❌ Melden Sie: Fallback, im Direktbetrieb erreichbar, Anlaufstelle besetzt."
+          }
+        }
+      ]
+    },
+    "n_dmo_fail": {
+      "id": "n_dmo_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Jetzt weiß der Abschnitt, **wie** er Sie erreicht.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 17/42/1 – Netz im Fallback, sind im Direktbetrieb erreichbar, Anlaufstelle weiter besetzt – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_dmo"
+        }
+      ]
+    },
+    "n_notruf": {
+      "id": "n_notruf",
+      "role": "katastrophenschutz",
+      "narrative": "Ein Mann kommt ins Feuerwehrhaus: Seine Frau ist zu Hause **im Lindenweg 3** **gestürzt**, sie **blutet am Kopf** und ist **ansprechbar**. Ein Telefon geht nicht. Geben Sie den Notruf an den Abschnitt weiter, damit der Rettungsdienst kommt.",
+      "actions": [
+        {
+          "id": "radio_notruf",
+          "label": "📞 Notruf weitergeben",
+          "radioCall": {
+            "expectedPhrases": [
+              "Abschnitt Süd",
+              "17/42/1",
+              "Notruf",
+              "Lindenweg 3",
+              "gestürzt",
+              "blutet am Kopf",
+              "ansprechbar",
+              "Rettungsdienst",
+              "kommen"
+            ],
+            "hint": "Abschnitt Süd von Florian Neuhaus 17/42/1 – Notruf: Neuhaus, Lindenweg 3, Frau gestürzt, blutet am Kopf, ansprechbar, bitte Rettungsdienst – kommen.",
+            "briefing": "Anruf . „Notruf“ . wo (Neuhaus, Lindenweg 3) . was (gestürzt, blutet am Kopf) . Zustand (ansprechbar) . „bitte Rettungsdienst“ . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_notruf_fail",
+            "feedbackSuccess": "✅ Notruf vollständig weitergegeben – der Abschnitt kann den Rettungsdienst schicken.",
+            "feedbackFailure": "❌ Geben Sie weiter: Notruf, Lindenweg 3, gestürzt, blutet am Kopf, ansprechbar, Rettungsdienst."
+          }
+        }
+      ]
+    },
+    "n_notruf_fail": {
+      "id": "n_notruf_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Feedback:** Bei Stromausfall sind Sie **das Telefon** der Bürger – die Meldung muss so vollständig sein wie ein Notruf bei 112.\n\nBeispiel: *„Abschnitt Süd von Florian Neuhaus 17/42/1 – Notruf: Neuhaus, Lindenweg 3, Frau gestürzt, blutet am Kopf, ansprechbar, bitte Rettungsdienst – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_notruf"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "katastrophenschutz",
+      "narrative": "Der Abschnitt schickt **Rotkreuz Höchstadt 71/1** in den Lindenweg.\n\nAnlaufstelle gemeldet, im Fallback nach Plan in DMO gewechselt und einen Notruf vollständig weitergegeben.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_anlauf"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

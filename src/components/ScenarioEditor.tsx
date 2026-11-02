@@ -29,6 +29,8 @@ const roleOptions: Array<{ value: PlayerRole; label: string }> = [
   { value: 'thw_helfer', label: 'THW-Helfer' },
   { value: 'thw_gruppenführer', label: 'THW-Gruppenführer' },
   { value: 'rettungsdienst', label: 'Rettungsdienst (RTW)' },
+  { value: 'wasserrettung', label: 'Wasserrettung (Boot)' },
+  { value: 'katastrophenschutz', label: 'Katastrophenschutz' },
 ];
 
 const emptyStep = {
@@ -38,7 +40,7 @@ const emptyStep = {
   feedbackFailure: '',
 };
 
-const KNOWN_CATEGORIES = new Set(['brand', 'thl', 'verkehr', 'wasser', 'funk', 'sonstige', 'thw', 'rettungsdienst']);
+const KNOWN_CATEGORIES = new Set(['brand', 'thl', 'verkehr', 'wasser', 'funk', 'sonstige', 'thw', 'rettungsdienst', 'schifffahrt', 'katastrophenschutz']);
 
 function scenarioToDraft(scenario: Scenario): ScenarioDraft {
   const steps: ScenarioDraft['steps'] = [];

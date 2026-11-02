@@ -41,6 +41,8 @@ export const categoryOptions = [
   { value: 'funk', label: 'Funkgrundlagen' },
   { value: 'thw', label: 'THW' },
   { value: 'rettungsdienst', label: 'Rettungsdienst' },
+  { value: 'schifffahrt', label: 'Schifffahrt & Wasserrettung' },
+  { value: 'katastrophenschutz', label: 'Katastrophenschutz' },
   { value: 'sonstige', label: 'Sonstige' },
   { value: 'eigene', label: 'Eigene Kategorie' },
 ];

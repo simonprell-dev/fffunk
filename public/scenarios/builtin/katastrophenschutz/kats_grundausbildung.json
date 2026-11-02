@@ -1,0 +1,484 @@
+{
+  "id": "kats_grundausbildung",
+  "title": "Katastrophenschutz Grundausbildung Funk",
+  "description": "Für Einsatzkräfte in Großlagen: In 4 Kapiteln lernst du, wer im Katastrophenfall führt, wie eine Lagemeldung aufgebaut ist, wie man richtig nachfordert und was zu tun ist, wenn das Netz ausfällt.",
+  "startingNodeId": "f_start",
+  "playerRole": "katastrophenschutz",
+  "chapters": [
+    {
+      "id": "fuehrung",
+      "title": "Wer führt im Katastrophenfall?",
+      "startNodeId": "f_start",
+      "endNodeId": "f_end"
+    },
+    {
+      "id": "lage",
+      "title": "Die Lagemeldung",
+      "startNodeId": "l_start",
+      "endNodeId": "l_end"
+    },
+    {
+      "id": "nachforderung",
+      "title": "Richtig nachfordern",
+      "startNodeId": "n_start",
+      "endNodeId": "n_end"
+    },
+    {
+      "id": "ausfall",
+      "title": "Wenn das Netz ausfällt",
+      "startNodeId": "a_start",
+      "endNodeId": "a_end"
+    }
+  ],
+  "nodes": {
+    "f_start": {
+      "id": "f_start",
+      "role": "katastrophenschutz",
+      "narrative": "Die **Aisch** steigt seit Stunden, der Landkreis hat den **Katastrophenfall** festgestellt. Du bist mit deiner Feuerwehr im Einsatz.\n\n**Zugführer:** „Im Katastrophenfall führt das **Landratsamt** mit seiner **Führungsgruppe Katastrophenschutz (FüGK)**. Vor Ort setzt es einen **Örtlichen Einsatzleiter (ÖEL)** ein – am Funk heißt er meist einfach **Einsatzleitung**. Das Gebiet wird in **Einsatzabschnitte** geteilt, zum Beispiel **Abschnitt Nord** in Adelsdorf und **Abschnitt Süd** in Neuhaus. **Wir melden an unseren Abschnitt** – der Abschnitt meldet an die Einsatzleitung.“\n\n> *Beispiel – Führungsstruktur und Funkrufnamen legt dein Landkreis fest.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "f_choice"
+        }
+      ]
+    },
+    "f_choice": {
+      "id": "f_choice",
+      "role": "katastrophenschutz",
+      "narrative": "Deine Gruppe im **Abschnitt Nord** braucht mehr Sandsäcke. Wen rufst du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Direkt das Landratsamt",
+          "nextNodeId": "f_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Den Abschnitt Nord",
+          "nextNodeId": "f_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "Die Leitstelle Nürnberg",
+          "nextNodeId": "f_x2"
+        }
+      ]
+    },
+    "f_x1": {
+      "id": "f_x1",
+      "role": "katastrophenschutz",
+      "narrative": "**Nicht der Dienstweg.** Würde jede Gruppe das Landratsamt rufen, bräche dort alles zusammen. Du meldest an **deinen Abschnitt**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "f_choice"
+        }
+      ]
+    },
+    "f_x2": {
+      "id": "f_x2",
+      "role": "katastrophenschutz",
+      "narrative": "**Nicht im Katastrophenfall.** Die Leitstelle hat jetzt hunderte Notrufe. Im Einsatzgebiet führt die **Einsatzleitung** – und für dich dein **Abschnitt**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "f_choice"
+        }
+      ]
+    },
+    "f_speak": {
+      "id": "f_speak",
+      "role": "katastrophenschutz",
+      "narrative": "**Richtig!** Rufe den Abschnitt Nord. Ihr seid **Florian Neuhaus 17/42/1**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Abschnitt anfunken",
+          "radioCall": {
+            "hint": "Abschnitt Nord von Florian Neuhaus 17/42/1 – kommen.",
+            "expectedPhrases": [
+              "Abschnitt Nord",
+              "17/42/1",
+              "kommen"
+            ],
+            "onSuccess": "f_end",
+            "onFailure": "f_fail",
+            "response": "Hier Abschnitt Nord – kommen."
+          }
+        }
+      ]
+    },
+    "f_fail": {
+      "id": "f_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Noch nicht ganz.** „Abschnitt Nord von Florian Neuhaus 17/42/1 – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "f_speak"
+        }
+      ]
+    },
+    "f_end": {
+      "id": "f_end",
+      "role": "katastrophenschutz",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Landratsamt (FüGK) → Einsatzleitung (ÖEL) → Abschnitt → Einheit.** Gemeldet wird an die nächsthöhere Stelle.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "l_start": {
+      "id": "l_start",
+      "role": "katastrophenschutz",
+      "narrative": "In einer Großlage weiß die Einsatzleitung nur, was ihr gemeldet wird.\n\n**Zugführer:** „Eine **Lagemeldung** hat immer dieselbe Reihenfolge: **Lage** – was ist los? **Eingesetzte Kräfte** – wer ist da? **Maßnahmen** – was tun wir? **Nachforderung** – was fehlt? Und immer mit **Uhrzeit**, damit man später weiß, wann das galt.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "l_choice"
+        }
+      ]
+    },
+    "l_choice": {
+      "id": "l_choice",
+      "role": "katastrophenschutz",
+      "narrative": "Welche Meldung ist eine gute Lagemeldung?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "„Wir brauchen 500 Sandsäcke.“",
+          "nextNodeId": "l_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "„Alles ganz schlimm hier, wir brauchen dringend Hilfe!“",
+          "nextNodeId": "l_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "„14 Uhr: Aisch am Sportplatz über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke.“",
+          "nextNodeId": "l_speak"
+        }
+      ]
+    },
+    "l_x1": {
+      "id": "l_x1",
+      "role": "katastrophenschutz",
+      "narrative": "**Damit kann niemand planen.** Was ist los, wer ist da, was tut ihr, was fehlt? **Lage – Kräfte – Maßnahmen – Nachforderung.**",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "l_choice"
+        }
+      ]
+    },
+    "l_x2": {
+      "id": "l_x2",
+      "role": "katastrophenschutz",
+      "narrative": "**Nur die Nachforderung.** Ohne Lage weiß die Einsatzleitung nicht, wie dringend es ist und wohin.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "l_choice"
+        }
+      ]
+    },
+    "l_speak": {
+      "id": "l_speak",
+      "role": "katastrophenschutz",
+      "narrative": "**Richtig!** Gib jetzt die Lagemeldung an den Abschnitt Nord: **14 Uhr**, **Aisch am Sportplatz Adelsdorf über die Ufer**, **eine Gruppe** vor Ort, **verbauen Sandsäcke**, brauchen **500 Sandsäcke**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Lage melden",
+          "radioCall": {
+            "hint": "Abschnitt Nord von Florian Neuhaus 17/42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.",
+            "expectedPhrases": [
+              "Abschnitt Nord",
+              "17/42/1",
+              "Lage",
+              "14 Uhr",
+              "Sportplatz Adelsdorf",
+              "eine Gruppe",
+              "Sandsäcke",
+              "500",
+              "kommen"
+            ],
+            "onSuccess": "l_end",
+            "onFailure": "l_fail",
+            "response": "Hier Abschnitt Nord – verstanden, Sandsäcke werden angefordert – Ende."
+          }
+        }
+      ]
+    },
+    "l_fail": {
+      "id": "l_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Noch nicht ganz.** Lage – Kräfte – Maßnahmen – Nachforderung: „Abschnitt Nord von Florian Neuhaus 17/42/1 – Lage 14 Uhr: Aisch am Sportplatz Adelsdorf über die Ufer, eine Gruppe vor Ort, verbauen Sandsäcke, brauchen 500 Sandsäcke – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "l_speak"
+        }
+      ]
+    },
+    "l_end": {
+      "id": "l_end",
+      "role": "katastrophenschutz",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Uhrzeit – Lage – Kräfte – Maßnahmen – Nachforderung.**",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "n_start": {
+      "id": "n_start",
+      "role": "katastrophenschutz",
+      "narrative": "Kräfte und Material sind im Katastrophenfall knapp – sie müssen **genau dort** ankommen, wo sie gebraucht werden.\n\n**Zugführer:** „Eine Nachforderung beantwortet: **Was** – **wie viel** – **wohin** – **bis wann**. Und wer dort **in Empfang nimmt**. Sonst steht der Lkw mit Sandsäcken irgendwo im Dorf und niemand weiß Bescheid.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n_choice": {
+      "id": "n_choice",
+      "role": "katastrophenschutz",
+      "narrative": "Was fehlt in dieser Nachforderung: „Wir brauchen Pumpen.“?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Wie viele, wohin, bis wann und wer sie in Empfang nimmt",
+          "nextNodeId": "n_speak"
+        },
+        {
+          "id": "opt1",
+          "label": "Nur der Grund, warum wir Pumpen brauchen",
+          "nextNodeId": "n_x2"
+        },
+        {
+          "id": "opt2",
+          "label": "Nichts – Pumpen ist eindeutig",
+          "nextNodeId": "n_x1"
+        }
+      ]
+    },
+    "n_x1": {
+      "id": "n_x1",
+      "role": "katastrophenschutz",
+      "narrative": "**Zu ungenau.** Eine kleine Tauchpumpe oder eine große Pumpe vom THW? Wie viele? Wohin? Ohne das kommt die falsche Hilfe an den falschen Ort.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n_x2": {
+      "id": "n_x2",
+      "role": "katastrophenschutz",
+      "narrative": "**Der Grund hilft, aber es fehlt mehr:** **wie viele**, **wohin**, **bis wann** und **wer** sie übernimmt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "n_choice"
+        }
+      ]
+    },
+    "n_speak": {
+      "id": "n_speak",
+      "role": "katastrophenschutz",
+      "narrative": "**Richtig!** Fordere beim Abschnitt Nord an: **zwei große Pumpen**, zur **Kläranlage Adelsdorf**, **in einer Stunde**, Einweisung durch **Florian Neuhaus 17/42/1** an der Zufahrt.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Nachfordern",
+          "radioCall": {
+            "hint": "Abschnitt Nord von Florian Neuhaus 17/42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.",
+            "expectedPhrases": [
+              "Abschnitt Nord",
+              "17/42/1",
+              "Nachforderung",
+              "zwei große Pumpen",
+              "Kläranlage Adelsdorf",
+              "in einer Stunde",
+              "Zufahrt",
+              "kommen"
+            ],
+            "onSuccess": "n_end",
+            "onFailure": "n_fail",
+            "response": "Hier Abschnitt Nord – verstanden, THW wird mit zwei Pumpen geschickt – Ende."
+          }
+        }
+      ]
+    },
+    "n_fail": {
+      "id": "n_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Fast.** Was – wie viel – wohin – bis wann – wer übernimmt: „Abschnitt Nord von Florian Neuhaus 17/42/1 – Nachforderung: zwei große Pumpen zur Kläranlage Adelsdorf, in einer Stunde, wir weisen an der Zufahrt ein – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "n_speak"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "katastrophenschutz",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Was – wie viel – wohin – bis wann – wer übernimmt.**",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "a_start": {
+      "id": "a_start",
+      "role": "katastrophenschutz",
+      "narrative": "Bei einem großen Unwetter kann auch das Funknetz gestört sein.\n\n**Zugführer:** „Fällt die Verbindung eines Funkmasts zum Netz aus, geht er in den **Fallback-Modus**: Das Display meldet es. Geräte **am selben Mast** können noch miteinander sprechen, aber die **Leitstelle** und andere Gebiete erreichst du nicht mehr, und **Gruppen wechseln** geht nicht. Dann gilt, was im Einsatzbefehl steht: Wir wechseln in den **Direktbetrieb (DMO)** auf die vereinbarte Gruppe – und wichtige Meldungen bringt ein **Melder** persönlich.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_choice": {
+      "id": "a_choice",
+      "role": "katastrophenschutz",
+      "narrative": "Dein Funkgerät zeigt **Fallback**, der Abschnitt antwortet nicht mehr. Was tust du?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Immer wieder rufen, bis jemand antwortet",
+          "nextNodeId": "a_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "In die vereinbarte DMO-Gruppe wechseln und wichtige Meldungen per Melder schicken",
+          "nextNodeId": "a_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "Mit dem Handy die Einsatzleitung anrufen",
+          "nextNodeId": "a_x2"
+        }
+      ]
+    },
+    "a_x1": {
+      "id": "a_x1",
+      "role": "katastrophenschutz",
+      "narrative": "**Das blockiert nur.** Wenn der Abschnitt an einem anderen Mast hängt, hört er dich nicht. Wechsle in die **vereinbarte DMO-Gruppe** und nutze einen **Melder**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_x2": {
+      "id": "a_x2",
+      "role": "katastrophenschutz",
+      "narrative": "**Unsicher.** Bei großen Lagen ist das Handynetz oft genauso gestört oder überlastet. Der Plan ist: **DMO-Gruppe** und **Melder**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "a_choice"
+        }
+      ]
+    },
+    "a_speak": {
+      "id": "a_speak",
+      "role": "katastrophenschutz",
+      "narrative": "**Richtig!** Du bist in der DMO-Gruppe aus dem Einsatzbefehl. Rufe dort den Abschnitt Nord und melde: **Netz im Fallback**, ihr seid **jetzt im Direktbetrieb erreichbar**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Im Direktbetrieb melden",
+          "radioCall": {
+            "hint": "Abschnitt Nord von Florian Neuhaus 17/42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.",
+            "expectedPhrases": [
+              "Abschnitt Nord",
+              "17/42/1",
+              "Fallback",
+              "Direktbetrieb",
+              "kommen"
+            ],
+            "onSuccess": "a_end",
+            "onFailure": "a_fail",
+            "response": "Hier Abschnitt Nord – verstanden, bleiben im Direktbetrieb – Ende."
+          }
+        }
+      ]
+    },
+    "a_fail": {
+      "id": "a_fail",
+      "role": "katastrophenschutz",
+      "narrative": "**Fast.** „Abschnitt Nord von Florian Neuhaus 17/42/1 – Netz im Fallback, sind jetzt im Direktbetrieb erreichbar – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "a_speak"
+        }
+      ]
+    },
+    "a_end": {
+      "id": "a_end",
+      "role": "katastrophenschutz",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Fallback = Leitstelle weg, Gruppenwechsel weg.** Vereinbarte DMO-Gruppe, wichtige Meldungen per Melder.\n\n**Du hast die Grundausbildung Katastrophenschutz abgeschlossen!** 🏆",
+      "actions": [
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        },
+        {
+          "id": "exit",
+          "label": "🏁 Beenden",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

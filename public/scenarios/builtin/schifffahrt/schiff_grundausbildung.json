@@ -1,0 +1,484 @@
+{
+  "id": "schiff_grundausbildung",
+  "title": "Wasserrettung Grundausbildung Sprechfunk",
+  "description": "Für neue Bootsbesatzungen: In 4 Kapiteln lernst du Pelikan-Rufnamen, Ortsangaben am Wasser, die Meldung „Person im Wasser“ und wie man die Schifffahrt sperren lässt.",
+  "startingNodeId": "r_start",
+  "playerRole": "wasserrettung",
+  "chapters": [
+    {
+      "id": "rufnamen",
+      "title": "Rufnamen am Wasser",
+      "startNodeId": "r_start",
+      "endNodeId": "r_end"
+    },
+    {
+      "id": "ortsangabe",
+      "title": "Ortsangaben am Wasser",
+      "startNodeId": "o_start",
+      "endNodeId": "o_end"
+    },
+    {
+      "id": "person",
+      "title": "Person im Wasser melden",
+      "startNodeId": "p_start",
+      "endNodeId": "p_end"
+    },
+    {
+      "id": "sperrung",
+      "title": "Schifffahrt sperren lassen",
+      "startNodeId": "z_start",
+      "endNodeId": "z_end"
+    }
+  ],
+  "nodes": {
+    "r_start": {
+      "id": "r_start",
+      "role": "wasserrettung",
+      "narrative": "Dienst an der Wasserrettungsstation am **Main-Donau-Kanal**. Du fährst heute als Bootsgast auf dem Rettungsboot der DLRG.\n\n**Bootsführer:** „Die DLRG funkt in Bayern mit dem Kennwort **Pelikan**, dann der Standort, dann die Kennzahlen. Die **99** steht für ein **Boot**, die **98** für **Wasserretter** zu Fuß, die **91** für den **Gerätewagen Wasserrettung**. Unser Boot ist also **Pelikan Erlangen 99/1** – gesprochen „neunundneunzig – eins“.“\n\n> *Beispiel nach bayerischer Regelung – Rufnamen und Abläufe können in deiner Gliederung abweichen.*",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_choice": {
+      "id": "r_choice",
+      "role": "wasserrettung",
+      "narrative": "Wer meldet sich mit **Pelikan Erlangen 98/2**?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Der Gerätewagen Wasserrettung",
+          "nextNodeId": "r_x2"
+        },
+        {
+          "id": "opt1",
+          "label": "Ein Wasserretter-Trupp am Ufer (98 = Wasserretter)",
+          "nextNodeId": "r_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "Das zweite Rettungsboot",
+          "nextNodeId": "r_x1"
+        }
+      ]
+    },
+    "r_x1": {
+      "id": "r_x1",
+      "role": "wasserrettung",
+      "narrative": "**Nicht ganz.** Boote haben die **99**. Die **98** steht für **Wasserretter** – Rettungsschwimmer, die vom Ufer aus arbeiten.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_x2": {
+      "id": "r_x2",
+      "role": "wasserrettung",
+      "narrative": "**Nicht ganz.** Der Gerätewagen hat die **91**. **98** sind die **Wasserretter**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "r_choice"
+        }
+      ]
+    },
+    "r_speak": {
+      "id": "r_speak",
+      "role": "wasserrettung",
+      "narrative": "**Richtig!** Rufe jetzt vom Boot aus den Wasserretter-Trupp **Pelikan Erlangen 98/2**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Wasserretter anfunken",
+          "radioCall": {
+            "hint": "Pelikan Erlangen 98/2 von Pelikan Erlangen 99/1 – kommen.",
+            "expectedPhrases": [
+              "Pelikan",
+              "98/2",
+              "99/1",
+              "kommen"
+            ],
+            "onSuccess": "r_end",
+            "onFailure": "r_fail",
+            "response": "Hier Pelikan Erlangen 98/2 – kommen."
+          }
+        }
+      ]
+    },
+    "r_fail": {
+      "id": "r_fail",
+      "role": "wasserrettung",
+      "narrative": "**Noch nicht ganz.** Erst der Gerufene, dann „von“ und du: „Pelikan Erlangen 98/2 von Pelikan Erlangen 99/1 – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "r_speak"
+        }
+      ]
+    },
+    "r_end": {
+      "id": "r_end",
+      "role": "wasserrettung",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Pelikan – Standort – Kennzahl.** 91 Gerätewagen, 98 Wasserretter, 99 Boot.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "o_start": {
+      "id": "o_start",
+      "role": "wasserrettung",
+      "narrative": "Am Wasser gibt es keine Hausnummern.\n\n**Bootsführer:** „Wir geben den Ort mit **festen Punkten** an: **Brücke, Schleuse, Hafen** oder der **Kilometertafel** am Ufer. Dazu das **Ufer**: **rechts und links gelten immer in Fließrichtung** – also mit Blick **talwärts**, wohin das Wasser fließt. Am Kanal sagen wir dazu **zu Berg** oder **zu Tal**, wenn sich ein Schiff bewegt.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "o_choice"
+        }
+      ]
+    },
+    "o_choice": {
+      "id": "o_choice",
+      "role": "wasserrettung",
+      "narrative": "Was heißt **rechtes Ufer**?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Das Ufer, das von meinem Boot aus rechts liegt",
+          "nextNodeId": "o_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Das Ufer auf der Seite der Stadt",
+          "nextNodeId": "o_x2"
+        },
+        {
+          "id": "opt2",
+          "label": "Rechts, wenn man in Fließrichtung (talwärts) schaut",
+          "nextNodeId": "o_speak"
+        }
+      ]
+    },
+    "o_x1": {
+      "id": "o_x1",
+      "role": "wasserrettung",
+      "narrative": "**Gefährlich.** Dreht das Boot, wechselt dein „rechts“. Damit alle dasselbe meinen, gilt **immer die Fließrichtung**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "o_choice"
+        }
+      ]
+    },
+    "o_x2": {
+      "id": "o_x2",
+      "role": "wasserrettung",
+      "narrative": "**Zu ungenau.** Das versteht nur, wer sich auskennt. Eindeutig ist: **rechts in Fließrichtung**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "o_choice"
+        }
+      ]
+    },
+    "o_speak": {
+      "id": "o_speak",
+      "role": "wasserrettung",
+      "narrative": "**Richtig!** Melde deinem Bootsführer am Funk: Du siehst ein **treibendes Kanu**, **Höhe Brücke Möhrendorf**, **rechtes Ufer**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Ort melden",
+          "radioCall": {
+            "hint": "Bootsführer von Bootsgast – treibendes Kanu Höhe Brücke Möhrendorf, rechtes Ufer – kommen.",
+            "expectedPhrases": [
+              "Bootsführer",
+              "Bootsgast",
+              "Kanu",
+              "Brücke Möhrendorf",
+              "rechtes Ufer",
+              "kommen"
+            ],
+            "onSuccess": "o_end",
+            "onFailure": "o_fail",
+            "response": "Hier Bootsführer – verstanden, fahren hin – Ende."
+          }
+        }
+      ]
+    },
+    "o_fail": {
+      "id": "o_fail",
+      "role": "wasserrettung",
+      "narrative": "**Fast.** Fester Punkt plus Ufer: „Bootsführer von Bootsgast – treibendes Kanu Höhe Brücke Möhrendorf, rechtes Ufer – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "o_speak"
+        }
+      ]
+    },
+    "o_end": {
+      "id": "o_end",
+      "role": "wasserrettung",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Fester Punkt + Ufer in Fließrichtung.** Bei Schiffen dazu: **zu Berg** oder **zu Tal**.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "p_start": {
+      "id": "p_start",
+      "role": "wasserrettung",
+      "narrative": "Eine Person im Wasser ist **in Minuten** in Lebensgefahr – kaltes Wasser, Strömung, Sog von Schiffen.\n\n**Bootsführer:** „Wer eine Person im Wasser sieht, **ruft laut**, **zeigt mit dem Arm** auf sie und **lässt sie nicht mehr aus den Augen**. Gemeldet wird: **Person im Wasser – wo – treibt wohin – bei Bewusstsein oder nicht**.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "p_choice"
+        }
+      ]
+    },
+    "p_choice": {
+      "id": "p_choice",
+      "role": "wasserrettung",
+      "narrative": "Du entdeckst eine Person im Wasser. Was tust du **zuerst**?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Laut rufen, auf die Person zeigen und sie nicht aus den Augen lassen",
+          "nextNodeId": "p_speak"
+        },
+        {
+          "id": "opt1",
+          "label": "Sofort ins Wasser springen",
+          "nextNodeId": "p_x2"
+        },
+        {
+          "id": "opt2",
+          "label": "Zum Funkgerät greifen und eine vollständige Meldung absetzen",
+          "nextNodeId": "p_x1"
+        }
+      ]
+    },
+    "p_x1": {
+      "id": "p_x1",
+      "role": "wasserrettung",
+      "narrative": "**Noch nicht.** Wer den Blick abwendet, verliert die Person oft für immer. **Zuerst** rufen und zeigen – der Bootsführer kann dann funken.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "p_choice"
+        }
+      ]
+    },
+    "p_x2": {
+      "id": "p_x2",
+      "role": "wasserrettung",
+      "narrative": "**Gefährlich.** Ungesichert wirst du selbst zum Opfer. Das Boot fährt hin, gerettet wird nach Absprache und gesichert.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "p_choice"
+        }
+      ]
+    },
+    "p_speak": {
+      "id": "p_speak",
+      "role": "wasserrettung",
+      "narrative": "**Richtig!** Der Bootsführer steuert hin, du hältst Sichtkontakt. Melde jetzt an die Leitstelle: **Person im Wasser**, **Höhe Schleuse Erlangen**, **linkes Ufer**, **treibt talwärts**, **reagiert nicht**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Person im Wasser melden",
+          "radioCall": {
+            "hint": "Leitstelle Nürnberg von Pelikan Erlangen 99/1 – Person im Wasser, Höhe Schleuse Erlangen, linkes Ufer, treibt talwärts, reagiert nicht – kommen.",
+            "expectedPhrases": [
+              "Leitstelle Nürnberg",
+              "99/1",
+              "Person im Wasser",
+              "Schleuse Erlangen",
+              "linkes Ufer",
+              "talwärts",
+              "reagiert nicht",
+              "kommen"
+            ],
+            "onSuccess": "p_end",
+            "onFailure": "p_fail",
+            "response": "Pelikan Erlangen 99/1 von Leitstelle Nürnberg – verstanden, Rettungsdienst und Notarzt kommen zur Schleuse – Ende."
+          }
+        }
+      ]
+    },
+    "p_fail": {
+      "id": "p_fail",
+      "role": "wasserrettung",
+      "narrative": "**Noch nicht ganz.** „Leitstelle Nürnberg von Pelikan Erlangen 99/1 – Person im Wasser, Höhe Schleuse Erlangen, linkes Ufer, treibt talwärts, reagiert nicht – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "p_speak"
+        }
+      ]
+    },
+    "p_end": {
+      "id": "p_end",
+      "role": "wasserrettung",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Rufen – zeigen – nicht aus den Augen lassen.** Dann melden: wo, treibt wohin, Zustand.",
+      "actions": [
+        {
+          "id": "next",
+          "label": "Nächstes Kapitel ▶",
+          "nextNodeId": "__next_chapter__"
+        },
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        }
+      ]
+    },
+    "z_start": {
+      "id": "z_start",
+      "role": "wasserrettung",
+      "narrative": "Auf dem Main-Donau-Kanal fahren **Frachtschiffe mit über 100 Metern Länge**. Ein solches Schiff braucht hunderte Meter, um anzuhalten, und sein Sog zieht kleine Boote und Schwimmer an.\n\n**Bootsführer:** „Binnenschiffe sind **nicht** in unserem Digitalfunk – die funken auf eigenen Kanälen. Wenn wir im Fahrwasser arbeiten müssen, bitten wir die **Leitstelle**, die **Schifffahrt sperren** zu lassen. Die Leitstelle sagt der Schifffahrtsverwaltung Bescheid, und die hält die Schiffe an.“",
+      "actions": [
+        {
+          "id": "ok",
+          "label": "👍 Verstanden",
+          "nextNodeId": "z_choice"
+        }
+      ]
+    },
+    "z_choice": {
+      "id": "z_choice",
+      "role": "wasserrettung",
+      "narrative": "Ihr müsst mitten im Kanal suchen, ein Frachter kommt zu Tal. Wie stoppt ihr ihn?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "Den Frachter direkt über unser Funkgerät rufen",
+          "nextNodeId": "z_x1"
+        },
+        {
+          "id": "opt1",
+          "label": "Über die Leitstelle die Sperrung der Schifffahrt anfordern",
+          "nextNodeId": "z_speak"
+        },
+        {
+          "id": "opt2",
+          "label": "Mit dem Boot quer vor den Frachter fahren",
+          "nextNodeId": "z_x2"
+        }
+      ]
+    },
+    "z_x1": {
+      "id": "z_x1",
+      "role": "wasserrettung",
+      "narrative": "**Geht nicht.** Das Schiff hört unser BOS-Netz nicht. Der Weg führt über die **Leitstelle**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "z_choice"
+        }
+      ]
+    },
+    "z_x2": {
+      "id": "z_x2",
+      "role": "wasserrettung",
+      "narrative": "**Lebensgefährlich.** Der Frachter kann nicht schnell bremsen oder ausweichen. Sperren lässt man **über die Leitstelle**.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Auswahl",
+          "nextNodeId": "z_choice"
+        }
+      ]
+    },
+    "z_speak": {
+      "id": "z_speak",
+      "role": "wasserrettung",
+      "narrative": "**Richtig!** Fordere jetzt bei der Leitstelle an: **Schifffahrt sperren** zwischen **Schleuse Erlangen** und **Brücke Möhrendorf**, Grund: **Suche nach einer Person**.",
+      "actions": [
+        {
+          "id": "funk",
+          "label": "Sperrung anfordern",
+          "radioCall": {
+            "hint": "Leitstelle Nürnberg von Pelikan Erlangen 99/1 – bitte Schifffahrt sperren zwischen Schleuse Erlangen und Brücke Möhrendorf, wir suchen eine Person im Wasser – kommen.",
+            "expectedPhrases": [
+              "Leitstelle Nürnberg",
+              "99/1",
+              "Schifffahrt sperren",
+              "Schleuse Erlangen",
+              "Brücke Möhrendorf",
+              "Person",
+              "kommen"
+            ],
+            "onSuccess": "z_end",
+            "onFailure": "z_fail",
+            "response": "Pelikan Erlangen 99/1 von Leitstelle Nürnberg – Sperrung wird veranlasst, ich melde mich, wenn sie steht – Ende."
+          }
+        }
+      ]
+    },
+    "z_fail": {
+      "id": "z_fail",
+      "role": "wasserrettung",
+      "narrative": "**Fast.** Was, von wo bis wo, warum: „Leitstelle Nürnberg von Pelikan Erlangen 99/1 – bitte Schifffahrt sperren zwischen Schleuse Erlangen und Brücke Möhrendorf, wir suchen eine Person im Wasser – kommen.“",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Nochmal versuchen",
+          "nextNodeId": "z_speak"
+        }
+      ]
+    },
+    "z_end": {
+      "id": "z_end",
+      "role": "wasserrettung",
+      "narrative": "**Kapitel geschafft!** 🎉\n\nMerksatz: **Schiffe hören uns nicht.** Sperrung immer über die Leitstelle anfordern – **von wo bis wo** und **warum**.\n\n**Du hast die Grundausbildung Wasserrettung abgeschlossen!** 🏆",
+      "actions": [
+        {
+          "id": "menu",
+          "label": "📋 Zur Kapitelauswahl",
+          "nextNodeId": "__chapters__"
+        },
+        {
+          "id": "exit",
+          "label": "🏁 Beenden",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

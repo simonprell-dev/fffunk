@@ -1,0 +1,198 @@
+{
+  "id": "schiff_person_im_wasser",
+  "title": "Wasserrettung: Person im Main-Donau-Kanal",
+  "description": "Einsteiger: Mit dem Rettungsboot eine Person im Kanal suchen, finden und an den Rettungsdienst übergeben – Status, Sperrung der Schifffahrt und Lagemeldungen. 3 Funk-Schritte.",
+  "startingNodeId": "n_alarm",
+  "playerRole": "wasserrettung",
+  "nodes": {
+    "n_alarm_x1": {
+      "id": "n_alarm_x1",
+      "role": "wasserrettung",
+      "narrative": "**Nicht richtig.** **4** kommt erst, wenn Sie **an der Einsatzstelle** sind.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_alarm"
+        }
+      ]
+    },
+    "n_alarm_x2": {
+      "id": "n_alarm_x2",
+      "role": "wasserrettung",
+      "narrative": "**Nicht richtig.** **1** heißt frei über Funk – Sie sind im Einsatz.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_alarm"
+        }
+      ]
+    },
+    "n_alarm": {
+      "id": "n_alarm",
+      "role": "wasserrettung",
+      "narrative": "Sie sind Bootsführer auf **Pelikan Erlangen 99/1**. Alarm: **Person im Wasser, Main-Donau-Kanal Höhe Möhrendorf**, ein Passant hat sie gesehen. Das Boot ist auf dem Trailer, Sie fahren zur Einsatzstelle. Welchen Status drücken Sie?\n\n> *Beispiel nach bayerischer Regelung – Rufnamen und Abläufe können in Ihrer Gliederung abweichen.*",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 3 – Einsatz übernommen",
+          "nextNodeId": "n_sperrung"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 4",
+          "nextNodeId": "n_alarm_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Status 1",
+          "nextNodeId": "n_alarm_x2"
+        }
+      ]
+    },
+    "n_sperrung": {
+      "id": "n_sperrung",
+      "role": "wasserrettung",
+      "narrative": "Sie slippen das Boot an der Brücke Möhrendorf. Der Passant zeigt in die Kanalmitte – von der Person ist **nichts mehr zu sehen**. Ein **Frachter** ist zu Tal unterwegs.\n\nFordern Sie die Sperrung der Schifffahrt an.",
+      "actions": [
+        {
+          "id": "radio_sperrung",
+          "label": "📞 Sperrung anfordern",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Nürnberg",
+              "99/1",
+              "Schifffahrt sperren",
+              "Brücke Möhrendorf",
+              "Suche",
+              "kommen"
+            ],
+            "hint": "Leitstelle Nürnberg von Pelikan Erlangen 99/1 – bitte Schifffahrt sperren ab Brücke Möhrendorf talwärts, wir beginnen die Suche – kommen.",
+            "briefing": "Anruf . „bitte Schifffahrt sperren“ . Bereich (ab Brücke Möhrendorf talwärts) . Grund (Suche) . „kommen“",
+            "onSuccess": "n_status4",
+            "onFailure": "n_sperrung_fail",
+            "feedbackSuccess": "✅ Sperrung mit Bereich und Grund angefordert.",
+            "feedbackFailure": "❌ Fordern Sie an: Schifffahrt sperren, ab Brücke Möhrendorf, Grund Suche."
+          }
+        }
+      ]
+    },
+    "n_sperrung_fail": {
+      "id": "n_sperrung_fail",
+      "role": "wasserrettung",
+      "narrative": "**Feedback:** Ohne Sperrung bringt der Frachter Sie und die Person in Gefahr – und er hört Ihr Funkgerät nicht.\n\nBeispiel: *„Leitstelle Nürnberg von Pelikan Erlangen 99/1 – bitte Schifffahrt sperren ab Brücke Möhrendorf talwärts, wir beginnen die Suche – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_sperrung"
+        }
+      ]
+    },
+    "n_status4_x1": {
+      "id": "n_status4_x1",
+      "role": "wasserrettung",
+      "narrative": "**Nicht richtig.** **7** heißt Patient aufgenommen – Sie suchen noch.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status4"
+        }
+      ]
+    },
+    "n_status4_x2": {
+      "id": "n_status4_x2",
+      "role": "wasserrettung",
+      "narrative": "**Nicht richtig.** Auch auf dem Wasser braucht die Leitstelle Ihren **Status** – sie plant damit Rettungsdienst und Notarzt.",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Zurück zur Entscheidung",
+          "nextNodeId": "n_status4"
+        }
+      ]
+    },
+    "n_status4": {
+      "id": "n_status4",
+      "role": "wasserrettung",
+      "narrative": "**Leitstelle Nürnberg:** „Sperrung ist veranlasst – Ende.“ Das Boot ist im Wasser, Sie beginnen zu suchen. Welcher Status?",
+      "actions": [
+        {
+          "id": "opt0",
+          "label": "📟 Status 4 – an der Einsatzstelle",
+          "nextNodeId": "n_fund"
+        },
+        {
+          "id": "opt1",
+          "label": "📟 Status 7",
+          "nextNodeId": "n_status4_x1"
+        },
+        {
+          "id": "opt2",
+          "label": "📟 Gar keiner, wir sind ja auf dem Wasser",
+          "nextNodeId": "n_status4_x2"
+        }
+      ]
+    },
+    "n_fund": {
+      "id": "n_fund",
+      "role": "wasserrettung",
+      "narrative": "Nach zehn Minuten sieht Ihr Bootsgast eine Person **am linken Ufer, 200 Meter unterhalb der Brücke**, sie hält sich an einem Ast fest und **ist ansprechbar**. Sie nehmen sie ins Boot: stark **unterkühlt**, keine sichtbaren Verletzungen.\n\nMelden Sie das der Leitstelle und sagen Sie, **wo** Sie die Person an Land bringen.",
+      "actions": [
+        {
+          "id": "radio_fund",
+          "label": "📞 Fund melden",
+          "radioCall": {
+            "expectedPhrases": [
+              "Leitstelle Nürnberg",
+              "99/1",
+              "Person gerettet",
+              "ansprechbar",
+              "unterkühlt",
+              "Brücke Möhrendorf",
+              "Rettungsdienst",
+              "kommen"
+            ],
+            "hint": "Leitstelle Nürnberg von Pelikan Erlangen 99/1 – Person gerettet, ansprechbar, stark unterkühlt, wir bringen sie zur Slipstelle Brücke Möhrendorf, bitte Rettungsdienst dorthin – kommen.",
+            "briefing": "Anruf . „Person gerettet“ . Zustand (ansprechbar, unterkühlt) . Übergabeort (Slipstelle Brücke Möhrendorf) . „bitte Rettungsdienst dorthin“ . „kommen“",
+            "onSuccess": "n_end",
+            "onFailure": "n_fund_fail",
+            "feedbackSuccess": "✅ Zustand und Übergabeort gemeldet – der Rettungsdienst fährt direkt an die richtige Stelle.",
+            "feedbackFailure": "❌ Melden Sie: gerettet, ansprechbar, unterkühlt, Übergabe an der Brücke Möhrendorf, Rettungsdienst dorthin."
+          }
+        }
+      ]
+    },
+    "n_fund_fail": {
+      "id": "n_fund_fail",
+      "role": "wasserrettung",
+      "narrative": "**Feedback:** Am Wasser ist der **Übergabeort** entscheidend – sonst wartet der RTW am falschen Ufer.\n\nBeispiel: *„Leitstelle Nürnberg von Pelikan Erlangen 99/1 – Person gerettet, ansprechbar, stark unterkühlt, wir bringen sie zur Slipstelle Brücke Möhrendorf, bitte Rettungsdienst dorthin – kommen.“*",
+      "actions": [
+        {
+          "id": "retry",
+          "label": "🔄 Erneut versuchen",
+          "nextNodeId": "n_fund"
+        }
+      ]
+    },
+    "n_end": {
+      "id": "n_end",
+      "role": "wasserrettung",
+      "narrative": "Der Rettungsdienst übernimmt an der Slipstelle. Sie melden der Leitstelle noch, dass die **Sperrung aufgehoben** werden kann.\n\nStatus gedrückt, Schifffahrt gesperrt, Fund mit Übergabeort gemeldet – so arbeitet eine Bootsbesatzung.\n\n**Übung abgeschlossen! 🏆**",
+      "actions": [
+        {
+          "id": "restart",
+          "label": "🔄 Noch einmal trainieren",
+          "nextNodeId": "n_alarm"
+        },
+        {
+          "id": "exit",
+          "label": "← Zur Übersicht",
+          "nextNodeId": "__exit__"
+        }
+      ]
+    }
+  }
+}

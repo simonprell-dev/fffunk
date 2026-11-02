@@ -11,7 +11,9 @@ export type PlayerRole =
   | 'einsatzleit'
   | 'thw_helfer'
   | 'thw_gruppenführer'
-  | 'rettungsdienst';
+  | 'rettungsdienst'
+  | 'wasserrettung'
+  | 'katastrophenschutz';
 
 export interface StoryNode {
   id: string;
