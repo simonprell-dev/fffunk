@@ -140,6 +140,25 @@
   .weg { color: var(--rot-hell); text-decoration: line-through; opacity: 0; transition: opacity 0.4s; }
   .weg.zeig { opacity: 1; }
 
+  /* Gerätetrainer */
+  .hrt { width: 30vmin; background: #1f2633; border: 0.4vmin solid var(--rand); border-radius: 3vmin; padding: 2.4vmin; position: relative; margin-right: 6vmin; }
+  .hrt .ptt { position: absolute; left: -2.8vmin; top: 16vmin; width: 2.8vmin; height: 11vmin; background: var(--rot); border-radius: 1vmin 0 0 1vmin; transition: all 0.2s; }
+  .hrt .ptt.an { left: -1.6vmin; width: 1.6vmin; box-shadow: 0 0 2vmin var(--rot); }
+  .hrt .oben { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.6vmin; }
+  .hrt .knopf { width: 7vmin; height: 7vmin; border-radius: 50%; background: #374151; border: 0.6vmin solid #111827; transition: transform 0.5s; }
+  .hrt .knopf.dreh { transform: rotate(60deg); background: #4b5563; }
+  .hrt .sos { width: 8vmin; height: 5vmin; border-radius: 1vmin; background: #f97316; color: #fff; font-weight: 800; font-size: 2.2vmin; display: flex; align-items: center; justify-content: center; }
+  .hrt .lcd { background: #0f2a1c; color: #6ee7b7; font-family: Consolas, monospace; font-size: 2.3vmin; border-radius: 1.2vmin; padding: 1.4vmin; height: 9vmin; margin-bottom: 1.6vmin; }
+  .hrt .lcd b { display: block; margin-bottom: 0.8vmin; }
+  .hrt .block { display: flex; flex-wrap: wrap; justify-content: space-between; }
+  .hrt .block i { font-style: normal; width: 7.6vmin; height: 4.6vmin; margin-bottom: 1vmin; border-radius: 0.8vmin; background: #e5e7eb; color: #111827; font-weight: 700; font-size: 2.4vmin; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .hrt .block i.an, .hrt .sos.an { background: var(--gelb); box-shadow: 0 0 2.4vmin var(--gelb); transform: scale(1.08); }
+  .schritte { text-align: left; }
+  .schritte div { font-size: 3vmin; padding: 1.4vmin 2vmin; margin-bottom: 1.4vmin; border-radius: 1.4vmin; border: 0.25vmin solid var(--rand); background: var(--flaeche); color: var(--leise); transition: all 0.4s; }
+  .schritte div.an { color: var(--text); border-color: var(--gelb); }
+  .schritte div.fertig { color: var(--text); border-color: var(--gruen); }
+  .schritte small { display: block; font-size: 2.2vmin; color: var(--leise); }
+
   @media (orientation: portrait) {
     .geraet, .cta { flex-direction: column; }
     .funk { margin: 12vmin 0 4vmin; height: 34vmin; width: 18vmin; }
@@ -150,6 +169,9 @@
     .tasten i { width: 8.5vmin; margin: 0 0.4vmin; }
     /* Hochkant (Tablet am Messestand): Bereichskarten zweispaltig */
     .karte.org { width: 36vmin; }
+    .bedienen { flex-direction: column; }
+    .hrt { margin: 0 0 4vmin; }
+    .schritte { width: 80vmin; }
   }
 </style>
 </head>
@@ -236,6 +258,25 @@
 </section>
 
 <!-- Grundausbildung -->
+<section class="szene" data-dauer="18000" data-start="bedienen">
+  <h2 class="rein" style="margin-bottom: 3vmin;">Auch das <em style="color: var(--gelb);">Funkgerät</em> bedienen</h2>
+  <div class="geraet bedienen">
+    <div class="hrt rein d1">
+      <div class="ptt" id="hPtt"></div>
+      <div class="oben"><div class="knopf" id="hKnopf"></div><div class="sos" id="hSos">SOS</div></div>
+      <div class="lcd"><b id="hZ1">TMO&nbsp;FW_ERH&nbsp;🔒</b><span id="hZ2">Gesperrt</span></div>
+      <div class="block" id="hBlock"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>*</i><i>0</i><i>#</i></div>
+    </div>
+    <div class="schritte rein d2" id="hSchritte">
+      <div>Tastensperre lösen<small>Stern lang – oder Menü + Stern</small></div>
+      <div>Gruppe wechseln<small>Drehknopf, mit PTT bestätigen</small></div>
+      <div>Status senden<small>Zifferntaste lang drücken</small></div>
+      <div>Notruf<small>Notruftaste 2 Sekunden</small></div>
+    </div>
+  </div>
+  <p class="unter rein d4">Drei Bedienkonzepte – passend zu eurem Gerät einstellbar und in jedem Szenario</p>
+</section>
+
 <section class="szene" data-dauer="35000" data-start="kapitel">
   <h2 class="rein" style="margin-bottom: 2vmin;">Neu dabei?<br><em>Die Grundausbildung</em></h2>
   <div class="orgname" id="orgname"></div>
@@ -321,6 +362,26 @@
           }, 500);
         })();
       }, 3600);
+    },
+    bedienen: function () {
+      var z1 = document.getElementById('hZ1'), z2 = document.getElementById('hZ2');
+      var tasten = document.getElementById('hBlock').children, knopf = document.getElementById('hKnopf');
+      var ptt = document.getElementById('hPtt'), sos = document.getElementById('hSos');
+      var schritte = document.getElementById('hSchritte').children;
+      function zeige(a, b) { z1.innerHTML = a; z2.innerHTML = b; }
+      function schritt(n, an) { schritte[n].className = an ? 'an' : 'fertig'; }
+      function taste(el, ms) { el.className = 'an'; spaeter(function () { el.className = ''; }, ms); }
+      for (var i = 0; i < schritte.length; i++) schritte[i].className = '';
+      zeige('TMO&nbsp;FW_ERH&nbsp;🔒', 'Gesperrt');
+      spaeter(function () { schritt(0, true); taste(tasten[9], 1400); }, 1500);
+      spaeter(function () { zeige('TMO&nbsp;FW_ERH', 'Tastatur entsperrt'); schritt(0); }, 2900);
+      spaeter(function () { schritt(1, true); knopf.className = 'knopf dreh'; zeige('TMO&nbsp;FW_ERH', '▸ RD_ERH (PTT = OK)'); }, 4000);
+      spaeter(function () { ptt.className = 'ptt an'; }, 5400);
+      spaeter(function () { ptt.className = 'ptt'; knopf.className = 'knopf'; zeige('TMO&nbsp;RD_ERH', 'Gruppe gewechselt'); schritt(1); }, 5900);
+      spaeter(function () { schritt(2, true); taste(tasten[2], 1300); zeige('TMO&nbsp;RD_ERH', 'Status senden …'); }, 7300);
+      spaeter(function () { zeige('TMO&nbsp;RD_ERH', 'Status 3 gesendet'); schritt(2); }, 8700);
+      spaeter(function () { schritt(3, true); sos.className = 'sos an'; }, 10200);
+      spaeter(function () { sos.className = 'sos'; zeige('⚠&nbsp;NOTRUF', 'Notruf aktiv – sprechen'); schritt(3); }, 12200);
     },
     kapitel: function () {
       var liste = document.getElementById('kapitel'), name = document.getElementById('orgname');

@@ -10,6 +10,8 @@ import { RadioResponse, radioResponseFor, splitCall, splitLeadingResponse } from
 import { trackEvent } from '../lib/usage-stats';
 import { onRadioKey } from '../lib/radio-keys';
 import ChapterMenu from './ChapterMenu';
+import Funkgeraet, { useFunkgeraet } from './Funkgeraet';
+import { KONZEPTE, deviceTarget, lockedDevice, matchesTarget, type DeviceEvent, type KonzeptId } from '../lib/funkgeraet';
 import { chapterEndingAt, loadChapterProgress, markChapterDone, markChapterStarted, nextChapter } from '../lib/chapter-progress';
 
 interface Props {
@@ -19,9 +21,11 @@ interface Props {
   onExit: () => void;
   rufnamen?: Record<string, string>;
   mode?: 'guided' | 'training';
+  /** Bedienkonzept des simulierten Funkgeräts; gesetzt → Status und Gruppenwechsel am Gerät. */
+  geraet?: KonzeptId;
 }
 
-export default function PracticeScreen({ scenario, engine, audio, onExit, rufnamen, mode = 'guided' }: Props) {
+export default function PracticeScreen({ scenario, engine, audio, onExit, rufnamen, mode = 'guided', geraet }: Props) {
   const [currentNode, setCurrentNode] = useState<StoryNode>(engine.getCurrentNode());
   const [radioModalOpen, setRadioModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<Action | null>(null);
@@ -159,6 +163,27 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
     if (sosAction) handleAction(sosAction);
   };
   useEffect(() => onRadioKey((key, pressed) => { if (key === 'sos' && pressed) sosRef.current(); }), []);
+
+  // Simuliertes Funkgerät: Status und Gruppenwechsel werden dort ausgeführt statt per Knopf.
+  const deviceActions = geraet
+    ? currentNode.actions.flatMap(a => { const t = deviceTarget(a); return t ? [{ action: a, target: t }] : []; })
+    : [];
+  const showDevice = !!geraet && (deviceActions.length > 0 || currentNode.actions.some(a => a.key === 'sos'));
+  const deviceIds = useMemo(() => new Set(deviceActions.map(d => d.action.id)), [deviceActions.map(d => d.action.id).join()]);
+  const [deviceHilfe, setDeviceHilfe] = useState(false);
+  const onDeviceEvent = (e: DeviceEvent) => {
+    if (radioModalOpen || incoming || menuOpen) return;
+    if (e.type === 'ptt') { pttOpenRef.current(); return; }
+    if (e.type === 'emergency' && e.active) { sosRef.current(); return; }
+    if (e.type !== 'status' && e.type !== 'group') return;
+    const hit = deviceActions.find(d => matchesTarget(e, d.target));
+    if (hit) { setDeviceHilfe(false); handleAction(hit.action); return; }
+    if (deviceActions.length) {
+      setFeedback({ success: false, message: e.type === 'status' ? `Status ${e.status} passt hier nicht – lies die Lage noch einmal.` : `Die Gruppe ${e.group} ist hier nicht gefragt.` });
+    }
+  };
+  const device = useFunkgeraet(() => lockedDevice(geraet ?? 'sepura-stp'), onDeviceEvent);
+  const deviceAufgabe = deviceActions.some(d => d.target.group) ? 'gruppe' : 'status';
 
   // Kapitel-Endknoten erreicht → Kapitel abgeschlossen
   useEffect(() => {
@@ -298,7 +323,25 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
           <div className="text-[#e5e5e5] italic">„{incoming.text}“</div>
         </div>
       ) : (
-        <ActionButtons actions={currentNode.actions} onSelect={handleAction} />
+        <ActionButtons actions={currentNode.actions} onSelect={handleAction} deviceIds={showDevice ? deviceIds : undefined} />
+      )}
+
+      {showDevice && !incoming && geraet && (
+        <div className="compact:hidden p-4 rounded-lg border border-[#333] bg-[#141414] space-y-3" data-testid="szenario-geraet">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="text-sm text-[#d4d4d4]">
+              📟 {deviceActions.length ? (deviceAufgabe === 'gruppe' ? 'Gruppe am Funkgerät wechseln.' : 'Status am Funkgerät drücken.') : 'Notruftaste am Funkgerät.'}
+            </div>
+            <button onClick={() => setDeviceHilfe(h => !h)} className="text-xs text-[#60a5fa] hover:underline">{deviceHilfe ? 'Anleitung ausblenden' : 'Wie geht das?'}</button>
+          </div>
+          {deviceHilfe && (
+            <div className="text-xs text-[#cbd5e1] bg-[#1f2a37] border border-[#2f4256] rounded p-2 space-y-1">
+              {device.state.locked && <div><strong>Tastensperre:</strong> {KONZEPTE[geraet].anleitung.entsperren}</div>}
+              <div><strong>{deviceActions.length ? (deviceAufgabe === 'gruppe' ? 'Gruppe/DMO' : 'Status') : 'Notruf'}:</strong> {KONZEPTE[geraet].anleitung[deviceActions.length ? (deviceAufgabe === 'gruppe' ? 'dmo' : 'status') : 'notruf']}</div>
+            </div>
+          )}
+          <Funkgeraet state={device.state} onPress={device.press} />
+        </div>
       )}
       </>)}
 

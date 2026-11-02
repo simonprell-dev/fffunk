@@ -32,6 +32,8 @@ export interface Action {
   auto?: boolean;
   /** 'sos': die Notruftaste des Funkgeräts löst diese Aktion ebenfalls aus. */
   key?: 'sos';
+  /** Am simulierten Funkgerät auszuführen (sonst aus „📟 Status n“ im Text abgeleitet). */
+  device?: { status?: number; group?: string; mode?: 'TMO' | 'DMO' };
 }
 
 export interface RadioCall {

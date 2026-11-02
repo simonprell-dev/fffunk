@@ -6,12 +6,15 @@ import ScenarioList from './components/ScenarioList';
 import PracticeScreen from './components/PracticeScreen';
 import ScenarioEditor from './components/ScenarioEditor';
 import LernbereichView from './components/LernbereichView';
+import GeraetTrainer from './components/GeraetTrainer';
 import { decodeSharePackage, deleteLocalScenario, loadLocalScenarios, upsertLocalScenario } from './lib/community-scenarios';
 import { fetchCommunityScenarios, fetchCommunityScenario } from './lib/community-api';
 import { apiUrl } from './lib/api-base';
 import { CompactSetting, getCompactSetting, setCompactSetting } from './lib/display-mode';
 import { trackEvent } from './lib/usage-stats';
 import { handlesSosKey } from './lib/sos-key';
+import { KONZEPTE, type KonzeptId } from './lib/funkgeraet';
+import { getGeraetInSzenarien, getKonzept, setGeraetInSzenarien, setKonzept } from './lib/funkgeraet-settings';
 import { onRadioKey } from './lib/radio-keys';
 
 interface LicenseData {
@@ -21,7 +24,7 @@ interface LicenseData {
 
 const GRUNDAUSBILDUNG_ID = 'grundausbildung';
 
-type View = 'list' | 'training' | 'lernen' | 'editor' | 'practice';
+type View = 'list' | 'training' | 'lernen' | 'geraet' | 'editor' | 'practice';
 type ScenarioFolderIndex = {
   builtin?: Record<string, string[]>;
   community?: Record<string, string[]>;
@@ -44,6 +47,8 @@ function App() {
   });
   const [showSettings, setShowSettings] = useState(false);
   const [compactSetting, setCompactSettingState] = useState<CompactSetting>(() => getCompactSetting());
+  const [konzept, setKonzeptState] = useState<KonzeptId>(getKonzept);
+  const [geraetInSzenarien, setGeraetInSzenarienState] = useState(getGeraetInSzenarien);
   const settingsRef = useRef<HTMLDivElement>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [licenseCode, setLicenseCode] = useState(() => localStorage.getItem('fffunk_license_code') || '');
@@ -97,6 +102,11 @@ function App() {
 
       if (hash === '#lernen') {
         setEngine(null); setSelectedScenario(null); setView('lernen');
+        return;
+      }
+
+      if (hash === '#geraet') {
+        setEngine(null); setSelectedScenario(null); setView('geraet');
         return;
       }
 
@@ -246,6 +256,14 @@ function App() {
     window.history.replaceState(null, '', '#lernen');
   };
 
+  const openGeraet = () => {
+    audio.stop();
+    setEngine(null); setSelectedScenario(null); setEditScenario(undefined);
+    setKonzeptState(getKonzept()); // im Trainer evtl. geändert
+    setView('geraet');
+    window.history.replaceState(null, '', '#geraet');
+  };
+
   useEffect(() => {
     if (view === 'lernen') trackEvent('lern_open');
   }, [view]);
@@ -297,6 +315,7 @@ function App() {
                 <a href="#scenarios" onClick={openList} className={navCls('list')}>Üben</a>
                 <a href="#training" onClick={openTraining} className={navCls('training')}>Training</a>
                 <a href="#lernen" onClick={openLernen} className={navCls('lernen')}>Lernen</a>
+                <a href="#geraet" onClick={openGeraet} className={`${navCls('geraet')} compact:hidden`}>Gerät</a>
                 <a href="#editor" onClick={() => openEditor()} className={navCls('editor')}>Editor</a>
               </>
             )}
@@ -346,6 +365,25 @@ function App() {
                         <option value="on">An (kleines Display)</option>
                         <option value="off">Aus</option>
                       </select>
+                    </label>
+                    <label className="flex items-center justify-between gap-2">
+                      <span className="text-sm text-[#e5e5e5]">Funkgerät</span>
+                      <select
+                        value={konzept}
+                        onChange={e => { const v = e.target.value as KonzeptId; setKonzept(v); setKonzeptState(v); }}
+                        className="bg-[#111] border border-[#444] rounded px-2 py-1 text-xs focus:outline-none focus:border-[#dc2626]"
+                      >
+                        {Object.values(KONZEPTE).map(k => <option key={k.id} value={k.id}>{k.name}</option>)}
+                      </select>
+                    </label>
+                    <label className="flex items-center justify-between cursor-pointer gap-2">
+                      <span className="text-sm text-[#e5e5e5]">Status und Gruppe am Gerät bedienen</span>
+                      <input
+                        type="checkbox"
+                        checked={geraetInSzenarien}
+                        onChange={e => { setGeraetInSzenarien(e.target.checked); setGeraetInSzenarienState(e.target.checked); }}
+                        className="accent-[#dc2626] w-4 h-4 shrink-0"
+                      />
                     </label>
                     <div className="border-t border-[#2a2a2a] pt-4">
                       <div className="text-xs font-semibold text-[#a3a3a3] uppercase tracking-wider mb-2">Wehr-Code</div>
@@ -439,6 +477,8 @@ function App() {
           />
         ) : view === 'lernen' ? (
           <LernbereichView rufnamen={licenseData?.rufnamen} />
+        ) : view === 'geraet' ? (
+          <GeraetTrainer />
         ) : view === 'practice' && engine && selectedScenario ? (
           <PracticeScreen
             key={selectedScenario.id} // Wechsel per Notruftaste → frisch starten
@@ -448,6 +488,7 @@ function App() {
             onExit={() => (practiceMode === 'training' ? openTraining() : openList())}
             rufnamen={licenseData?.rufnamen}
             mode={practiceMode}
+            geraet={geraetInSzenarien ? konzept : undefined}
           />
         ) : !loadError && scenarios.length === 0 ? (
           <div className="text-center py-12">

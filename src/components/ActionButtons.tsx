@@ -5,9 +5,11 @@ import type { Action } from '@/types/story';
 interface Props {
   actions: Action[];
   onSelect: (action: Action) => void;
+  /** Aktionen, die am simulierten Funkgerät ausgeführt werden – Knopf nur in der Kompaktansicht. */
+  deviceIds?: Set<string>;
 }
 
-export const ActionButtons = memo(function ActionButtons({ actions, onSelect }: Props) {
+export const ActionButtons = memo(function ActionButtons({ actions, onSelect, deviceIds }: Props) {
   return (
     // Kompakt: Knöpfe bleiben am unteren Rand erreichbar, auch bei langem Text
     <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 compact:gap-1.5 compact:sticky compact:bottom-0 compact:bg-[#0a0a0a] compact:py-1.5">
@@ -23,6 +25,7 @@ export const ActionButtons = memo(function ActionButtons({ actions, onSelect }: 
                 ? 'bg-fire-600 hover:bg-fire-500 text-white shadow-md hover:shadow-lg'
                 : 'bg-dark-700 hover:bg-dark-600 text-gray-200 border border-dark-500'}
               cursor-pointer
+              ${deviceIds?.has(action.id) ? 'hidden compact:flex' : ''}
             `}
           >
             <Radio className="w-4 h-4 shrink-0 compact:hidden" />
