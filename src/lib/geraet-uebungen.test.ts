@@ -15,11 +15,11 @@ const LOESUNG: Record<KonzeptId, Record<string, Press[]>> = {
   'sepura-sc': {
     einschalten: [k('red', 1200)], entsperren: [k('star', 1200)], gruppe: [k('ctxM'), k('knobRight'), k('ptt')],
     dmo: [k('sideB')], zurueck: [k('sideB')], status: [k('star', 1200), k('3', 1200)],
-    sprechwunsch: [k('sideC'), k('ptt')], notruf: [k('sos', 2100), k('red')], sperren: [k('star', 1200)],
+    sprechwunsch: [k('sideC'), k('ptt')], notruf: [k('sos', 2100), k('red'), k('red')], sperren: [k('star', 1200)],
   },
   motorola: {
     einschalten: [k('power', 1500)], entsperren: [k('menu'), k('star')], gruppe: [k('knobPress'), k('knobRight'), k('ptt')],
-    dmo: [k('tmoDmo')], zurueck: [k('tmoDmo')], status: [k('menu'), k('star'), k('3', 2100)],
+    dmo: [k('tmoDmo', 1200)], zurueck: [k('tmoDmo', 1200)], status: [k('menu'), k('star'), k('3', 2100)],
     sprechwunsch: [k('5', 2100), k('ptt')], notruf: [k('sos', 2100), k('softR')], sperren: [k('menu'), k('star')],
   },
 };

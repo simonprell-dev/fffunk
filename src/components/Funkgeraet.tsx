@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { KONZEPTE, press, type DeviceEvent, type DeviceKey, type DeviceState, type Press } from '../lib/funkgeraet';
 
+const AUSWAHL_TIMEOUT_MS = 5000;
+
 /** Zustand des Geräts samt Ereignis-Rückmeldung. */
 export function useFunkgeraet(initial: () => DeviceState, onEvent: (e: DeviceEvent, s: DeviceState) => void) {
   const [state, setState] = useState(initial);
@@ -15,6 +17,13 @@ export function useFunkgeraet(initial: () => DeviceState, onEvent: (e: DeviceEve
     setState(r.state);
     if (r.event) onEventRef.current(r.event, r.state);
   };
+  // Gruppenauswahl ohne Bestätigung: nach kurzer Wartezeit übernimmt das Gerät die Gruppe selbst.
+  useEffect(() => {
+    if (state.selecting === null) return;
+    const t = setTimeout(() => handle({ key: 'timeout', ms: 0 }), AUSWAHL_TIMEOUT_MS);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.selecting, state.mode]);
   return { state, setState: (s: DeviceState) => { stateRef.current = s; setState(s); }, press: handle };
 }
 

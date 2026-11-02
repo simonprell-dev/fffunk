@@ -10,7 +10,9 @@ export type DeviceKey =
   | '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'star'
   | 'ptt' | 'sos' | 'knobLeft' | 'knobRight' | 'knobPress'
   | 'mode' | 'ctxM' | 'red' | 'menu' | 'softR' | 'power' | 'tmoDmo'
-  | 'sideA' | 'sideB' | 'sideC';
+  | 'sideA' | 'sideB' | 'sideC'
+  /** Keine Taste: Wartezeit in der Gruppenauswahl abgelaufen → Auswahl wird übernommen. */
+  | 'timeout';
 
 export interface Press { key: DeviceKey; ms: number }
 
@@ -37,10 +39,10 @@ export const KONZEPTE: Record<KonzeptId, Konzept> = {
     anleitung: {
       einschalten: 'Mode-Taste kurz drücken (lang = ausschalten).',
       entsperren: 'Stern-Taste lang drücken.',
-      gruppe: 'Mode-Taste drücken, mit dem Drehknopf wählen, mit der Sprechtaste (PTT) bestätigen.',
-      dmo: 'Seitentaste „TMO/DMO“ drücken.',
+      gruppe: 'Mode-Taste drücken, mit dem Drehknopf wählen, mit der Sprechtaste (PTT) kurz bestätigen – oder kurz warten.',
+      dmo: 'Seitentaste „TMO/DMO“ drücken (Belegung der BOS-Programmierung).',
       status: 'Zifferntaste lang drücken, bis „Status gesendet“ erscheint (nur im TMO).',
-      notruf: 'Notruftaste 2 Sekunden drücken – beenden: nochmals 2 Sekunden oder rote Taste.',
+      notruf: 'Notruftaste 2 Sekunden drücken – beenden: nochmals 2 Sekunden oder rote Taste drücken und bestätigen.',
     },
   },
   'sepura-sc': {
@@ -49,20 +51,20 @@ export const KONZEPTE: Record<KonzeptId, Konzept> = {
     anleitung: {
       einschalten: 'Rote Taste lang drücken.',
       entsperren: 'Stern-Taste lang drücken.',
-      gruppe: 'Mittlere Kontexttaste drücken, mit dem Drehknopf wählen, mit PTT bestätigen.',
-      dmo: 'Seitentaste B drücken.',
+      gruppe: 'Mittlere Kontexttaste drücken, mit dem Drehknopf wählen, mit PTT kurz bestätigen – oder kurz warten.',
+      dmo: 'Seitentaste B drücken (Belegung der BOS-Programmierung).',
       status: 'Zifferntaste lang drücken (nur im TMO). Seitentaste C = Sprechwunsch, auch gesperrt.',
-      notruf: 'Notruftaste 2 Sekunden drücken – beenden: nochmals 2 Sekunden oder rote Taste.',
+      notruf: 'Notruftaste 2 Sekunden drücken – beenden: nochmals 2 Sekunden oder rote Taste drücken und bestätigen.',
     },
   },
   motorola: {
     id: 'motorola', name: 'Menü + Drehknopf', geraete: 'Geräte mit Tastensperre über Menü + Stern (z. B. MTP850, MXP600)',
     tasten: [...BASIS, 'knobPress', 'menu', 'softR', 'power', 'tmoDmo'], statusMs: 2000,
     anleitung: {
-      einschalten: 'Ein/Aus-Taste gedrückt halten – danach ist die Tastensperre aktiv.',
+      einschalten: 'Ein/Aus-Taste gedrückt halten – danach ist die Tastensperre aktiv (so programmiert).',
       entsperren: 'Menü-Taste drücken, dann Stern-Taste.',
-      gruppe: 'Drehknopf drücken, drehen, mit PTT einbuchen.',
-      dmo: 'TMO/DMO-Umschalter drücken.',
+      gruppe: 'Drehknopf drücken, drehen, mit PTT kurz einbuchen – oder kurz warten.',
+      dmo: 'TMO/DMO-Taste gedrückt halten, bis die Betriebsart angezeigt wird (BOS-Belegung; ab Werk über „Optionen“).',
       status: 'Zifferntaste mindestens 2 Sekunden drücken (nur im TMO).',
       notruf: 'Orange Notruftaste 2 Sekunden drücken – beenden mit dem Softkey „Ende“.',
     },
@@ -86,6 +88,10 @@ export interface DeviceState {
   emergency: boolean;
   /** Motorola: Menü gedrückt, wartet auf Stern. */
   menuArmed: boolean;
+  /** Zuletzt genutzte Gruppe je Betriebsart – kommt beim TMO/DMO-Wechsel zurück. */
+  lastGroup: Record<Betriebsart, string>;
+  /** Sepura: rote Taste im Notruf gedrückt, wartet auf Bestätigung. */
+  confirmEnd: boolean;
   volume: number;
   display: string[];
 }
@@ -101,7 +107,10 @@ export type DeviceEvent =
   | { type: 'rejected'; reason: string };
 
 export function initialDevice(konzept: KonzeptId): DeviceState {
-  return { konzept, on: false, locked: false, mode: 'TMO', group: 'FW_ERH', selecting: null, emergency: false, menuArmed: false, volume: 5, display: [] };
+  return {
+    konzept, on: false, locked: false, mode: 'TMO', group: 'FW_ERH', selecting: null, emergency: false, menuArmed: false,
+    lastGroup: { TMO: GRUPPEN.TMO[0], DMO: GRUPPEN.DMO[0] }, confirmEnd: false, volume: 5, display: [],
+  };
 }
 
 /** Eingeschaltet mit aktiver Tastensperre – wie direkt nach dem Einschalten. */
@@ -132,8 +141,14 @@ function sperrHinweis(k: KonzeptId): string {
 
 function toggleMode(s: DeviceState): { state: DeviceState; event: DeviceEvent } {
   const mode: Betriebsart = s.mode === 'TMO' ? 'DMO' : 'TMO';
-  const group = GRUPPEN[mode][0];
-  return { state: withDisplay({ ...s, mode, group, selecting: null }, mode === 'DMO' ? 'Direktbetrieb' : 'Netzbetrieb'), event: { type: 'group', group, mode } };
+  const lastGroup = { ...s.lastGroup, [s.mode]: s.group };
+  const group = lastGroup[mode];
+  return { state: withDisplay({ ...s, mode, group, lastGroup, selecting: null }, mode === 'DMO' ? 'Direktbetrieb' : 'Netzbetrieb'), event: { type: 'group', group, mode } };
+}
+
+function confirmGroup(s: DeviceState): { state: DeviceState; event: DeviceEvent } {
+  const group = GRUPPEN[s.mode][s.selecting ?? 0];
+  return { state: withDisplay({ ...s, group, selecting: null }, 'Gruppe gewechselt ✓'), event: { type: 'group', group, mode: s.mode } };
 }
 
 function sendStatus(s: DeviceState, status: number): { state: DeviceState; event: DeviceEvent } {
@@ -145,14 +160,22 @@ function sendStatus(s: DeviceState, status: number): { state: DeviceState; event
 export function press(s: DeviceState, p: Press): { state: DeviceState; event?: DeviceEvent } {
   const k = KONZEPTE[s.konzept];
   const reject = (reason: string, msg = reason) => ({ state: s.on ? withDisplay(s, msg) : s, event: { type: 'rejected', reason } as DeviceEvent });
+  if (p.key === 'timeout') return s.on && s.selecting !== null ? confirmGroup(s) : { state: s };
   if (!k.tasten.includes(p.key)) return reject('Diese Taste hat dieses Gerät nicht.', 'Taste nicht vorhanden');
 
   const isPower = p.key === powerKey(s.konzept);
   if (!s.on) {
+    // Notruftaste am ausgeschalteten Gerät: einschalten und sofort Notruf (Herstellerstandard, 3 s)
+    if (p.key === 'sos' && p.ms >= 3000) {
+      const on: DeviceState = { ...initialDevice(s.konzept), on: true, emergency: true, volume: s.volume };
+      return { state: withDisplay(on, 'Notruf aktiv – sprechen'), event: { type: 'emergency', active: true } };
+    }
     const needed = s.konzept === 'sepura-stp' ? 0 : LANG_MS;
     if (isPower && p.ms >= needed) {
-      const on: DeviceState = { ...initialDevice(s.konzept), on: true, locked: true, volume: s.volume };
-      return { state: withDisplay(on, sperrHinweis(s.konzept)), event: { type: 'power', on: true } };
+      // Tastensperre beim Start nur, wo sie so programmiert ist (BOS-Kurzanleitung MTP850); Sepura startet entsperrt.
+      const locked = s.konzept === 'motorola';
+      const on: DeviceState = { ...initialDevice(s.konzept), on: true, locked, volume: s.volume };
+      return { state: withDisplay(on, locked ? sperrHinweis(s.konzept) : 'Bereit'), event: { type: 'power', on: true } };
     }
     return reject('Das Gerät ist ausgeschaltet.');
   }
@@ -161,10 +184,15 @@ export function press(s: DeviceState, p: Press): { state: DeviceState; event?: D
   if (p.key === 'sos') {
     if (p.ms < NOTRUF_MS) return reject('Notruftaste 2 Sekunden drücken.', 'Notruf: 2 s halten');
     const active = !s.emergency;
-    const next = { ...s, emergency: active, selecting: null };
+    const next = { ...s, emergency: active, selecting: null, confirmEnd: false };
     return { state: withDisplay(next, active ? 'Notruf aktiv – sprechen' : 'Notruf beendet'), event: { type: 'emergency', active } };
   }
-  if (s.emergency && ((p.key === 'red' && s.konzept !== 'motorola') || (p.key === 'softR' && s.konzept === 'motorola'))) {
+  // Sepura: rote Taste und bestätigen; Menü-Konzept: Softkey „Ende“
+  if (s.emergency && p.key === 'red' && s.konzept !== 'motorola') {
+    if (!s.confirmEnd) return { state: withDisplay({ ...s, confirmEnd: true }, 'Notruf beenden? ✆ = Ja') };
+    return { state: withDisplay({ ...s, emergency: false, confirmEnd: false }, 'Notruf beendet'), event: { type: 'emergency', active: false } };
+  }
+  if (s.emergency && p.key === 'softR' && s.konzept === 'motorola') {
     return { state: withDisplay({ ...s, emergency: false }, 'Notruf beendet'), event: { type: 'emergency', active: false } };
   }
 
@@ -188,10 +216,7 @@ export function press(s: DeviceState, p: Press): { state: DeviceState; event?: D
 
   // Sprechtaste: bestätigt eine offene Gruppenauswahl, sonst Senden (auch gesperrt)
   if (p.key === 'ptt') {
-    if (s.selecting !== null) {
-      const group = GRUPPEN[s.mode][s.selecting];
-      return { state: withDisplay({ ...s, group, selecting: null }, 'Gruppe gewechselt'), event: { type: 'group', group, mode: s.mode } };
-    }
+    if (s.selecting !== null) return confirmGroup(s);
     return { state: withDisplay(s, 'Senden …'), event: { type: 'ptt' } };
   }
 
@@ -225,7 +250,8 @@ export function press(s: DeviceState, p: Press): { state: DeviceState; event?: D
   }
 
   // TMO/DMO
-  if ((p.key === 'sideB' && s.konzept !== 'motorola') || (p.key === 'tmoDmo' && s.konzept === 'motorola')) return toggleMode(s);
+  if (p.key === 'sideB' && s.konzept !== 'motorola') return toggleMode(s);
+  if (p.key === 'tmoDmo') return p.ms >= LANG_MS ? toggleMode(s) : reject('TMO/DMO-Taste gedrückt halten.', 'TMO/DMO: Taste halten');
 
   // Status per Zifferntaste
   if (/^\d$/.test(p.key)) {
