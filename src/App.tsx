@@ -16,6 +16,7 @@ import { handlesSosKey } from './lib/sos-key';
 import { KONZEPTE, type KonzeptId } from './lib/funkgeraet';
 import { getGeraetInSzenarien, getKonzept, setGeraetInSzenarien, setKonzept } from './lib/funkgeraet-settings';
 import { onRadioKey } from './lib/radio-keys';
+import { warmUpSpeech } from './lib/speech-warmup';
 
 interface LicenseData {
   organizationName: string;
@@ -55,6 +56,9 @@ function App() {
   const [licenseInput, setLicenseInput] = useState(() => localStorage.getItem('fffunk_license_code') || '');
   const [licenseData, setLicenseData] = useState<LicenseData | null>(null);
   const [licenseError, setLicenseError] = useState<string | null>(null);
+
+  // Android: Spracherkennung schon vorbereiten, während man ein Szenario aussucht.
+  useEffect(() => { warmUpSpeech(); }, []);
 
   // Hash routing
   useEffect(() => {

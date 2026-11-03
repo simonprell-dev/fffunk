@@ -1,6 +1,8 @@
 package dev.simonprell.fffunk;
 
 import android.Manifest;
+import android.os.SystemClock;
+import android.util.Log;
 
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
@@ -26,7 +28,8 @@ import org.vosk.android.StorageService;
  * (z. B. das Messe-Funkgerät: Android 9, 32-bit ARM, keine Google-App).
  * Modell: assets/model-de (scripts/fetch-vosk-model.mjs).
  *
- * load()  → Modell beim ersten Start entpacken und laden
+ * preload() → Modell schon beim App-Start im Hintergrund laden (ohne Mikrofon-Abfrage)
+ * load()  → Mikrofon-Berechtigung holen, Modell laden (sofort fertig, wenn vorgeladen)
  * start() → Mikrofon auf, Erkennung läuft, solange die Sprechtaste gedrückt ist;
  *           optional { grammar: [...] } – nur diese Wörter erkennen (viel treffsicherer)
  * stop()  → Erkennung beenden, liefert { text }
@@ -38,8 +41,11 @@ import org.vosk.android.StorageService;
 public class VoskSttPlugin extends Plugin {
     private static final float SAMPLE_RATE = 16000.0f;
 
+    private static final String TAG = "FFFunkVosk";
+
     private Model model;
     private boolean loading;
+    private long loadStart;
     private final java.util.List<PluginCall> loadCalls = new java.util.ArrayList<>();
     private SpeechService speechService;
     private final StringBuilder text = new StringBuilder();
@@ -54,6 +60,12 @@ public class VoskSttPlugin extends Plugin {
         loadModel(call);
     }
 
+    /** App-Start: Modell im Hintergrund laden – das Mikrofon braucht es dafür noch nicht. */
+    @PluginMethod
+    public void preload(PluginCall call) {
+        loadModel(call);
+    }
+
     @PermissionCallback
     private void afterPermission(PluginCall call) {
         if (getPermissionState("microphone") != PermissionState.GRANTED) {
@@ -63,15 +75,26 @@ public class VoskSttPlugin extends Plugin {
         loadModel(call);
     }
 
-    private void loadModel(PluginCall call) {
+    // Vorladen beim App-Start und load() aus dem Funkspruch-Fenster können sich überschneiden:
+    // Wer während des Ladens kommt, wartet auf dasselbe Modell.
+    private synchronized void loadModel(PluginCall call) {
         if (model != null) { call.resolve(); return; }
         loadCalls.add(call);
         if (loading) return;
         loading = true;
+        loadStart = SystemClock.elapsedRealtime();
         LibVosk.setLogLevel(LogLevel.WARNINGS);
         StorageService.unpack(getContext(), "model-de", "model",
-            m -> { model = m; loading = false; for (PluginCall c : loadCalls) c.resolve(); loadCalls.clear(); },
-            e -> { loading = false; for (PluginCall c : loadCalls) c.reject("Sprachmodell konnte nicht geladen werden: " + e.getMessage()); loadCalls.clear(); });
+            m -> loaded(m, null),
+            e -> loaded(null, "Sprachmodell konnte nicht geladen werden: " + e.getMessage()));
+    }
+
+    private synchronized void loaded(Model m, String error) {
+        model = m;
+        loading = false;
+        Log.i(TAG, (m != null ? "Sprachmodell geladen in " : "Sprachmodell fehlgeschlagen nach ") + (SystemClock.elapsedRealtime() - loadStart) + " ms");
+        for (PluginCall c : loadCalls) { if (m != null) c.resolve(); else c.reject(error); }
+        loadCalls.clear();
     }
 
     @PluginMethod

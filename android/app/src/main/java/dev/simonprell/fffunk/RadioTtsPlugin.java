@@ -36,8 +36,12 @@ import java.util.Locale;
 public class RadioTtsPlugin extends Plugin {
     private static final String TAG = "FFFunkTts";
 
+    private static final long INIT_TIMEOUT_MS = 20000;
+
     private TextToSpeech tts;
     private boolean ready;
+    private boolean initDone; // Sprachausgabe fertig gestartet (oder gescheitert) – nur auf dem Main-Thread
+    private PluginCall waiting; // Text, der vor dem Start kam – nur der neueste
     private boolean german;
     private final Handler main = new Handler(Looper.getMainLooper());
     private int seq;
@@ -57,8 +61,10 @@ public class RadioTtsPlugin extends Plugin {
 
     @Override
     public void load() {
+        // Langsame Geräte brauchen einige Sekunden – Texte, die vorher kommen, warten statt stumm zu bleiben.
+        main.postDelayed(this::initFinished, INIT_TIMEOUT_MS);
         tts = new TextToSpeech(getContext(), status -> {
-            if (status != TextToSpeech.SUCCESS) return;
+            if (status != TextToSpeech.SUCCESS) { main.post(this::initFinished); return; }
             int r = tts.setLanguage(Locale.GERMANY);
             german = r != TextToSpeech.LANG_MISSING_DATA && r != TextToSpeech.LANG_NOT_SUPPORTED;
             if (german) useOfflineGermanVoice();
@@ -75,7 +81,16 @@ public class RadioTtsPlugin extends Plugin {
                 silent.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, 0f);
                 tts.speak("Funkverbindung steht.", TextToSpeech.QUEUE_ADD, silent, "warmup");
             }
+            main.post(this::initFinished);
         });
+    }
+
+    private void initFinished() {
+        if (initDone) return;
+        initDone = true;
+        PluginCall c = waiting;
+        waiting = null;
+        if (c != null) speakNow(c);
     }
 
     /**
@@ -107,12 +122,20 @@ public class RadioTtsPlugin extends Plugin {
 
     @PluginMethod
     public void speak(PluginCall call) {
+        main.post(() -> {
+            if (initDone) { speakNow(call); return; }
+            if (waiting != null) waiting.resolve(); // überholt – es spricht nur der neueste Text
+            waiting = call;
+        });
+    }
+
+    private void speakNow(PluginCall call) {
         String text = call.getString("text", "").trim();
         if (!ready || !german || text.isEmpty()) {
             call.reject("Keine deutsche Sprachausgabe auf dem Gerät.");
             return;
         }
-        main.post(() -> start(call, text));
+        start(call, text);
     }
 
     private void start(PluginCall call, String text) {
@@ -188,6 +211,7 @@ public class RadioTtsPlugin extends Plugin {
 
     /** Laufende Ausgabe abbrechen; ihr speak() endet dann (wie bisher bei QUEUE_FLUSH). */
     private void cancel() {
+        if (waiting != null) { waiting.resolve(); waiting = null; }
         if (tts != null) tts.stop();
         if (job != null) finish(job);
     }

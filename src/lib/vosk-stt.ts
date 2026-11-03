@@ -6,6 +6,8 @@ import splits from './vosk-splits.json';
 
 interface VoskSttPlugin {
   load(): Promise<void>;
+  /** Modell im Hintergrund laden, ohne nach dem Mikrofon zu fragen (App-Start). */
+  preload(): Promise<void>;
   /** grammar: nur diese Wörter erkennen (plus „[unk]“ für alles andere). */
   start(options?: { grammar?: string[] }): Promise<void>;
   stop(): Promise<{ text: string }>;
