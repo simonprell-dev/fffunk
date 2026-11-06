@@ -3,6 +3,20 @@
 // für eine Kopie der Startseite. Die App selbst navigiert per #, braucht also keine Pfad-Fallbacks.
 import path from 'node:path';
 
+export const SITE = 'https://fffunk.prelldynamics.de';
+
+/**
+ * Seitenaufrufe über die Railway-Adresse → eigene Domain (sonst sieht die Suchmaschine zwei Kopien).
+ * API und Admin bleiben erreichbar: Installierte Apps und Formulare nutzen noch die alte Adresse.
+ * @returns {string | null} Ziel der Umleitung
+ */
+export function canonicalRedirect(host, method, url) {
+  if (!host || !/\.up\.railway\.app(:\d+)?$/i.test(host)) return null;
+  if (method !== 'GET' && method !== 'HEAD') return null;
+  if (url.startsWith('/api/') || url === '/admin' || url.startsWith('/admin/') || url.startsWith('/admin?')) return null;
+  return SITE + url;
+}
+
 /**
  * @param {string} url  Adresse samt Query, z. B. „/lernen/mayday?x=1“
  * @param {string} dist Auslieferungsordner (absolut)

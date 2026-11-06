@@ -9,7 +9,7 @@ import { generateSeoPages } from '../../scripts/seo-pages.mjs';
 import { lernChapters } from './lern-content';
 
 const read = (p: string) => readFileSync(new URL(`../../${p}`, import.meta.url), 'utf8');
-const SITE = 'https://fffunk-production.up.railway.app';
+const SITE = 'https://fffunk.prelldynamics.de';
 const html = read('index.html');
 const meta = (attr: string, key: string) =>
   html.match(new RegExp(`<meta ${attr}="${key}" content="([^"]*)"`))?.[1] ?? '';

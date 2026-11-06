@@ -9,7 +9,7 @@ import { initDb } from './community-db.mjs';
 import { initLicenseDb, initAdminScenariosDb, initUsageStatsDb, countUsageEvent, getScenariosByLicenseCode } from './license-db.mjs';
 import { handleAdminRequest, handleLicenseLookup } from './admin-api.mjs';
 import { logPrConfig } from './community-pr-api.mjs';
-import { resolveStatic } from './static-route.mjs';
+import { canonicalRedirect, resolveStatic } from './static-route.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
@@ -150,6 +150,9 @@ async function handleTtsRequest(req, res) {
 }
 
 const server = http.createServer(async (req, res) => {
+  const moved = canonicalRedirect(req.headers.host, req.method, req.url || '/');
+  if (moved) { res.writeHead(301, { location: moved }); res.end(); return; }
+
   if (req.url?.startsWith('/admin')) {
     await handleAdminRequest(req, res);
     return;

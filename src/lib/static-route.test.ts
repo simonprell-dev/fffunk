@@ -2,7 +2,27 @@
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 // @ts-expect-error – reines JS-Modul aus scripts/, vom Server genutzt
-import { resolveStatic } from '../../scripts/static-route.mjs';
+import { canonicalRedirect, resolveStatic } from '../../scripts/static-route.mjs';
+
+describe('canonicalRedirect', () => {
+  it('leitet Seitenaufrufe über die Railway-Adresse dauerhaft auf die eigene Domain um', () => {
+    expect(canonicalRedirect('fffunk-production.up.railway.app', 'GET', '/lernen/mayday?x=1'))
+      .toBe('https://fffunk.prelldynamics.de/lernen/mayday?x=1');
+    expect(canonicalRedirect('fffunk-production.up.railway.app', 'HEAD', '/')).toBe('https://fffunk.prelldynamics.de/');
+  });
+
+  it('lässt API und Admin auf der alten Adresse (installierte Apps, Formulare)', () => {
+    expect(canonicalRedirect('fffunk-production.up.railway.app', 'GET', '/api/license/ABC')).toBeNull();
+    expect(canonicalRedirect('fffunk-production.up.railway.app', 'GET', '/admin/stats')).toBeNull();
+    expect(canonicalRedirect('fffunk-production.up.railway.app', 'POST', '/api/tts')).toBeNull();
+  });
+
+  it('leitet auf der eigenen Domain und lokal nicht um', () => {
+    expect(canonicalRedirect('fffunk.prelldynamics.de', 'GET', '/')).toBeNull();
+    expect(canonicalRedirect('localhost:4877', 'GET', '/')).toBeNull();
+    expect(canonicalRedirect(undefined, 'GET', '/')).toBeNull();
+  });
+});
 
 const dist = path.resolve('/app/dist');
 const files = new Set(['index.html', '404.html', 'lernen.html', 'lernen/mayday.html', 'messe/index.html', 'assets/index-abc.js']

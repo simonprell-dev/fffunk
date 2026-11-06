@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://fffunk-production.up.railway.app/sitemap.xml
+Sitemap: https://fffunk.prelldynamics.de/sitemap.xml

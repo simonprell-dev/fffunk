@@ -4,10 +4,10 @@ import { Capacitor } from '@capacitor/core';
  * In der gepackten Android-/iOS-App zeigen relative `/api/...`-Pfade auf das
  * lokale App-Origin (capacitor/https-localhost) und schlagen fehl. Trage hier
  * die öffentliche Backend-URL deiner Bereitstellung ein, z. B.
- *   'https://fffunk-production.up.railway.app'
+ *   'https://fffunk.prelldynamics.de'
  * Leer lassen = relative Pfade (Web-Build / Server – funktioniert unverändert).
  */
-export const NATIVE_API_BASE: string = 'https://fffunk-production.up.railway.app';
+export const NATIVE_API_BASE: string = 'https://fffunk.prelldynamics.de';
 
 /** Baut die korrekte API-URL: relativ im Web, absolut in der nativen App. */
 export function apiUrl(path: string): string {

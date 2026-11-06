@@ -10,7 +10,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { loadTs } from './load-ts.mjs';
 
-export const SITE = 'https://fffunk-production.up.railway.app';
+export { SITE } from './static-route.mjs';
+import { SITE } from './static-route.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Suchtitel und Beschreibung je Kapitel – so, wie Leute danach suchen. */
