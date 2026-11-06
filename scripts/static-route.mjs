@@ -1,0 +1,28 @@
+// Welche Datei der Server für eine Adresse ausliefert.
+// Unbekannte Adressen bekommen eine echte 404 – sonst hält die Suchmaschine jede Tippfehler-Adresse
+// für eine Kopie der Startseite. Die App selbst navigiert per #, braucht also keine Pfad-Fallbacks.
+import path from 'node:path';
+
+/**
+ * @param {string} url  Adresse samt Query, z. B. „/lernen/mayday?x=1“
+ * @param {string} dist Auslieferungsordner (absolut)
+ * @param {(file: string) => boolean} isFile
+ * @returns {{ status: 200 | 404, file: string } | { status: 301, location: string }}
+ */
+export function resolveStatic(url, dist, isFile) {
+  const [rawPath, ...q] = url.split('?');
+  const query = q.length ? `?${q.join('?')}` : '';
+  const notFound = { status: 404, file: path.join(dist, '404.html') };
+
+  let decoded;
+  try { decoded = decodeURIComponent(rawPath); } catch { return notFound; }
+  if (decoded.length > 1 && decoded.endsWith('/')) return { status: 301, location: rawPath.replace(/\/+$/, '') + query };
+
+  const file = path.resolve(dist, '.' + path.posix.normalize(decoded.replace(/\\/g, '/')));
+  if (file !== dist && !file.startsWith(dist + path.sep)) return notFound;
+
+  for (const candidate of [file === dist ? path.join(dist, 'index.html') : file, `${file}.html`, path.join(file, 'index.html')]) {
+    if (isFile(candidate)) return { status: 200, file: candidate };
+  }
+  return notFound;
+}

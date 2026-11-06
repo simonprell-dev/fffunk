@@ -7,7 +7,7 @@
     "dev": "vite",
     "pr-server": "node scripts/community-pr-server.mjs",
     "start": "node scripts/server.mjs",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/seo-pages.mjs",
     "android:add": "cap add android",
     "android:sync": "npm run build && cap sync android",
     "android:build": "npm run android:sync && cd android && gradlew.bat assembleDebug",

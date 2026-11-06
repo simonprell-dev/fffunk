@@ -29,6 +29,9 @@ html.compact {
 html.compact ::-webkit-scrollbar {
   width: 4px;
 }
+html.compact #site-links {
+  display: none;
+}
 
 #root {
   min-height: 100vh;

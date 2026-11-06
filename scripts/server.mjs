@@ -9,6 +9,7 @@ import { initDb } from './community-db.mjs';
 import { initLicenseDb, initAdminScenariosDb, initUsageStatsDb, countUsageEvent, getScenariosByLicenseCode } from './license-db.mjs';
 import { handleAdminRequest, handleLicenseLookup } from './admin-api.mjs';
 import { logPrConfig } from './community-pr-api.mjs';
+import { resolveStatic } from './static-route.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
@@ -71,14 +72,6 @@ function staticHeaders(file) {
 function sendJson(res, status, body) {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' });
   res.end(JSON.stringify(body));
-}
-
-function safeFilePath(urlPath) {
-  const decoded = decodeURIComponent(urlPath.split('?')[0]);
-  const normalized = path.normalize(decoded).replace(/^(\.\.[/\\])+/, '');
-  const requested = path.join(dist, normalized === '/' ? 'index.html' : normalized);
-  const resolved = path.resolve(requested);
-  return resolved.startsWith(dist) ? resolved : path.join(dist, 'index.html');
 }
 
 function addWavHeader(pcm, sampleRate = PIPER_SAMPLE_RATE, channels = 1, bitsPerSample = 16) {
@@ -222,12 +215,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  let requested = safeFilePath(req.url || '/');
-  // Verzeichnisse wie /messe liefern ihre eigene index.html
-  if (fs.existsSync(requested) && fs.statSync(requested).isDirectory()) requested = path.join(requested, 'index.html');
-  const file = fs.existsSync(requested) && fs.statSync(requested).isFile()
-    ? requested
-    : path.join(dist, 'index.html');
+  const route = resolveStatic(req.url || '/', dist, f => fs.existsSync(f) && fs.statSync(f).isFile());
+  if (route.status === 301) { res.writeHead(301, { location: route.location }); res.end(); return; }
+  const { status } = route;
+  // Ohne 404.html (älterer Build) bleibt die Startseite als Inhalt – aber mit Status 404.
+  const file = status === 404 && !fs.existsSync(route.file) ? path.join(dist, 'index.html') : route.file;
 
   fs.readFile(file, (error, content) => {
     if (error) { res.writeHead(500); res.end('Server error'); return; }
@@ -235,11 +227,11 @@ const server = http.createServer(async (req, res) => {
     if (COMPRESSIBLE.has(path.extname(file)) && (req.headers['accept-encoding'] || '').includes('gzip') && content.length > 1024) {
       headers['content-encoding'] = 'gzip';
       headers.vary = 'Accept-Encoding';
-      res.writeHead(200, headers);
+      res.writeHead(status, headers);
       res.end(gzipCached(file, content));
       return;
     }
-    res.writeHead(200, headers);
+    res.writeHead(status, headers);
     res.end(content);
   });
 });
