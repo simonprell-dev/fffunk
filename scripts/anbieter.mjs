@@ -2,8 +2,8 @@
 // Fehlt eine Pflichtangabe, bricht `npm run build` ab: Ein leeres Impressum soll nie online gehen.
 export const ANBIETER = {
   name: 'Simon Prell',
-  strasse: '', // Straße und Hausnummer (ladungsfähige Anschrift, kein Postfach)
-  plzOrt: '', // z. B. „97070 Würzburg“
+  strasse: 'Adelsdorferstraße 8', // Straße und Hausnummer (ladungsfähige Anschrift, kein Postfach)
+  plzOrt: '91325 Adelsdorf', // z. B. „97070 Würzburg“
   email: 'simon.prell@googlemail.com',
   telefon: '', // freiwillig
   website: 'https://prelldynamics.de',
