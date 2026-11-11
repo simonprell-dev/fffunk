@@ -9,6 +9,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { loadTs } from './load-ts.mjs';
+import { ANBIETER, checkAnbieter } from './anbieter.mjs';
+import { datenschutzMarkdown, impressumMarkdown } from './rechtstexte.mjs';
 
 export { SITE } from './static-route.mjs';
 import { SITE } from './static-route.mjs';
@@ -112,6 +114,7 @@ ${body}
 <footer>
 <ul>${CHAPTER_LINKS}</ul>
 <p>FFFunk – kostenloser Sprechfunk-Trainer für Feuerwehr, THW, Rettungsdienst, Wasserrettung und Katastrophenschutz. Übungsinhalte ersetzen keine Ausbildung nach FwDV 2 und den Vorgaben eurer Leitstelle.</p>
+<p><a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a> · ${KONTAKT_LINK}</p>
 </footer>
 </body>
 </html>
@@ -119,6 +122,7 @@ ${body}
 }
 
 let CHAPTER_LINKS = '';
+let KONTAKT_LINK = '';
 
 const cta = text => `<div class="cta"><p>${text}</p><a class="btn" href="/#scenarios">Jetzt im Trainer üben</a></div>`;
 
@@ -140,9 +144,12 @@ function loadScenarios(scenariosDir) {
 
 /**
  * Schreibt alle Seiten nach outDir und gibt die Liste der indexierbaren Adressen zurück.
- * @param {{ outDir: string, scenariosDir: string, today?: string }} opts
+ * @param {{ outDir: string, scenariosDir: string, today?: string, anbieter?: typeof ANBIETER }} opts
  */
-export async function generateSeoPages({ outDir, scenariosDir, today = new Date().toISOString().slice(0, 10) }) {
+export async function generateSeoPages({ outDir, scenariosDir, today = new Date().toISOString().slice(0, 10), anbieter = ANBIETER }) {
+  checkAnbieter(anbieter);
+  KONTAKT_LINK = `<a href="mailto:${esc(anbieter.email)}">Kontakt</a>`
+    + (anbieter.website ? ` · Ein Projekt von <a href="${esc(anbieter.website)}">${esc(anbieter.website.replace(/^https?:\/\//, ''))}</a>` : '');
   const { lernChapters } = await loadTs(path.join(root, 'src/lib/lern-content.ts'));
   const { getCategoryLabel } = await loadTs(path.join(root, 'src/lib/community-scenarios.ts'));
   const write = (rel, html) => {
@@ -217,6 +224,16 @@ export async function generateSeoPages({ outDir, scenariosDir, today = new Date(
     urlPath: '/404', title: 'Seite nicht gefunden | FFFunk', description: 'Diese Seite gibt es nicht (mehr).', noindex: true,
     h1: 'Seite nicht gefunden', crumbs: [],
     body: '<p>Diese Adresse gibt es nicht. Hier geht es weiter:</p><ul><li><a href="/">Zum Sprechfunk-Trainer</a></li><li><a href="/lernen">Sprechfunk lernen</a></li><li><a href="/szenarien">Alle Übungsszenarien</a></li></ul>',
+  }));
+
+  // Impressum und Datenschutz – erreichbar über die Fußzeile, aber nicht in Suchergebnissen
+  write('impressum.html', page({
+    urlPath: '/impressum', title: 'Impressum | FFFunk', description: 'Impressum von FFFunk, dem Sprechfunk-Trainer für BOS-Einsatzkräfte.', noindex: true,
+    h1: 'Impressum', crumbs: [], body: markdownHtml(impressumMarkdown(anbieter)),
+  }));
+  write('datenschutz.html', page({
+    urlPath: '/datenschutz', title: 'Datenschutzerklärung | FFFunk', description: 'Welche Daten FFFunk verarbeitet: Hosting, Spracherkennung, Nutzungsstatistik und Community-Szenarien.', noindex: true,
+    h1: 'Datenschutzerklärung', crumbs: [], body: markdownHtml(datenschutzMarkdown(anbieter)),
   }));
 
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>

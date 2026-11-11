@@ -51,7 +51,9 @@ describe('index.html', () => {
   it('verlinkt die Lern- und Szenarioseiten auch nach dem Start der App (Fußzeile außerhalb von #root)', () => {
     const footer = html.match(/<footer id="site-links"[\s\S]*?<\/footer>/)?.[0] ?? '';
     expect(html.indexOf('<footer id="site-links"')).toBeGreaterThan(html.indexOf('<div id="root">'));
-    for (const href of ['/lernen', '/szenarien', '/lernen/fms-status', '/lernen/mayday']) expect(footer).toContain(`href="${href}"`);
+    for (const href of ['/lernen', '/szenarien', '/lernen/fms-status', '/lernen/mayday', '/impressum', '/datenschutz']) expect(footer).toContain(`href="${href}"`);
+    expect(footer).toMatch(/href="mailto:[^"]+@[^"]+"/);
+    expect(footer).toContain('href="https://prelldynamics.de"');
   });
 
   it('hat lesbaren Inhalt ohne JavaScript im Startelement', () => {
@@ -78,7 +80,9 @@ describe('robots.txt und Sitemap', () => {
 
 describe('statische Seiten (scripts/seo-pages.mjs)', async () => {
   const out = mkdtempSync(path.join(tmpdir(), 'fffunk-seo-'));
-  const urls: string[] = await generateSeoPages({ outDir: out, scenariosDir: fileURLToPath(new URL('../../public/scenarios', import.meta.url)), today: '2026-11-06' });
+  const scenariosDir = fileURLToPath(new URL('../../public/scenarios', import.meta.url));
+  const anbieter = { name: 'Erika Muster', strasse: 'Wachstraße 112', plzOrt: '97070 Würzburg', email: 'funk@example.org', telefon: '', website: 'https://example.org' };
+  const urls: string[] = await generateSeoPages({ outDir: out, scenariosDir, today: '2026-11-06', anbieter });
   const fileFor = (u: string) => path.join(out, u === '/' ? 'index.html' : `${u.slice(1)}.html`);
   const pages = urls.filter(u => u !== '/' && u !== '/messe');
   const get = (u: string) => readFileSync(fileFor(u), 'utf8');
@@ -123,8 +127,8 @@ describe('statische Seiten (scripts/seo-pages.mjs)', async () => {
   });
 
   it('alle internen Links führen zu einer erzeugten Seite oder in die App', () => {
-    const known = new Set([...urls, '/#scenarios']);
-    for (const u of [...pages, '/404']) {
+    const known = new Set([...urls, '/#scenarios', '/impressum', '/datenschutz']);
+    for (const u of [...pages, '/404', '/impressum', '/datenschutz']) {
       const html = readFileSync(u === '/404' ? path.join(out, '404.html') : fileFor(u), 'utf8');
       for (const [, href] of html.matchAll(/href="(\/[^"]*)"/g)) {
         if (href === '/icon.svg') continue;
@@ -142,5 +146,32 @@ describe('statische Seiten (scripts/seo-pages.mjs)', async () => {
   it('Szenario-Übersicht nennt alle eingebauten Szenarien', () => {
     const html = get('/szenarien');
     for (const t of ['Alarmierung und Ausrücken', 'Person im Wasser', 'Hochwasser']) expect(html).toContain(t);
+  });
+
+  it('Impressum nennt Anbieter, Anschrift und E-Mail; Datenschutz die genutzten Dienste – beide nicht indexiert', () => {
+    const impressum = get('/impressum');
+    for (const t of ['Erika Muster', 'Wachstraße 112', '97070 Würzburg', 'href="mailto:funk@example.org"', 'href="https://example.org"', '§ 5 DDG'])
+      expect(impressum).toContain(t);
+    expect(impressum).not.toContain('Telefon');
+    const datenschutz = get('/datenschutz');
+    for (const t of ['Erika Muster', 'Railway', 'Google', 'Hugging Face', 'Art. 77 DSGVO']) expect(datenschutz).toContain(t);
+    for (const html of [impressum, datenschutz]) {
+      expect(html).toContain('<meta name="robots" content="noindex" />');
+      expect(html.match(/<h1>/g)?.length).toBe(1);
+    }
+    expect(urls).not.toContain('/impressum');
+  });
+
+  it('jede Seite verlinkt Impressum, Datenschutz, Kontakt und den Anbieter in der Fußzeile', () => {
+    for (const u of [...pages, '/impressum', '/datenschutz']) {
+      const footer = get(u).match(/<footer>[\s\S]*<\/footer>/)?.[0] ?? '';
+      for (const href of ['/impressum', '/datenschutz', 'mailto:funk@example.org', 'https://example.org']) expect(footer, u).toContain(`href="${href}"`);
+    }
+  });
+
+  it('bricht ohne Anschrift ab, damit kein leeres Impressum online geht', async () => {
+    const leer = mkdtempSync(path.join(tmpdir(), 'fffunk-seo-'));
+    await expect(generateSeoPages({ outDir: leer, scenariosDir, anbieter: { ...anbieter, strasse: ' ', plzOrt: '' } }))
+      .rejects.toThrow(/Straße und Hausnummer, PLZ und Ort/);
   });
 });

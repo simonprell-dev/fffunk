@@ -457,6 +457,14 @@ function App() {
                         <span aria-hidden>❤️</span> Danke sagen
                       </a>
                     </div>
+
+                    {/* In der App gibt es die statischen Seiten nicht – apiUrl macht die Adresse dort absolut. */}
+                    <div className="border-t border-[#2a2a2a] pt-3 flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-[#a3a3a3]">
+                      <a href={apiUrl('/impressum')} target="_blank" rel="noopener noreferrer" className="hover:text-white">Impressum</a>
+                      <a href={apiUrl('/datenschutz')} target="_blank" rel="noopener noreferrer" className="hover:text-white">Datenschutz</a>
+                      <a href="mailto:simon.prell@googlemail.com?subject=FFFunk" className="hover:text-white">Kontakt</a>
+                      <a href="https://prelldynamics.de" target="_blank" rel="noopener noreferrer" className="hover:text-white">prelldynamics.de</a>
+                    </div>
                   </div>
                 </div>
               )}
