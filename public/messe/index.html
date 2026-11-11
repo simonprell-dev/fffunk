@@ -2,84 +2,111 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FFFunk – Sprechfunk-Trainer: so funktioniert es</title>
-<meta name="description" content="Kurz erklärt: Wie FFFunk Feuerwehr, THW, Rettungsdienst, Wasserrettung und Katastrophenschutz beim Sprechfunk im BOS-Digitalfunk trainiert.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f17">
+<title>FFFunk in 2 Minuten – der Sprechfunk-Trainer</title>
+<meta name="description" content="FFFunk in zwei Minuten: Wie Feuerwehr, THW, Rettungsdienst, Wasserrettung und Katastrophenschutz Sprechfunk im BOS-Digitalfunk üben – mit QR-Code zum Ausprobieren.">
 <link rel="canonical" href="https://fffunk.prelldynamics.de/messe">
 <meta property="og:image" content="https://fffunk.prelldynamics.de/og-image.png">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<!-- Messe-Endlosschleife: erklärt FFFunk in sieben Szenen, ohne Bedienung. Bewusst ohne
-     moderne CSS/JS-Features, damit sie auch auf dem Messe-Funkgerät (Chrome 72) läuft. -->
+<!-- Zwei-Minuten-Pitch fürs Handy (Hochformat), läuft von selbst durch und endet mit dem QR-Code.
+     Antippen rechts = weiter, links = zurück, halten = Pause; Tastatur/Presenter: Pfeile, Bild auf/ab, Leertaste.
+     ?loop schaltet den Messe-Dauerbetrieb ein (nach dem QR-Code von vorn, ohne Mauszeiger), ?szene=4 startet bei Szene 4.
+     Alle Maße in rem: 36rem = Bühnenbreite. Bewusst ohne moderne CSS/JS-Features (Messe-Funkgerät, Chrome 72). -->
 <style>
   :root { --rot: #dc2626; --rot-hell: #f87171; --grund: #0b0f17; --flaeche: #151b26; --rand: #273042; --text: #f1f5f9; --leise: #94a3b8; --gruen: #22c55e; --gelb: #facc15; --blau: #3b82f6; --rosa: #f43f5e; --tuerkis: #06b6d4; --orange: #f59e0b; }
+  html { font-size: 2.7778vw; }
+  /* Breiter als 9:16 (Tablet quer, Monitor): Bühne in Handy-Form mittig, Höhe bestimmt die Größe */
+  @media (min-aspect-ratio: 9/16) { html { font-size: 1.5625vh; } }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; background: var(--grund); color: var(--text);
-    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; cursor: none; }
-  body { font-size: 2.2vmin; }
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  body.loop { cursor: none; }
+  a { color: var(--rot-hell); }
 
   .bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; }
-  .bg span { position: absolute; left: 50%; top: 50%; width: 20vmin; height: 20vmin; margin: -10vmin 0 0 -10vmin;
-    border: 0.3vmin solid var(--rot); border-radius: 50%; opacity: 0; animation: welle 6s linear infinite; }
+  .bg span { position: absolute; left: 50%; top: 50%; width: 10rem; height: 10rem; margin: -5rem 0 0 -5rem;
+    border: 0.15rem solid var(--rot); border-radius: 50%; opacity: 0; animation: welle 6s linear infinite; }
   .bg span:nth-child(2) { animation-delay: 2s; } .bg span:nth-child(3) { animation-delay: 4s; }
   @keyframes welle { 0% { transform: scale(0.5); opacity: 0.35; } 100% { transform: scale(9); opacity: 0; } }
 
-  .kopf { position: fixed; top: 3vmin; left: 4vmin; display: flex; align-items: center; z-index: 5; }
-  .kopf img { width: 6vmin; height: 6vmin; margin-right: 1.6vmin; }
-  .kopf b { font-size: 3.4vmin; letter-spacing: 0.05em; }
-  .url { position: fixed; top: 4.2vmin; right: 4vmin; color: var(--leise); font-size: 2.2vmin; z-index: 5; }
+  .buehne { position: fixed; top: 0; bottom: 0; left: 50%; width: 36rem; margin-left: -18rem; overflow: hidden; }
 
-  .szene { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; text-align: center; padding: 12vmin 8vmin 10vmin;
-    opacity: 0; transform: translateY(3vmin); transition: opacity 0.9s ease, transform 0.9s ease; pointer-events: none; }
-  .szene.an { opacity: 1; transform: none; }
-  .szene .rein { opacity: 0; transform: translateY(2vmin); transition: opacity 0.7s ease, transform 0.7s ease; }
+  /* Story-Leiste: ein Abschnitt je Szene */
+  .leiste { position: absolute; top: 1rem; left: 1.4rem; right: 1.4rem; display: flex; z-index: 5; }
+  .leiste i { flex: 1; height: 0.35rem; margin: 0 0.15rem; border-radius: 0.2rem; background: rgba(241, 245, 249, 0.18); overflow: hidden; }
+  .leiste b { display: block; height: 100%; width: 0; background: var(--rot); }
+  .kopf { position: absolute; top: 2.2rem; left: 1.6rem; display: flex; align-items: center; z-index: 5; }
+  .kopf img { width: 2.4rem; height: 2.4rem; margin-right: 0.7rem; }
+  .kopf b { font-size: 1.5rem; letter-spacing: 0.05em; }
+  .pause { position: absolute; top: 2.5rem; right: 1.6rem; z-index: 5; font-size: 1.1rem; color: var(--leise);
+    background: var(--flaeche); border: 0.1rem solid var(--rand); border-radius: 1rem; padding: 0.2rem 0.8rem; display: none; }
+  body.pausiert .pause { display: block; }
+  body.pausiert * { animation-play-state: paused !important; }
+  .hinweis { position: absolute; bottom: 1.6rem; left: 0; right: 0; text-align: center; font-size: 1.1rem; color: var(--leise); z-index: 5; transition: opacity 0.6s; }
+  .hinweis.weg { opacity: 0; }
+
+  .szene { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center; padding: 5.5rem 2rem 4rem;
+    opacity: 0; transform: translateY(1.2rem); transition: opacity 0.7s ease, transform 0.7s ease; pointer-events: none; }
+  .szene.an { opacity: 1; transform: none; pointer-events: auto; }
+  .szene .rein { opacity: 0; transform: translateY(0.8rem); transition: opacity 0.6s ease, transform 0.6s ease; }
   .szene.an .rein { opacity: 1; transform: none; }
-  .szene.an .d1 { transition-delay: 0.5s; } .szene.an .d2 { transition-delay: 1.3s; } .szene.an .d3 { transition-delay: 2.1s; }
-  .szene.an .d4 { transition-delay: 2.9s; } .szene.an .d5 { transition-delay: 3.7s; } .szene.an .d6 { transition-delay: 4.5s; }
-  .szene.an .d7 { transition-delay: 5.3s; } .szene.an .d8 { transition-delay: 6.1s; }
+  .szene.an .d1 { transition-delay: 0.4s; } .szene.an .d2 { transition-delay: 1s; } .szene.an .d3 { transition-delay: 1.6s; }
+  .szene.an .d4 { transition-delay: 2.2s; } .szene.an .d5 { transition-delay: 2.8s; } .szene.an .d6 { transition-delay: 3.4s; }
 
-  h1 { font-size: 11vmin; font-weight: 800; letter-spacing: 0.02em; }
-  h1 em { font-style: normal; color: var(--rot); }
-  h2 { font-size: 6vmin; font-weight: 800; line-height: 1.15; margin-bottom: 4vmin; }
-  h2 em { font-style: normal; color: var(--rot-hell); }
-  .unter { font-size: 3.6vmin; color: var(--leise); margin-top: 2.5vmin; line-height: 1.35; }
-  .gross-logo { width: 26vmin; height: 26vmin; margin-bottom: 4vmin; animation: puls 2.4s ease-in-out infinite; }
+  h1 { font-size: 5rem; font-weight: 800; letter-spacing: 0.02em; }
+  h1 em, h2 em { font-style: normal; color: var(--rot-hell); }
+  h1 em { color: var(--rot); }
+  h2 { font-size: 2.9rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.6rem; }
+  .unter { font-size: 1.6rem; color: var(--leise); margin-top: 1rem; line-height: 1.4; }
+  .stark { color: var(--text); font-weight: 700; }
+  .gross-logo { width: 11rem; height: 11rem; margin-bottom: 2rem; animation: puls 2.4s ease-in-out infinite; }
   @keyframes puls { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-  .reihe { display: flex; justify-content: center; flex-wrap: wrap; }
-  .karte { background: var(--flaeche); border: 0.25vmin solid var(--rand); border-radius: 2.2vmin; padding: 3vmin;
-    width: 30vmin; margin: 1.2vmin; text-align: left; }
-  .karte .zahl { display: inline-block; width: 5.5vmin; height: 5.5vmin; line-height: 5.5vmin; border-radius: 50%;
-    background: var(--rot); text-align: center; font-weight: 800; font-size: 3vmin; margin-bottom: 1.8vmin; }
-  .karte .sym { font-size: 6vmin; margin-bottom: 1.2vmin; }
-  .karte b { display: block; font-size: 3.1vmin; margin-bottom: 0.8vmin; }
-  .karte p { color: var(--leise); font-size: 2.4vmin; line-height: 1.35; }
+  /* Karten untereinander */
+  .liste { width: 32rem; text-align: left; }
+  .karte { display: flex; align-items: center; background: var(--flaeche); border: 0.12rem solid var(--rand); border-radius: 1rem;
+    padding: 1.1rem 1.2rem; margin-bottom: 0.8rem; }
+  .karte .zahl { flex-shrink: 0; width: 2.6rem; height: 2.6rem; line-height: 2.6rem; border-radius: 50%; background: var(--rot);
+    text-align: center; font-weight: 800; font-size: 1.4rem; margin-right: 1.1rem; }
+  .karte .sym { flex-shrink: 0; width: 2.6rem; font-size: 2.2rem; margin-right: 1.1rem; text-align: center; }
+  .karte b { display: block; font-size: 1.6rem; margin-bottom: 0.2rem; }
+  .karte p { color: var(--leise); font-size: 1.3rem; line-height: 1.35; }
 
-  /* Funkspruch-Szene */
-  .geraet { display: flex; align-items: center; justify-content: center; }
-  .funk { width: 22vmin; height: 46vmin; background: #1f2633; border: 0.4vmin solid var(--rand); border-radius: 3vmin;
-    position: relative; margin-right: 6vmin; flex-shrink: 0; }
-  .funk:before { content: ""; position: absolute; top: -12vmin; left: 4vmin; width: 2.4vmin; height: 13vmin; background: #1f2633;
-    border: 0.4vmin solid var(--rand); border-bottom: 0; border-radius: 1.2vmin 1.2vmin 0 0; }
-  .funk .display { position: absolute; top: 4vmin; left: 3vmin; right: 3vmin; height: 12vmin; background: #0f2a1c;
-    border-radius: 1vmin; color: #6ee7b7; font-family: Consolas, monospace; font-size: 2vmin; padding: 1.4vmin; text-align: left; line-height: 1.5; }
-  .funk .ptt { position: absolute; left: -2.6vmin; top: 18vmin; width: 2.6vmin; height: 10vmin; background: var(--rot); border-radius: 1vmin 0 0 1vmin; }
-  .funk.sendet .ptt { left: -1.6vmin; width: 1.6vmin; }
-  .funk .lampe { position: absolute; top: 1.2vmin; right: 3vmin; width: 1.8vmin; height: 1.8vmin; border-radius: 50%; background: #334155; }
-  .funk.sendet .lampe { background: var(--rot); box-shadow: 0 0 2vmin var(--rot); }
-  .funk.empfaengt .lampe { background: var(--gruen); box-shadow: 0 0 2vmin var(--gruen); }
-  .funk .gitter { position: absolute; bottom: 4vmin; left: 4vmin; right: 4vmin; height: 16vmin;
-    background-image: radial-gradient(#0b0f17 30%, transparent 32%); background-size: 2.2vmin 2.2vmin; }
+  /* Bereiche */
+  .org { display: block; border-left-width: 0.5rem; padding: 0.8rem 1.1rem; margin-bottom: 0.6rem; }
+  .org b { font-size: 1.5rem; } .org p { font-size: 1.2rem; }
+  .org.fw { border-left-color: var(--rot); } .org.thw { border-left-color: var(--blau); } .org.rd { border-left-color: var(--rosa); }
+  .org.wr { border-left-color: var(--tuerkis); } .org.ks { border-left-color: var(--orange); }
+  .ruf { font-family: Consolas, monospace; font-size: 1.15rem; color: var(--text); margin-top: 0.3rem; }
 
-  .gespraech { width: 70vmin; text-align: left; }
-  .blase { background: var(--flaeche); border: 0.25vmin solid var(--rand); border-radius: 2vmin; padding: 2.2vmin 2.8vmin;
-    margin-bottom: 2vmin; font-size: 3vmin; line-height: 1.35; opacity: 0; transform: translateY(1.5vmin); transition: all 0.5s ease; min-height: 9vmin; }
+  /* Funkspruch */
+  .funk { width: 10rem; height: 15rem; background: #1f2633; border: 0.2rem solid var(--rand); border-radius: 1.4rem;
+    position: relative; margin: 4.5rem auto 1.8rem; flex-shrink: 0; }
+  .funk:before { content: ""; position: absolute; top: -5rem; left: 1.6rem; width: 1.1rem; height: 5.2rem; background: #1f2633;
+    border: 0.2rem solid var(--rand); border-bottom: 0; border-radius: 0.6rem 0.6rem 0 0; }
+  .funk .display { position: absolute; top: 1.8rem; left: 1.1rem; right: 1.1rem; height: 4.6rem; background: #0f2a1c;
+    border-radius: 0.5rem; color: #6ee7b7; font-family: Consolas, monospace; font-size: 1rem; padding: 0.6rem; text-align: left; line-height: 1.5; }
+  .funk .ptt { position: absolute; left: -1.2rem; top: 7rem; width: 1.2rem; height: 4.4rem; background: var(--rot); border-radius: 0.5rem 0 0 0.5rem; }
+  .funk.sendet .ptt { left: -0.7rem; width: 0.7rem; }
+  .funk .lampe { position: absolute; top: 0.5rem; right: 1.2rem; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: #334155; }
+  .funk.sendet .lampe { background: var(--rot); box-shadow: 0 0 1rem var(--rot); }
+  .funk.empfaengt .lampe { background: var(--gruen); box-shadow: 0 0 1rem var(--gruen); }
+  .funk .gitter { position: absolute; bottom: 1.4rem; left: 1.6rem; right: 1.6rem; height: 4.4rem;
+    background-image: radial-gradient(#0b0f17 30%, transparent 32%); background-size: 1rem 1rem; }
+
+  .gespraech { width: 32rem; text-align: left; }
+  .blase { background: var(--flaeche); border: 0.12rem solid var(--rand); border-radius: 0.9rem; padding: 0.9rem 1.2rem;
+    margin-bottom: 0.8rem; font-size: 1.4rem; line-height: 1.35; opacity: 0; transform: translateY(0.7rem); transition: all 0.5s ease; }
   .blase.zeig { opacity: 1; transform: none; }
-  .blase small { display: block; font-size: 2vmin; color: var(--leise); margin-bottom: 0.6vmin; text-transform: uppercase; letter-spacing: 0.08em; }
-  .blase.du { border-color: var(--rot); }
-  .blase.ok { border-color: var(--gruen); color: #bbf7d0; font-size: 2.6vmin; min-height: 0; }
-  .welle { display: inline-block; vertical-align: middle; height: 3vmin; margin-left: 1vmin; }
-  .welle i { display: inline-block; width: 0.6vmin; height: 100%; margin-right: 0.4vmin; background: var(--rot); border-radius: 0.3vmin;
+  .blase small { display: block; font-size: 0.95rem; color: var(--leise); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .blase.du { border-color: var(--rot); min-height: 6.6rem; }
+  .blase.ok { border-color: var(--gruen); color: #bbf7d0; font-size: 1.3rem; }
+  .blase.rd { border-color: var(--rosa); }
+  .welle { display: inline-block; vertical-align: middle; height: 1.1rem; margin-left: 0.5rem; }
+  .welle i { display: inline-block; width: 0.28rem; height: 100%; margin-right: 0.18rem; background: var(--rot); border-radius: 0.14rem;
     animation: pegel 0.6s ease-in-out infinite; }
   .welle i:nth-child(2) { animation-delay: 0.1s; } .welle i:nth-child(3) { animation-delay: 0.2s; }
   .welle i:nth-child(4) { animation-delay: 0.3s; } .welle i:nth-child(5) { animation-delay: 0.4s; }
@@ -87,258 +114,233 @@
   .cursor:after { content: "▍"; color: var(--rot); animation: blink 0.8s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* Kapitel */
-  .kapitel { width: 70vmin; text-align: left; }
-  .kapitel div { display: flex; align-items: center; background: var(--flaeche); border: 0.25vmin solid var(--rand);
-    border-radius: 1.6vmin; padding: 1.6vmin 2.4vmin; margin-bottom: 1.3vmin; font-size: 3vmin; }
-  .kapitel div span { flex: 1; }
-  .kapitel div i { font-style: normal; width: 4.4vmin; height: 4.4vmin; line-height: 4.4vmin; border-radius: 50%; text-align: center;
-    background: #334155; font-size: 2.4vmin; margin-right: 2vmin; color: var(--leise); }
-  .kapitel div.fertig { border-color: var(--gruen); }
-  .kapitel div.fertig i { background: var(--gruen); color: #052e16; }
-  .regel { font-size: 2.6vmin; color: var(--leise); margin-top: 2vmin; }
-  .falsch { color: var(--rot-hell); text-decoration: line-through; }
+  /* Rettungsdienst: Status und Klinikanmeldung */
+  .tasten { display: flex; justify-content: center; margin-bottom: 1.2rem; }
+  .tasten i { font-style: normal; width: 3.2rem; height: 3.4rem; line-height: 3.4rem; margin: 0 0.2rem; border-radius: 0.6rem;
+    background: var(--flaeche); border: 0.15rem solid var(--rand); font-size: 1.7rem; font-weight: 800; color: var(--leise); transition: all 0.3s; }
+  .tasten i.an { background: var(--rosa); border-color: var(--rosa); color: #fff; transform: scale(1.12); box-shadow: 0 0 1.4rem rgba(244, 63, 94, 0.5); }
+  .statustext { font-size: 1.6rem; font-weight: 700; min-height: 2.4rem; margin-bottom: 1.4rem; }
+  .weg-text { color: var(--rot-hell); transition: opacity 0.4s; }
+  .weg-text.raus { text-decoration: line-through; opacity: 0.6; }
 
-  .mayday { display: inline-block; background: var(--rot); color: #fff; font-weight: 800; font-size: 5vmin; padding: 2vmin 5vmin;
-    border-radius: 2vmin; margin-bottom: 3vmin; animation: alarm 1s ease-in-out infinite; }
-  @keyframes alarm { 50% { box-shadow: 0 0 0 2.5vmin rgba(220, 38, 38, 0.25); } }
-
-  .cta { display: flex; align-items: center; justify-content: center; }
-  .qr { background: #fff; padding: 2vmin; border-radius: 2vmin; margin-right: 6vmin; width: 36vmin; height: 36vmin; }
-  .qr img, .qr canvas, .qr svg { width: 100%; height: 100%; display: block; }
-  .cta .text { text-align: left; }
-  .cta .link { font-size: 4.2vmin; font-weight: 700; color: var(--rot-hell); margin-top: 2vmin; word-break: break-all; }
-
-  .fortschritt { position: fixed; left: 0; bottom: 0; height: 0.8vmin; background: var(--rot); width: 0; z-index: 5; }
-  .punkte { position: fixed; bottom: 3vmin; left: 0; right: 0; text-align: center; z-index: 5; }
-  .punkte i { display: inline-block; width: 1.4vmin; height: 1.4vmin; border-radius: 50%; background: var(--rand); margin: 0 0.8vmin; transition: background 0.4s; }
-  .punkte i.an { background: var(--rot); }
-
-  /* Organisationen */
-  .karte.org { border-top-width: 1vmin; width: 25.5vmin; }
-  .karte.fw { border-top-color: var(--rot); } .karte.thw { border-top-color: var(--blau); } .karte.rd { border-top-color: var(--rosa); }
-  .karte.wr { border-top-color: var(--tuerkis); } .karte.ks { border-top-color: var(--orange); }
-  .karte .ruf { font-family: Consolas, monospace; font-size: 2.3vmin; color: var(--text); margin-top: 1.4vmin; }
-  .orgname { font-size: 3.4vmin; font-weight: 800; margin-bottom: 2vmin; }
-
-  /* THW: Stärkemeldung */
-  .staerke { display: flex; justify-content: center; margin: 1vmin 0 3vmin; }
-  .staerke div { width: 17vmin; margin: 0 1vmin; text-align: center; opacity: 0.25; transition: opacity 0.4s, transform 0.4s; }
-  .staerke div.an { opacity: 1; transform: translateY(-0.8vmin); }
-  .staerke b { display: block; font-size: 10vmin; font-weight: 800; color: var(--blau); line-height: 1.1; }
-  .staerke div:last-child b { color: var(--text); }
-  .staerke small { font-size: 2.2vmin; color: var(--leise); }
-
-  /* Rettungsdienst: Status */
-  .tasten { display: flex; justify-content: center; margin-bottom: 2.4vmin; }
-  .tasten i { font-style: normal; width: 8vmin; height: 8vmin; line-height: 8vmin; margin: 0 0.7vmin; border-radius: 1.4vmin;
-    background: var(--flaeche); border: 0.3vmin solid var(--rand); font-size: 4vmin; font-weight: 800; color: var(--leise); transition: all 0.3s; }
-  .tasten i.an { background: var(--rosa); border-color: var(--rosa); color: #fff; transform: scale(1.12); box-shadow: 0 0 3vmin rgba(244, 63, 94, 0.5); }
-  .statustext { font-size: 3.6vmin; font-weight: 700; min-height: 5vmin; margin-bottom: 3vmin; }
-  .gespraech.mitte { margin: 0 auto; }
-  .blase.thw { border-color: var(--blau); } .blase.rd { border-color: var(--rosa); }
-  .weg { color: var(--rot-hell); text-decoration: line-through; opacity: 0; transition: opacity 0.4s; }
-  .weg.zeig { opacity: 1; }
-
-  /* Gerätetrainer */
-  .hrt { width: 30vmin; background: #1f2633; border: 0.4vmin solid var(--rand); border-radius: 3vmin; padding: 2.4vmin; position: relative; margin-right: 6vmin; }
-  .hrt .ptt { position: absolute; left: -2.8vmin; top: 16vmin; width: 2.8vmin; height: 11vmin; background: var(--rot); border-radius: 1vmin 0 0 1vmin; transition: all 0.2s; }
-  .hrt .ptt.an { left: -1.6vmin; width: 1.6vmin; box-shadow: 0 0 2vmin var(--rot); }
-  .hrt .oben { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.6vmin; }
-  .hrt .knopf { width: 7vmin; height: 7vmin; border-radius: 50%; background: #374151; border: 0.6vmin solid #111827; transition: transform 0.5s; }
+  /* Funkgerät bedienen */
+  .bedienen { display: flex; align-items: center; justify-content: center; }
+  .hrt { width: 14rem; flex-shrink: 0; background: #1f2633; border: 0.2rem solid var(--rand); border-radius: 1.4rem; padding: 1rem; position: relative; margin-right: 1.6rem; }
+  .hrt .ptt { position: absolute; left: -1.3rem; top: 7rem; width: 1.3rem; height: 5rem; background: var(--rot); border-radius: 0.5rem 0 0 0.5rem; transition: all 0.2s; }
+  .hrt .ptt.an { left: -0.7rem; width: 0.7rem; box-shadow: 0 0 1rem var(--rot); }
+  .hrt .oben { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+  .hrt .knopf { width: 3rem; height: 3rem; border-radius: 50%; background: #374151; border: 0.3rem solid #111827; transition: transform 0.5s; }
   .hrt .knopf.dreh { transform: rotate(60deg); background: #4b5563; }
-  .hrt .sos { width: 8vmin; height: 5vmin; border-radius: 1vmin; background: #f97316; color: #fff; font-weight: 800; font-size: 2.2vmin; display: flex; align-items: center; justify-content: center; }
-  .hrt .lcd { background: #0f2a1c; color: #6ee7b7; font-family: Consolas, monospace; font-size: 2.3vmin; border-radius: 1.2vmin; padding: 1.4vmin; height: 9vmin; margin-bottom: 1.6vmin; }
-  .hrt .lcd b { display: block; margin-bottom: 0.8vmin; }
+  .hrt .sos { width: 3.6rem; height: 2.2rem; border-radius: 0.5rem; background: #f97316; color: #fff; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .hrt .lcd { background: #0f2a1c; color: #6ee7b7; font-family: Consolas, monospace; font-size: 1rem; border-radius: 0.5rem; padding: 0.6rem; height: 4.2rem; margin-bottom: 0.8rem; text-align: left; }
+  .hrt .lcd b { display: block; margin-bottom: 0.3rem; }
   .hrt .block { display: flex; flex-wrap: wrap; justify-content: space-between; }
-  .hrt .block i { font-style: normal; width: 7.6vmin; height: 4.6vmin; margin-bottom: 1vmin; border-radius: 0.8vmin; background: #e5e7eb; color: #111827; font-weight: 700; font-size: 2.4vmin; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-  .hrt .block i.an, .hrt .sos.an { background: var(--gelb); box-shadow: 0 0 2.4vmin var(--gelb); transform: scale(1.08); }
-  .schritte { text-align: left; }
-  .schritte div { font-size: 3vmin; padding: 1.4vmin 2vmin; margin-bottom: 1.4vmin; border-radius: 1.4vmin; border: 0.25vmin solid var(--rand); background: var(--flaeche); color: var(--leise); transition: all 0.4s; }
+  .hrt .block i { font-style: normal; width: 3.6rem; height: 2.2rem; margin-bottom: 0.45rem; border-radius: 0.4rem; background: #e5e7eb; color: #111827; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .hrt .block i.an, .hrt .sos.an { background: var(--gelb); box-shadow: 0 0 1.2rem var(--gelb); transform: scale(1.08); }
+  .schritte { width: 16rem; text-align: left; }
+  .schritte div { font-size: 1.25rem; padding: 0.7rem 0.8rem; margin-bottom: 0.6rem; border-radius: 0.7rem; border: 0.12rem solid var(--rand); background: var(--flaeche); color: var(--leise); transition: all 0.4s; }
   .schritte div.an { color: var(--text); border-color: var(--gelb); }
   .schritte div.fertig { color: var(--text); border-color: var(--gruen); }
-  .schritte small { display: block; font-size: 2.2vmin; color: var(--leise); }
+  .schritte small { display: block; font-size: 0.95rem; color: var(--leise); }
 
-  @media (orientation: portrait) {
-    .geraet, .cta { flex-direction: column; }
-    .funk { margin: 12vmin 0 4vmin; height: 34vmin; width: 18vmin; }
-    .funk .gitter { display: none; }
-    .qr { margin: 0 0 4vmin; }
-    .cta .text { text-align: center; }
-    .gespraech, .kapitel { width: 86vmin; }
-    .tasten i { width: 8.5vmin; margin: 0 0.4vmin; }
-    /* Hochkant (Tablet am Messestand): Bereichskarten zweispaltig */
-    .karte.org { width: 36vmin; }
-    .bedienen { flex-direction: column; }
-    .hrt { margin: 0 0 4vmin; }
-    .schritte { width: 80vmin; }
-  }
+  /* Grundausbildung */
+  .kapitel { width: 30rem; text-align: left; }
+  .kapitel div { display: flex; align-items: center; background: var(--flaeche); border: 0.12rem solid var(--rand);
+    border-radius: 0.8rem; padding: 0.7rem 1rem; margin-bottom: 0.5rem; font-size: 1.4rem; transition: border-color 0.3s; }
+  .kapitel div span { flex: 1; }
+  .kapitel div i { font-style: normal; width: 2rem; height: 2rem; line-height: 2rem; border-radius: 50%; text-align: center;
+    background: #334155; font-size: 1.1rem; margin-right: 0.9rem; color: var(--leise); }
+  .kapitel div.fertig { border-color: var(--gruen); }
+  .kapitel div.fertig i { background: var(--gruen); color: #052e16; }
+  .regel { font-size: 1.3rem; color: var(--leise); margin-top: 1rem; }
+  .falsch { color: var(--rot-hell); text-decoration: line-through; }
+
+  .mayday { display: inline-block; background: var(--rot); color: #fff; font-weight: 800; font-size: 2.6rem; padding: 0.9rem 2.4rem;
+    border-radius: 1rem; margin-bottom: 1.8rem; animation: alarm 1s ease-in-out infinite; }
+  @keyframes alarm { 50% { box-shadow: 0 0 0 1.2rem rgba(220, 38, 38, 0.25); } }
+
+  /* Eure Wehr */
+  .code { display: inline-block; font-family: Consolas, monospace; font-size: 2rem; letter-spacing: 0.1em; background: var(--flaeche);
+    border: 0.15rem dashed var(--rot); border-radius: 0.8rem; padding: 0.6rem 1.4rem; margin-bottom: 1.4rem; }
+  .rufwechsel { font-family: Consolas, monospace; font-size: 1.5rem; margin-bottom: 1.4rem; min-height: 2rem; transition: color 0.4s; }
+  .rufwechsel.neu { color: var(--gruen); }
+
+  /* QR-Code zum Schluss */
+  .qr { background: #fff; padding: 1.2rem; border-radius: 1rem; width: 21rem; height: 21rem; margin: 0.4rem auto 1.2rem; }
+  .qr svg { width: 100%; height: 100%; display: block; }
+  .url { font-size: 1.7rem; font-weight: 700; color: var(--rot-hell); }
+  .knopfzeile { margin-top: 1.8rem; }
+  .knopfzeile button { font: inherit; font-size: 1.3rem; color: var(--text); background: var(--flaeche); border: 0.12rem solid var(--rand);
+    border-radius: 2rem; padding: 0.6rem 1.4rem; cursor: pointer; }
+  .von { font-size: 1.2rem; color: var(--leise); margin-top: 1.4rem; }
 </style>
 </head>
 <body>
 <div class="bg"><span></span><span></span><span></span></div>
+<div class="buehne">
+<div class="leiste" id="leiste"></div>
 <div class="kopf"><img src="/icon.svg" alt=""><b>FFFunk</b></div>
-<div class="url">fffunk.prelldynamics.de</div>
+<div class="pause">❚❚ Pause</div>
 
 <!-- 1: Titel -->
-<section class="szene" data-dauer="7000">
+<section class="szene" data-dauer="6000">
   <img class="gross-logo rein" src="/icon.svg" alt="">
   <h1 class="rein d1">FF<em>Funk</em></h1>
   <p class="unter rein d2">Der Sprechfunk-Trainer für Feuerwehr, THW, Rettungsdienst, Wasserrettung und Katastrophenschutz</p>
 </section>
 
 <!-- 2: Problem -->
-<section class="szene" data-dauer="8000">
-  <h2 class="rein">Im Einsatz muss<br>der Funkspruch <em>sitzen</em>.</h2>
-  <p class="unter rein d2">Doch Funkübungen sind selten –<br>und vor der ganzen Wache traut sich kaum jemand.</p>
-  <p class="unter rein d4" style="color: var(--text); font-weight: 700;">FFFunk macht Funken übbar. Allein, jederzeit.</p>
-</section>
-
-<!-- Drei Organisationen -->
 <section class="szene" data-dauer="9000">
-  <h2 class="rein">Ein Trainer –<br><em>fünf Bereiche</em></h2>
-  <div class="reihe">
-    <div class="karte org fw rein d1"><b>Feuerwehr</b><p>Angriffstrupp, Atemschutz, Mayday, Einsatzleitung</p><div class="ruf">Florian Neuhaus 42/1</div></div>
-    <div class="karte org thw rein d2"><b>THW</b><p>Bergung, Pumpen, Licht, Deich – mit Stärkemeldung</p><div class="ruf">Heros Erlangen 22/51</div></div>
-    <div class="karte org rd rein d3"><b>Rettungsdienst</b><p>Status, Sprechwunsch, Klinikanmeldung, MANV</p><div class="ruf">Rotkreuz Höchstadt 71/1</div></div>
-    <div class="karte org wr rein d4"><b>Wasserrettung</b><p>Person im Wasser, Ortsangabe am Ufer, Schifffahrt sperren</p><div class="ruf">Pelikan Erlangen 99/1</div></div>
-    <div class="karte org ks rein d5"><b>Katastrophen&shy;schutz</b><p>Hochwasser, Lagemeldung, Stromausfall, Betreuung</p><div class="ruf">Abschnitt Nord</div></div>
-  </div>
+  <h2 class="rein">Im Einsatz muss der Funkspruch <em>sitzen</em>.</h2>
+  <p class="unter rein d2">Doch Funkübungen sind selten – und vor der ganzen Wache traut sich kaum jemand.</p>
+  <p class="unter stark rein d4">FFFunk macht Funken übbar. Allein, jederzeit, kostenlos.</p>
 </section>
 
-<!-- So funktioniert's -->
+<!-- 3: So funktioniert's -->
 <section class="szene" data-dauer="10000">
   <h2 class="rein">So funktioniert’s</h2>
-  <div class="reihe">
-    <div class="karte rein d1"><span class="zahl">1</span><b>Lage hören</b><p>Ein Einsatz beginnt – die Leitstelle und der Gruppenführer sprechen dich an.</p></div>
-    <div class="karte rein d2"><span class="zahl">2</span><b>Taste drücken</b><p>Push-to-Talk wie am echten Gerät – und deinen Funkspruch sprechen.</p></div>
-    <div class="karte rein d3"><span class="zahl">3</span><b>Feedback</b><p>Die Spracherkennung prüft Reihenfolge und Inhalt – und sagt, was fehlt.</p></div>
+  <div class="liste">
+    <div class="karte rein d1"><span class="zahl">1</span><div><b>Lage hören</b><p>Leitstelle und Gruppenführer sprechen dich an.</p></div></div>
+    <div class="karte rein d2"><span class="zahl">2</span><div><b>Taste drücken, sprechen</b><p>Push-to-Talk wie am echten Gerät.</p></div></div>
+    <div class="karte rein d3"><span class="zahl">3</span><div><b>Feedback</b><p>Die Spracherkennung prüft Reihenfolge und Inhalt – und sagt, was fehlt.</p></div></div>
   </div>
 </section>
 
 <!-- 4: Funkspruch live -->
-<section class="szene" data-dauer="17000" data-start="funkspruch">
-  <div class="geraet">
-    <div class="funk" id="funk">
-      <div class="lampe"></div><div class="ptt"></div>
-      <div class="display" id="display">TMO&nbsp;&nbsp;▮▮▮▮<br>FW Neuhaus</div>
-      <div class="gitter"></div>
-    </div>
-    <div class="gespraech">
-      <div class="blase" id="b1"><small>Gruppenführer</small>Angriffstrupp, geht unter Atemschutz zur Menschenrettung ins Obergeschoss vor.</div>
-      <div class="blase du" id="b2"><small>Du – PTT gedrückt <span class="welle"><i></i><i></i><i></i><i></i><i></i></span></small><span id="tipp"></span></div>
-      <div class="blase ok" id="b3">✓ Richtig: erst wen du rufst, dann wer du bist – und am Ende „kommen“.</div>
-    </div>
+<section class="szene" data-dauer="16000" data-start="funkspruch">
+  <div class="funk" id="funk">
+    <div class="lampe"></div><div class="ptt"></div>
+    <div class="display" id="display">TMO&nbsp;&nbsp;▮▮▮▮<br>FW Neuhaus</div>
+    <div class="gitter"></div>
+  </div>
+  <div class="gespraech">
+    <div class="blase" id="b1"><small>Gruppenführer</small>Angriffstrupp, geht unter Atemschutz zur Menschenrettung ins Obergeschoss vor.</div>
+    <div class="blase du" id="b2"><small>Du – PTT gedrückt <span class="welle"><i></i><i></i><i></i><i></i><i></i></span></small><span id="tipp"></span></div>
+    <div class="blase ok" id="b3">✓ Richtig: erst wen du rufst, dann wer du bist – und am Ende „kommen“.</div>
   </div>
 </section>
 
-<!-- THW live -->
-<section class="szene" data-dauer="13000" data-start="thw">
-  <h2 class="rein" style="margin-bottom: 2vmin;"><em style="color: var(--blau);">THW:</em> Stärke und Gefahr melden</h2>
-  <div class="staerke" id="staerke">
-    <div><b>0</b><small>Führer</small></div>
-    <div><b>2</b><small>Unterführer</small></div>
-    <div><b>7</b><small>Helfer</small></div>
-    <div><b>9</b><small>gesamt</small></div>
-  </div>
-  <div class="gespraech mitte">
-    <div class="blase thw" id="t1"><small>Beobachtungsposten</small>Gruppenführer von Beobachtungsposten – <b>Gefahr!</b> Giebelwand bewegt sich – sofort räumen – kommen.</div>
+<!-- 5: Fünf Bereiche -->
+<section class="szene" data-dauer="10000">
+  <h2 class="rein">Ein Trainer – <em>fünf Bereiche</em></h2>
+  <div class="liste">
+    <div class="karte org fw rein d1"><b>Feuerwehr</b><p>Angriffstrupp, Atemschutz, Mayday, Einsatzleitung</p><div class="ruf">Florian Neuhaus 42/1</div></div>
+    <div class="karte org thw rein d2"><b>THW</b><p>Bergung, Pumpen, Deich – mit Stärkemeldung</p><div class="ruf">Heros Erlangen 22/51</div></div>
+    <div class="karte org rd rein d3"><b>Rettungsdienst</b><p>Status, Sprechwunsch, Klinikanmeldung, MANV</p><div class="ruf">Rotkreuz Höchstadt 71/1</div></div>
+    <div class="karte org wr rein d4"><b>Wasserrettung</b><p>Person im Wasser, Ortsangaben am Ufer</p><div class="ruf">Pelikan Erlangen 99/1</div></div>
+    <div class="karte org ks rein d5"><b>Katastrophenschutz</b><p>Hochwasser, Lagemeldung, Stromausfall</p><div class="ruf">Abschnitt Nord</div></div>
   </div>
 </section>
 
-<!-- Rettungsdienst live -->
-<section class="szene" data-dauer="15000" data-start="rd">
-  <h2 class="rein" style="margin-bottom: 3vmin;"><em style="color: var(--rosa);">Rettungsdienst:</em> Status und Anmeldung</h2>
+<!-- 6: Fehler werden erkannt (Rettungsdienst) -->
+<section class="szene" data-dauer="12000" data-start="rd">
+  <h2 class="rein" style="margin-bottom: 1.2rem;"><em style="color: var(--rosa);">Rettungsdienst:</em> Status und Anmeldung</h2>
   <div class="tasten" id="tasten"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i></div>
   <div class="statustext" id="statustext"></div>
-  <div class="gespraech mitte">
-    <div class="blase rd" id="r1"><small>Klinikanmeldung über die Leitstelle</small>Bitte für das Uniklinikum Erlangen anmelden: <span class="weg" id="rname">Max Berger, geb. 1950,</span> männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.</div>
+  <div class="gespraech">
+    <div class="blase rd" id="r1"><small>Klinikanmeldung über die Leitstelle</small>Bitte im Uniklinikum anmelden: <span class="weg-text" id="rname">Max Berger, geb. 1950,</span> männlich, Verdacht Unterschenkelfraktur, Ankunft in 20 Minuten – kommen.</div>
     <div class="blase ok" id="r2">✓ Kein Name im Funk – jeder kann mithören.</div>
   </div>
 </section>
 
-<!-- Grundausbildung -->
-<section class="szene" data-dauer="18000" data-start="bedienen">
-  <h2 class="rein" style="margin-bottom: 3vmin;">Auch das <em style="color: var(--gelb);">Funkgerät</em> bedienen</h2>
-  <div class="geraet bedienen">
-    <div class="hrt rein d1">
+<!-- 7: Funkgerät bedienen -->
+<section class="szene" data-dauer="14000" data-start="bedienen">
+  <h2 class="rein" style="margin-bottom: 1.6rem;">Auch das <em style="color: var(--gelb);">Funkgerät</em> bedienen</h2>
+  <div class="bedienen rein d1">
+    <div class="hrt">
       <div class="ptt" id="hPtt"></div>
       <div class="oben"><div class="knopf" id="hKnopf"></div><div class="sos" id="hSos">SOS</div></div>
       <div class="lcd"><b id="hZ1">TMO&nbsp;FW_ERH&nbsp;🔒</b><span id="hZ2">Gesperrt</span></div>
       <div class="block" id="hBlock"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>*</i><i>0</i><i>#</i></div>
     </div>
-    <div class="schritte rein d2" id="hSchritte">
-      <div>Tastensperre lösen<small>Stern lang – oder Menü + Stern</small></div>
+    <div class="schritte" id="hSchritte">
+      <div>Tastensperre lösen<small>Stern lang drücken</small></div>
       <div>Gruppe wechseln<small>Drehknopf, mit PTT bestätigen</small></div>
-      <div>Status senden<small>Zifferntaste lang drücken</small></div>
+      <div>Status senden<small>Zifferntaste lang</small></div>
       <div>Notruf<small>Notruftaste 2 Sekunden</small></div>
     </div>
   </div>
-  <p class="unter rein d4">Drei Bedienkonzepte – passend zu eurem Gerät einstellbar und in jedem Szenario</p>
+  <p class="unter rein d3">Drei Bedienkonzepte – passend zu eurem Gerät</p>
 </section>
 
-<section class="szene" data-dauer="35000" data-start="kapitel">
-  <h2 class="rein" style="margin-bottom: 2vmin;">Neu dabei?<br><em>Die Grundausbildung</em></h2>
-  <div class="orgname" id="orgname"></div>
+<!-- 8: Grundausbildung -->
+<section class="szene" data-dauer="12000" data-start="kapitel">
+  <h2 class="rein" style="margin-bottom: 1.4rem;">Neu dabei? <em>Die Grundausbildung</em></h2>
   <div class="kapitel" id="kapitel"></div>
   <p class="regel rein d3">Ohne Vorwissen · Kapitel für Kapitel · verstehen → auswählen → selbst sprechen</p>
 </section>
 
-<!-- 6: Mayday -->
+<!-- 9: Mayday -->
 <section class="szene" data-dauer="8000">
   <div class="mayday rein">MAYDAY</div>
-  <h2 class="rein d1">Auch den Notfall üben –<br>bevor er passiert.</h2>
-  <p class="unter rein d2">Mayday im Atemschutzeinsatz, Notruftaste bei Bedrohung im Rettungsdienst,<br>„Gefahr!“ am Trümmerkegel – mit der echten Notruftaste am Funkgerät.</p>
-  <p class="unter rein d4">Und typische Fehler wie <span class="falsch">„hört“</span> werden korrigiert.</p>
+  <h2 class="rein d1">Auch den Notfall üben – bevor er passiert.</h2>
+  <p class="unter rein d2">Mayday im Atemschutzeinsatz, Notruftaste im Rettungsdienst, „Gefahr!“ am Trümmerkegel.</p>
+  <p class="unter rein d4">Typische Fehler wie <span class="falsch">„hört“</span> werden korrigiert.</p>
 </section>
 
-<!-- 7: Überall -->
-<section class="szene" data-dauer="10000">
+<!-- 10: Überall -->
+<section class="szene" data-dauer="9000">
   <h2 class="rein">Überall dabei</h2>
-  <div class="reihe">
-    <div class="karte rein d1"><div class="sym">🌐</div><b>Im Browser</b><p>Am PC, Tablet oder Handy – ohne Installation.</p></div>
-    <div class="karte rein d2"><div class="sym">📱</div><b>Android-App</b><p>Seitentaste wird zur Sprechtaste. Sprachausgabe auch offline.</p></div>
-    <div class="karte rein d3"><div class="sym">📻</div><b>Am Funkgerät</b><p>Echte PTT- und Notruftaste – so nah am Einsatz wie möglich.</p></div>
+  <div class="liste">
+    <div class="karte rein d1"><div class="sym">🌐</div><div><b>Im Browser</b><p>Am PC, Tablet oder Handy – ohne Installation.</p></div></div>
+    <div class="karte rein d2"><div class="sym">📱</div><div><b>Android-App</b><p>Die Seitentaste wird zur Sprechtaste.</p></div></div>
+    <div class="karte rein d3"><div class="sym">📻</div><div><b>Am Funkgerät</b><p>Echte PTT- und Notruftaste.</p></div></div>
   </div>
-  <p class="unter rein d5">48 Szenarien in fünf Bereichen – vom ersten Funkspruch bis zum Hochwasser</p>
+  <p class="unter rein d4">48 Szenarien – vom ersten Funkspruch bis zum Hochwasser</p>
 </section>
 
-<!-- 8: Mitmachen -->
-<section class="szene" data-dauer="11000">
-  <div class="cta">
-    <div class="qr rein" id="qr"></div>
-    <div class="text">
-      <h2 class="rein d1" style="margin-bottom: 1vmin;">Jetzt ausprobieren</h2>
-      <p class="unter rein d2" style="margin-top: 0;">Code scannen und direkt loslegen –<br>oder hier am Gerät testen.</p>
-      <p class="link rein d3">fffunk.prelldynamics.de</p>
-    </div>
-  </div>
+<!-- 11: Eure Wehr -->
+<section class="szene" data-dauer="9000" data-start="wehr">
+  <h2 class="rein">Mit <em>euren</em> Rufnamen</h2>
+  <div class="code rein d1">WEHR-CODE</div>
+  <div class="rufwechsel rein d1" id="ruf">Florian Neuhaus 42/1</div>
+  <p class="unter rein d2">Ein Code für eure Wehr: eure echten Funkrufnamen und eigene Übungen in allen Szenarien.</p>
+  <p class="unter stark rein d3">Einrichtung für 10 € – persönlich.</p>
 </section>
 
-<div class="punkte" id="punkte"></div>
-<div class="fortschritt" id="fortschritt"></div>
+<!-- 12: QR-Code -->
+<section class="szene" data-dauer="0" data-ende="1">
+  <h2 class="rein" style="margin-bottom: 0.4rem;">Jetzt ausprobieren</h2>
+  <p class="unter rein d1" style="margin-top: 0;">Kostenlos · im Browser · ohne Anmeldung</p>
+  <div class="qr rein d1"><svg role="img" aria-label="QR-Code: fffunk.prelldynamics.de" shape-rendering="crispEdges" viewBox="0 0 29 29"><path stroke="#0b0f17" d="M0 0.5h7m4 0h6m2 0h2m1 0h7m-29 1h1m5 0h1m1 0h1m2 0h4m3 0h1m3 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h3m2 0h1m8 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m4 0h1m1 0h1m1 0h1m1 0h1m4 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h4m1 0h4m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m2 0h1m1 0h2m3 0h2m1 0h1m2 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-18 1h2m1 0h6m-19 1h3m1 0h2m2 0h3m1 0h2m2 0h1m1 0h1m6 0h2m-28 1h2m1 0h2m5 0h1m1 0h1m2 0h2m1 0h8m2 0h1m-29 1h1m2 0h1m2 0h1m1 0h1m1 0h2m1 0h1m1 0h1m1 0h2m3 0h1m2 0h3m-24 1h2m2 0h3m1 0h2m2 0h1m1 0h2m4 0h1m3 0h1m-28 1h4m1 0h2m2 0h2m1 0h2m2 0h1m1 0h1m1 0h1m1 0h1m2 0h3m-29 1h2m1 0h1m1 0h1m2 0h1m1 0h1m2 0h2m1 0h1m2 0h1m2 0h2m1 0h2m1 0h1m-29 1h1m2 0h1m1 0h4m8 0h3m1 0h1m1 0h3m1 0h2m-29 1h1m1 0h2m4 0h3m1 0h1m2 0h1m2 0h5m1 0h2m1 0h2m-28 1h1m1 0h1m1 0h4m2 0h2m5 0h1m1 0h2m2 0h2m-24 1h1m5 0h2m1 0h3m2 0h2m2 0h1m2 0h1m2 0h1m-27 1h1m3 0h1m1 0h2m7 0h3m2 0h1m1 0h1m1 0h1m-23 1h1m1 0h2m1 0h1m1 0h2m1 0h2m1 0h3m3 0h2m2 0h2m-26 1h6m1 0h1m3 0h1m2 0h1m1 0h2m1 0h7m1 0h1m-21 1h2m3 0h2m1 0h1m1 0h1m1 0h1m3 0h2m2 0h1m-29 1h7m2 0h1m1 0h2m4 0h4m1 0h1m1 0h1m1 0h2m-28 1h1m5 0h1m1 0h2m1 0h2m1 0h2m4 0h1m3 0h1m3 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h1m5 0h1m2 0h8m-28 1h1m1 0h3m1 0h1m1 0h3m1 0h1m2 0h1m3 0h1m4 0h2m2 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h2m2 0h1m2 0h1m2 0h1m1 0h1m2 0h1m-29 1h1m5 0h1m1 0h1m2 0h3m1 0h2m3 0h2m2 0h2m1 0h1m-28 1h7m2 0h1m1 0h4m4 0h3m1 0h1m3 0h1"/></svg></div>
+  <p class="url rein d2">fffunk.prelldynamics.de</p>
+  <div class="knopfzeile rein d3"><button type="button" id="nochmal">↺ Nochmal ansehen</button></div>
+  <p class="von rein d3">Ein Projekt von <a href="https://prelldynamics.de">prelldynamics.de</a> · <a href="mailto:simon.prell@googlemail.com?subject=FFFunk">Kontakt</a></p>
+</section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<div class="hinweis" id="hinweis">Tippen: weiter · links: zurück · halten: Pause</div>
+</div>
+
 <script>
 (function () {
-  var APP_URL = 'https://fffunk.prelldynamics.de/';
   var SPRUCH = 'Gruppenführer von Angriffstrupp – verstanden, gehen zur Menschenrettung ins Obergeschoss vor – kommen.';
+  var LOOP = /[?&]loop\b/.test(location.search);
   var szenen = document.querySelectorAll('.szene');
-  var punkte = document.getElementById('punkte');
-  var balken = document.getElementById('fortschritt');
-  var timer = [];
-  var i = -1;
+  var leiste = document.getElementById('leiste');
+  var i = -1, dauer = 0;
+  if (LOOP) document.body.className = 'loop';
 
-  for (var p = 0; p < szenen.length; p++) punkte.appendChild(document.createElement('i'));
+  for (var p = 0; p < szenen.length; p++) leiste.appendChild(document.createElement('i')).appendChild(document.createElement('b'));
+  var fuellung = leiste.getElementsByTagName('b');
 
-  // QR-Code; ohne Netz bleibt die URL als Text stehen
-  try {
-    var qr = qrcode(0, 'M'); qr.addData(APP_URL); qr.make();
-    document.getElementById('qr').innerHTML = qr.createSvgTag({ margin: 0, scalable: true });
-  } catch (e) { document.getElementById('qr').style.display = 'none'; }
+  // Eigene Uhr statt setTimeout: steht still, solange pausiert ist (und wenn der Tab im Hintergrund liegt).
+  var jetzt = 0, pausiert = false, aufgaben = [], runde = 0, zuletzt = null;
+  function spaeter(fn, ms) { aufgaben.push({ um: jetzt + ms, fn: fn }); }
+  function tick(ts) {
+    if (zuletzt !== null && !pausiert) jetzt += Math.min(ts - zuletzt, 100);
+    zuletzt = ts;
+    var faellig = [], rest = [];
+    for (var k = 0; k < aufgaben.length; k++) (aufgaben[k].um <= jetzt ? faellig : rest).push(aufgaben[k]);
+    aufgaben = rest;
+    var r = runde;
+    for (var f = 0; f < faellig.length && r === runde; f++) faellig[f].fn();
+    for (var s = 0; s < fuellung.length; s++)
+      fuellung[s].style.width = s < i ? '100%' : s > i ? '0' : (dauer ? Math.min(100, jetzt / dauer * 100) : 100) + '%';
+    requestAnimationFrame(tick);
+  }
 
-  function spaeter(fn, ms) { timer.push(setTimeout(fn, ms)); }
-  function aufraeumen() { for (var t = 0; t < timer.length; t++) clearTimeout(timer[t]); timer = []; }
+  function aus(el) { el.className = el.className.replace(/ zeig/g, ''); }
+  function ein(el) { aus(el); el.className += ' zeig'; }
 
   var starts = {
     funkspruch: function () {
@@ -347,21 +349,36 @@
       var b = [document.getElementById('b1'), document.getElementById('b2'), document.getElementById('b3')];
       funk.className = 'funk'; tipp.textContent = ''; tipp.className = '';
       display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>FW Neuhaus';
-      for (var k = 0; k < b.length; k++) b[k].className = b[k].className.replace(' zeig', '');
-      spaeter(function () { funk.className = 'funk empfaengt'; display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>◀ Gruppenführer'; b[0].className += ' zeig'; }, 600);
+      for (var k = 0; k < b.length; k++) aus(b[k]);
+      spaeter(function () { funk.className = 'funk empfaengt'; display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>◀ Gruppenführer'; ein(b[0]); }, 600);
       spaeter(function () {
-        funk.className = 'funk sendet'; display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>▶ SENDEN'; b[1].className += ' zeig'; tipp.className = 'cursor';
+        funk.className = 'funk sendet'; display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>▶ SENDEN'; ein(b[1]); tipp.className = 'cursor';
         var n = 0;
         (function schreib() {
           tipp.textContent = SPRUCH.slice(0, ++n);
-          if (n < SPRUCH.length) spaeter(schreib, 55);
+          if (n < SPRUCH.length) spaeter(schreib, 45);
           else spaeter(function () {
             tipp.className = ''; funk.className = 'funk';
             display.innerHTML = 'TMO&nbsp;&nbsp;▮▮▮▮<br>FW Neuhaus';
-            b[2].className += ' zeig';
+            ein(b[2]);
           }, 500);
         })();
-      }, 3600);
+      }, 3400);
+    },
+    rd: function () {
+      var tasten = document.getElementById('tasten').children, text = document.getElementById('statustext');
+      var r1 = document.getElementById('r1'), r2 = document.getElementById('r2'), rname = document.getElementById('rname');
+      var folge = [[3, 'Status 3 – Einsatz übernommen'], [4, 'Status 4 – am Einsatzort'], [7, 'Status 7 – Patient aufgenommen'], [8, 'Status 8 – am Zielort']];
+      text.textContent = ''; rname.className = 'weg-text'; aus(r1); aus(r2);
+      for (var k = 0; k < tasten.length; k++) tasten[k].className = '';
+      folge.forEach(function (f, j) {
+        spaeter(function () {
+          for (var k = 0; k < tasten.length; k++) tasten[k].className = '';
+          tasten[f[0] - 1].className = 'an'; text.textContent = f[1];
+        }, 800 + j * 1000);
+      });
+      spaeter(function () { ein(r1); }, 4800);
+      spaeter(function () { rname.className = 'weg-text raus'; ein(r2); }, 7600);
     },
     bedienen: function () {
       var z1 = document.getElementById('hZ1'), z2 = document.getElementById('hZ2');
@@ -371,95 +388,96 @@
       function zeige(a, b) { z1.innerHTML = a; z2.innerHTML = b; }
       function schritt(n, an) { schritte[n].className = an ? 'an' : 'fertig'; }
       function taste(el, ms) { el.className = 'an'; spaeter(function () { el.className = ''; }, ms); }
-      for (var i = 0; i < schritte.length; i++) schritte[i].className = '';
+      for (var k = 0; k < schritte.length; k++) schritte[k].className = '';
+      knopf.className = 'knopf'; ptt.className = 'ptt'; sos.className = 'sos';
       zeige('TMO&nbsp;FW_ERH&nbsp;🔒', 'Gesperrt');
-      spaeter(function () { schritt(0, true); taste(tasten[9], 1400); }, 1500);
-      spaeter(function () { zeige('TMO&nbsp;FW_ERH', 'Tastatur entsperrt'); schritt(0); }, 2900);
-      spaeter(function () { schritt(1, true); knopf.className = 'knopf dreh'; zeige('TMO&nbsp;FW_ERH', '▸ RD_ERH (PTT = OK)'); }, 4000);
-      spaeter(function () { ptt.className = 'ptt an'; }, 5400);
-      spaeter(function () { ptt.className = 'ptt'; knopf.className = 'knopf'; zeige('TMO&nbsp;RD_ERH', 'Gruppe gewechselt'); schritt(1); }, 5900);
-      spaeter(function () { schritt(2, true); taste(tasten[2], 1300); zeige('TMO&nbsp;RD_ERH', 'Status senden …'); }, 7300);
-      spaeter(function () { zeige('TMO&nbsp;RD_ERH', 'Status 3 gesendet'); schritt(2); }, 8700);
-      spaeter(function () { schritt(3, true); sos.className = 'sos an'; }, 10200);
-      spaeter(function () { sos.className = 'sos'; zeige('⚠&nbsp;NOTRUF', 'Notruf aktiv – sprechen'); schritt(3); }, 12200);
+      spaeter(function () { schritt(0, true); taste(tasten[9], 1300); }, 1200);
+      spaeter(function () { zeige('TMO&nbsp;FW_ERH', 'Entsperrt'); schritt(0); }, 2500);
+      spaeter(function () { schritt(1, true); knopf.className = 'knopf dreh'; zeige('TMO&nbsp;FW_ERH', '▸ RD_ERH (PTT=OK)'); }, 3500);
+      spaeter(function () { ptt.className = 'ptt an'; }, 4800);
+      spaeter(function () { ptt.className = 'ptt'; knopf.className = 'knopf'; zeige('TMO&nbsp;RD_ERH', 'Gruppe gewechselt'); schritt(1); }, 5300);
+      spaeter(function () { schritt(2, true); taste(tasten[2], 1200); zeige('TMO&nbsp;RD_ERH', 'Status senden …'); }, 6500);
+      spaeter(function () { zeige('TMO&nbsp;RD_ERH', 'Status 3 gesendet'); schritt(2); }, 7800);
+      spaeter(function () { schritt(3, true); sos.className = 'sos an'; }, 9000);
+      spaeter(function () { sos.className = 'sos'; zeige('⚠&nbsp;NOTRUF', 'Notruf aktiv'); schritt(3); }, 11000);
     },
     kapitel: function () {
-      var liste = document.getElementById('kapitel'), name = document.getElementById('orgname');
-      var orgs = [
-        ['Feuerwehr', 'var(--rot-hell)', ['Wer ruft wen?', 'Kommen und Ende', 'Eine Frage stellen', 'Nachfragen', 'Einen Anruf beantworten', 'Mayday']],
-        ['THW', 'var(--blau)', ['Heros-Rufnamen lesen', 'Die Stärkemeldung', 'Meldung nach den 5 W', 'An- und Abmelden', 'Gefahr melden']],
-        ['Rettungsdienst', 'var(--rosa)', ['Rufnamen im Rettungsdienst', 'Status drücken', 'Sprechwunsch: Status 5 und J', 'Klinikanmeldung ohne Namen', 'Status 0 oder Notruftaste']],
-        ['Wasserrettung', 'var(--tuerkis)', ['Rufnamen am Wasser', 'Ortsangaben am Wasser', 'Person im Wasser melden', 'Schifffahrt sperren lassen']],
-        ['Katastrophenschutz', 'var(--orange)', ['Wer führt im Katastrophenfall?', 'Die Lagemeldung', 'Richtig nachfordern', 'Wenn das Netz ausfällt']]
-      ];
-      liste.innerHTML = ''; name.textContent = '';
-      orgs.forEach(function (o, n) {
-        spaeter(function () {
-          name.textContent = o[0]; name.style.color = o[1];
-          liste.innerHTML = '';
-          o[2].forEach(function (t, j) {
-            var z = document.createElement('div');
-            z.innerHTML = '<i>' + (j + 1) + '</i><span></span>';
-            z.lastChild.textContent = t;
-            liste.appendChild(z);
-            spaeter(function () { z.className = 'fertig'; z.firstChild.textContent = '✓'; }, 1200 + j * 700);
-          });
-        }, n * 7000);
+      var liste = document.getElementById('kapitel');
+      var kapitel = ['Wer ruft wen?', 'Kommen und Ende', 'Eine Frage stellen', 'Nachfragen', 'Einen Anruf beantworten', 'Mayday'];
+      liste.innerHTML = '';
+      kapitel.forEach(function (t, j) {
+        var z = document.createElement('div');
+        z.innerHTML = '<i>' + (j + 1) + '</i><span></span>';
+        z.lastChild.textContent = t;
+        liste.appendChild(z);
+        spaeter(function () { z.className = 'fertig'; z.firstChild.textContent = '✓'; }, 1500 + j * 900);
       });
     },
-    thw: function () {
-      var felder = document.getElementById('staerke').children, t1 = document.getElementById('t1');
-      for (var k = 0; k < felder.length; k++) felder[k].className = '';
-      t1.className = t1.className.replace(' zeig', '');
-      for (var j = 0; j < felder.length; j++) (function (f, j) {
-        spaeter(function () { f.className = 'an'; }, 1500 + j * 900);
-      })(felder[j], j);
-      spaeter(function () { t1.className += ' zeig'; }, 6500);
-    },
-    rd: function () {
-      var tasten = document.getElementById('tasten').children, text = document.getElementById('statustext');
-      var r1 = document.getElementById('r1'), r2 = document.getElementById('r2'), rname = document.getElementById('rname');
-      var folge = [[3, 'Status 3 – Einsatz übernommen'], [4, 'Status 4 – am Einsatzort'], [7, 'Status 7 – Patient aufgenommen'],
-                   [8, 'Status 8 – am Zielort'], [1, 'Status 1 – wieder frei']];
-      text.textContent = ''; rname.className = 'weg';
-      r1.className = r1.className.replace(' zeig', ''); r2.className = r2.className.replace(' zeig', '');
-      for (var k = 0; k < tasten.length; k++) tasten[k].className = '';
-      folge.forEach(function (f, j) {
-        spaeter(function () {
-          for (var k = 0; k < tasten.length; k++) tasten[k].className = '';
-          tasten[f[0] - 1].className = 'an'; text.textContent = f[1];
-        }, 1000 + j * 1300);
-      });
-      spaeter(function () { r1.className += ' zeig'; rname.className = 'weg zeig'; }, 8000);
-      spaeter(function () { r2.className += ' zeig'; }, 10500);
+    wehr: function () {
+      var ruf = document.getElementById('ruf');
+      ruf.className = 'rufwechsel rein d1'; ruf.textContent = 'Florian Neuhaus 42/1';
+      spaeter(function () { ruf.className = 'rufwechsel rein d1 neu'; ruf.textContent = 'Florian Höchstadt 40/1'; }, 2600);
     }
   };
 
-  function weiter() {
-    aufraeumen();
+  function zeige(n) {
+    runde++; aufgaben = []; jetzt = 0;
     if (i >= 0) szenen[i].className = 'szene';
-    i = (i + 1) % szenen.length;
-    var s = szenen[i], dauer = parseInt(s.getAttribute('data-dauer'), 10) || 8000;
+    i = n;
+    var s = szenen[i];
+    dauer = parseInt(s.getAttribute('data-dauer'), 10) || 0;
     // Neu einblenden, damit die verzögerten Elemente jedes Mal wieder nacheinander erscheinen
     void s.offsetWidth;
     s.className = 'szene an';
     var start = s.getAttribute('data-start');
     if (start && starts[start]) starts[start]();
-    for (var d = 0; d < punkte.children.length; d++) punkte.children[d].className = d === i ? 'an' : '';
-    balken.style.transition = 'none'; balken.style.width = '0';
-    void balken.offsetWidth;
-    balken.style.transition = 'width ' + dauer + 'ms linear'; balken.style.width = '100%';
-    spaeter(weiter, dauer);
+    if (dauer) spaeter(vor, dauer);
+    else if (LOOP) spaeter(function () { zeige(0); }, 20000);
+    if (i > 0) document.getElementById('hinweis').className = 'hinweis weg';
   }
-  weiter();
+  function vor() { if (i < szenen.length - 1) zeige(i + 1); }
+  function zurueck() { zeige(i > 0 ? i - 1 : 0); }
+  function setzePause(an) { pausiert = an; document.body.className = (LOOP ? 'loop' : '') + (an ? ' pausiert' : ''); }
 
-  // Messe-Dauerbetrieb: Bildschirm wach halten; Klick schaltet auf Vollbild
+  // Tippen rechts = weiter, links = zurück, halten = Pause (wie bei Stories)
+  var halten = null, gehalten = false;
+  document.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('a, button')) return;
+    gehalten = false;
+    halten = setTimeout(function () { gehalten = true; setzePause(true); }, 300);
+  });
+  document.addEventListener('pointerup', function (e) {
+    clearTimeout(halten);
+    if (e.target.closest('a, button')) return;
+    if (gehalten) { setzePause(false); return; }
+    vollbild();
+    if (pausiert) setzePause(false);
+    if (e.clientX < window.innerWidth / 3) zurueck(); else vor();
+  });
+  document.addEventListener('pointercancel', function () { clearTimeout(halten); if (gehalten) setzePause(false); });
+  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  document.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); setzePause(false); vor(); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); setzePause(false); zurueck(); }
+    else if (k === 'p' || k === 'k') setzePause(!pausiert);
+    else if (k === 'Home') zeige(0);
+  });
+  document.getElementById('nochmal').addEventListener('click', function () { setzePause(false); zeige(0); });
+
+  function vollbild() {
+    var d = document.documentElement;
+    try { if (!document.fullscreenElement && d.requestFullscreen) d.requestFullscreen().catch(function () {}); } catch (e) {}
+  }
+  // Bildschirm während des Pitches wach halten
   function wach() { try { if (navigator.wakeLock) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {} }
   wach();
   document.addEventListener('visibilitychange', function () { if (!document.hidden) wach(); });
-  document.addEventListener('click', function () {
-    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
-  });
+
+  // ?szene=4 startet bei der vierten Szene (zum Proben)
+  var ab = parseInt((location.search.match(/[?&]szene=(\d+)/) || [])[1], 10);
+  zeige(ab > 0 ? Math.min(ab, szenen.length) - 1 : 0);
+  requestAnimationFrame(tick);
 })();
 </script>
 </body>
