@@ -14,6 +14,8 @@ import {
 import { listScenarios, getScenario as getCommunityScenario, isDbAvailable, deleteScenario } from './community-db.mjs';
 import { buildOrtsnamenPrompt, parseOrtsnamenAntwort } from './ortsnamen-prompt.mjs';
 import { resolvePeriod, toCsv } from './usage-period.mjs';
+import { istKontoDbPersistent, listeKonten, setEinstellung, wehrcodeSchwelle } from './konto-db.mjs';
+import { istMailEingerichtet } from './mailer.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
@@ -692,6 +694,7 @@ function page(title, content, active = '') {
       <a href="/admin/scenarios" class="${active === 'scenarios' ? 'active' : ''}">Szenarien</a>
       <a href="/admin/taxonomy" class="${active === 'taxonomy' ? 'active' : ''}">Kategorien & Rollen</a>
       <a href="/admin/community" class="${active === 'community' ? 'active' : ''}">Community</a>
+      <a href="/admin/konten" class="${active === 'konten' ? 'active' : ''}">Konten</a>
       <a href="/admin/stats" class="${active === 'stats' ? 'active' : ''}">Statistik</a>
     </nav>
   </div>
@@ -999,6 +1002,40 @@ async function licensesPage(flash = '') {
            </tr></thead><tbody>${rows}</tbody></table>
          </div>`}
   `, 'licenses');
+}
+
+// ── Konten ────────────────────────────────────────────────────────────────────
+
+async function kontenPage(flash = '') {
+  const [konten, schwelle] = await Promise.all([listeKonten(), wehrcodeSchwelle()]);
+  const rows = konten.map(k => `<tr>
+      <td><a href="mailto:${esc(k.email)}" style="color:#60a5fa;">${esc(k.email)}</a></td>
+      <td>${esc(k.name)}</td>
+      <td style="text-align:right;">${k.spiele}${schwelle ? ` / ${schwelle}` : ''}</td>
+      <td>${k.lizenzCode ? `<span class="code">${esc(k.lizenzCode)}</span>` : (schwelle && k.spiele >= schwelle ? '<span class="badge ok">freigeschaltet</span>' : '')}</td>
+      <td style="white-space:nowrap;color:#666;">${new Date(k.erstellt).toLocaleDateString('de-DE')}</td>
+    </tr>`).join('');
+
+  return page('Konten', `
+    <h2>Konten</h2>
+    ${flash ? `<div class="flash-ok">${esc(flash)}</div>` : ''}
+    ${!istKontoDbPersistent() ? '<div class="flash-err">Ohne DATABASE_URL liegen Konten nur im Arbeitsspeicher und sind nach einem Neustart weg.</div>' : ''}
+    ${!istMailEingerichtet() ? '<div class="flash-err">E-Mail-Versand nicht eingerichtet (SMTP_USER / SMTP_PASS) – niemand kann sich anmelden.</div>' : ''}
+    <form method="POST" action="/admin/konten/schwelle" class="card" style="margin-bottom:1.5rem;">
+      <h3>Wehr-Code erspielen</h3>
+      <p style="color:#a3a3a3;font-size:.875rem;margin-top:0;">Nach so vielen abgeschlossenen Übungen (Einzel und Gruppe, je Szenario und Tag einmal gezählt) kann sich ein Konto selbst einen Wehr-Code anlegen. 0 = nicht erspielbar.</p>
+      <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+        <input type="number" name="spiele" min="0" max="1000" value="${schwelle}" style="width:8rem;">
+        <button type="submit" class="btn btn-primary">Speichern</button>
+      </div>
+    </form>
+    ${konten.length === 0
+      ? '<div class="card" style="text-align:center;color:#a3a3a3;padding:3rem;">Noch keine Konten.</div>'
+      : `<div class="card" style="padding:0;overflow:auto;">
+           <table><thead><tr><th>E-Mail</th><th>Name</th><th style="text-align:right;">Übungen</th><th>Wehr-Code</th><th>Angelegt</th></tr></thead>
+           <tbody>${rows}</tbody></table>
+         </div>`}
+  `, 'konten');
 }
 
 // ── License form page ─────────────────────────────────────────────────────────
@@ -1576,6 +1613,15 @@ export async function handleAdminRequest(req, res) {
     const { name, csv } = await statsCsv(url.searchParams);
     res.writeHead(200, { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': `attachment; filename="${name}"` });
     return res.end(csv);
+  }
+
+  if (p === '/admin/konten' && m === 'GET')
+    return sendHtml(res, 200, await kontenPage(url.searchParams.get('msg') || ''));
+
+  if (p === '/admin/konten/schwelle' && m === 'POST') {
+    const n = Math.max(0, Math.min(1000, Math.floor(Number(parseForm(await readBody(req)).spiele) || 0)));
+    await setEinstellung('wehrcode_spiele', n);
+    return redirect(res, `/admin/konten?msg=${encodeURIComponent(n ? `Wehr-Code ab ${n} Übungen` : 'Wehr-Code ist nicht erspielbar')}`);
   }
 
   if (p === '/admin/licenses' && m === 'GET')

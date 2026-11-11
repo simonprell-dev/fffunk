@@ -8,6 +8,7 @@ import RadioCallModal from './RadioCallModal';
 import { applyRufnamen } from '../lib/rufnamen';
 import { RadioResponse, radioResponseFor, splitCall, splitLeadingResponse } from '../lib/radio-response';
 import { trackEvent } from '../lib/usage-stats';
+import { meldeSpiel } from '../lib/konto';
 import { onRadioKey } from '../lib/radio-keys';
 import ChapterMenu from './ChapterMenu';
 import Funkgeraet, { useFunkgeraet } from './Funkgeraet';
@@ -236,6 +237,8 @@ export default function PracticeScreen({ scenario, engine, audio, onExit, rufnam
     if (isEnd && !completionTrackedRef.current) {
       completionTrackedRef.current = true;
       trackEvent('scenario_complete', scenario.id);
+      meldeSpiel(scenario.id, engine.getProgress().score); // mit Konto: Spielstand
+
     }
   }, [currentNode]);
 

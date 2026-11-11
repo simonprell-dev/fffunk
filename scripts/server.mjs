@@ -10,6 +10,10 @@ import { initLicenseDb, initAdminScenariosDb, initUsageStatsDb, countUsageEvent,
 import { handleAdminRequest, handleLicenseLookup } from './admin-api.mjs';
 import { logPrConfig } from './community-pr-api.mjs';
 import { canonicalRedirect, resolveStatic } from './static-route.mjs';
+import { initKontoDb } from './konto-db.mjs';
+import { handleKontoRequest } from './konto-api.mjs';
+import { handleGruppenRequest, handleGruppenUpgrade } from './gruppen-api.mjs';
+import { logMailConfig } from './mailer.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
@@ -184,6 +188,16 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (req.url?.startsWith('/api/konto')) {
+    await handleKontoRequest(req, res);
+    return;
+  }
+
+  if (req.url?.startsWith('/api/gruppe')) {
+    await handleGruppenRequest(req, res);
+    return;
+  }
+
   if (req.url?.startsWith('/api/community/')) {
     await handleCommunityApiRequest(req, res);
     return;
@@ -239,12 +253,19 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
+// Gruppenübungen: Live-Verbindung der Geräte (WebSocket)
+server.on('upgrade', (req, socket, head) => {
+  if (!handleGruppenUpgrade(req, socket, head)) socket.destroy();
+});
+
 server.listen(PORT, async () => {
   console.log(`FFFunk läuft auf http://localhost:${PORT}`);
   console.log(`Piper TTS: ${PIPER_AVAILABLE ? 'verfügbar' : 'nicht verfügbar (Browser-TTS als Fallback)'}`);
   logPrConfig();
+  logMailConfig();
   await initDb();
   await initLicenseDb();
   await initAdminScenariosDb();
   await initUsageStatsDb();
+  await initKontoDb();
 });

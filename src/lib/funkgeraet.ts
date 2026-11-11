@@ -94,6 +94,8 @@ export interface DeviceState {
   confirmEnd: boolean;
   volume: number;
   display: string[];
+  /** Eigene Sprechgruppen (Gruppenübung) statt der Beispielgruppen. */
+  gruppen?: Record<Betriebsart, string[]>;
 }
 
 export type DeviceEvent =
@@ -106,12 +108,16 @@ export type DeviceEvent =
   | { type: 'ptt' }
   | { type: 'rejected'; reason: string };
 
-export function initialDevice(konzept: KonzeptId): DeviceState {
+export function initialDevice(konzept: KonzeptId, gruppen?: Record<Betriebsart, string[]>): DeviceState {
+  const g = gruppen ?? GRUPPEN;
   return {
-    konzept, on: false, locked: false, mode: 'TMO', group: 'FW_ERH', selecting: null, emergency: false, menuArmed: false,
-    lastGroup: { TMO: GRUPPEN.TMO[0], DMO: GRUPPEN.DMO[0] }, confirmEnd: false, volume: 5, display: [],
+    konzept, on: false, locked: false, mode: 'TMO', group: g.TMO[0], selecting: null, emergency: false, menuArmed: false,
+    lastGroup: { TMO: g.TMO[0], DMO: g.DMO[0] }, confirmEnd: false, volume: 5, display: [],
+    ...(gruppen ? { gruppen } : {}),
   };
 }
+
+const liste = (s: DeviceState): string[] => (s.gruppen ?? GRUPPEN)[s.mode];
 
 /** Eingeschaltet mit aktiver Tastensperre – wie direkt nach dem Einschalten. */
 export function lockedDevice(konzept: KonzeptId): DeviceState {
@@ -119,8 +125,8 @@ export function lockedDevice(konzept: KonzeptId): DeviceState {
 }
 
 /** Eingeschaltet und entsperrt – Start für Übungen, die nicht die Sperre selbst üben. */
-export function readyDevice(konzept: KonzeptId): DeviceState {
-  return withDisplay({ ...initialDevice(konzept), on: true }, 'Bereit');
+export function readyDevice(konzept: KonzeptId, gruppen?: Record<Betriebsart, string[]>): DeviceState {
+  return withDisplay({ ...initialDevice(konzept, gruppen), on: true }, 'Bereit');
 }
 
 function withDisplay(s: DeviceState, message: string): DeviceState {
@@ -147,7 +153,7 @@ function toggleMode(s: DeviceState): { state: DeviceState; event: DeviceEvent } 
 }
 
 function confirmGroup(s: DeviceState): { state: DeviceState; event: DeviceEvent } {
-  const group = GRUPPEN[s.mode][s.selecting ?? 0];
+  const group = liste(s)[s.selecting ?? 0];
   return { state: withDisplay({ ...s, group, selecting: null }, 'Gruppe gewechselt ✓'), event: { type: 'group', group, mode: s.mode } };
 }
 
@@ -167,14 +173,14 @@ export function press(s: DeviceState, p: Press): { state: DeviceState; event?: D
   if (!s.on) {
     // Notruftaste am ausgeschalteten Gerät: einschalten und sofort Notruf (Herstellerstandard, 3 s)
     if (p.key === 'sos' && p.ms >= 3000) {
-      const on: DeviceState = { ...initialDevice(s.konzept), on: true, emergency: true, volume: s.volume };
+      const on: DeviceState = { ...initialDevice(s.konzept, s.gruppen), on: true, emergency: true, volume: s.volume };
       return { state: withDisplay(on, 'Notruf aktiv – sprechen'), event: { type: 'emergency', active: true } };
     }
     const needed = s.konzept === 'sepura-stp' ? 0 : LANG_MS;
     if (isPower && p.ms >= needed) {
       // Tastensperre beim Start nur, wo sie so programmiert ist (BOS-Kurzanleitung MTP850); Sepura startet entsperrt.
       const locked = s.konzept === 'motorola';
-      const on: DeviceState = { ...initialDevice(s.konzept), on: true, locked, volume: s.volume };
+      const on: DeviceState = { ...initialDevice(s.konzept, s.gruppen), on: true, locked, volume: s.volume };
       return { state: withDisplay(on, locked ? sperrHinweis(s.konzept) : 'Bereit'), event: { type: 'power', on: true } };
     }
     return reject('Das Gerät ist ausgeschaltet.');
@@ -198,7 +204,7 @@ export function press(s: DeviceState, p: Press): { state: DeviceState; event?: D
 
   // Ausschalten
   if (isPower && p.ms >= (s.konzept === 'sepura-stp' ? 2000 : LANG_MS)) {
-    return { state: { ...initialDevice(s.konzept), volume: s.volume }, event: { type: 'power', on: false } };
+    return { state: { ...initialDevice(s.konzept, s.gruppen), volume: s.volume }, event: { type: 'power', on: false } };
   }
 
   // Tastensperre
@@ -224,7 +230,7 @@ export function press(s: DeviceState, p: Press): { state: DeviceState; event?: D
   if (p.key === 'knobLeft' || p.key === 'knobRight') {
     const step = p.key === 'knobRight' ? 1 : -1;
     if (s.selecting !== null) {
-      const list = GRUPPEN[s.mode];
+      const list = liste(s);
       const selecting = (s.selecting + step + list.length) % list.length;
       return { state: withDisplay({ ...s, selecting }, `▸ ${list[selecting]}  (PTT = OK)`) };
     }
@@ -235,7 +241,7 @@ export function press(s: DeviceState, p: Press): { state: DeviceState; event?: D
   // Seitentasten der SC-Geräte, die auch gesperrt gehen
   if (s.konzept === 'sepura-sc' && p.key === 'sideC') return sendStatus(s, 5);
   if (s.konzept === 'sepura-sc' && p.key === 'sideA') {
-    const next = { ...s, mode: 'TMO' as Betriebsart, group: GRUPPEN.TMO[0], selecting: null };
+    const next = { ...s, mode: 'TMO' as Betriebsart, group: (s.gruppen ?? GRUPPEN).TMO[0], selecting: null };
     return { state: withDisplay(next, 'Schnellgruppe'), event: { type: 'group', group: next.group, mode: 'TMO' } };
   }
 
@@ -245,8 +251,8 @@ export function press(s: DeviceState, p: Press): { state: DeviceState; event?: D
   const auswahl = s.konzept === 'sepura-stp' ? 'mode' : s.konzept === 'sepura-sc' ? 'ctxM' : 'knobPress';
   if (p.key === auswahl) {
     if (s.selecting !== null) return { state: withDisplay({ ...s, selecting: null }, 'Abgebrochen') };
-    const selecting = Math.max(0, GRUPPEN[s.mode].indexOf(s.group));
-    return { state: withDisplay({ ...s, selecting }, `▸ ${GRUPPEN[s.mode][selecting]}  (PTT = OK)`) };
+    const selecting = Math.max(0, liste(s).indexOf(s.group));
+    return { state: withDisplay({ ...s, selecting }, `▸ ${liste(s)[selecting]}  (PTT = OK)`) };
   }
 
   // TMO/DMO

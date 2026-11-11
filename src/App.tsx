@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { ApiScenarioEntry, Scenario } from './types/story';
 import { StoryEngine } from './lib/story-engine';
 import { AudioEngine } from './lib/audio-engine';
@@ -17,6 +17,12 @@ import { KONZEPTE, type KonzeptId } from './lib/funkgeraet';
 import { getGeraetInSzenarien, getKonzept, setGeraetInSzenarien, setKonzept } from './lib/funkgeraet-settings';
 import { onRadioKey } from './lib/radio-keys';
 import { warmUpSpeech } from './lib/speech-warmup';
+import { useKonto } from './lib/konto';
+
+// Gruppenübung und Konto werden erst geladen, wenn man sie öffnet (eigene Szenariodaten, QR-Code).
+const GruppeLeiter = lazy(() => import('./components/GruppeLeiter'));
+const GruppeTeilnehmer = lazy(() => import('./components/GruppeTeilnehmer'));
+const KontoView = lazy(() => import('./components/KontoView'));
 
 interface LicenseData {
   organizationName: string;
@@ -25,7 +31,7 @@ interface LicenseData {
 
 const GRUNDAUSBILDUNG_ID = 'grundausbildung';
 
-type View = 'list' | 'training' | 'lernen' | 'geraet' | 'editor' | 'practice';
+type View = 'list' | 'training' | 'lernen' | 'geraet' | 'editor' | 'practice' | 'gruppe' | 'mitmachen' | 'konto';
 type ScenarioFolderIndex = {
   builtin?: Record<string, string[]>;
   community?: Record<string, string[]>;
@@ -56,6 +62,12 @@ function App() {
   const [licenseInput, setLicenseInput] = useState(() => localStorage.getItem('fffunk_license_code') || '');
   const [licenseData, setLicenseData] = useState<LicenseData | null>(null);
   const [licenseError, setLicenseError] = useState<string | null>(null);
+  const { konto } = useKonto();
+  /** Geöffnete Übung der Übungsleitung (null = neue anlegen). */
+  const [gruppeCode, setGruppeCode] = useState<string | null>(null);
+  /** Übung, an der dieses Gerät teilnimmt. */
+  const [mitmachen, setMitmachen] = useState<{ code: string; token?: string } | null>(null);
+  const [loginVorgabe, setLoginVorgabe] = useState<{ email: string; code: string } | undefined>();
 
   // Android: Spracherkennung schon vorbereiten, während man ein Szenario aussucht.
   useEffect(() => { warmUpSpeech(); }, []);
@@ -91,6 +103,39 @@ function App() {
         } catch { /* ignore */ }
         window.history.replaceState(null, '', '#scenarios');
         setView('list');
+        return;
+      }
+
+      // Beitritts-Link einer Gruppenübung: #g=CODE oder #g=CODE&p=POSITION
+      if (hash.startsWith('#g=')) {
+        const q = new URLSearchParams(hash.slice(1));
+        const code = (q.get('g') ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (code) {
+          setEngine(null); setSelectedScenario(null);
+          setMitmachen({ code, token: q.get('p') ?? undefined });
+          setView('mitmachen');
+          return;
+        }
+      }
+
+      if (hash === '#gruppe' || hash.startsWith('#gruppe=')) {
+        setEngine(null); setSelectedScenario(null);
+        setGruppeCode(hash.slice('#gruppe='.length).toUpperCase().replace(/[^A-Z0-9]/g, '') || null);
+        setView('gruppe');
+        return;
+      }
+
+      // Anmelde-Link aus der E-Mail: #login=adresse:code
+      if (hash.startsWith('#login=')) {
+        const [email, code] = decodeURIComponent(hash.slice('#login='.length)).split(':');
+        if (email && code) setLoginVorgabe({ email, code });
+        window.history.replaceState(null, '', '#konto');
+        setEngine(null); setSelectedScenario(null); setView('konto');
+        return;
+      }
+
+      if (hash === '#konto') {
+        setEngine(null); setSelectedScenario(null); setView('konto');
         return;
       }
 
@@ -268,6 +313,34 @@ function App() {
     window.history.replaceState(null, '', '#geraet');
   };
 
+  const openGruppe = (code: string | null = null) => {
+    audio.stop();
+    setEngine(null); setSelectedScenario(null); setEditScenario(undefined);
+    setGruppeCode(code);
+    setView('gruppe');
+    window.history.replaceState(null, '', code ? `#gruppe=${code}` : '#gruppe');
+  };
+
+  const openMitmachen = (code: string) => {
+    audio.stop();
+    setMitmachen({ code });
+    setView('mitmachen');
+    window.history.replaceState(null, '', `#g=${code}`);
+  };
+
+  const openKonto = () => {
+    audio.stop();
+    setEngine(null); setSelectedScenario(null); setEditScenario(undefined);
+    setView('konto');
+    window.history.replaceState(null, '', '#konto');
+  };
+
+  const useLicense = (code: string) => {
+    localStorage.setItem('fffunk_license_code', code);
+    setLicenseInput(code);
+    setLicenseCode(code);
+  };
+
   useEffect(() => {
     if (view === 'lernen') trackEvent('lern_open');
   }, [view]);
@@ -314,13 +387,15 @@ function App() {
           </a>
 
           <nav className="flex items-center gap-3 compact:gap-2 text-sm min-w-0">
-            {view !== 'practice' && (
+            {view !== 'practice' && view !== 'mitmachen' && (
               <>
                 <a href="#scenarios" onClick={openList} className={navCls('list')}>Üben</a>
                 <a href="#training" onClick={openTraining} className={navCls('training')}>Training</a>
+                <a href="#gruppe" onClick={() => openGruppe()} className={navCls('gruppe')}>Gruppe</a>
                 <a href="#lernen" onClick={openLernen} className={navCls('lernen')}>Lernen</a>
                 <a href="#geraet" onClick={openGeraet} className={`${navCls('geraet')} compact:hidden`}>Gerät</a>
-                <a href="#editor" onClick={() => openEditor()} className={navCls('editor')}>Editor</a>
+                <a href="#editor" onClick={() => openEditor()} className={`${navCls('editor')} hidden min-[480px]:inline compact:hidden`}>Editor</a>
+                <a href="#konto" onClick={openKonto} title={konto ? konto.email : 'Anmelden'} className={navCls('konto')}>{konto ? 'Konto' : 'Anmelden'}</a>
               </>
             )}
             {view === 'practice' && (
@@ -478,7 +553,22 @@ function App() {
           <div className="bg-red-900/20 border border-red-700 text-red-200 p-4 rounded-lg mb-4">{loadError}</div>
         )}
 
-        {view === 'editor' ? (
+        {view === 'gruppe' || view === 'mitmachen' || view === 'konto' ? (
+          <Suspense fallback={<div className="text-center py-12 text-[#a3a3a3] animate-pulse">Lädt …</div>}>
+            {view === 'gruppe' ? (
+              <GruppeLeiter code={gruppeCode} onCode={openGruppe} rufnamen={licenseData?.rufnamen} onBeitreten={openMitmachen} />
+            ) : view === 'mitmachen' && mitmachen ? (
+              <GruppeTeilnehmer key={mitmachen.code} code={mitmachen.code} token={mitmachen.token} audio={audio} onExit={openList} />
+            ) : (
+              <KontoView
+                onLizenz={useLicense}
+                aktiverCode={licenseCode}
+                loginVorgabe={loginVorgabe}
+                titel={id => scenarios.find(sc => sc.id === id)?.title}
+              />
+            )}
+          </Suspense>
+        ) : view === 'editor' ? (
           <ScenarioEditor
             key={editScenario?.id ?? 'new'}
             onSave={saveLocalScenario}

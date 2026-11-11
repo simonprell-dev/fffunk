@@ -41,7 +41,7 @@ FFFunk ist Open Source (MIT-Lizenz): [github.com/simonprell-dev/fffunk](https://
 }
 
 export function datenschutzMarkdown(a) {
-  return `Kurz vorweg: FFFunk zeigt keine Werbung, setzt keine Cookies und bindet keine Tracking- oder Analysedienste ein. Ein Konto gibt es nicht.
+  return `Kurz vorweg: FFFunk zeigt keine Werbung, setzt keine Cookies und bindet keine Tracking- oder Analysedienste ein. Ein Konto brauchst du nur, wenn du deinen Spielstand speichern oder eine Gruppenübung anlegen willst.
 
 ## Verantwortlicher
 
@@ -61,7 +61,7 @@ Rechtsgrundlage: § 25 Abs. 2 Nr. 2 TDDDG (für den Dienst unbedingt erforderlic
 
 ## Spracherkennung
 
-Damit FFFunk deinen Funkspruch prüfen kann, nimmt es auf, solange du die Sprechtaste hältst. Welcher Dienst die Sprache in Text umwandelt, hängt von deinem Gerät ab:
+Damit FFFunk deinen Funkspruch prüfen kann, nimmt es auf, solange du die Sprechtaste hältst – in einer Gruppenübung mit echten Funkgeräten von selbst, sobald du an der Reihe bist, bis dein Funkspruch zu Ende ist. Welcher Dienst die Sprache in Text umwandelt, hängt von deinem Gerät ab:
 
 - **Im Browser (Chrome, Edge):** Die eingebaute Spracherkennung des Browsers schickt die Aufnahme an den Spracherkennungsdienst des Browser-Herstellers – bei Chrome an Google, bei Edge an Microsoft – und bekommt den Text zurück. Dabei können Daten in die USA übermittelt werden. FFFunk selbst erhält nur den erkannten Text und speichert ihn nicht.
 - **In der Android-App:** Die Spracherkennung des Geräts (meist die von Google). Ob sie auf dem Gerät oder über das Internet arbeitet, hängt von Gerät und Einstellungen ab.
@@ -86,6 +86,22 @@ Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO – berechtigtes Interesse daran, zu
 Wenn du ein eigenes Szenario veröffentlichst, speichert der Server Titel, Beschreibung, Inhalt, Kategorie, den von dir angegebenen Autorennamen (Standard: „Anonym“) und den Zeitpunkt. Das Szenario ist danach für alle sichtbar. Ein „Danke“ erhöht nur einen Zähler. Möchtest du ein Szenario löschen lassen, schreib mir eine E-Mail.
 
 Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (du veröffentlichst bewusst).
+
+## Konto
+
+Ein Konto ist freiwillig. Legst du eines an, speichert der Server deine E-Mail-Adresse, den Namen, den du angibst (freiwillig), und welche Szenarien du an welchem Tag mit wie vielen Punkten abgeschlossen hast. Zur Anmeldung bekommst du einen Einmal-Code per E-Mail; der Versand läuft über IONOS (IONOS SE, Montabaur). Auf deinem Gerät liegt danach ein Anmelde-Schlüssel im lokalen Speicher des Browsers bzw. der App, kein Cookie. Um Missbrauch zu begrenzen, zählt der Server Anmeldeversuche je IP-Adresse für höchstens eine Stunde im Arbeitsspeicher, ohne sie zu speichern.
+
+Schaltest du mit dem Konto einen Wehr-Code frei, gilt dafür der Abschnitt „Lizenzcodes für Organisationen“. Dein Konto mit Spielstand und eigenen Gruppenübungen löschst du jederzeit selbst unter „Konto“.
+
+Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Nutzung des Kontos, das du selbst anlegst).
+
+## Gruppenübungen
+
+Bei einer Gruppenübung speichert der Server die Übung der Übungsleitung, den Namen, den du beim Beitreten angibst, eine zufällige Kennung deines Geräts (damit du nach dem Neuladen deine Position behältst), deine Position und zu jedem deiner Funksprüche den erkannten Text und die Punkte. Die Übungsleitung sieht dein Ergebnis mit deinem Namen – außer sie hat die anonyme Auswertung gewählt; das steht beim Beitreten dabei. Übungen werden nach einem Jahr gelöscht, vorher mit dem Konto der Übungsleitung.
+
+Mit dem **virtuellen Funkgerät** wird deine Sprache, solange du die Sprechtaste hältst, über den FFFunk-Server live an die anderen Geräte derselben Sprechgruppe übertragen. Der Server reicht den Ton nur durch und speichert ihn nicht. Ohne virtuelles Funkgerät verlässt kein Ton dein Gerät in Richtung FFFunk-Server; für die Auswertung gilt der Abschnitt „Spracherkennung“.
+
+Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (du trittst der Übung bewusst bei und gibst das Mikrofon frei).
 
 ## Lizenzcodes für Organisationen
 

@@ -19,6 +19,10 @@ export default defineConfig({
     cssTarget: 'chrome70', // z. B. inset → top/right/bottom/left
     sourcemap: true
   },
+  // npm run dev: API und Gruppen-WebSocket kommen vom Node-Server (npm start, Port 3000), falls er läuft.
+  server: {
+    proxy: { '/api': { target: 'http://localhost:3000', ws: true } },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

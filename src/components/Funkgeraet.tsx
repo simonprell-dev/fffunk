@@ -43,9 +43,15 @@ const TITEL: Partial<Record<DeviceKey, string>> = {
 interface Props {
   state: DeviceState;
   onPress: (p: Press) => void;
+  /** Taste wird gerade gedrückt bzw. losgelassen – für die Sprechtaste des virtuellen Funkgeräts. */
+  onHold?: (key: DeviceKey, down: boolean) => void;
+  /** Zusatzzeilen im Display (virtuelles Funkgerät in der Gruppenübung). */
+  info?: React.ReactNode;
+  /** Breiteres Gehäuse, damit die Zusatzzeilen lesbar bleiben. */
+  breit?: boolean;
 }
 
-export default function Funkgeraet({ state, onPress }: Props) {
+export default function Funkgeraet({ state, onPress, onHold, info, breit }: Props) {
   const konzept = KONZEPTE[state.konzept];
   const has = (k: DeviceKey) => konzept.tasten.includes(k);
   const [held, setHeld] = useState<{ key: DeviceKey; since: number } | null>(null);
@@ -62,10 +68,12 @@ export default function Funkgeraet({ state, onPress }: Props) {
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
     setHeld({ key, since: Date.now() });
     setNow(Date.now());
+    onHold?.(key, true);
   };
   const up = (key: DeviceKey) => () => {
     if (!held || held.key !== key) return;
     setHeld(null);
+    onHold?.(key, false);
     onPress({ key, ms: Date.now() - held.since });
   };
   const heldMs = held ? Math.max(0, now - held.since) : 0;
@@ -80,7 +88,7 @@ export default function Funkgeraet({ state, onPress }: Props) {
       data-knob="skip"
       onPointerDown={down(key)}
       onPointerUp={up(key)}
-      onPointerCancel={() => setHeld(null)}
+      onPointerCancel={() => { setHeld(null); onHold?.(key, false); }}
       onContextMenu={e => e.preventDefault()}
       className={`select-none touch-none font-semibold transition-transform active:scale-95 ${held?.key === key ? 'ring-2 ring-white/70' : ''} ${cls}`}
     >
@@ -100,7 +108,7 @@ export default function Funkgeraet({ state, onPress }: Props) {
         {side}
       </div>
 
-      <div className="w-56 rounded-3xl bg-[#1f2937] border border-[#374151] p-3 shadow-xl">
+      <div className={`${breit ? 'w-64 min-[400px]:w-72' : 'w-56'} rounded-3xl bg-[#1f2937] border border-[#374151] p-3 shadow-xl`}>
         {/* oben: Drehknopf und Notruf */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1 bg-[#111827] rounded-full p-1" title="Drehknopf">
@@ -120,6 +128,7 @@ export default function Funkgeraet({ state, onPress }: Props) {
             <span>{state.on ? `${state.locked ? '🔒' : ''} ▮▮▮` : ''}</span>
           </div>
           <div className="mt-1 break-words">{state.display[1] ?? ''}</div>
+          {state.on && info && <div className="mt-1 pt-1 border-t border-white/20 text-[11px] leading-snug break-words" data-testid="geraet-info">{info}</div>}
           <div className="h-1 mt-2 bg-black/30 rounded">
             {held && <div className="h-1 bg-white/60 rounded" style={{ width: `${Math.min(100, (heldMs / 2000) * 100)}%` }} />}
           </div>
